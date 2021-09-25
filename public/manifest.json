@@ -1,0 +1,19 @@
+{
+    "name": "uvsity-Educational Social Network",
+    "short_name": "uvsity",
+    "theme_color": "#ffffff",
+    "background_color": "#004740",
+    "display": "fullscreen",
+    "orientation": "portrait",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [ 
+      {
+        "src": "/images/logo/logo_1024x1024.png",
+        "type": "image/png",
+        "sizes": "1024x1024",
+        "purpose": "any maskable"
+      } 
+    ],
+    "splash_pages": null
+  }
