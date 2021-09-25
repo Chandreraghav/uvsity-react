@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CommonMetaInfo from "../pages/components/CommonMetaInfo";
+import Footer from "../pages/components/Footer";
 import Nav from "../pages/components/Nav";
 const AppLayer = ({ children, ...pageProps }) => {
   function recursiveMap(children, fn) {
@@ -32,6 +33,7 @@ const AppLayer = ({ children, ...pageProps }) => {
       <div className="applayout__component">
         {React.cloneElement(children, {})}
       </div>
+      <Footer/>
     </>
   );
 };

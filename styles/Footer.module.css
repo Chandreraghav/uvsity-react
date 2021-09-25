@@ -1,0 +1,101 @@
+.footer {
+    max-width: 980px;
+    margin: 5px auto 0;
+    padding: 0 4%;
+    color: grey;
+}
+
+.child__footer__links {
+    font-size: 12px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    -moz-box-orient: horizontal;
+    -moz-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: start;
+    -webkit-align-items: flex-start;
+    -moz-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    margin: 0 0 0 0;
+    padding: 0;
+}
+
+@media (min-width: 800px) {
+    .child__footer .child__footer__link-wrapper {
+        -webkit-flex-basis: 25%;
+        -ms-flex-preferred-size: 25%;
+        flex-basis: 25%;
+    }
+}
+
+.child__footer,
+.child__footer__link__wrapper {
+    list-style: none;
+    list-style-type: none;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 25%;
+    -moz-box-flex: 0;
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    margin-bottom: 5px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.child__footer,
+.child__footer__link,
+.child__footer__link__content {
+    color: grey!important;
+    text-decoration: none!important;
+}
+
+.child__footer__link:hover {
+    text-decoration: underline!important;
+}
+
+.child__footer__link__content :hover {
+    text-decoration: underline!important;
+}
+
+.child__footer,
+.service__code {
+    margin-bottom: 20px;
+    font-size: 13px;
+    padding: .5em;
+}
+
+.service__code {
+    background: 0 0;
+    color: grey;
+    border: solid 1px grey;
+    font-size: 0.5rem;
+    padding: 0.3rem;
+}
+
+.child__footer,
+.child__footer__copyright {
+    font-size: 11px;
+    margin-bottom: 15px;
+}
+
+.child__footer
+ {
+    padding: 0 4px;
+    display: inline-block;
+}
+.child__footer__copyright__instance{
+    display: block;
+    font-size: 0.6rem;
+}
