@@ -25,7 +25,7 @@ export default function MyApp({ Component, pageProps }) {
           <Component {...pageProps} />
         </AppLayer>
       </DataLayer>
-      )
+      
     </>
   );
 }

@@ -9,7 +9,7 @@
     "start_url": "/",
     "icons": [ 
       {
-        "src": "/images/logo/logo_1024x1024.png",
+        "src": "/static/images/logo/logo_1024x1024.png",
         "type": "image/png",
         "sizes": "1024x1024",
         "purpose": "any maskable"

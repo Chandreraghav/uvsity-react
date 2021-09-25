@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CommonMetaInfo from "../pages/components/CommonMetaInfo";
 import Nav from "../pages/components/Nav";
-const AppLayout = ({ children, ...pageProps }) => {
+const AppLayer = ({ children, ...pageProps }) => {
   function recursiveMap(children, fn) {
     return React.Children.map(children, (child) => {
       if (!React.isValidElement(child) || typeof child.type == "string") {
@@ -36,4 +36,4 @@ const AppLayout = ({ children, ...pageProps }) => {
   );
 };
 
-export default AppLayout;
+export default AppLayer;
