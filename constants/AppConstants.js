@@ -1,0 +1,16 @@
+export const ENV = "prod"
+export const BASE = "https://uvsity-beta.app/";
+export const APP_NAME = "uvsity";
+export const APP_OG_NAME="uvsity.com: Log In or Sign Up"
+export const APP_OG_TYPE="website"
+export const APP_TITLE = "UVSITY | Educational Social Network";
+export const APP_OG_TITLE = "UVSITY | Educational Social Network";
+export const APP_DESC ="Signup today and get your free personal appointment app with integrated web conferencing. Host your online sessions and events on uvsity.com!"
+export const APP_KEYWORDS="Educational Social Network Signup today and get your free personal appointment app with integrated web conferencing. Host your online sessions and events on uvsity.com! ";
+export const APP_IMAGE = "/images/logo_1024x1024.png";
+export const APP_HOME_URL = BASE;
+export const APP_HASH = "#uvsity";
+export const APP_OG_TOKEN_UUID = "e3ac6904-f01b-47d2-99e9-048d3840b5b5";
+export const APP_MANIFEST_PATH = "/manifest.json";
+export const APP_FAVICON_PATH = "/favicon.ico"
+export const APP_THEME_COLOR = "#0f8dbf"
