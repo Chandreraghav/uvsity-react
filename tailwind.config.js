@@ -1,3 +1,4 @@
+const path = require('path')
 module.exports = {
   mode: 'jit',
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'], 
@@ -9,4 +10,7 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles')],
+  },
 }

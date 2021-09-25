@@ -5,7 +5,7 @@ import {
   APP_OG_TYPE,
   APP_OG_TITLE,
   APP_DESC,
-  APP_IMAGE,
+  APP_POSTER_IMAGE,
   APP_HOME_URL,
   APP_KEYWORDS,
   APP_MANIFEST_PATH,
@@ -27,7 +27,7 @@ function CommonMetaInfo() {
       <meta property="og:type" content={APP_OG_TYPE} />
       <meta property="og:url" content={APP_HOME_URL} />
       <meta property="og:title" content={APP_OG_TITLE} />
-      <meta property="og:image" content={APP_IMAGE} />
+      <meta property="og:image" content={APP_POSTER_IMAGE} />
       <meta property="og:description" content={APP_DESC} />
       {/* PWA App Manifest */}
       <link rel="manifest" href={APP_MANIFEST_PATH} />
