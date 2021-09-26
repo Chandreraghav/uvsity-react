@@ -37,7 +37,14 @@
     object-fit: contain;
     cursor: pointer;
 }
-
+.nav__continue__with__google {
+    position: fixed;
+    right: 20px;
+   width:130px;
+    object-fit: contain;
+    cursor: pointer;
+}
+ 
 .nav__button {
     outline: none;
     position: fixed;
@@ -48,6 +55,18 @@
     border: none;
     cursor: pointer;
     background: #e50914;
+    font-weight: 500;
+}
+.nav__button__sm {
+    outline: none;
+    position: fixed;
+    right: 160px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    background: #5271FF;
     font-weight: 500;
 }
 

@@ -1,0 +1,49 @@
+.main{
+    display:flex;
+    color:#5271FF;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size:4rem;
+    justify-content:space-between;
+    width:100%;
+    align-items:center;
+    padding-bottom: 20px; 
+    font-weight: 600;
+    /* background-image: linear-gradient(to right, #6A03D6, black);
+     */
+    
+}
+.root{
+    background-image: linear-gradient(to right, #6A03D6, black);
+     
+}
+
+@media only screen and (max-width: 640px) {
+    .main {
+      width: 100% !important;
+      font-size:2rem; 
+      
+     
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    .main {
+      width: 100% !important;
+      font-size:2rem; 
+      
+    
+    }
+  }
+  @media only screen and (max-width: 480px) {
+    .main {
+      width: 100% !important;
+      font-size:2rem; 
+     
+     
+    }
+  }
+  .counter__description{
+      font-size: 2rem;
+      text-align: center;
+      justify-content: center;
+      color: #fff;
+  }

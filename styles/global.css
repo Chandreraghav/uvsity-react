@@ -10,6 +10,9 @@ body {
     scrollbar-width: none;
     /* Firefox */
 }
+.applayout__component{
+    background-color: black;
+}
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;

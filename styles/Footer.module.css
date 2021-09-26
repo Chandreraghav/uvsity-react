@@ -1,8 +1,9 @@
 .footer {
     max-width: 980px;
-    margin: 5px auto 0;
+    margin: 20px auto 0;
     padding: 0 4%;
     color: grey;
+    
 }
 
 .child__footer__links {

@@ -25,7 +25,10 @@ function Nav() {
         <div className={`${NavStyle.nav} ${show && NavStyle.nav__black}`}>
             <div className={NavStyle.nav__contents}>
                 <img onClick={(e) => history.push("/")} className={NavStyle.nav__logo} src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE} alt="uvsity-Logo" />
-                <img onClick={(e) => history.push("profile")} className={NavStyle.nav__avatar} src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/366be133850498.56ba69ac36858.png"
+                <a href="#knowmore"><button className={NavStyle.nav__button__sm} >How it works</button></a>
+                {/* <img onClick={(e) => history.push("profile")} className={NavStyle.nav__avatar} src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/366be133850498.56ba69ac36858.png"
+                    alt="uvsity-User-Avatar" /> */}
+                    <img onClick={(e) => history.push("profile")} className={NavStyle.nav__continue__with__google} src="/static/images/sign_in_with_google.png"
                     alt="uvsity-User-Avatar" />
                 
             </div>

@@ -1,0 +1,103 @@
+.banner {
+    color: white;
+    object-fit: contain;
+    height: 448px;
+    position: relative;
+    
+}
+.banner__wrapper{
+    display: flex;
+    flex:75% 25%
+}
+
+.banner__contents {
+    margin-left: 30px;
+    padding-top: 140px;
+    height: 190px;
+    
+}
+
+.banner__title {
+    font-size: 3rem;
+    font-weight: 800;
+    padding-bottom: 0.3rem;
+}
+.banner__title__small{
+    font-weight: 700;
+    font-size:1rem;
+    padding-bottom: 0.3rem;
+    margin-left:3px;
+    color:#F0DA50
+}
+@media (max-width: 768px) {
+    .banner__title {
+        font-size: 2rem;
+    }
+}
+@media (max-width: 640px) {
+    .banner__title {
+        font-size: 1.7rem;
+    }
+}
+@media (max-width: 480px) {
+    .banner__title {
+        font-size: 1.3rem;
+    }
+}
+ 
+
+.banner__description {
+    width: 45rem;
+    line-height: 3;
+    padding-top: 0.2rem;
+    font-size: 0.9rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    max-width:500px!important
+}
+
+@media only screen and (max-width: 640px) {
+    .banner__description {
+        font-size: 0.8rem!important;
+        width:45rem!important;
+        line-height:3!important;
+        
+    }
+}
+@media only screen and (max-width: 480px) {
+    .banner__description {
+        font-size: 0.6rem!important;
+        width:45rem!important;
+        line-height:2.5!important;
+        max-width:500px!important
+    }
+}
+
+.banner__button {
+    cursor: pointer;
+    color: #fff;
+    outline: none;
+    border: none;
+    font-weight: 700;
+    border-radius: 0.2vw;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin-right: 1rem;
+    padding-top: 0.5rem;
+    background-color: rgba(51, 51, 51, 0.5);
+    padding-bottom: 0.5rem;
+}
+
+.banner__button:hover {
+    color: #000;
+    background-color: #e6e6e6;
+    transition: all 0.4s;
+}
+
+.banner__fadeBottom {
+    height: 17rem;
+    background-image: linear-gradient( 180deg, transparent, rgba(37, 37, 37, 0.61), #262626);
+    /* background-image: linear-gradient(to right, #262626, #3b3b8a); */
+}
