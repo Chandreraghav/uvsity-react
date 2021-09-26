@@ -10,7 +10,9 @@ export default function Home() {
       </Head>
       <Banner/>
       <UVSityTutorial/>
+      {/* Trending/Popular  LiveSession Display */}
       <UVSityStatsCounter/>
+
       {/* <div className="flex flex-col items-center justify-center min-h-screen py-2">
         UVSITY PWA APP ..with Next and tailwind
       </div> */}
