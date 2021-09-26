@@ -28,7 +28,8 @@ const AppLayer = ({ children, ...pageProps }) => {
   return (
     <>
       <CommonMetaInfo/>
-      <Nav/>
+    
+       <Nav/>
       <div className="applayout__component">
         {React.cloneElement(children, {})}
       </div>

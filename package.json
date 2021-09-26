@@ -27,7 +27,6 @@
     "react-typewriter": "^0.4.1",
     "react-visibility-sensor": "^5.1.1",
     "sass": "^1.42.1",
-    "typewriter-effect": "^2.18.2",
     "uuidv4": "^6.2.12"
   },
   "devDependencies": {

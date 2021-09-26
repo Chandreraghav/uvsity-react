@@ -1,0 +1,87 @@
+.app__preAuthMessage {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 0.9rem;
+  display: flex;
+  font-weight: 600;
+  background-image: linear-gradient(to right, #f0da50, #4285f4);
+  color: black;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  justify-content: center;
+  height: 30px;
+  flex-direction: row;
+  flex-flow: row;
+  z-index: 2;
+  /***Animation**/
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+}
+.app__preAuthMessage > div {
+  margin-top: -4px;
+}
+.app__preAuthMessageText{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items:baseline;
+  vertical-align: middle; 
+  margin-left:25%
+}
+@media only screen and (max-width: 640px) {
+  .app__preAuthMessageText {
+    margin-left:7% !important;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .app__preAuthMessageText {
+    margin-left:12% !important;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .app__preAuthMessageText {
+    margin-left:7% !important;
+  }
+}
+@media only screen and (max-width: 320px) {
+  .app__preAuthMessageText {
+    margin-left:2% !important;
+    font-size:0.5rem!important
+  }
+}
+.cancelButtonRoot{
+  cursor: pointer;
+  right: 10px;
+  margin-top:2.3px;
+  position: absolute;
+}
+.cancelButton{
+  font-size:small!important;
+  color:#3B4553;
+  cursor: pointer;
+}
+.cancelButton:hover{
+  font-size:14px!important;
+  color:#111;
+  cursor: pointer;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+}
+@media only screen and (max-width: 640px) {
+  .app__preAuthMessage {
+    font-size: 0.7rem !important;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .app__preAuthMessage {
+    font-size: 0.6rem !important;
+  }
+}
+@media only screen and (max-width: 320px) {
+  .app__preAuthMessage {
+    font-size: 0.5rem !important;
+  }
+}
