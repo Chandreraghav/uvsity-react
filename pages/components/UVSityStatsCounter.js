@@ -5,6 +5,7 @@ import VisibilitySensor from "react-visibility-sensor";
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import DynamicFeedIcon from '@material-ui/icons/DynamicFeed';
 import PublicIcon from '@material-ui/icons/Public';
+import VideocamIcon from '@material-ui/icons/Videocam';
 function UVSityStatsCounter() {
    
   return (
@@ -28,7 +29,7 @@ function UVSityStatsCounter() {
             <CountUp suffix="+" delay={2} duration="3" end={600} />
           </VisibilitySensor>
           <div className="text-xs md:text-sm lg:text-2xl text-left text-white">
-            <MeetingRoomIcon/>Meetings
+            <VideocamIcon/>Meetings
           </div>
         </div>
         <div className="flex flex-col">
