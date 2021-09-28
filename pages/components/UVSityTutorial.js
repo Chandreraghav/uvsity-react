@@ -1,7 +1,6 @@
 import React from "react";
 import ReactPlayer from "react-player/youtube";
 import PlayerStyle from "../../styles/Player.module.css";
-import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import AddBoxIcon from "@material-ui/icons/AddBox";
@@ -71,7 +70,7 @@ function UVSityTutorial({
       ${thirdStep && "bg-step-three"}  `}
     >
       <div>
-        <h3 className={PlayerStyle.tutorial__header__text}>
+        <h3 className={`${PlayerStyle.tutorial__header__text} ${firstStep ? ' mt-4':secondStep ?'mt-2':'mt-2'} `}>
           {tutorialHeaderText}
         </h3>
       </div>
@@ -83,42 +82,22 @@ function UVSityTutorial({
         />
         <div className="flex flex-col">
           <ul className={PlayerStyle.player__description}>
-            {firstStep &&
+            {
               tutorialMessages?.map((msg, i) => (
                 <li>
-                  {getIcon(i, "step1")}
-                  {msg}
-                </li>
-              ))}
-            {secondStep &&
-              tutorialMessages?.map((msg, i) => (
-                <li>
-                  {getIcon(i, "step2")}
-                  {msg}
-                </li>
-              ))}
-            {thirdStep &&
-              tutorialMessages?.map((msg, i) => (
-                <li>
-                  {getIcon(i, "step3")}
+                  {getIcon(i, firstStep?"step1":secondStep?'step2':'step3')}
                   {msg}
                 </li>
               ))}
           </ul>
           <div className="">
-            <img
-              className="lg:w-80 sm:w-40 md:w-48 w-40 object-contain lg:ml-40  ml-12"
+            <img className={`lg:w-80 sm:w-40 md:w-48 w-40 object-contain content-center ${!firstStep && 'mt-5' }`}
               src={mascotIcon}
             />
           </div>
         </div>
       </section>
-      <div className="relative">
-        <h4 className={PlayerStyle.player__description}>
-          <ArrowUpwardIcon className={PlayerStyle.player__arrowIcon} />
-          {tutorialFooterText}
-        </h4>
-      </div>
+       
     </div>
   );
 }

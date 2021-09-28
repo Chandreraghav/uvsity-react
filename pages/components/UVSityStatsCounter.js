@@ -41,10 +41,7 @@ function UVSityStatsCounter() {
           </div>
         </div>
        </div>
-       <h4 className={CounterStyle.counter__description}>
-       Know how have we been doing
-      
-         </h4> 
+       
     </div>
   );
 }

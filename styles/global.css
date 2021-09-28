@@ -28,3 +28,7 @@ code {
   background: transparent;
   /* Optional: just make scrollbar invisible */
 }
+.MuiCardMedia-img{
+  height:200px;
+  object-fit: contain;
+}

@@ -22,9 +22,9 @@ export const TUTORIAL_MESSAGES = {
   SETUP_MEETING: [
     {
       messages: [
-        "No back and forth emails or phone calls. Setting up an appointment is just few clicks away.",
-        "Signup today and get your free personal appointment app integrated with zoom web conferencing.",
-        "Share your personal appointment link in email, social media or embed in your website!",
+        "No back and forth emails or phone calls.",
+        "Get your free personal appointment app integrated with zoom.",
+        "Share your appointment link in social media.",
       ],
     },
     {
@@ -41,9 +41,9 @@ export const TUTORIAL_MESSAGES = {
   SETUP_AVAILABILITY: [
     {
       messages: [
-        "Don't forget to set your availability after you signup.",
-        "To set, click on My Calendar, click on Availability Settings.",
-        "Copy your appointment link and embed on your website or share in email signature.",
+        "Don't forget to set your availability.",
+        "To set, go to My Calendar, click on Availability Settings.",
+        "Embed your link on your website or share in email signatures.",
       ],
     },
     {

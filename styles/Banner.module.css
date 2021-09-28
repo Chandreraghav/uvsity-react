@@ -68,10 +68,10 @@
 }
 @media only screen and (max-width: 480px) {
     .banner__description {
-        font-size: 0.6rem!important;
-        width:45rem!important;
+        font-size: 0.8rem!important;
+        width:45rem!important; 
         line-height:2.5!important;
-        max-width:500px!important
+        max-width:350px!important;
     }
 }
 

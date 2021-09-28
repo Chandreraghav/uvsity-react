@@ -21,14 +21,14 @@ function Banner() {
                 <h4 className={BannerStyle.banner__title__small}>No Payment Required</h4>
                 <div className={BannerStyle.banner__buttons}>
                     <button className={BannerStyle.banner__button}>Get Started</button>
-                    <button className={BannerStyle.banner__button}>Live Sessions</button>
+                    <a href="#popularlivesessions"><button className={BannerStyle.banner__button}>Live Sessions</button></a>
                 </div>
                 
                 <ul className={BannerStyle.banner__description}>
                     <li><DoubleArrowIcon/>A Marketplace for all educators, coaches and session organizers.</li>
                     <li><DoubleArrowIcon/>Earn from your paid sessions and sponsorships.</li>
                     <li><DoubleArrowIcon/>Earn from your one on one appointment.</li>
-                    <li><DoubleArrowIcon/>Stay connected with your audience and followers - Network &amp; Grow.</li>
+                    <li><DoubleArrowIcon/>Stay connected with your audience and followers.</li>
                 </ul>
           
              

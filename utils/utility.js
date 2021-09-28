@@ -50,5 +50,40 @@ export const formatted_duration = (value) => {
     else return hours + " hrs " + minutes + " minutes";
 };
 
+function stringToColor(string) {
+    let hash = 0;
+    let i;
+  
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+  
+    let color = '#';
+  
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.substr(-2);
+    }
+    /* eslint-enable no-bitwise */
+  
+    return color;
+  }
+  
+  export const avatarToString=(name)=> {
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    };
+  }
+  export const localTZDate=(data) =>{
+    let local_date = new Date(data).toString();
+    local_date= local_date.substring(0,local_date.lastIndexOf(':'))
+    return local_date;
+  }
+  
+
  
  

@@ -1,0 +1,47 @@
+.session__card{
+    transition: transform 450ms;
+    cursor: pointer;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif!important;
+}
+.session__card__darkgrey__variant{
+    background-image: linear-gradient(to right, #000,#e2e2e2);
+    color: #fff!important;
+}
+.session__card:hover {
+    transform: scale(1.08);
+    opacity: 1;
+}
+.session__card__profile__subtitle{
+    background: #5271FF;
+    border: none;
+    outline: none;
+    /* border-radius: 7px; */
+    width: 100rem;
+    margin-left:8px;
+    font-weight: 500;
+    padding: 8px;
+    font-size:0.7rem;
+    color: darkgrey;
+}
+.session__card__event__time__subtitle{
+    background: #111;
+    border: none;
+    outline: none;
+    /* border-radius: 7px; */
+    width:200px;
+    margin-left:8px;
+    margin-top:-10px;
+    font-weight: 500;
+    padding: 8px;
+    font-size:0.5rem;
+    color: darkgrey;
+    margin-bottom: 2px;
+}
+.session__card__event__icon{
+    font-size:0.8rem!important;
+    padding:1px;
+}
+.session__card__profile__icon{
+    font-size:1rem!important;
+    padding:2px;
+}
