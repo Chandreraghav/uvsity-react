@@ -15,7 +15,7 @@ function TrendingSessions() {
     //  const data=await res.data;
   }, []);
   return (
-    <div id="popularlivesessions" className={`${TrendingSessionsStyle.trending__sessions__wrapper} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  bg-yellow-300`}>
+    <div id="popularlivesessions" className={`${TrendingSessionsStyle.trending__sessions__wrapper} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  bg-yellow-300`}>
       {trendingSessions && trendingSessions?.map((session,index)=>(
  <SessionCard key={index} data={session} />
       ))}

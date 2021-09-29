@@ -84,7 +84,7 @@ function UVSityTutorial({
           <ul className={PlayerStyle.player__description}>
             {
               tutorialMessages?.map((msg, i) => (
-                <li>
+                <li key={i}>
                   {getIcon(i, firstStep?"step1":secondStep?'step2':'step3')}
                   {msg}
                 </li>

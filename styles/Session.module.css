@@ -2,9 +2,23 @@
     transition: transform 450ms;
     cursor: pointer;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif!important;
+    box-shadow: 0 0 15px rgba(0,0,0,.1)!important;
+    position: relative!important;
+}
+
+.session__card__title{
+    font-size: 1.3rem!important;
+    color:#fff!important;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif!important;
+     
 }
 .session__card__darkgrey__variant{
     background-image: linear-gradient(to right, #000,#e2e2e2);
+    color: #fff!important;
+}
+
+.session__card__lightblue__variant{
+    background-image: linear-gradient(to right, #000,#558ee1);
     color: #fff!important;
 }
 .session__card:hover {
@@ -28,15 +42,17 @@
     border: none;
     outline: none;
     /* border-radius: 7px; */
-    width:200px;
-    margin-left:8px;
-    margin-top:-10px;
+    width:45rem;
+    margin-left:60px;
+    margin-top:-8px;
     font-weight: 500;
+    display: inline-block;
     padding: 8px;
     font-size:0.5rem;
     color: darkgrey;
     margin-bottom: 2px;
 }
+
 .session__card__event__icon{
     font-size:0.8rem!important;
     padding:1px;
@@ -45,3 +61,63 @@
     font-size:1rem!important;
     padding:2px;
 }
+
+.session__card__attendance__count{
+    width: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 12px;
+    border: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    background-color:#5CB85C;
+    color: #fff
+}
+.session__card__attendance__text{
+    margin-left:2px;
+    font-size:11px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    vertical-align: middle;
+    margin-top:5px;
+    font-style: italic;
+    font-weight: 500;
+    
+}
+ .session__card__review__star__replacement{
+    width: 30px;
+    object-fit: contain;
+ }
+ .session__card__review__star{
+     color:gold;
+     font-size:30px!important;
+ }
+ .session__card__review__unstar{
+      margin-top:3px
+ }
+ .session__card__costing{
+     color:#fff;
+     font-weight: 500;
+     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif!important;
+     font-size: 14px;
+     padding:4px;
+     margin:4px;
+     text-align:center;
+     background-color:blue;
+     line-height: 20px;
+     width:70px;
+ }
+ .session__card__currency__amount{
+     background-color: #259B56!important;
+     color: #fff !important;
+     font-size: 16px!important;
+     margin-left: 2px!important;
+     vertical-align: middle;
+    
+
+ }
+ .session__card__monetization__currency__icon{
+     /* margin-top:2px; */
+     
+ }
+ 

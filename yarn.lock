@@ -2747,6 +2747,11 @@ react-avatar@^3.10.0:
     is-retina "^1.0.3"
     md5 "^2.0.0"
 
+react-corner-ribbon@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/react-corner-ribbon/-/react-corner-ribbon-0.0.5.tgz#31e9aba0b35d539602006dce244ddf96b60ae2f7"
+  integrity sha512-L7kqpzWm/kY+/6cS9RpTdTVy0N1qajmOvJInkDEKipNE8Lm7C6VeNKgBrO74UMxCYCYpzvWQdgFzoWRYlr8+zw==
+
 react-countup@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/react-countup/-/react-countup-6.0.0.tgz#463f174781db4bec25de8853335c18ff0a305131"
