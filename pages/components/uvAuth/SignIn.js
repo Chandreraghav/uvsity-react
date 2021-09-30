@@ -1,18 +1,20 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import LoginIcon from "@mui/icons-material/Login";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import SignInStyle from "../../../styles/SignIn.module.css"
+import SignInStyle from "../../../styles/SignIn.module.css";
+import CancelIcon from "@mui/icons-material/Cancel";
+import Tooltip from "@mui/material/Tooltip";
+import { LOGIN_POLICY_ACCEPTANCE } from "../../../constants/constants";
+
 function SignIn({ dialogCloseRequest, isOpen }) {
   const theme = useTheme();
-
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [isBackDropClicked, setBackDropClicked] = React.useState(true);
+  const [signInButtonPressed, setSignInButtonPressed] = React.useState(false);
+  const emailRef = React.useRef(null);
+  const passwordRef = React.useRef(null);
   const handleIsolatedComponentInvocation = () => {
     if (dialogCloseRequest && !isBackDropClicked) dialogCloseRequest();
   };
@@ -21,12 +23,15 @@ function SignIn({ dialogCloseRequest, isOpen }) {
   };
   const handleDirectClose = () => {
     if (dialogCloseRequest) dialogCloseRequest();
-    setBackDropClicked(true)
-  }
+    setBackDropClicked(true);
+  };
+  const signIn = (e) => {
+    e.preventDefault();
+    console.log(passwordRef.current.value);
+  };
   return (
-    <div className={SignInStyle.signin__root} >
+    <div className={SignInStyle.signin__root}>
       <Dialog
-        
         fullScreen={fullScreen}
         open={isOpen}
         onClose={handleIsolatedComponentInvocation}
@@ -34,25 +39,100 @@ function SignIn({ dialogCloseRequest, isOpen }) {
         disableEscapeKeyDown
         onBackdropClick={handleBackdropClick}
         aria-labelledby="responsive-dialog-title"
-      
       >
-        <DialogTitle className={SignInStyle.signin__base__color} id="responsive-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
-        <DialogContent className={SignInStyle.signin__base__color}>
-          <DialogContentText>
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions className={SignInStyle.signin__base__color}>
-          <Button autoFocus onClick={handleDirectClose}>
-            Disagree
-          </Button>
-          <Button onClick={handleDirectClose} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
+        <div className={SignInStyle.signin__Dialog__blue__variant}>
+          <Tooltip
+            className={SignInStyle.signin__Dialog__cancelButtonRoot}
+            title="Close"
+            disableTouchListener
+            placement="bottom"
+          >
+            <div className="flex flex-2 float-right m-2 cursor-pointer">
+              <CancelIcon
+                onClick={handleDirectClose}
+                className={SignInStyle.signin__Dialog__cancel}
+              />
+            </div>
+          </Tooltip>
+        </div>
+        <div
+          className={`${SignInStyle.signin__Dialog} ${SignInStyle.signin__Dialog__blue__variant}`}
+        >
+          <form onSubmit={(e) => signIn(e)}>
+            <div className="flex">
+              <div
+                className={`${SignInStyle.signin__Dialog__brand__logo__wrapper} flex`}
+              >
+                <img
+                  src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE}
+                  className={`${SignInStyle.signin__Dialog__brand__logo}`}
+                />
+              </div>
+            </div>
+            <div className="flex space-x-4 space-y-2">
+              <div>
+                <h2
+                  className={`${SignInStyle.signin__Dialog__signin__explicit__header}`}
+                >
+                  Sign In
+                </h2>
+              </div>
+              <div className={`${SignInStyle.signin__Dialog__alternative__or}`}>
+                or
+              </div>
+              <div
+                className={`${SignInStyle.signin__Dialog__signin__with__google__option}`}
+              >
+                <img src="/static/images/sign_in_with_google.png" />
+              </div>
+            </div>
+
+            <input
+              autocomplete
+              id="email"
+              ref={emailRef}
+              type="email"
+              placeholder="Email"
+            />
+            <input
+              autocomplete
+              id="current-password"
+              ref={passwordRef}
+              type="password"
+              placeholder="Password"
+            />
+
+            <button
+              className={`${signInButtonPressed && SignInStyle.disabled}`}
+              type="submit"
+            >
+              <LoginIcon /> Sign In
+            </button>
+            <div className="flex flex-col">
+            <div className={SignInStyle.signin__Dialog__footer__forgotpassword__option}>Forgot Password</div>
+            <div className={SignInStyle.signin__Dialog__footer__signup__option}>
+              <h4>
+                <span className={SignInStyle.signin__Dialog__gray}>
+                  New to {process.env.NEXT_PUBLIC_APP_NAME_V2}?
+                </span>
+                &nbsp;{" "}
+                <span
+                  className={`${SignInStyle.signin__Dialog__link} ${
+                    signInButtonPressed && SignInStyle.disabled
+                  }`}
+                >
+                  Sign Up now.
+                </span>
+              </h4>
+            </div>
+          
+            </div>
+          </form>
+          <hr className="mt-2 text-gray-500" />
+          <div className={SignInStyle.signin__Dialog__acceptance__disclosure}>
+            {LOGIN_POLICY_ACCEPTANCE}
+          </div>
+        </div>
       </Dialog>
     </div>
   );

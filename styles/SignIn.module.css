@@ -1,7 +1,178 @@
-.signin__base__color{
-    opacity: 1 !important;
-    background-color: #111 !important;
+.signin__base__color {
+  opacity: 1 !important;
+  background-color: rgba(0, 0, 0, 0.85) !important;
 }
-.MuiPaper-elevation{
-    background-color: #111!important;  
+.MuiPaper-elevation {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.signin__Dialog {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 45px;
+  width: 27rem;
+  outline: none;
+  top: 30%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1;
+  color: white;
+}
+.signin__Dialog__blue__variant {
+  background-image: linear-gradient(to right, #111, #5271ff);
+}
+@media only screen and (max-width: 640px) {
+  .signin__Dialog {
+    width: 25rem !important;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .signin__Dialog {
+    width: 24rem !important;
+  }
+}
+@media only screen and (max-width: 320px) {
+  .signin__Dialog {
+    width: 23rem !important;
+  }
+}
+
+.signin__Dialog > form {
+  display: grid;
+  flex-direction: column;
+}
+
+.signin__Dialog > form > h2 {
+  font-size: 2rem;
+  font-weight: 400;
+  text-align: left;
+  margin-bottom: 25px;
+}
+.signin__Dialog__signin__explicit__header{
+    font-size: 2rem;
+  font-weight: 400;
+  text-align: left;
+  margin-bottom: 25px;
+  width:auto;;
+  white-space: nowrap!important; 
+  
+}
+
+.signin__Dialog > form > input {
+  outline: none;
+  outline-width: 0;
+  height: 40px;
+  margin-bottom: 14px;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 15px;
+  color: #111 !important;
+}
+
+.signin__Dialog > form > button {
+  padding: 16px 20px;
+  font-size: 1rem;
+  color: #fff;
+  border-radius: 5px;
+  background: #5271ff;
+  border: none !important;
+  outline: none !important;
+  cursor: pointer;
+  margin-top: 3px;
+  font-weight: 500;
+}
+.signin__Dialog > form > button:hover {
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  background: #e50914;
+}
+
+.signin__Dialog > form > button.disabled {
+  pointer-events: none;
+  cursor: none;
+  background-color: darkgrey;
+  opacity: 0.4;
+}
+
+.signin__Dialog > form > span.disabled {
+  pointer-events: none;
+  cursor: none;
+  opacity: 0.4;
+}
+
+.signin__Dialog > form > h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  margin-top: 10px;
+}
+.signin__Dialog__footer__signup__option>h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: left;
+    margin-top: 5px;
+  }
+
+.signin__Dialog__gray {
+  color: grey;
+}
+
+.signin__Dialog__link:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.signin__Dialog__cancel {
+  color: #fff !important;
+  font-size: small;
+}
+.signin__Dialog__cancelButtonRoot {
+  cursor: pointer;
+   
+}
+.signin__Dialog__brand__logo {
+  object-fit: contain;
+  width: 50%;
+  margin-left:-4px;
+}
+.signin__Dialog__brand__logo__wrapper{
+    padding:5px;
+}
+.signin__Dialog__acceptance__disclosure {
+  font-size: 0.7rem !important;
+  color: #e2e2e2 !important;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-style: normal !important;
+  text-align: justify;
+  margin-top:8px !important;
+}
+
+.signin__Dialog__signin__with__google__option>img{
+    object-fit: contain;
+    width:auto;
+    cursor: pointer;
+    margin-top: 4px;;
+}
+.signin__Dialog__alternative__or{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    color:lightgrey;
+    vertical-align: middle;
+    padding: 8px;
+    margin-top: 20px;
+}
+.signin__Dialog__footer__forgotpassword__option{
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-align: left;
+    word-spacing: 0cm;
+     
+}
+.signin__Dialog__footer__forgotpassword__option:hover{
+    cursor: pointer;
+  text-decoration: underline;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  color:#5271FF
 }
