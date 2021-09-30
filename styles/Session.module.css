@@ -10,6 +10,7 @@
     font-size: 1.3rem!important;
     color:#fff!important;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif!important;
+    
      
 }
 .session__card__darkgrey__variant{
@@ -108,7 +109,7 @@
      width:70px;
  }
  .session__card__currency__amount{
-     background-color: #259B56!important;
+     /* background-color: #259B56!important; */
      color: #fff !important;
      font-size: 16px!important;
      margin-left: 2px!important;
@@ -116,8 +117,9 @@
     
 
  }
- .session__card__monetization__currency__icon{
-     /* margin-top:2px; */
-     
+
+ .session__card__shimmering__behavior{
+    padding:28px
  }
+
  

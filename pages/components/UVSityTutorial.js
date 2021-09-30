@@ -1,15 +1,15 @@
 import React from "react";
 import ReactPlayer from "react-player/youtube";
 import PlayerStyle from "../../styles/Player.module.css";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import AddBoxIcon from "@material-ui/icons/AddBox";
-import ShareIcon from "@material-ui/icons/Share";
-import GroupIcon from "@material-ui/icons/Group";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import InfoIcon from "@material-ui/icons/Info";
-import DateRangeIcon from "@material-ui/icons/DateRange";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import ShareIcon from "@mui/icons-material/Share";
+import GroupIcon from "@mui/icons-material/Group";
+import DraftsIcon from "@mui/icons-material/Drafts";
+import InfoIcon from "@mui/icons-material/Info";
+import DateRangeIcon from "@mui/icons-material/DateRange";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 const getIcon = (i, step) => {
   if (step === "step1") {
     switch (i) {

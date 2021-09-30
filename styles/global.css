@@ -30,5 +30,13 @@ code {
 }
 .MuiCardMedia-img{
   height:200px;
-  object-fit: contain;
+  object-fit:cover!important;
 }
+.ellipsis{
+  white-space: nowrap!important; 
+  width: 50%!important; 
+  overflow: hidden!important;
+  text-overflow: ellipsis!important; 
+  border: none
+}
+

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import PreAuthSignUpMessageBarStyle from "../../styles/PreAuthSignUpMessageBar.module.css";
-import CancelIcon from "@material-ui/icons/Cancel";
-import Tooltip from "@material-ui/core/Tooltip";
+import CancelIcon from "@mui/icons-material/Cancel";
+
+import Tooltip from "@mui/material/Tooltip";
 function PreAuthSignUpMessageBar({isPreAuthMessagePanelClosed}) {
   const [close, setClose] = useState(false);
   const closePreAuthMessagePanel = ()=>{

@@ -60,3 +60,4 @@ export const TUTORIAL_MESSAGES = {
   WATCH_VIDEO: "To know more watch this video.",
 };
 export const SESSION_REVIEW_MAX_STAR_COUNT=5
+export const SHIM_MAX_TIMEOUT_IN_MILLIS=10000

@@ -2,10 +2,10 @@ import React from "react";
 import CountUp from "react-countup";
 import CounterStyle from "../../styles/Counter.module.css";
 import VisibilitySensor from "react-visibility-sensor";
-import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
-import DynamicFeedIcon from '@material-ui/icons/DynamicFeed';
-import PublicIcon from '@material-ui/icons/Public';
-import VideocamIcon from '@material-ui/icons/Videocam';
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
+import PublicIcon from '@mui/icons-material/Public';
+import VideocamIcon from '@mui/icons-material/Videocam';
 function UVSityStatsCounter() {
    
   return (

@@ -1,6 +1,6 @@
 import React from 'react'
 import BannerStyle from "../../styles/Banner.module.css"
-import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 
 function Banner() {
     return (

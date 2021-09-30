@@ -1,3 +1,11 @@
 .trending__sessions__wrapper{
     background-image: linear-gradient(to right, yellow,#4f46e5);
 }
+.trending__sessions__wrapper__white__variant{
+    
+    background-image: linear-gradient(to right, #fff,#fff);
+}
+.trending__sessions__text{
+    color: #011D7D!important;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
