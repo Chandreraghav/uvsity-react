@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import TrendingSessionsStyle from "../../styles/TrendingSessions.module.css";
-import asyncInstance from "../../async/axios";
 import SessionCard from "./SessionCards/SessionCard";
-import { ENDPOINTS } from "../../async/endpoints";
+import SessionService from  "../api/SessionService"
 import Loader from "./Loader";
 
 function TrendingSessions() {
   const [trendingSessions, setTrendingSessions] = useState([]);
   const [loaderVisibility, setLoaderVisibility] = useState(true);
   useEffect(async () => {
-    await asyncInstance.get(ENDPOINTS.TOP_COURSES).then((response) => {
+    await new SessionService().getPopularSessions().then((response) => {
       setTrendingSessions(response.data);
       setLoaderVisibility(false);
     });

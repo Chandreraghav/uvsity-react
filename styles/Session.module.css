@@ -4,6 +4,8 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif!important;
     box-shadow: 0 0 15px rgba(0,0,0,.1)!important;
     position: relative!important;
+    border: none;
+    outline: none;
 }
 
 .session__card__title{
@@ -25,12 +27,12 @@
 .session__card:hover {
     transform: scale(1.08);
     opacity: 1;
+    box-shadow: 0 0 15px rgba(0,0,0,1)!important;
 }
 .session__card__profile__subtitle{
     background: #5271FF;
     border: none;
     outline: none;
-    /* border-radius: 7px; */
     width: 100rem;
     margin-left:8px;
     font-weight: 500;

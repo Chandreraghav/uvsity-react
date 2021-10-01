@@ -121,6 +121,8 @@
 .signin__Dialog__link:hover {
   cursor: pointer;
   text-decoration: underline;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
 }
 .signin__Dialog__cancel {
   color: #fff !important;

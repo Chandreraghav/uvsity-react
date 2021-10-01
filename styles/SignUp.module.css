@@ -1,0 +1,216 @@
+.signup__base__color {
+  opacity: 1 !important;
+  background-color: rgba(0, 0, 0, 0.85) !important;
+}
+.MuiPaper-elevation {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.signup__Dialog {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 45px;
+  width: 27rem;
+  outline: none;
+  top: 30%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1;
+  color: white;
+  zoom:0.9;
+}
+ 
+.signup__Dialog__blue__variant {
+  background-image: linear-gradient(to right, #111, #5271ff);
+}
+@media only screen and (max-width: 640px) {
+  .signup__Dialog {
+    width: 25rem !important;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .signup__Dialog {
+    width: 24rem !important;
+  }
+}
+@media only screen and (max-width: 320px) {
+  .signup__Dialog {
+    width: 23rem !important;
+  }
+}
+
+.signup__Dialog > form {
+  display: grid;
+  flex-direction: column;
+}
+
+.signup__Dialog > form > h2 {
+  font-size: 2rem;
+  font-weight: 400;
+  text-align: left;
+  margin-bottom: 25px;
+}
+.signup__Dialog__signin__explicit__header {
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: left;
+
+  width: auto;
+  white-space: nowrap !important;
+}
+
+.signup__Dialog > form > div > input {
+  outline: none;
+  outline-width: 0;
+  height: 40px;
+  margin-bottom: 14px;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 15px;
+  color: #111 !important;
+}
+
+.signup__Dialog > form > div > button {
+  font-size: 1rem;
+  color: #fff;
+  border-radius: 5px;
+  border: none !important;
+  outline: none !important;
+  cursor: pointer;
+  margin-top: 3px;
+  font-weight: 500;
+}
+.signup__Dialog > form > div > button:hover {
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  background: #e50914;
+}
+
+.signup__Dialog > form > div > button.disabled {
+  pointer-events: none;
+  cursor: none;
+  background-color: darkgrey;
+  opacity: 0.4;
+}
+
+.signup__Dialog > form > span.disabled {
+  pointer-events: none;
+  cursor: none;
+  opacity: 0.4;
+}
+
+.signup__Dialog > form > h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  margin-top: 10px;
+}
+.signup__Dialog__footer__signup__option > h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  margin-top: 5px;
+}
+
+.signup__Dialog__gray {
+  color: grey;
+}
+
+.signup__Dialog__link:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+}
+.signup__Dialog__cancel {
+  color: #fff !important;
+  font-size: small;
+}
+.signup__Dialog__cancelButtonRoot {
+  cursor: pointer;
+}
+.signup__Dialog__brand__logo {
+  object-fit: contain;
+  width: 30%;
+  margin-left: -4px;
+}
+.signup__Dialog__brand__logo__wrapper {
+  padding: 5px;
+  margin-top:-50px
+  
+}
+.signup__Dialog__acceptance__disclosure {
+  font-size: 0.7rem !important;
+  color: #e2e2e2 !important;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-style: normal !important;
+  text-align: justify;
+  margin-top: 8px !important;
+}
+.signup__Dialog__agreeButton{
+    font-size: 0.7rem !important;
+  color: #e2e2e2 !important;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-style: normal !important;
+  text-align: justify;
+}
+.signup__Dialog__agreeButton>span {
+    padding:2px;
+    vertical-align: middle;
+    display: inline-block;
+}
+.signup__Dialog__agreeButton>input {
+    padding:2px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.signup__Dialog__signin__with__google__option > img {
+  object-fit: contain;
+  width: auto;
+  cursor: pointer;
+  margin-top: -9px;
+  padding-bottom: 5px;
+}
+.signup__Dialog__alternative__or {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 400;
+  margin-top: 0px !important;
+  font-style: italic;
+  color: lightgrey;
+  vertical-align: middle;
+  
+}
+ 
+ 
+.signup__Dialog__submit__btn {
+  background-color: #5271ff;
+  width: 50%;
+}
+.signup__Dialog__cancel__btn {
+  background-color: #e2e2e2;
+  color: #323244 !important;
+  font-size: 0.8rem !important;
+  width: 25%;
+}
+.signup__Dialog__cancel__btn:hover {
+  color: #fff !important;
+}
+.signup__Dialog__back__btn:hover {
+    color: #fff !important;
+  }
+.signup__Dialog__back__btn{
+    background-color: darkgrey;
+    font-size: 0.6rem!important;
+    color: #323244 !important;
+    width: 25%;
+    font-weight: 600!important;
+}
+.signup__Dialog__recaptcha__wrapper{
+    width: 50% !important;
+}
+.signup__Dialog__back__icon{
+  font-size: 0.7rem;
+}
+

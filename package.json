@@ -22,6 +22,7 @@
     "react-corner-ribbon": "^0.0.5",
     "react-countup": "^6.0.0",
     "react-dom": "^17.0.2",
+    "react-google-recaptcha": "^2.1.0",
     "react-loader-spinner": "^4.0.0",
     "react-loading-overlay-ts": "^0.2.0",
     "react-player": "^2.9.0",
@@ -31,6 +32,7 @@
     "react-typewriter": "^0.4.1",
     "react-visibility-sensor": "^5.1.1",
     "sass": "^1.42.1",
+    "save": "^2.4.0",
     "uuidv4": "^6.2.12"
   },
   "devDependencies": {

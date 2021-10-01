@@ -7,16 +7,24 @@ import SignInStyle from "../../../styles/SignIn.module.css";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Tooltip from "@mui/material/Tooltip";
 import { LOGIN_POLICY_ACCEPTANCE } from "../../../constants/constants";
+import parse from "html-react-parser";
+import SignUp from "./SignUp";
+import Slide from '@mui/material/Slide';
 
 function SignIn({ dialogCloseRequest, isOpen }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [isBackDropClicked, setBackDropClicked] = React.useState(true);
   const [signInButtonPressed, setSignInButtonPressed] = React.useState(false);
+  const [signUpButtonPressed, setSignUpButtonPressed] = React.useState(false);
   const emailRef = React.useRef(null);
   const passwordRef = React.useRef(null);
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
   const handleIsolatedComponentInvocation = () => {
     if (dialogCloseRequest && !isBackDropClicked) dialogCloseRequest();
+   
   };
   const handleBackdropClick = () => {
     if (!isBackDropClicked) setBackDropClicked(true);
@@ -24,18 +32,21 @@ function SignIn({ dialogCloseRequest, isOpen }) {
   const handleDirectClose = () => {
     if (dialogCloseRequest) dialogCloseRequest();
     setBackDropClicked(true);
+    setSignUpButtonPressed(false)
   };
   const signIn = (e) => {
     e.preventDefault();
     console.log(passwordRef.current.value);
   };
+  const switchToSignUp=()=>{
+    setSignUpButtonPressed(true)
+  }
   return (
     <div className={SignInStyle.signin__root}>
       <Dialog
         fullScreen={fullScreen}
         open={isOpen}
         onClose={handleIsolatedComponentInvocation}
-        modal={true}
         disableEscapeKeyDown
         onBackdropClick={handleBackdropClick}
         aria-labelledby="responsive-dialog-title"
@@ -55,7 +66,8 @@ function SignIn({ dialogCloseRequest, isOpen }) {
             </div>
           </Tooltip>
         </div>
-        <div
+        {signUpButtonPressed ?(<SignUp stayInRegistrationForm={setSignUpButtonPressed}/>) :
+     (   <div
           className={`${SignInStyle.signin__Dialog} ${SignInStyle.signin__Dialog__blue__variant}`}
         >
           <form onSubmit={(e) => signIn(e)}>
@@ -109,30 +121,38 @@ function SignIn({ dialogCloseRequest, isOpen }) {
               <LoginIcon /> Sign In
             </button>
             <div className="flex flex-col">
-            <div className={SignInStyle.signin__Dialog__footer__forgotpassword__option}>Forgot Password</div>
-            <div className={SignInStyle.signin__Dialog__footer__signup__option}>
-              <h4>
-                <span className={SignInStyle.signin__Dialog__gray}>
-                  New to {process.env.NEXT_PUBLIC_APP_NAME_V2}?
-                </span>
-                &nbsp;{" "}
-                <span
-                  className={`${SignInStyle.signin__Dialog__link} ${
-                    signInButtonPressed && SignInStyle.disabled
-                  }`}
-                >
-                  Sign Up now.
-                </span>
-              </h4>
-            </div>
-          
+              <div
+                className={
+                  SignInStyle.signin__Dialog__footer__forgotpassword__option
+                }
+              >
+                Forgot Password
+              </div>
+              <div
+                className={SignInStyle.signin__Dialog__footer__signup__option}
+              >
+                <h4>
+                  <span className={SignInStyle.signin__Dialog__gray}>
+                    New to {process.env.NEXT_PUBLIC_APP_NAME_V2}?
+                  </span>
+                  &nbsp;{" "}
+                  <span onClick={switchToSignUp}
+                    className={`${SignInStyle.signin__Dialog__link} ${
+                      signInButtonPressed && SignInStyle.disabled
+                    }`}
+                  >
+                    Sign Up now.
+                  </span>
+                </h4>
+              </div>
             </div>
           </form>
           <hr className="mt-2 text-gray-500" />
           <div className={SignInStyle.signin__Dialog__acceptance__disclosure}>
-            {LOGIN_POLICY_ACCEPTANCE}
+            {parse(LOGIN_POLICY_ACCEPTANCE)}
           </div>
         </div>
+     )}
       </Dialog>
     </div>
   );

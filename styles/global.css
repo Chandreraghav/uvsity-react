@@ -28,15 +28,30 @@ code {
   background: transparent;
   /* Optional: just make scrollbar invisible */
 }
-.MuiCardMedia-img{
-  height:200px;
-  object-fit:cover!important;
+.MuiCardMedia-img {
+  height: 200px;
+  object-fit: cover !important;
 }
-.ellipsis{
-  white-space: nowrap!important; 
-  width: 50%!important; 
-  overflow: hidden!important;
-  text-overflow: ellipsis!important; 
-  border: none
+.ellipsis {
+  white-space: nowrap !important;
+  width: 50% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  border: none;
 }
-
+.app__anchor {
+  text-decoration: none;
+  color: #f8ac41;
+}
+.app__anchor:hover {
+  text-decoration: underline;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  color: #5271ff;
+}
+button.success {
+  background-color: #5271ff !important;
+}
+button.danger {
+  background-color: #111 !important;
+}
