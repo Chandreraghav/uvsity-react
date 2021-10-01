@@ -96,8 +96,9 @@ function UVSityTutorial({
             />
           </div>
         </div>
+        
       </section>
-       
+      {/* <div className={`fadeBottom`}></div> */}
     </div>
   );
 }

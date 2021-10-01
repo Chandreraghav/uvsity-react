@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TrendingSessionsStyle from "../../styles/TrendingSessions.module.css";
 import SessionCard from "./SessionCards/SessionCard";
-import SessionService from  "../api/SessionService"
+import SessionService from  "../api/session/SessionService"
 import Loader from "./Loader";
 
 function TrendingSessions() {
