@@ -1,25 +1,26 @@
-.feature__title{
-    font-size: 2rem;
-    font-weight: 800;
-    padding-bottom: 0.8rem;
-}@media (max-width: 640px) {
-    .feature__title {
-        font-size: 1.6rem;
-    }
+.feature__title {
+  font-size: 2rem;
+  font-weight: 800;
+  padding-bottom: 0.8rem;
+}
+@media (max-width: 640px) {
+  .feature__title {
+    font-size: 1.6rem;
+  }
 }
 @media (max-width: 480px) {
-    .feature__title {
-        font-size: 1.2rem;
-    }
+  .feature__title {
+    font-size: 1.2rem;
+  }
 }
-.feature__button__sm{
-    outline: none;
-     
-    padding: 6px 10px;
-    font-size: 0.8rem;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    background: #5271ff;
-    font-weight: 500;
+.feature__button__sm {
+  outline: none;
+
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  background: #5271ff;
+  font-weight: 500;
 }

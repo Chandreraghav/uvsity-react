@@ -1,48 +1,85 @@
-.header {
-    padding: 0px 20px;
-    margin-top:20px;
-    height:50px
-  }
-  .header__original{
-    margin-top:0px!important;
-  }
-  .header__black {
-    background-color: #111;
-  }
-  .header .nav-item {
-    padding-left: 50px;
-  }
-  .header .navbar {
-    padding: 10px 0px;
-    line-height: 50px;
-  }
-  .header.sticky {
+.nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 10px;
+  height: 50px;
+  margin-top:30px;
+  z-index: 100;
+  /***Animation**/
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+}
+
+.nav__original{
+  margin-top:0px!important
+}
+
+.nav__contents {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav__black {
+  background-color: #111;
+}
+
+.nav__logo {
+  position: fixed;
+  left: 0;
+  top: 40px;
+  padding-left: 20px;
+  padding-top: 4px;
+  width: 90px;
+  object-fit: contain;
+  cursor: pointer;
+}
+.nav__logo__original{
+  top: 10px!important;
+}
+
+.nav__avatar {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 91;
-  }
-  .header.sticky .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: 10px 15px;
-    width: 100%;
-    background: #fff;
-    box-shadow: 0px 6px 13px 0px rgb(0 0 0 / 6%);
-    opacity: 0;
-    -webkit-animation: fadeInDown .95s ease-in-out 0s 1 normal none running;
-    animation: fadeInDown .95s ease-in-out 0s 1 normal none running;
-    -webkit-transition: all .3s cubic-bezier(.645,.045,.355,1);
-    transition: all .3s cubic-bezier(.645,.045,.355,1);
-    opacity: 1;
-    -webkit-transform: translateY(0%);
-            transform: translateY(0%);
+    right: 20px;
+    width: 30px;
+    object-fit: contain;
+    cursor: pointer;
   }
 
-  img.brand__logo{
-    width:80px!important;
-    object-fit: contain;
-     
-  }
+
+.nav__continue__with__google {
+  position: fixed;
+  right: 20px;
+  width: 130px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.nav__button {
+  outline: none;
+  position: fixed;
+  right: 80px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  background: #e50914;
+  font-weight: 500;
+}
+.nav__button__sm {
+  outline: none;
+  position: fixed;
+  right: 160px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  background: #5271ff;
+  font-weight: 500;
+}
+
+.hidden {
+  display: none !important;
+}

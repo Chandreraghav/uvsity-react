@@ -1,51 +1,32 @@
 import React from "react";
 import CountUp from "react-countup";
-import CounterStyle from '../../styles/Counter.module.css';
+import CounterStyle from "../../styles/Counter.module.css";
 import VisibilitySensor from "react-visibility-sensor";
-import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
-import PublicIcon from '@mui/icons-material/Public';
-import VideocamIcon from '@mui/icons-material/Videocam';
+import { LANDING_PAGE_STATS_DETAIL } from "../../constants/constants";
 function Stats() {
-   
   return (
-    <div className={CounterStyle.root}>
-        <div className="">
+    <div id="aboutus" className={CounterStyle.root}>
+      <div className="">
         <h1 className={`${CounterStyle.stats__title} text-center`}>
-     Know more about us
-          </h1>
-          </div>
+          Know more about us
+        </h1>
+      </div>
       <div className={CounterStyle.main}>
         <img
           className=" flex-start lg:w-60 sm:w-44 md:w-48 w-36 object-contain"
-          src="/static/images/stats_counter_illustration.png"
+          src={process.env.NEXT_PUBLIC_APP_STATS_ILLUSTRATION_IMAGE}
         />
-        <div className="flex flex-col">
-          <VisibilitySensor partialVisibility>
-            <CountUp suffix="+" delay={2} duration="3" end={100} />
-          </VisibilitySensor>
-          <div className="text-xs md:text-sm lg:text-2xl ml-1 text-left">
-            <DynamicFeedIcon/>Live Sessions
+        {LANDING_PAGE_STATS_DETAIL.map((stat, key) => (
+          <div key={key} className="flex flex-col">
+            <VisibilitySensor partialVisibility>
+              <CountUp suffix="+" delay={2} duration="3" end={stat.count} />
+            </VisibilitySensor>
+            <div className="text-xs md:text-sm lg:text-2xl ml-1 text-left">
+              {stat.icon}{stat.text}
+            </div>
           </div>
-        </div>
-
-        <div className="flex flex-col">
-          <VisibilitySensor partialVisibility>
-            <CountUp suffix="+" delay={2} duration="3" end={600} />
-          </VisibilitySensor>
-          <div className="text-xs md:text-sm lg:text-2xl text-left ">
-            <VideocamIcon/>Meetings
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <VisibilitySensor partialVisibility>
-            <CountUp suffix="+" delay={2} duration="3" end={47} />
-          </VisibilitySensor>
-          <div className="text-xs md:text-sm lg:text-2xl text-left mr-3">
-            <PublicIcon/>Countries
-          </div>
-        </div>
-       </div>
-       
+        ))}
+      </div>
     </div>
   );
 }

@@ -7,11 +7,12 @@ import TrendingSessions from "../components/Landing/TrendingSessions"
 import Stats from "../components/Landing/Stats";
 const Home = () => {
   return (
-    <Layout title="uvsity | Educational Social Network">
+    <Layout title={`${process.env.NEXT_PUBLIC_APP_TITLE}`}>
       <Header />
       <Hero />
       <Feature/>
       <TrendingSessions />
+      {/* Stats will be replaced by About us section in the future */}
       <Stats/>
       <Footer />
     </Layout>

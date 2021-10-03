@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PreAuthSignUpMessageBarStyle from "../../styles/PreAuthSignUpMessageBar.module.css";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Tooltip from "@mui/material/Tooltip";
+import {PRE_AUTH_SIGNUP_MESSAGE_BAR_TEXT} from '../../constants/constants'
 function PreAuthSignUpMessageBar({ isPreAuthMessagePanelClosed }) {
   const [close, setClose] = useState(false);
   const closePreAuthMessagePanel = () => {
@@ -13,8 +14,7 @@ function PreAuthSignUpMessageBar({ isPreAuthMessagePanelClosed }) {
       <div>
         <div className={PreAuthSignUpMessageBarStyle.app__preAuthMessage}>
           <div>
-            Sign Up today and get your free personal appointment app
-            pre-configured with zoom.
+            {PRE_AUTH_SIGNUP_MESSAGE_BAR_TEXT}
           </div>
 
           <Tooltip

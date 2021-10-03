@@ -19,8 +19,8 @@ const Hero = () => {
           <Col lg={6}>
             <div className="mt-5 mt-lg-0">
               <img
-                src="/static/images/hero-poster.png"
-                alt=""
+                src={process.env.NEXT_PUBLIC_APP_HERO_IMAGE}
+                alt="banner"
                 className="img-fluid mx-auto d-block"
               />
             </div>

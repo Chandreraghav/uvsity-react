@@ -1,20 +1,16 @@
 import React from "react";
 import { Container, Row, Col } from "reactstrap";
-import { TUTORIAL_MESSAGES } from "../../constants/constants";
+import { LANDING_PAGE_APP_FEATURES } from "../../constants/constants";
 import FeatureStyle from "../../styles/Feature.module.css";
-import VideocamIcon from '@mui/icons-material/Videocam';
 const FeatureBox = (props) => {
   return (
     <>
       {props.features.map((feature, key) => (
-        <Row
-          key={key}
-           
-        >
+        <Row key={key}>
           <h1 className={`${FeatureStyle.feature__title} text-center`}>
             {feature.title}
           </h1>
-           
+
           <Col md={5}>
             <div>
               <img
@@ -31,11 +27,14 @@ const FeatureBox = (props) => {
                   {msg.icon} {msg.text}
                 </p>
               ))}
-               
 
               <a href="#knowmore">
-            <button className={FeatureStyle.feature__button__sm}> <VideocamIcon/>Watch Video</button>
-          </a>
+                <button className={FeatureStyle.feature__button__sm}>
+                  {" "}
+                  {feature.video_icon}
+                  {feature.watch_video}
+                </button>
+              </a>
             </div>
           </Col>
         </Row>
@@ -45,9 +44,9 @@ const FeatureBox = (props) => {
 };
 const Feature = () => {
   return (
-    <section className="section custom-section position-relative">
+    <section className="section uvsity-section position-relative">
       <Container>
-        <FeatureBox features={TUTORIAL_MESSAGES} />
+        <FeatureBox features={LANDING_PAGE_APP_FEATURES} />
       </Container>
     </section>
   );

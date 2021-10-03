@@ -1,13 +1,17 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import BannerStyle from "../../styles/Banner.module.css";
-import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import SignIn from "../Auth/SignIn";
-import {LANDING_PAGE_HERO_KEYWORDS} from '../../constants/constants'
-import {randomKeyWord} from '../../utils/utility'
+import {
+  LANDING_PAGE_HERO_KEYWORDS,
+  LANDING_PAGE_HERO_MESSAGE_LIST,
+} from "../../constants/constants";
+import { randomKeyWord } from "../../utils/utility";
 
 function Banner() {
   const [openSignInDialog, setOpenSignInDialog] = React.useState(false);
-  const [bannerHeader, setBannerHeader] = React.useState(LANDING_PAGE_HERO_KEYWORDS[0])
+  const [bannerHeader, setBannerHeader] = React.useState(
+    LANDING_PAGE_HERO_KEYWORDS[0]
+  );
   const handleSignInDialogOpen = () => {
     setOpenSignInDialog(true);
   };
@@ -16,11 +20,10 @@ function Banner() {
     setOpenSignInDialog(false);
   };
   useEffect(() => {
-   setInterval(() =>{
-    
-    setBannerHeader(randomKeyWord(LANDING_PAGE_HERO_KEYWORDS))
-   },60000)
-  },[])
+    setInterval(() => {
+      setBannerHeader(randomKeyWord(LANDING_PAGE_HERO_KEYWORDS));
+    }, 60000);
+  }, []);
   return (
     <div>
       <div className={BannerStyle.banner__contents}>
@@ -39,32 +42,14 @@ function Banner() {
             </button>
           </a>
         </div>
-
         <ul className={BannerStyle.banner__description}>
-          <li>
-            <DoubleArrowIcon />A Marketplace for all educators, coaches and
-            session organizers.
-          </li>
-          <li>
-            <DoubleArrowIcon />
-            Earn from your paid sessions and sponsorships.
-          </li>
-          <li>
-            <DoubleArrowIcon />
-            Earn from your one on one appointment.
-          </li>
-          <li>
-            <DoubleArrowIcon />
-            Stay connected with your audience and followers.
-          </li>
-          <li>
-            <DoubleArrowIcon />
-            No Payment required.
-          </li>
+          {LANDING_PAGE_HERO_MESSAGE_LIST.map((msg, key) => (
+            <li key={key}>
+              {msg.icon}&nbsp;{msg.text}
+            </li>
+          ))}
         </ul>
       </div>
-      {/* <div className={BannerStyle.banner__fadeBottom}></div>
-       */}
       <SignIn
         dialogCloseRequest={handleSignInDialogClose}
         isOpen={openSignInDialog}
