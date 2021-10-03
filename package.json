@@ -10,6 +10,8 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
+    "@hookform/error-message": "^2.0.0",
+    "@hookform/resolvers": "^2.8.1",
     "@mui/icons-material": "^5.0.1",
     "@mui/material": "^5.0.2",
     "@tailwindcss/line-clamp": "^0.2.1",
@@ -37,7 +39,8 @@
     "reactstrap": "^8.10.0",
     "sass": "^1.42.1",
     "save": "^2.4.0",
-    "uuidv4": "^6.2.12"
+    "uuidv4": "^6.2.12",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "autoprefixer": "^10.3.6",

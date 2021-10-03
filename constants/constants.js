@@ -162,4 +162,5 @@ export const LANDING_PAGE_STATS_DETAIL = [
     icon: <PublicIcon />,
   },
 ];
+export const MIN_LENGTH_PASSWORD=8
 export const PRE_AUTH_SIGNUP_MESSAGE_BAR_TEXT='Sign Up today and get your free personal appointment app pre-configured with zoom.'

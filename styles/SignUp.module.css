@@ -60,16 +60,20 @@
   white-space: nowrap !important;
 }
 
-.signup__Dialog > form > div > input {
+.signup__Dialog > form > div > div> input,.signup__registration__input {
   outline: none;
   outline-width: 0;
   height: 40px;
   margin-bottom: 14px;
   border: none;
   border-radius: 5px;
+  -webkit-box-shadow: 0 2px 10px 1px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 10px 1px rgba(0,0,0,0.5);
   padding: 5px 15px;
   color: #111 !important;
+  zoom: 0.7 !important;
 }
+
 
 .signup__Dialog > form > div > button {
   font-size: 1rem;
@@ -148,6 +152,7 @@
   font-style: normal !important;
   text-align: justify;
   margin-top: 8px !important;
+  zoom: 0.8 !important;
 }
 .signup__Dialog__agreeButton{
     font-size: 0.7rem !important;
@@ -155,6 +160,7 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-style: normal !important;
   text-align: justify;
+  cursor: pointer;
 }
 .signup__Dialog__agreeButton>span {
     padding:2px;
@@ -187,7 +193,7 @@
  
 .signup__Dialog__submit__btn {
   background-color: #5271ff;
-  width: 50%;
+  width: 100%;
 }
 .signup__Dialog__cancel__btn {
   background-color: #e2e2e2;
@@ -205,7 +211,7 @@
     background-color: darkgrey;
     font-size: 0.6rem!important;
     color: #323244 !important;
-    width: 25%;
+    width: 50%;
     font-weight: 600!important;
 }
 .signup__Dialog__recaptcha__wrapper{
@@ -213,5 +219,11 @@
 }
 .signup__Dialog__back__icon{
   font-size: 0.7rem;
+}
+.signupDialog__error__message{
+  text-overflow: ellipsis !important;
+  width: auto !important;
+  overflow:hidden;
+  
 }
 
