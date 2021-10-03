@@ -137,7 +137,7 @@ export default function SessionCard({ data, shimmerTime }) {
             <div className="flex flex-col -mt-2">
               {/* author name */}
               <div className="ml-2">
-                <span className={`lg:text-lg md:text-md sm:text-xs text-xs font-bold line-clamp-1 text-gray-500`}>
+                <span className={`lg:text-lg md:text-md sm:text-xs text-xs font-bold line-clamp-1 text-gray-400`}>
                   {data.creator.firstName} {data.creator.lastName}
                 </span>
               </div>
