@@ -1,5 +1,12 @@
+/***
+ * GLOBAL APP CSS
+ */
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/globals.css';
+/***
+ * GLOBAL APP CSS
+ */
+
 import { DataLayer } from "../context/DataLayer";
 import reducer, { initialState } from "../context/reducer";
 import { useEffect } from "react";
