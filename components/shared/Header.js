@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import NavStyle from "../../styles/Nav.module.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useHistory } from "react-router-dom";
 import PreAuthSignUpMessageBar from "./PreAuthSignUpMessageBar";
 toast.configure();
 function Nav() {
-  let history = useHistory();
   const [show, handleShow] = useState(false);
   const [isPreAuthMessagePanelClosed, preAuthMessagePanelClosed] =
     useState(false);
@@ -33,7 +31,6 @@ function Nav() {
       >
         <div className={NavStyle.nav__contents}>
           <img
-            onClick={(e) => history.push("/")}
             className={`${NavStyle.nav__logo} ${
               isPreAuthMessagePanelClosed && NavStyle.nav__logo__original
             }`}
@@ -41,7 +38,7 @@ function Nav() {
             alt="uvsity-Logo"
           />
           <a href="#knowmore">
-            <button className={NavStyle.nav__button__sm}>How it works</button>
+            <button className={NavStyle.nav__button__sm}>About us</button>
           </a>
           {/* <img onClick={(e) => history.push("profile")} className={NavStyle.nav__avatar} src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/366be133850498.56ba69ac36858.png"
                     alt="uvsity-User-Avatar" /> */}

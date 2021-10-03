@@ -5,8 +5,8 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
-import SessionStyle from "../../../styles/Session.module.css";
-import { avatarToString, localTZDate } from "../../../utils/utility";
+import SessionStyle from "../../styles/Session.module.css";
+import { avatarToString, localTZDate } from "../../utils/utility";
 import EventIcon from "@mui/icons-material/Event";
 import SchoolIcon from "@mui/icons-material/School";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -17,7 +17,7 @@ import Shimmer from "./Shimmer"
 import {
   SESSION_REVIEW_MAX_STAR_COUNT,
   SHIM_MAX_TIMEOUT_IN_MILLIS,
-} from "../../../constants/constants";
+} from "../../constants/constants";
 import CornerRibbon from "react-corner-ribbon";
 
 export default function SessionCard({ data, shimmerTime }) {
@@ -137,7 +137,7 @@ export default function SessionCard({ data, shimmerTime }) {
             <div className="flex flex-col -mt-2">
               {/* author name */}
               <div className="ml-2">
-                <span className="lg:text-lg md:text-md sm:text-xs text-xs text-gray-400 font-bold line-clamp-1">
+                <span className={`lg:text-lg md:text-md sm:text-xs text-xs font-bold line-clamp-1 text-gray-500`}>
                   {data.creator.firstName} {data.creator.lastName}
                 </span>
               </div>

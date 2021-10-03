@@ -1,4 +1,4 @@
-const CACHE_NAME = "uvsity-pwa-v1";
+const CACHE_NAME = "uvsity-pwa-v2";
 const urlsToCache = ["/","offline.html"];
 
 // PWA events

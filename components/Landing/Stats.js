@@ -1,15 +1,19 @@
 import React from "react";
 import CountUp from "react-countup";
-import CounterStyle from "../../styles/Counter.module.css";
+import CounterStyle from '../../styles/Counter.module.css';
 import VisibilitySensor from "react-visibility-sensor";
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import PublicIcon from '@mui/icons-material/Public';
 import VideocamIcon from '@mui/icons-material/Videocam';
-function UVSityStatsCounter() {
+function Stats() {
    
   return (
     <div className={CounterStyle.root}>
+        <div className="">
+        <h1 className={`${CounterStyle.stats__title} text-center`}>
+     Know more about us
+          </h1>
+          </div>
       <div className={CounterStyle.main}>
         <img
           className=" flex-start lg:w-60 sm:w-44 md:w-48 w-36 object-contain"
@@ -19,7 +23,7 @@ function UVSityStatsCounter() {
           <VisibilitySensor partialVisibility>
             <CountUp suffix="+" delay={2} duration="3" end={100} />
           </VisibilitySensor>
-          <div className="text-xs md:text-sm lg:text-2xl ml-1 text-left text-white">
+          <div className="text-xs md:text-sm lg:text-2xl ml-1 text-left">
             <DynamicFeedIcon/>Live Sessions
           </div>
         </div>
@@ -28,7 +32,7 @@ function UVSityStatsCounter() {
           <VisibilitySensor partialVisibility>
             <CountUp suffix="+" delay={2} duration="3" end={600} />
           </VisibilitySensor>
-          <div className="text-xs md:text-sm lg:text-2xl text-left text-white">
+          <div className="text-xs md:text-sm lg:text-2xl text-left ">
             <VideocamIcon/>Meetings
           </div>
         </div>
@@ -36,7 +40,7 @@ function UVSityStatsCounter() {
           <VisibilitySensor partialVisibility>
             <CountUp suffix="+" delay={2} duration="3" end={47} />
           </VisibilitySensor>
-          <div className="text-xs md:text-sm lg:text-2xl text-left mr-3 text-white">
+          <div className="text-xs md:text-sm lg:text-2xl text-left mr-3">
             <PublicIcon/>Countries
           </div>
         </div>
@@ -46,4 +50,4 @@ function UVSityStatsCounter() {
   );
 }
 
-export default UVSityStatsCounter;
+export default Stats;

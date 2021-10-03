@@ -1,23 +1,20 @@
-import Head from "next/head";
-import Banner from "./components/Banner";
-import TrendingSessions from "./components/TrendingSessions";
-import UVSityStatsCounter from "./components/UVSityStatsCounter";
-import UVSityTutorialMaster from "./components/UVSityTutorialMaster";
-export default function Home() {
+import Layout from "../components/Main/Layout";
+import Header from "../components/shared/Header";
+import Hero from "../components/Landing/Hero";
+import Feature from "../components/Landing/Feature";
+import Footer from "../components/shared/Footer";
+import TrendingSessions from "../components/Landing/TrendingSessions"
+import Stats from "../components/Landing/Stats";
+const Home = () => {
   return (
-    <>
-      <Head>
-        <title>UVSITY | Educational Social Network</title>
-      </Head>
-      <Banner />
-      <UVSityTutorialMaster />
-
-      <TrendingSessions/>
-      <UVSityStatsCounter />
-
-      {/* <div className="flex flex-col items-center justify-center min-h-screen py-2">
-        UVSITY PWA APP ..with Next and tailwind
-      </div> */}
-    </>
+    <Layout title="uvsity | Educational Social Network">
+      <Header />
+      <Hero />
+      <Feature/>
+      <TrendingSessions />
+      <Stats/>
+      <Footer />
+    </Layout>
   );
-}
+};
+export default Home;

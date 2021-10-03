@@ -1,6 +1,6 @@
 import React from "react";
 import Head from "next/head";
-function CommonMetaInfo() {
+function CommonMetaInfo(props) {
   return (
     <Head>
       <meta charSet="utf-8" />
@@ -9,6 +9,10 @@ function CommonMetaInfo() {
         name="viewport"
         content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
       />
+        <link
+          rel="stylesheet"
+          href='/styles/external/animate.min.css'
+        />
       <meta name="keywords" content={process.env.NEXT_PUBLIC_APP_KEYWORDS} />
       {/* Social Sharing Meta Tags */}
       <meta property="og:site_name" content={process.env.NEXT_PUBLIC_APP_OG_NAME} />
@@ -22,6 +26,7 @@ function CommonMetaInfo() {
       <link rel="icon" href={process.env.NEXT_PUBLIC_APP_FAVICON_PATH} />
       <link rel="apple-touch-icon" href={process.env.NEXT_PUBLIC_APP_FAVICON_PATH}></link>
       <meta name="theme-color" content={process.env.NEXT_PUBLIC_APP_THEME_COLOR} />
+      <title>{props.title}</title>
       <noscript>You need to enable JavaScript to run this app.</noscript>
     </Head>
   );

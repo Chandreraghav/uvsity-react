@@ -18,7 +18,7 @@
   margin-right: auto;
   z-index: 1;
   color: white;
-  zoom:0.9;
+   
 }
  
 .signup__Dialog__blue__variant {
@@ -137,7 +137,8 @@
 }
 .signup__Dialog__brand__logo__wrapper {
   padding: 5px;
-  margin-top:-50px
+  margin-top:-50px;
+   
   
 }
 .signup__Dialog__acceptance__disclosure {

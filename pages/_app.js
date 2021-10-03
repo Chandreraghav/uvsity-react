@@ -1,10 +1,9 @@
-import "tailwindcss/tailwind.css";
-import "../styles/global.css"
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/globals.css';
+import { DataLayer } from "../context/DataLayer";
+import reducer, { initialState } from "../context/reducer";
 import { useEffect } from "react";
-import { DataLayer } from "../appContext/DataLayer";
-import reducer, { initialState } from "../appContext/reducer";
-import AppLayer from "../appContext/AppLayer";
-export default function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -18,14 +17,14 @@ export default function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  return (
-    <>
-      <DataLayer initialState={initialState} reducer={reducer}>
-        <AppLayer>
-          <Component {...pageProps} />
-        </AppLayer>
-      </DataLayer>
-      
-    </>
-  );
+  return  <>
+  <DataLayer initialState={initialState} reducer={reducer}>
+ 
+      <Component {...pageProps} />
+    
+  </DataLayer>
+  
+</>
 }
+
+export default MyApp

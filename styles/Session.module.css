@@ -10,7 +10,7 @@
 
 .session__card__title{
     font-size: 1.3rem!important;
-    color:#fff!important;
+    /* color:#fff!important; */
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif!important;
     
      
@@ -18,6 +18,11 @@
 .session__card__darkgrey__variant{
     background-image: linear-gradient(to right, #000,#e2e2e2);
     color: #fff!important;
+}
+
+.session__card__white__variant{
+    background-image: linear-gradient(to right, #fff,#fff);
+    color: #111!important;
 }
 
 .session__card__lightblue__variant{
@@ -122,6 +127,9 @@
 
  .session__card__shimmering__behavior{
     padding:28px
+ }
+ .session__card__text__non__muted{
+     color:#1469CA!important;
  }
 
  

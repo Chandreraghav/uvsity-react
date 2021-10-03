@@ -9,3 +9,18 @@
     color: #011D7D!important;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.trending__sessions__title{
+    font-size: 2rem;
+    font-weight: 800;
+    padding-bottom: 0.8rem;
+}@media (max-width: 640px) {
+    .trending__sessions__title {
+        font-size: 1.6rem;
+    }
+}
+@media (max-width: 480px) {
+    .trending__sessions__title {
+        font-size: 1.2rem;
+    }
+}
