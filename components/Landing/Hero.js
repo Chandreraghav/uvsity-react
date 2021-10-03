@@ -10,7 +10,7 @@ const Hero = () => {
             <div className="pr-lg-5">
               <Banner />
               <div className="sm:mt-28 mt-28 md:mt-36  lg:mt-36 ml-8">
-                <a href="#" className="btn btn-warning">
+                <a href="#discover-more" className="btn btn-warning">
                   Discover More <span className="ml-2right-icon">&#8594;</span>
                 </a>
               </div>

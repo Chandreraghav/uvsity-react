@@ -36,7 +36,7 @@ function Banner() {
           >
             Get Started
           </button>
-          <a href="#popularlivesessions">
+          <a href="#discover-popular-live-sessions">
             <button className={BannerStyle.banner__button}>
               Live Sessions
             </button>

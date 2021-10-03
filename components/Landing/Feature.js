@@ -28,7 +28,7 @@ const FeatureBox = (props) => {
                 </p>
               ))}
 
-              <a href="#knowmore">
+              <a href="#watchvideo">
                 <button className={FeatureStyle.feature__button__sm}>
                   {" "}
                   {feature.video_icon}
@@ -44,7 +44,7 @@ const FeatureBox = (props) => {
 };
 const Feature = () => {
   return (
-    <section className="section uvsity-section position-relative">
+    <section id='discover-more' className="section uvsity-section position-relative">
       <Container>
         <FeatureBox features={LANDING_PAGE_APP_FEATURES} />
       </Container>

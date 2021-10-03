@@ -15,7 +15,7 @@ function TrendingSessions() {
     });
   }, []);
   return (
-    <div id="popularlivesessions">
+    <div id="discover-popular-live-sessions">
       <div
         className={`flex  flex-col ${TrendingSessionsStyle.trending__sessions__wrapper__white__variant} ${TrendingSessionsStyle.trending__sessions__text} 
       justify-center text-center font-medium lg:text-2xl md:text-2xl sm:text-xl mt-10`}
