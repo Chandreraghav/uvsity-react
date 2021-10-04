@@ -10,9 +10,9 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import StoreIcon from "@mui/icons-material/Store";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
-import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
-import PublicIcon from '@mui/icons-material/Public';
-import VideocamIcon from '@mui/icons-material/Videocam';
+import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
+import PublicIcon from "@mui/icons-material/Public";
+import VideocamIcon from "@mui/icons-material/Videocam";
 export const LANDING_PAGE_APP_FEATURES = [
   {
     id: 1,
@@ -35,8 +35,8 @@ export const LANDING_PAGE_APP_FEATURES = [
       { text: "Stay connected to your followers.", icon: <GroupIcon /> },
     ],
     url: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
-    watch_video: 'Watch video',
-    video_icon:<VideocamIcon/>
+    watch_video: "Watch video",
+    video_icon: <VideocamIcon />,
   },
   {
     id: 2,
@@ -58,8 +58,8 @@ export const LANDING_PAGE_APP_FEATURES = [
     ],
 
     url: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
-    watch_video: 'Watch video',
-    video_icon:<VideocamIcon/>
+    watch_video: "Watch video",
+    video_icon: <VideocamIcon />,
   },
   {
     id: 3,
@@ -82,8 +82,8 @@ export const LANDING_PAGE_APP_FEATURES = [
     ],
 
     url: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
-    watch_video: 'Watch video',
-    video_icon:<VideocamIcon/>
+    watch_video: "Watch video",
+    video_icon: <VideocamIcon />,
   },
 ];
 
@@ -127,7 +127,7 @@ export const LANDING_PAGE_HERO_MESSAGE_LIST = [
   {
     id: 2,
     text: "Earn from your paid sessions and sponsorships.",
-    icon: '💰',
+    icon: "💰",
   },
   {
     id: 3,
@@ -137,30 +137,39 @@ export const LANDING_PAGE_HERO_MESSAGE_LIST = [
   {
     id: 4,
     text: "Stay connected with your audience and followers.",
-    icon: '📶',
+    icon: "📶",
   },
   { id: 5, text: "No Payment required.", icon: <MoneyOffIcon /> },
 ];
-export const SHIMMER_TIMEOUT_IN_MILLIS=4000
+export const SHIMMER_TIMEOUT_IN_MILLIS = 4000;
 export const LANDING_PAGE_STATS_DETAIL = [
   {
     id: 1,
     text: "Live Sessions",
-    count:100,
+    count: 100,
     icon: <DynamicFeedIcon />,
   },
   {
     id: 2,
     text: "Meetings",
-    count:600,
-    icon: <VideocamIcon/>,
+    count: 600,
+    icon: <VideocamIcon />,
   },
   {
     id: 3,
     text: "Countries",
-    count:47,
+    count: 47,
     icon: <PublicIcon />,
   },
 ];
-export const MIN_LENGTH_PASSWORD=8
-export const PRE_AUTH_SIGNUP_MESSAGE_BAR_TEXT='Sign Up today and get your free personal appointment app pre-configured with zoom.'
+export const MIN_LENGTH_PASSWORD = 8;
+export const PRE_AUTH_SIGNUP_MESSAGE_BAR_TEXT =
+  "Sign Up today and get your free personal appointment app pre-configured with zoom.";
+export const TOAST_MESSAGE_DEFAULT_DURATION_SECONDS = 3000;
+export const RESPONSE_TYPES = {
+  ERROR: "error",
+  SUCCESS: "success",
+  WARNING: "warn",
+};
+export const DEFAULT_TIMEZONE='Asia/Calcutta'
+export const DEFAULT_IP='192.168.29.10'

@@ -57,6 +57,7 @@
   text-align: left;
 
   width: auto;
+  margin-top:3px!important;
   white-space: nowrap !important;
 }
 
@@ -73,6 +74,7 @@
   color: #111 !important;
   zoom: 0.7 !important;
 }
+
 
 
 .signup__Dialog > form > div > button {
@@ -173,12 +175,12 @@
     display: inline-block;
 }
 
-.signup__Dialog__signin__with__google__option > img {
-  object-fit: contain;
-  width: auto;
-  cursor: pointer;
-  margin-top: -9px;
-  padding-bottom: 5px;
+.signup__Dialog__signin__with__google__option > div>button> img {
+  object-fit: contain!important;
+  width: auto!important;
+  cursor: pointer!important;
+  margin-top: -9px!important;
+  padding-bottom: 5px!important;
 }
 .signup__Dialog__alternative__or {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -226,4 +228,14 @@
   overflow:hidden;
   
 }
+.signupDialog__input__error{
+border-bottom:2px solid red!important;
+}
+.signupDialog__input__validated{
+  border-bottom:2px solid green!important;
+  }
+  .signupDialog__password__help__icon{
+    color: #fff !important;
+    font-size: 0.9rem!important;
+  }
 

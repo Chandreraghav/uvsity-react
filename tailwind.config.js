@@ -6,6 +6,10 @@ module.exports = {
   variants: {
     extend: {},
   },
+  presets: [
+    "@babel/preset-react",
+    "@babel/preset-env"
+],
   plugins: [
     // ...
     require('@tailwindcss/line-clamp'),

@@ -77,3 +77,32 @@ button.danger {
 .red__border__input {
   border: 2px solid red !important;
 }
+.app__toast{
+  font-size:0.8rem !important;
+   
+
+}
+
+.control__disabled{
+  pointer-events: none!important;
+  cursor: not-allowed!important;
+}
+
+.control__disabled__opaque{
+  pointer-events: none!important;
+  cursor: not-allowed!important;
+  opacity: 0.6 !important;
+}
+.control__muted{
+  color: lightgrey !important;
+}
+
+.app__workflow__loader{
+ color:darkgrey !important;
+ margin-top:1px !important;
+ 
+}
+.app__workflow__loader__sm{
+  width: 20px!important;
+  height: 20px!important;
+}

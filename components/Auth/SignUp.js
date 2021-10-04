@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import IPService from "../../pages/api/ipdata/IPService";
+import RegistrationService from "../../pages/api/users/auth/RegistrationService";
 import SignUpStyle from "../../styles/SignUp.module.css";
 import {
   REGISTER_POLICY_ACCEPTANCE,
@@ -10,14 +12,22 @@ import parse from "html-react-parser";
 import ReCAPTCHA from "react-google-recaptcha";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { REGISTRATION_ERRORS } from "../../constants/error-messages";
-import { PASSWORD } from "../../constants/regex";
-import{MIN_LENGTH_PASSWORD} from "../../constants/constants";
-import { User } from "../../models/user";
+import { RESPONSE_TYPES } from "../../constants/constants";
+import { User, UserCredential } from "../../models/user";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Tooltip from "@mui/material/Tooltip";
-import * as Yup from "yup";
+import { isStringEmpty } from "../../utils/utility";
+import HelpIcon from "@mui/icons-material/Help";
+import { getWorkflowError } from "../../error-handler/handler";
+import { handleResponse } from "../../toastr-response-handler/handler";
+import {
+  setLocalStorageObject,
+  getLocalStorageObject,
+} from "../../localStorage/local-storage";
+import Loader from "../shared/Loader";
+import {registrationValidationSchema} from './ValidationSchema'
+import GoogleAuth from "../../social_auth/services/google/GoogleAuth";
 
 toast.configure();
 
@@ -29,61 +39,65 @@ function SignUp({ stayInRegistrationForm }) {
   const [cpassword, setCPassword] = React.useState("");
   const [agreementCheckBox, setagreementCheckBox] = React.useState(false);
   const [reCaptcha, setReCaptcha] = React.useState(null);
-  const [reCaptchaError, setReCaptchaError] = React.useState(false);
-
-  // form validation rules
-  const validationSchema = Yup.object().shape({
-    firstname: Yup.string().required(
-      REGISTRATION_ERRORS.REQUIRED_FIELDS.FIRSTNAME
-    ),
-    lastname: Yup.string().required(
-      REGISTRATION_ERRORS.REQUIRED_FIELDS.LASTNAME
-    ),
-    email: Yup.string()
-      .required(REGISTRATION_ERRORS.REQUIRED_FIELDS.EMAIL)
-      .email(REGISTRATION_ERRORS.EMAIL_ERROR),
-    password: Yup.string()
-      .min(MIN_LENGTH_PASSWORD, REGISTRATION_ERRORS.PASSWORD_ERROR.MINIMUM_LENGTH_ERROR)
-      .matches(PASSWORD, REGISTRATION_ERRORS.PASSWORD_ERROR.POLICY)
-      .required(REGISTRATION_ERRORS.REQUIRED_FIELDS.PASSWORD),
-    cpassword: Yup.string()
-      .oneOf(
-        [Yup.ref("password"), null],
-        REGISTRATION_ERRORS.PASSWORD_ERROR.MISMATCH
-      )
-      .required(REGISTRATION_ERRORS.REQUIRED_FIELDS.CONFIRM_PASSWORD),
-    agreement: Yup.bool().oneOf(
-      [true],
-      REGISTRATION_ERRORS.TERMS_ACCEPTATION_ERROR
-    ),
-  });
-  const formOptions = { resolver: yupResolver(validationSchema) };
-
-  // get functions to build form with useForm() hook
-  const { register, handleSubmit, reset, formState,clearErrors  } = useForm(formOptions);
-  const { errors } = formState;
-
-  const signUp = (formData) => {
-    
-    formData.reCaptcha = reCaptcha;
-    formData.isValid= true;
-    if (formData.reCaptcha == null) {
-      setReCaptchaError(true);
-      formData.isValid= false;
+  const [ipData, setIpData] = React.useState({});
+  const [_signUpButtonPressed, _setSignUpButtonPressed] = React.useState(false)
+  useEffect(async () => {
+    if (!getLocalStorageObject("ipData")) {
+      await new IPService().getIPData().then((response) => {
+        setIpData(response.data);
+        setLocalStorageObject("ipData", response.data);
+      }).catch(()=>{
+        const ipDummyData = new IPService().getFakeIPData()
+        setIpData(ipDummyData);
+        setLocalStorageObject("ipData", ipDummyData);
+      })
       return;
     }
-    if(formData.isValid)
-    console.log(JSON.stringify(formData));
+    setIpData(getLocalStorageObject("ipData"));
+  }, []);
+  
+  const formOptions = {
+    resolver: yupResolver(registrationValidationSchema),
+    mode: "all",
+  };
+
+  const { register, handleSubmit, reset, formState, clearErrors } =
+    useForm(formOptions);
+  const { errors } = formState;
+  const { dirtyFields } = formState;
+
+  const signUp = async (formData) => {
+    formData.isValid = true;
+    formData.reCaptcha = reCaptcha;
+    if (!reCaptcha) {
+      formData.isValid = false;
+    }
+    if (formData.isValid) {
+      if(!_signUpButtonPressed)
+    _setSignUpButtonPressed(true)
+      let model = new User();
+      let credentials = new UserCredential();
+      model.prepareRegistrationData(model, credentials, formData, ipData);
+      await new RegistrationService()
+        .register(model.getStagedRegistrationData(model, credentials))
+        .then((res) => {
+          console.log(res);
+          // will navigate later after login is done.
+        })
+        .catch((err) => {
+          handleResponse(
+            getWorkflowError(err),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        }).finally(()=>{
+          _setSignUpButtonPressed(false)
+        })
+    }
   };
 
   const captureCaptchaValue = (value) => {
     setReCaptcha(value);
-    if(value!=='' || value!==null) {
-      setReCaptchaError(false)
-    }
-    else {
-      setReCaptchaError(true)
-    }
   };
   const backToLogin = () => {
     if (stayInRegistrationForm) stayInRegistrationForm(false);
@@ -97,31 +111,33 @@ function SignUp({ stayInRegistrationForm }) {
     setCPassword("");
     setReCaptcha("");
     setagreementCheckBox(false);
-    
-    };
+    _setSignUpButtonPressed(false)
+    clearErrorsOnReset();
+  };
   const clearErrorsOnReset = () => {
-    window.grecaptcha.reset();
-    clearErrors("firstname")
-    clearErrors("lastname")
-    clearErrors("email")
-    clearErrors("password")
-    clearErrors("cpassword")
-    clearErrors("agreement")
-    setReCaptchaError(false);
-    
-    resetSignUpForm()
-  }
+    window.grecaptcha?.reset();
+    clearErrors("firstname");
+    clearErrors("lastname");
+    clearErrors("email");
+    clearErrors("password");
+    clearErrors("cpassword");
+    clearErrors("agreement");
+    reset("firstname");
+    reset("lastname");
+    reset("email");
+    reset("password");
+    reset("cpassword");
+    reset("agreement");
+  };
   const handleAgreementCheck = (e) => {
     setagreementCheckBox(!agreementCheckBox);
   };
 
   return (
     <div
-      className={`${SignUpStyle.signup__Dialog} ${SignUpStyle.signup__Dialog__blue__variant}`}
+      className={`${SignUpStyle.signup__Dialog} ${SignUpStyle.signup__Dialog__blue__variant} `}
     >
-     
-      
-      <form className="form" onSubmit={handleSubmit(signUp)}>
+      <form className={`form ${_signUpButtonPressed?'control__disabled':''}`} onSubmit={handleSubmit(signUp)}>
         <div className="flex ">
           <div
             className={`${SignUpStyle.signup__Dialog__brand__logo__wrapper} flex  justify-between`}
@@ -131,23 +147,18 @@ function SignUp({ stayInRegistrationForm }) {
               className={`${SignUpStyle.signup__Dialog__brand__logo}`}
             />
             <div>
-
-            <Tooltip
-            
-            title="Back to login"
-            disableTouchListener
-            placement="bottom"
-          >
-           <ArrowBackIcon
-           onClick={(e) => backToLogin()}
-              className={`${SignUpStyle.signup__Dialog__back__icon} mt-2 cursor-pointer`}
-            />
-            </Tooltip>
+              <Tooltip
+                title="Back to login"
+                disableTouchListener
+                placement="bottom"
+              >
+                <ArrowBackIcon
+                  onClick={(e) => backToLogin()}
+                  className={`${SignUpStyle.signup__Dialog__back__icon} mt-2 cursor-pointer`}
+                />
+              </Tooltip>
             </div>
-             
-            
           </div>
-          
         </div>
         <div className="flex space-x-4 space-y-2">
           <div>
@@ -164,15 +175,15 @@ function SignUp({ stayInRegistrationForm }) {
           <div
             className={`${SignUpStyle.signup__Dialog__signin__with__google__option}`}
           >
-            <img src={process.env.NEXT_PUBLIC_APP_CONTINUE_WITH_GOOGLE_IMAGE} />
-          </div>
+            <GoogleAuth/>
+              </div>
         </div>
         <div className="flex flex-col">
           <div className="flex flex-col">
             <div className="flex flex-row justify-between">
               <label
                 className={`text-xs text-primary-400 cursor-pointer`}
-                for="firstname"
+                htmlFor="firstname"
               >
                 First Name<span className={`text-red-500 text-xs`}>*</span>
               </label>
@@ -190,10 +201,17 @@ function SignUp({ stayInRegistrationForm }) {
               type="text"
               id="firstname"
               placeholder="First name"
-              maxlength="50"
-              autocomplete
+              maxLength="50"
+              autocomplete='true'
               title="First name"
-              className={SignUpStyle.signup__registration__input}
+              className={`${SignUpStyle.signup__registration__input} ${
+                errors.firstname?.message
+                  ? SignUpStyle.signupDialog__input__error
+                  : dirtyFields.firstname &&
+                    (!firstName || isStringEmpty(firstName))
+                  ? SignUpStyle.signupDialog__input__validated
+                  : ""
+              }`}
             />
           </div>
 
@@ -201,7 +219,7 @@ function SignUp({ stayInRegistrationForm }) {
             <div className="flex flex-row justify-between">
               <label
                 className={`text-xs text-primary-400 cursor-pointer`}
-                for="lastname"
+                htmlFor="lastname"
               >
                 Last Name<span className={`text-red-500 text-xs`}>*</span>
               </label>
@@ -218,18 +236,25 @@ function SignUp({ stayInRegistrationForm }) {
               name="lastname"
               type="text"
               id="lastname"
-              maxlength="50"
+              maxLength="50"
               placeholder="Last name"
-              autocomplete
+              autocomplete='true'
               title="Last name"
-              className={SignUpStyle.signup__registration__input}
+              className={`${SignUpStyle.signup__registration__input} ${
+                errors.lastname?.message
+                  ? SignUpStyle.signupDialog__input__error
+                  : dirtyFields.lastname &&
+                    (!lastName || isStringEmpty(lastName))
+                  ? SignUpStyle.signupDialog__input__validated
+                  : ""
+              }`}
             />
           </div>
           <div className="flex flex-col">
             <div className="flex flex-row justify-between">
               <label
                 className={`text-xs text-primary-400 cursor-pointer`}
-                for="email"
+                htmlFor="email"
               >
                 Email<span className={`text-red-500 text-xs`}>*</span>
               </label>
@@ -242,22 +267,28 @@ function SignUp({ stayInRegistrationForm }) {
 
             <input
               title="Email"
-              autocomplete
+              autocomplete='true'
               id="email"
               type="text"
               name="email"
-              maxlength="255"
+              maxLength="255"
               onChange={(e) => setEmail(e.target.value)}
               {...register("email")}
               placeholder="Email"
-              className={SignUpStyle.signup__registration__input}
+              className={`${SignUpStyle.signup__registration__input} ${
+                errors.email?.message
+                  ? SignUpStyle.signupDialog__input__error
+                  : dirtyFields.email && (!email || isStringEmpty(email))
+                  ? SignUpStyle.signupDialog__input__validated
+                  : ""
+              }`}
             />
           </div>
           <div className="flex flex-col">
             <div className="flex flex-row justify-between">
               <label
                 className={`text-xs text-primary-400 cursor-pointer`}
-                for="password"
+                htmlFor="password"
               >
                 Password<span className={`text-red-500 text-xs`}>*</span>
               </label>
@@ -265,27 +296,50 @@ function SignUp({ stayInRegistrationForm }) {
                 className={`${SignUpStyle.signupDialog__error__message} text-xs text-red-500 float-right`}
               >
                 {errors.password?.message}
+                {errors.password?.message && (
+                  <Tooltip
+                    title={REGISTRATION_ERRORS.PASSWORD_ERROR.POLICY_TEXT}
+                    disableTouchListener
+                    placement="bottom"
+                  >
+                    <span className={`text-white-500 text-xs cursor-pointer`}>
+                      &nbsp;
+                      <HelpIcon
+                        className={
+                          SignUpStyle.signupDialog__password__help__icon
+                        }
+                      />
+                    </span>
+                  </Tooltip>
+                )}
               </label>
             </div>
 
             <input
-              title="Password | Must contain atleast 1 uppercase, lowercase, number and a special character."
-              autocomplete
+              title="Password"
+              autocomplete='true'
               id="password"
               type="password"
               name="password"
-              maxlength="32"
+              maxLength="32"
               onChange={(e) => setPassword(e.target.value)}
               {...register("password")}
               placeholder="Password"
-              className={SignUpStyle.signup__registration__input}
+              className={`${SignUpStyle.signup__registration__input} ${
+                errors.password?.message
+                  ? SignUpStyle.signupDialog__input__error
+                  : dirtyFields.password &&
+                    (!password || isStringEmpty(password))
+                  ? SignUpStyle.signupDialog__input__validated
+                  : ""
+              }`}
             />
           </div>
           <div className="flex flex-col">
             <div className="flex flex-row justify-between">
               <label
                 className={`text-xs text-primary-400 cursor-pointer`}
-                for="cpassword"
+                htmlFor="cpassword"
               >
                 Re-enter password
                 <span className={`text-red-500 text-xs`}>*</span>
@@ -297,22 +351,29 @@ function SignUp({ stayInRegistrationForm }) {
               </label>
             </div>
             <input
-              title="Confirm password"
-              autocomplete
+              title="Re-enter password"
+              autocomplete='true'
               id="cpassword"
               type="password"
               name="cpassword"
-              maxlength="32"
+              maxLength="32"
               onChange={(e) => setCPassword(e.target.value)}
               {...register("cpassword")}
               placeholder="Re-enter Password"
-              className={SignUpStyle.signup__registration__input}
+              className={`${SignUpStyle.signup__registration__input} ${
+                errors.cpassword?.message
+                  ? SignUpStyle.signupDialog__input__error
+                  : dirtyFields.cpassword &&
+                    (!cpassword || isStringEmpty(cpassword))
+                  ? SignUpStyle.signupDialog__input__validated
+                  : ""
+              }`}
             />
           </div>
           <div>
             <label
               className={SignUpStyle.signup__Dialog__agreeButton}
-              for="agreement"
+              htmlFor="agreement"
             >
               <input
                 defaultChecked={agreementCheckBox}
@@ -327,23 +388,20 @@ function SignUp({ stayInRegistrationForm }) {
               <span>{parse(REGISTRATION_ACCEPTANCE_OATH)}</span>
               <span className={`text-red-500 text-xs`}>*</span>
 
-              <label
-                className={` text-xs text-red-500 block`}
-              >
+              <label className={` text-xs text-red-500 block`}>
                 {!agreementCheckBox && errors.agreement?.message}
               </label>
             </label>
           </div>
           <ReCAPTCHA
             onChange={captureCaptchaValue}
-            className={SignUpStyle.signup__Dialog__recaptcha__wrapper}
+            className={`${SignUpStyle.signup__Dialog__recaptcha__wrapper} 
+            `}
             sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
             required
           />
-          {reCaptchaError && (
-            <label
-              className={`text-xs text-red-500 block`}
-            >
+          {!reCaptcha && (
+            <label className={` text-xs text-red-500 block`}>
               {REGISTRATION_ERRORS.RECAPTCHA_ERROR}
             </label>
           )}
@@ -354,16 +412,10 @@ function SignUp({ stayInRegistrationForm }) {
             className={`${SignUpStyle.signup__Dialog__submit__btn}`}
             type="submit"
           >
-            <LockOpenIcon /> Sign Up
+                 <Loader classes={`app__workflow__loader app__workflow__loader__sm`}
+                 custom={true} visible={_signUpButtonPressed} />
+            {!_signUpButtonPressed && (<LockOpenIcon />)} Sign Up
           </button>
-
-          <button
-            className={`${SignUpStyle.signup__Dialog__cancel__btn} hidden`}
-            type="reset" onClick={ clearErrorsOnReset}
-          >
-            Reset
-          </button>
-         
         </div>
       </form>
       <hr className="mt-2 text-gray-500" />

@@ -1,11 +1,11 @@
 export const REGISTRATION_ERRORS = {
   REQUIRED_FIELD: "This is a required field.",
   REQUIRED_FIELDS: {
-    FIRSTNAME: "First name is required",
-    LASTNAME: "Last name is required",
-    EMAIL: "Email address is required",
-    PASSWORD: "Password is required",
-    CONFIRM_PASSWORD: "Confirm password is required",
+    FIRSTNAME: "First name is required.",
+    LASTNAME: "Last name is required.",
+    EMAIL: "Email address is required.",
+    PASSWORD: "Password is required.",
+    CONFIRM_PASSWORD: "Confirm password is required.",
   },
   GENERIC_ERROR:
     "Please correctly fill all the required fields outlined in red.",
@@ -14,8 +14,13 @@ export const REGISTRATION_ERRORS = {
     MISMATCH: "Passwords do not match.",
     POLICY:
       "Password is not acceptable.",
-    MINIMUM_LENGTH_ERROR: "Must be atleast 8 characters",
+    POLICY_TEXT:'Password must contain atleast one uppercase, one lowercase, one number and a special character.',
+    MINIMUM_LENGTH_ERROR: "Must be atleast 8 characters.",
   },
   TERMS_ACCEPTATION_ERROR: "To sign up, you ,must check terms and conditions.",
   RECAPTCHA_ERROR: "Please validate the captcha to continue.",
 };
+
+export const GENERIC_INTERNAL_ERROR='An unexpected internal error has occured. Please try again.'
+
+

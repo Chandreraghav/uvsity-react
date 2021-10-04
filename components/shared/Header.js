@@ -3,6 +3,7 @@ import HeaderStyle from "../../styles/Header.module.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PreAuthSignUpMessageBar from "./PreAuthSignUpMessageBar";
+import GoogleAuth from "../../social_auth/services/google/GoogleAuth";
 toast.configure();
 function Nav() {
   const [show, handleShow] = useState(false);
@@ -42,12 +43,8 @@ function Nav() {
           </a>
           {/* <img onClick={(e) => history.push("profile")} className={HeaderStyle.nav__avatar} src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/366be133850498.56ba69ac36858.png"
                     alt="uvsity-User-Avatar" /> */}
-          <img
-            onClick={(e) => history.push("profile")}
-            className={HeaderStyle.nav__continue__with__google}
-            src={process.env.NEXT_PUBLIC_APP_CONTINUE_WITH_GOOGLE_IMAGE}
-            alt="uvsity-User-Avatar"
-          />
+          <GoogleAuth/>
+         
         </div>
       </div>
     </div>

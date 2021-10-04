@@ -48,11 +48,19 @@
 
 
 .nav__continue__with__google {
-  position: fixed;
-  right: 20px;
-  width: 130px;
-  object-fit: contain;
-  cursor: pointer;
+  position: fixed!important;
+  right: 20px!important;
+  width: 130px!important;
+  object-fit: contain!important;
+  cursor: pointer!important;
+}
+.nav__contents>div>button>img{
+  
+  right: 20px!important;
+  width: 130px!important;
+  object-fit: contain!important;
+  cursor: pointer!important;
+  
 }
 
 .nav__button {

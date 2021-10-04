@@ -1,0 +1,18 @@
+ let errorJson = JSON.parse(error._body);
+      if (errorJson.Uvsity_Errors) {
+        console.log("Uvsity Exception");
+        errorJson.Uvsity_Errors.map(uvsityError => { this.showErrorMessages.push(uvsityError); })
+        this.showErrorPopupWidthInPercentage = "30%";
+        this.showErrorModalDialog = true;
+      } else if (errorJson.Uvsity_Errors_Stacktrace) {
+        console.log("Uvsity Exception containing stacktrace");
+        errorJson.Uvsity_Errors_Stacktrace.map(uvsityError => { this.showErrorMessages.push(uvsityError); })
+        this.showErrorPopupWidthInPercentage = "30%";
+        this.showErrorModalDialog = true;
+        this.isValidationError = false;
+      } else {
+        console.log("Not Uvsity Exception");
+        this.showErrorMessages.push("An unexpected error occurred, Please try after sometime.");
+        this.showErrorPopupWidthInPercentage = "30%";
+        this.showErrorModalDialog = true;
+      }
