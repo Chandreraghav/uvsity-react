@@ -173,3 +173,7 @@ export const RESPONSE_TYPES = {
 };
 export const DEFAULT_TIMEZONE='Asia/Calcutta'
 export const DEFAULT_IP='192.168.29.10'
+export const LOGIN_SOURCE={
+  UVSITY: 'uvsity',
+  GOOGLE:'Google'
+}

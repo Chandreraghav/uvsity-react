@@ -4,15 +4,15 @@
   width: 100%;
   padding: 10px;
   height: 50px;
-  margin-top:30px;
+  margin-top: 30px;
   z-index: 100;
   /***Animation**/
   transition-timing-function: ease-in;
   transition: all 0.8s;
 }
 
-.nav__original{
-  margin-top:0px!important
+.nav__original {
+  margin-top: 0px !important;
 }
 
 .nav__contents {
@@ -34,33 +34,30 @@
   object-fit: contain;
   cursor: pointer;
 }
-.nav__logo__original{
-  top: 10px!important;
+.nav__logo__original {
+  top: 10px !important;
 }
 
 .nav__avatar {
-    position: fixed;
-    right: 20px;
-    width: 30px;
-    object-fit: contain;
-    cursor: pointer;
-  }
-
+  position: fixed;
+  right: 20px;
+  width: 30px;
+  object-fit: contain;
+  cursor: pointer;
+}
 
 .nav__continue__with__google {
-  position: fixed!important;
-  right: 20px!important;
-  width: 130px!important;
-  object-fit: contain!important;
-  cursor: pointer!important;
+  position: fixed !important;
+  right: 20px !important;
+  width: 130px !important;
+  object-fit: contain !important;
+  cursor: pointer !important;
 }
-.nav__contents>div>button>img{
-  
-  right: 20px!important;
-  width: 130px!important;
-  object-fit: contain!important;
-  cursor: pointer!important;
-  
+.nav__contents > div > button > img {
+  right: 20px !important;
+  width: 130px !important;
+  object-fit: contain !important;
+  cursor: pointer !important;
 }
 
 .nav__button {
@@ -91,3 +88,48 @@
 .hidden {
   display: none !important;
 }
+
+.header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 0.1px solid lightgray;
+  padding-left: 10px;;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #fff;
+  width: 100%;
+  z-index: 999;
+}
+.header__left {
+  display: flex;
+  gap:8px;
+  margin-left: 5px;;
+}
+.header__left > img {
+  object-fit: contain;
+  height: 40px;
+  width: 80px;
+  margin-right: 10px;
+}
+.header__search {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  border-radius: 5px;
+  height: 40px;
+  width:40vw;
+  color: gray;
+  background-color: #eef3f8;
+}
+.header__search > input {
+  outline: none;
+  border: none;
+  background: none;
+  width: 35vw;
+}
+.header__right {
+  display: flex;
+}
+ 

@@ -26,7 +26,7 @@ function CommonMetaInfo(props) {
       <link rel="icon" href={process.env.NEXT_PUBLIC_APP_FAVICON_PATH} />
       <link rel="apple-touch-icon" href={process.env.NEXT_PUBLIC_APP_FAVICON_PATH}></link>
       <meta name="theme-color" content={process.env.NEXT_PUBLIC_APP_THEME_COLOR} />
-      <meta name="google-signin-client_id" content={`895040400948-viugvr2qu33mg43m6j0f3u1o57dhj2l4.apps.googleusercontent.com`} />
+      <meta name="google-signin-client_id" content={process.env.NEXT_PUBLIC_GOOGLE_ID} />
       <title>{props.title}</title>
       <script src="https://apis.google.com/js/platform.js" async defer></script>
       <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -26,7 +26,7 @@ import {
   getLocalStorageObject,
 } from "../../localStorage/local-storage";
 import Loader from "../shared/Loader";
-import {registrationValidationSchema} from './ValidationSchema'
+import {registrationValidationSchema} from '../../validation/services/auth/ValidationSchema'
 import GoogleAuth from "../../social_auth/services/google/GoogleAuth";
 
 toast.configure();
@@ -42,14 +42,14 @@ function SignUp({ stayInRegistrationForm }) {
   const [ipData, setIpData] = React.useState({});
   const [_signUpButtonPressed, _setSignUpButtonPressed] = React.useState(false)
   useEffect(async () => {
-    if (!getLocalStorageObject("ipData")) {
+    if (!getLocalStorageObject("uvsity-ipData")) {
       await new IPService().getIPData().then((response) => {
         setIpData(response.data);
-        setLocalStorageObject("ipData", response.data);
+        setLocalStorageObject("uvsity-ipData", response.data);
       }).catch(()=>{
         const ipDummyData = new IPService().getFakeIPData()
         setIpData(ipDummyData);
-        setLocalStorageObject("ipData", ipDummyData);
+        setLocalStorageObject("uvsity-ipData", ipDummyData);
       })
       return;
     }
@@ -165,7 +165,7 @@ function SignUp({ stayInRegistrationForm }) {
             <h2
               className={`${SignUpStyle.signup__Dialog__signin__explicit__header}`}
             >
-              Sign Up now - It's free!
+              Sign Up now - It&apos;s free!
             </h2>
           </div>
           <div className={`${SignUpStyle.signup__Dialog__alternative__or}`}>
@@ -202,7 +202,7 @@ function SignUp({ stayInRegistrationForm }) {
               id="firstname"
               placeholder="First name"
               maxLength="50"
-              autocomplete='true'
+              autoComplete='true'
               title="First name"
               className={`${SignUpStyle.signup__registration__input} ${
                 errors.firstname?.message
@@ -238,7 +238,7 @@ function SignUp({ stayInRegistrationForm }) {
               id="lastname"
               maxLength="50"
               placeholder="Last name"
-              autocomplete='true'
+              autoComplete='true'
               title="Last name"
               className={`${SignUpStyle.signup__registration__input} ${
                 errors.lastname?.message
@@ -267,7 +267,7 @@ function SignUp({ stayInRegistrationForm }) {
 
             <input
               title="Email"
-              autocomplete='true'
+              autoComplete='true'
               id="email"
               type="text"
               name="email"
@@ -317,7 +317,7 @@ function SignUp({ stayInRegistrationForm }) {
 
             <input
               title="Password"
-              autocomplete='true'
+              autoComplete='true'
               id="password"
               type="password"
               name="password"
@@ -352,7 +352,7 @@ function SignUp({ stayInRegistrationForm }) {
             </div>
             <input
               title="Re-enter password"
-              autocomplete='true'
+              autoComplete='true'
               id="cpassword"
               type="password"
               name="cpassword"

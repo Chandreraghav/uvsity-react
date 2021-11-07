@@ -4,7 +4,10 @@ export const ENDPOINTS={
         SIGN_UP:'user/create/initial'
     },
     LOGIN:{
-        SIGN_IN:'authenticate'
+        SIGN_IN:'authenticate',
+        SOCIAL_SIGN_IN:{
+            GOOGLE:"/public/continueWithGoogle"
+        }
     }
 }
 export const EXTERNAL_FULLY_QUALIFIED_ENDPOINTS={

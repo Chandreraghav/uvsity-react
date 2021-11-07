@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.app{
+  display:flex;
+  flex-direction:column;
+}
 html,
 body {
   padding: 0;
@@ -105,4 +109,9 @@ button.danger {
 .app__workflow__loader__sm{
   width: 20px!important;
   height: 20px!important;
+}
+
+.MuiAvatar-root{
+  width: 80px !important;;
+  height: 80px !important;
 }

@@ -1,10 +1,28 @@
+import { setLocalStorageObject,getLocalStorageObject } from "../../localStorage/local-storage";
 export class JWT {
-  static signupJwt() {
+ /**
+  * 
+  * @returns Auth header pre login
+  */
+  static preAuthJWT() {
     return {
       headers: {
         "content-type": "application/json",
       },
     };
+  }
+/**
+ * Auth header for post login  service calls
+ * @returns 
+ */
+   static authHeader() {
+    let user = getLocalStorageObject('user')|| localStorage.user
+    user = JSON.parse(user)
+    if (user && user.accessToken) {
+      return { Authorization: 'Bearer ' + user.accessToken };
+    } else {
+      return null;
+    }
   }
 
   static refreshGoogleJWT(res) {
@@ -14,10 +32,10 @@ export class JWT {
       const newAuthRes = await res.reloadAuthResponse();
       refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
       console.log("newAuthRes:", newAuthRes);
-      // saveUserToken(newAuthRes.access_token);  <-- save new token
-      localStorage.setItem("authToken", newAuthRes.id_token);
-
+      localStorage.setItem("uvsity-authToken", newAuthRes.id_token);
+      setLocalStorageObject("uvsity-authToken", newAuthRes.id_token)
       // Setup the other timer after the first one
+      if(getLocalStorageObject('uvsity-user'))
       setTimeout(refreshToken, refreshTiming);
     };
 

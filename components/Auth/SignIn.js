@@ -17,7 +17,7 @@ import { isStringEmpty } from "../../utils/utility";
 import { REGISTRATION_ERRORS } from "../../constants/error-messages";
 import HelpIcon from "@mui/icons-material/Help";
 import Loader from "../shared/Loader";
-import { loginValidationSchema } from "./ValidationSchema";
+import { loginValidationSchema } from '../../validation/services/auth/ValidationSchema'
 import { getWorkflowError } from "../../error-handler/handler";
 import { RESPONSE_TYPES } from "../../constants/constants";
 import { handleResponse } from "../../toastr-response-handler/handler";
@@ -43,7 +43,6 @@ function SignIn({ dialogCloseRequest, isOpen }) {
     useForm(formOptions);
   const { errors } = formState;
   const { dirtyFields } = formState;
-  console.log(errors);
   const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });

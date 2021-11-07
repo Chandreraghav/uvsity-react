@@ -1,7 +1,7 @@
 import * as Yup from "yup";
-import { REGISTRATION_ERRORS } from "../../constants/error-messages";
-import { PASSWORD } from "../../constants/regex";
-import { MIN_LENGTH_PASSWORD } from "../../constants/constants";
+import { REGISTRATION_ERRORS } from "../../../constants/error-messages";
+import { PASSWORD } from "../../../constants/regex";
+import { MIN_LENGTH_PASSWORD } from "../../../constants/constants";
 export const registrationValidationSchema = Yup.object().shape({
   firstname: Yup.string().required(
     REGISTRATION_ERRORS.REQUIRED_FIELDS.FIRSTNAME

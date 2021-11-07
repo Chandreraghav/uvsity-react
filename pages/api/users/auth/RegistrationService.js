@@ -5,7 +5,7 @@ export default class RegistrationService {
   constructor() {}
   async register(userdata) {
     return await asyncInstance.post(ENDPOINTS.REGISTRATION.SIGN_UP, userdata, 
-    JWT.signupJwt()
+    JWT.preAuthJWT()
     );
   }
 }

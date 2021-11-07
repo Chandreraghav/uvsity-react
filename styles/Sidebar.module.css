@@ -1,0 +1,77 @@
+.sidebar {
+    top: 80px;
+    position: sticky;
+    flex: 0.2;
+    border-radius: 10px;
+    text-align: center;
+    height: fit-content;
+  }
+  .sidebar__top {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid lightgray;
+    border-bottom: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #fff;
+    padding-bottom: 10px;
+  }
+  .sidebar__stats {
+      margin-top: 5%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid lightgray;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  .sidebar__stat {
+    display: flex;
+    margin-top: 10px;
+    gap: 90px;
+    text-align: justify;
+    justify-content: space-between;
+  }
+  .sidebar__stat > p {
+    color: gray;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: justify;
+  }
+  .sidebar__statNumber {
+    font-weight: bold;
+    color: #0a66c2 !important;
+    cursor: pointer;
+  }
+  .sidebar__bottom {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid lightgray;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  .sidebar__recentItem {
+    display: flex;
+    padding: 5px;
+    font-size: 13px;
+    font-weight: bolder;
+    margin-bottom: 5px;
+    color: gray;
+  }
+  .sidebar__recentItem:hover {
+    background-color: whitesmoke;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #111;
+  }
+  .sidebar__hash {
+    margin-left: 5px;
+    margin-right: 10px;
+  }
+  .sidebar__bottom > p {
+    font-size: 13px;
+    padding-bottom: 10px;
+  }
+  

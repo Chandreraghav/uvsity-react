@@ -4,8 +4,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PreAuthSignUpMessageBar from "./PreAuthSignUpMessageBar";
 import GoogleAuth from "../../social_auth/services/google/GoogleAuth";
+import Header from "../Authorized/Shared/Header";
 toast.configure();
-function Nav() {
+function Nav({isAuthorized}) {
   const [show, handleShow] = useState(false);
   const [isPreAuthMessagePanelClosed, preAuthMessagePanelClosed] =
     useState(false);
@@ -20,20 +21,24 @@ function Nav() {
       handleShow(false);
     }
   };
+  if(isAuthorized){
+    return (<Header/>)
+  }
   return (
     <div>
-      <PreAuthSignUpMessageBar
+      
+      {!isAuthorized && (<PreAuthSignUpMessageBar
         isPreAuthMessagePanelClosed={preAuthMessagePanelClosed}
-      />
+      />)}
       <div
         className={`${HeaderStyle.nav} ${show && HeaderStyle.nav__black} ${
-          isPreAuthMessagePanelClosed && HeaderStyle.nav__original
+          (isPreAuthMessagePanelClosed || isAuthorized) && HeaderStyle.nav__original
         }`}
       >
         <div className={HeaderStyle.nav__contents}>
           <img
             className={`${HeaderStyle.nav__logo} ${
-              isPreAuthMessagePanelClosed && HeaderStyle.nav__logo__original
+              (isPreAuthMessagePanelClosed || isAuthorized) && HeaderStyle.nav__logo__original
             }`}
             src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE}
             alt="uvsity-Logo"
@@ -43,7 +48,7 @@ function Nav() {
           </a>
           {/* <img onClick={(e) => history.push("profile")} className={HeaderStyle.nav__avatar} src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/366be133850498.56ba69ac36858.png"
                     alt="uvsity-User-Avatar" /> */}
-          <GoogleAuth/>
+          {!isAuthorized && (<GoogleAuth/>)}
          
         </div>
       </div>

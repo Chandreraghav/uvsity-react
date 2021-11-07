@@ -1,5 +1,5 @@
 export const getLocalStorageObject = (str) => {
-  localStorage.getItem(str);
+  return localStorage.getItem(str);
 };
 export const setLocalStorageObject = (str, obj) => {
   localStorage.setItem(str, JSON.stringify(obj));
