@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useState} from "react"
 import { useForm } from "react-hook-form";
 import LoginService from "../../pages/api/users/auth/LoginService";
 import Dialog from "@mui/material/Dialog";
@@ -8,13 +9,13 @@ import { useTheme } from "@mui/material/styles";
 import SignInStyle from "../../styles/SignIn.module.css";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Tooltip from "@mui/material/Tooltip";
-import { LOGIN_POLICY_ACCEPTANCE } from "../../constants/constants";
+import { LOGIN_POLICY_ACCEPTANCE,LOGIN_SOURCE } from "../../constants/constants";
 import parse from "html-react-parser";
 import SignUp from "./SignUp";
 import Slide from "@mui/material/Slide";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isStringEmpty } from "../../utils/utility";
-import { REGISTRATION_ERRORS } from "../../constants/error-messages";
+import { REGISTRATION_ERRORS, LOGIN_ERRORS } from "../../constants/error-messages";
 import HelpIcon from "@mui/icons-material/Help";
 import Loader from "../shared/Loader";
 import { loginValidationSchema } from '../../validation/services/auth/ValidationSchema'
@@ -23,17 +24,24 @@ import { RESPONSE_TYPES } from "../../constants/constants";
 import { handleResponse } from "../../toastr-response-handler/handler";
 import { toast } from "react-toastify";
 import GoogleAuth from "../../social_auth/services/google/GoogleAuth";
+import { AuthService } from "../../pages/api/users/auth/AuthService";
+import {AuthGuardService} from '../../auth-guard/service/AuthGuardService'
+import { useRouter } from "next/router";
+import { useDataLayerContextValue } from '../../context/DataLayer'
+import { actionTypes } from "../../context/reducer";
+import {AUTHORIZED_ROUTES} from "../../constants/routes";
 toast.configure();
 
 function SignIn({ dialogCloseRequest, isOpen }) {
-  
+ const router = useRouter();
+ const [{}, authorize] = useDataLayerContextValue();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const [isBackDropClicked, setBackDropClicked] = React.useState(true);
-  const [signInButtonPressed, setSignInButtonPressed] = React.useState(false);
-  const [signUpButtonPressed, setSignUpButtonPressed] = React.useState(false);
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [isBackDropClicked, setBackDropClicked] =useState(true);
+  const [signInButtonPressed, setSignInButtonPressed] = useState(false);
+  const [signUpButtonPressed, setSignUpButtonPressed] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const formOptions = {
     resolver: yupResolver(loginValidationSchema),
     mode: "all",
@@ -67,10 +75,21 @@ function SignIn({ dialogCloseRequest, isOpen }) {
         encodeURIComponent(formData.password)
       )
       .then((res) => {
-        console.log(res);
-        // will navigate later
+        authorize({
+          type: actionTypes.SET_USER,
+          user: res, //bearer token response
+        });
+        AuthService.setAuthorization(LOGIN_SOURCE.UVSITY, res)
+        AuthGuardService.isVerifiedLogin()?router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD):
+        handleResponse(
+          getWorkflowError(LOGIN_ERRORS.UVSITY.LOGIN_FAILED),
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.BOTTOM_CENTER
+        );
+
       })
       .catch((err) => {
+        console.log(err)
         handleResponse(
           getWorkflowError(err),
           RESPONSE_TYPES.ERROR,

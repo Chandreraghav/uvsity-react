@@ -11,7 +11,7 @@ function MiniProfile({ coverImage, profileImage, name, title, metaData , showPro
         src={
           coverImage
             ? coverImage
-            : "https://i.pinimg.com/originals/73/23/c1/7323c115f85c7d6653337e020b9180ae.png"
+            : process.env.NEXT_FALLBACK_PROFILE_COVER_URL
         }
         alt=""
       />

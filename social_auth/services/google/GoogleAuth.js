@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { GoogleLogin } from "react-google-login";
-import { JWT } from "../../../jwt/auth/JWT";
 import { useRouter } from "next/router";
 import {
   setLocalStorageObject,
   getLocalStorageObject,
 } from "../../../localStorage/local-storage";
 import { AuthService } from "../../../pages/api/users/auth/AuthService";
-import IPService from "../../../pages/api/ipdata/IPService";
 import LoginService from "../../../pages/api/users/auth/LoginService";
 import { LOGIN_SOURCE } from "../../../constants/constants";
 import { handleResponse } from "../../../toastr-response-handler/handler";
 import { LOGIN_ERRORS } from "../../../constants/error-messages";
+import {AUTHORIZED_ROUTES} from "../../../constants/routes";
 import { RESPONSE_TYPES } from "../../../constants/constants";
+import { AuthGuardService } from "../../../auth-guard/service/AuthGuardService";
+import { useDataLayerContextValue } from '../../../context/DataLayer'
+import { actionTypes } from "../../../context/reducer";
 const clientId = process.env.NEXT_PUBLIC_GOOGLE_ID;
 
 function GoogleAuth() {
   const router = useRouter();
+  const [{}, authorize] = useDataLayerContextValue();
   const [loginBtnClicked, setLoginBtnClicked]= useState(false)
   const onSuccess = (res) => {
-    console.log(res,clientId)
     const currentAccessToken = AuthService.getCurrentAccessToken();
     if (
       res.accessToken &&
@@ -30,36 +32,33 @@ function GoogleAuth() {
       new LoginService()
         .socialLogin(LOGIN_SOURCE.GOOGLE)
         .then((response) => {
-          AuthService.setAuthorization(LOGIN_SOURCE.GOOGLE, res);
-          console.log("Login Success: currentUser:", res);
-          console.log(response);
           setLoginBtnClicked(false)
-          // need to call the endpoint and redirect to dashboard.
-          //router.push(`/hello`)
+          authorize({
+            type: actionTypes.SET_USER,
+            user: response, //bearer token response
+          });
+          AuthService.setAuthorization(LOGIN_SOURCE.GOOGLE, res);
+          AuthGuardService.isVerifiedLogin()?router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD):
+          handleResponse(
+            getWorkflowError(LOGIN_ERRORS.SOCIAL.GOOGLE.LOGIN_FAILED),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
         })
         .catch((err) => {
           setLoginBtnClicked(false)
           handleResponse(LOGIN_ERRORS.SOCIAL.GOOGLE.LOGIN_FAILED, RESPONSE_TYPES.ERROR);
+          authorize({
+            type: actionTypes.SET_USER,
+            user: null,
+          });
           AuthService.logout();
         });
     } else {
       console.log("Already logged in user: currentUser:", res);
-      console.log(getLocalStorageObject("uvsity-ipData"));
     }
   };
-  useEffect(async () => {
-    if (!getLocalStorageObject("uvsity-ipData")) {
-      await new IPService()
-        .getIPData()
-        .then((response) => {
-          setLocalStorageObject("uvsity-ipData", response.data);
-        })
-        .catch(() => {
-          const ipDummyData = new IPService().getFakeIPData();
-          setLocalStorageObject("uvsity-ipData", ipDummyData);
-        });
-    }
-  });
+  
   const onFailure = (res) => {
     console.log("Login failed: res:", res);
     handleResponse(LOGIN_ERRORS.SOCIAL.GOOGLE.LOGIN_FAILED, "error");

@@ -3,7 +3,8 @@ import React from "react";
 import HeaderOptionsStyle from "../../../styles/HeaderOption.module.css";
 import { avatarToString } from "../../../utils/utility";
 
-function HeaderOption({ avatar, Icon, title, name, isAuthorizedProfile }) {
+function HeaderOption({ avatar, Icon, title, name, isAuthorizedProfile, hidden }) {
+if(hidden) return null;  
   return (
     <div className={HeaderOptionsStyle.headerOption}>
       {Icon && <Icon className={HeaderOptionsStyle.headerOption__icon} />}

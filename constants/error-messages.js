@@ -23,7 +23,7 @@ export const REGISTRATION_ERRORS = {
 
 export const LOGIN_ERRORS = {
   UVSITY: {
-    LOGIN_FAILED: "Login failed. Please try again",
+    LOGIN_FAILED: "There was a problem logging you in. Please try again after sometime.",
   },
   SOCIAL: {
     GOOGLE: {

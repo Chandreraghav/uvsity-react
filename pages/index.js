@@ -5,17 +5,25 @@ import Feature from "../components/Landing/Feature";
 import Footer from "../components/shared/Footer";
 import TrendingSessions from "../components/Landing/TrendingSessions"
 import Stats from "../components/Landing/Stats";
+import { AuthGuardService } from "../auth-guard/service/AuthGuardService";
+import { useEffect, useState } from "react";
 const Home = () => {
+  const [loggedIn, setLoggedIn]= useState(false)
+  useEffect(()=>{
+     setLoggedIn(AuthGuardService.isUserLoggedIn());
+  },[])
+  
   return (
     <Layout title={`${process.env.NEXT_PUBLIC_APP_TITLE}`}>
-      <Header isAuthorized={false} isShared={true} />
-      <Hero isAuthorized={false} isShared={false} />
-      <Feature isAuthorized={false} isShared={false}/>
-      <TrendingSessions isAuthorized={false} isShared={false} />
+      <Header isAuthorized={loggedIn} isShared={true} />
+      <Hero isAuthorized={loggedIn} isShared={false} />
+      <Feature isAuthorized={loggedIn} isShared={false}/>
+      <TrendingSessions isAuthorized={loggedIn} isShared={false} />
       {/* Stats will be replaced by About us section in the future */}
-      <Stats isAuthorized={false} isShared={false}/>
-      <Footer isAuthorized={false} isShared={true} />
+      <Stats isAuthorized={loggedIn} isShared={false}/>
+      <Footer isAuthorized={loggedIn} isShared={true} />
     </Layout>
   );
 };
 export default Home;
+

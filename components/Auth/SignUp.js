@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import IPService from "../../pages/api/ipdata/IPService";
 import RegistrationService from "../../pages/api/users/auth/RegistrationService";
 import SignUpStyle from "../../styles/SignUp.module.css";
 import {
   REGISTER_POLICY_ACCEPTANCE,
   REGISTRATION_ACCEPTANCE_OATH,
+  LOGIN_SOURCE
 } from "../../constants/constants";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import parse from "html-react-parser";
 import ReCAPTCHA from "react-google-recaptcha";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { REGISTRATION_ERRORS } from "../../constants/error-messages";
+import { REGISTRATION_ERRORS,LOGIN_ERRORS } from "../../constants/error-messages";
 import { RESPONSE_TYPES } from "../../constants/constants";
 import { User, UserCredential } from "../../models/user";
 import { toast } from "react-toastify";
@@ -21,17 +21,20 @@ import { isStringEmpty } from "../../utils/utility";
 import HelpIcon from "@mui/icons-material/Help";
 import { getWorkflowError } from "../../error-handler/handler";
 import { handleResponse } from "../../toastr-response-handler/handler";
-import {
-  setLocalStorageObject,
-  getLocalStorageObject,
-} from "../../localStorage/local-storage";
 import Loader from "../shared/Loader";
 import {registrationValidationSchema} from '../../validation/services/auth/ValidationSchema'
 import GoogleAuth from "../../social_auth/services/google/GoogleAuth";
-
+import { AuthService } from "../../pages/api/users/auth/AuthService";
+import {AuthGuardService} from '../../auth-guard/service/AuthGuardService'
+import { useRouter } from "next/router";
+import { useDataLayerContextValue } from '../../context/DataLayer'
+import { actionTypes } from "../../context/reducer";
+import {AUTHORIZED_ROUTES} from "../../constants/routes";
 toast.configure();
 
 function SignUp({ stayInRegistrationForm }) {
+  const router = useRouter();
+  const [{}, authorize] = useDataLayerContextValue();
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -41,20 +44,7 @@ function SignUp({ stayInRegistrationForm }) {
   const [reCaptcha, setReCaptcha] = React.useState(null);
   const [ipData, setIpData] = React.useState({});
   const [_signUpButtonPressed, _setSignUpButtonPressed] = React.useState(false)
-  useEffect(async () => {
-    if (!getLocalStorageObject("uvsity-ipData")) {
-      await new IPService().getIPData().then((response) => {
-        setIpData(response.data);
-        setLocalStorageObject("uvsity-ipData", response.data);
-      }).catch(()=>{
-        const ipDummyData = new IPService().getFakeIPData()
-        setIpData(ipDummyData);
-        setLocalStorageObject("uvsity-ipData", ipDummyData);
-      })
-      return;
-    }
-    setIpData(getLocalStorageObject("ipData"));
-  }, []);
+
   
   const formOptions = {
     resolver: yupResolver(registrationValidationSchema),
@@ -81,8 +71,17 @@ function SignUp({ stayInRegistrationForm }) {
       await new RegistrationService()
         .register(model.getStagedRegistrationData(model, credentials))
         .then((res) => {
-          console.log(res);
-          // will navigate later after login is done.
+          authorize({
+            type: actionTypes.SET_USER,
+            user: res, //bearer token response
+          });
+          AuthService.setAuthorization(LOGIN_SOURCE.UVSITY, res)
+          AuthGuardService.isVerifiedLogin()?router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD):
+          handleResponse(
+            getWorkflowError(LOGIN_ERRORS.UVSITY.LOGIN_FAILED),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
         })
         .catch((err) => {
           handleResponse(

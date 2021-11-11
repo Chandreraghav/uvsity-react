@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import BannerStyle from "../../styles/Banner.module.css";
 import SignIn from "../Auth/SignIn";
 import {
@@ -8,8 +8,8 @@ import {
 import { randomKeyWord } from "../../utils/utility";
 
 function Banner() {
-  const [openSignInDialog, setOpenSignInDialog] = React.useState(false);
-  const [bannerHeader, setBannerHeader] = React.useState(
+  const [openSignInDialog, setOpenSignInDialog] = useState(false);
+  const [bannerHeader, setBannerHeader] = useState(
     LANDING_PAGE_HERO_KEYWORDS[0]
   );
   const handleSignInDialogOpen = () => {
@@ -20,9 +20,14 @@ function Banner() {
     setOpenSignInDialog(false);
   };
   useEffect(() => {
+    let controller = new AbortController();
     setInterval(() => {
       setBannerHeader(randomKeyWord(LANDING_PAGE_HERO_KEYWORDS));
     }, 60000);
+
+    return () => {
+      controller?.abort();
+    };
   }, []);
   return (
     <div>

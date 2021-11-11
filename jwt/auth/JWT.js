@@ -1,9 +1,12 @@
-import { setLocalStorageObject,getLocalStorageObject } from "../../localStorage/local-storage";
+import {
+  setLocalStorageObject,
+  getLocalStorageObject,
+} from "../../localStorage/local-storage";
 export class JWT {
- /**
-  * 
-  * @returns Auth header pre login
-  */
+  /**
+   *
+   * @returns Auth header pre login
+   */
   static preAuthJWT() {
     return {
       headers: {
@@ -11,18 +14,30 @@ export class JWT {
       },
     };
   }
-/**
- * Auth header for post login  service calls
- * @returns 
- */
-   static authHeader() {
-    let user = getLocalStorageObject('user')|| localStorage.user
-    user = JSON.parse(user)
-    if (user && user.accessToken) {
-      return { Authorization: 'Bearer ' + user.accessToken };
-    } else {
+  /**
+   * Auth header for post login  service calls
+   * @returns
+   */
+  static authHeader() {
+    try {
+      let user = JSON.parse(getLocalStorageObject("uvsity-user"));
+      if (user) {
+        return { Authorization: user.data };
+      } else {
+        return null;
+      }
+    } catch (error) {
       return null;
     }
+  }
+
+  static getJWTToken() {
+    try {
+      let user = JSON.parse(getLocalStorageObject("uvsity-user"));
+      if (user)
+        return user.data;
+    } catch (error) {}
+    return null;
   }
 
   static refreshGoogleJWT(res) {
@@ -33,10 +48,10 @@ export class JWT {
       refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
       console.log("newAuthRes:", newAuthRes);
       localStorage.setItem("uvsity-authToken", newAuthRes.id_token);
-      setLocalStorageObject("uvsity-authToken", newAuthRes.id_token)
+      setLocalStorageObject("uvsity-authToken", newAuthRes.id_token);
       // Setup the other timer after the first one
-      if(getLocalStorageObject('uvsity-user'))
-      setTimeout(refreshToken, refreshTiming);
+      if (getLocalStorageObject("uvsity-user"))
+        setTimeout(refreshToken, refreshTiming);
     };
 
     // Setup first refresh timer
