@@ -6,7 +6,7 @@ function Search() {
   return (
     <div className={SearchStyle.search}>
       <SearchIcon />
-      <input placeholder={PLACEHOLDERS.SEARCH} type="text" className="" />
+      <input placeholder={PLACEHOLDERS.SEARCH} type="text" />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import RegistrationService from "../../pages/api/users/auth/RegistrationService";
 import SignUpStyle from "../../styles/SignUp.module.css";

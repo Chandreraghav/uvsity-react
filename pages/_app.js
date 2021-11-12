@@ -3,6 +3,7 @@
  */
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.css";
+import "../styles/responsive-menu.css";
 /***
  * GLOBAL APP CSS
  */
@@ -57,9 +58,12 @@ useEffect(async ()=>{
    
  useEffect( ()=>{
   let controller = new AbortController();
+  let isSubscribed = true;
+  if(isSubscribed)
   getSessionValidity(router)
   return () => {
     controller?.abort();
+    isSubscribed = false;
   };
  },[])
    

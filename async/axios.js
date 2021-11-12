@@ -13,6 +13,7 @@ asyncInstance.interceptors.request.use(
     config.headers.authorization = JWT.authHeader()
       ? JWT.authHeader().Authorization
       : `Bearer ${process.env.NEXT_PUBLIC_JWT_TOKEN}`;
+    config.headers['content-type']='application/json'
     return config;
   },
   (error) => {

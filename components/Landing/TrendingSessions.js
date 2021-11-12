@@ -3,16 +3,25 @@ import TrendingSessionsStyle from "../../styles/TrendingSessions.module.css";
 import SessionCard from "../SessionCards/SessionCard";
 import SessionService from "../../pages/api/session/SessionService";
 import Loader from "../shared/Loader";
-import {SHIMMER_TIMEOUT_IN_MILLIS} from '../../constants/constants'
+import { SHIMMER_TIMEOUT_IN_MILLIS } from "../../constants/constants";
 
 function TrendingSessions() {
   const [trendingSessions, setTrendingSessions] = useState([]);
   const [loaderVisibility, setLoaderVisibility] = useState(true);
   useEffect(async () => {
+    let controller = new AbortController();
+    let isSubscribed = true;
     await new SessionService().getPopularSessions().then((response) => {
-      setTrendingSessions(response.data);
-      setLoaderVisibility(false);
+      if (isSubscribed) {
+        setTrendingSessions(response.data);
+        setLoaderVisibility(false);
+      } else {
+      }
     });
+    return () => {
+      controller?.abort();
+      isSubscribed = false;
+    };
   }, []);
   return (
     <div id="discover-popular-live-sessions">
@@ -47,7 +56,11 @@ function TrendingSessions() {
         {!loaderVisibility &&
           trendingSessions &&
           trendingSessions?.map((session, index) => (
-            <SessionCard key={index} data={session} shimmerTime={SHIMMER_TIMEOUT_IN_MILLIS} />
+            <SessionCard
+              key={index}
+              data={session}
+              shimmerTime={SHIMMER_TIMEOUT_IN_MILLIS}
+            />
           ))}
       </div>
     </div>

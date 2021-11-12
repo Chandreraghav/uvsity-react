@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PreAuthSignUpMessageBar from "./PreAuthSignUpMessageBar";
 import GoogleAuth from "../../social_auth/services/google/GoogleAuth";
-import Header from "../Authorized/Shared/Header";
 toast.configure();
 function Nav({isAuthorized}) {
   const [show, handleShow] = useState(false);
@@ -21,9 +20,7 @@ function Nav({isAuthorized}) {
       handleShow(false);
     }
   };
-  if(isAuthorized){
-    return (<Header/>)
-  }
+  
   return (
     <div>
       

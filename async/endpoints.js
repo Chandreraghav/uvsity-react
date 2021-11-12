@@ -26,6 +26,7 @@ export const ENDPOINTS = {
       HOT_TOPICS: "/homepage/poll/hotTopics",
       TOP_COURSES: "/homepage/poll/topCourses",
     },
+    SIGN_OUT: "/logOff"
   },
 };
 export const EXTERNAL_FULLY_QUALIFIED_ENDPOINTS = {

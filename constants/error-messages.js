@@ -31,6 +31,15 @@ export const LOGIN_ERRORS = {
     },
   },
 };
+export const LOGOUT={
+  ERRORS:{
+    LOGOUT_FAILED: 'There was a problem logging you out, please try again after sometime.'
+  },
+  INFO:{
+    IN_PROGRESS:'Signing you out....'
+  }
+  
+}
 
 export const GENERIC_INTERNAL_ERROR =
   "An unexpected internal error has occured. Please try again.";

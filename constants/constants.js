@@ -170,6 +170,7 @@ export const RESPONSE_TYPES = {
   ERROR: "error",
   SUCCESS: "success",
   WARNING: "warn",
+  INFO:'info'
 };
 export const DEFAULT_TIMEZONE='Asia/Calcutta'
 export const DEFAULT_IP='192.168.29.10'

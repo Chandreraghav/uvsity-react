@@ -24,10 +24,14 @@ export default function SessionCard({ data, shimmerTime }) {
   const [shimTimeOut, setShimTimeOut] = useState(SHIM_MAX_TIMEOUT_IN_MILLIS);
   const [showOriginalContent, setShowOriginalContent] = useState(false);
   useEffect(() => {
+    let controller = new AbortController();
     let _shimmerTime = shimmerTime || shimTimeOut
     setTimeout(() => {
       setShowOriginalContent(true);
     }, _shimmerTime);
+    return () => {
+      controller?.abort();
+    };
   }, []);
   const getSessionRatingDesignLayout = (reviewCount) => {
     if (

@@ -4,7 +4,6 @@
     align-items: center;
     border-radius: 5px;
     height: 40px;
-    width:40vw;
     color: gray;
     background-color: #eef3f8;
   }
@@ -12,5 +11,17 @@
     outline: none;
     border: none;
     background: none;
-    width: 35vw;
+    width: 40vw;
+  }
+
+  @media screen and (max-width: 780px) {
+    .search > input {
+     width:38vw;
+    }
+  }
+
+  @media screen and (max-width: 1084px) {
+    .search > input {
+     width:36vw;
+    }
   }

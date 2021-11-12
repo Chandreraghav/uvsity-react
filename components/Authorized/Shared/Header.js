@@ -3,7 +3,9 @@ import HeaderStyle from "../../../styles/Header.module.css";
 import HeaderOption from "./HeaderOption";
 import { HEADER_OPTIONS } from "../../../constants/userdata";
 import Search from "./Search";
+import Hamburger from "./FireFighter/Hamburger";
 function Header() {
+ 
   return (
     <div className={HeaderStyle.header}>
       <div className={HeaderStyle.header__left}>
@@ -11,7 +13,7 @@ function Header() {
         <Search />
       </div>
 
-      <div className={HeaderStyle.header__right}>
+      <div  className={` hidden md:flex items-center`}>
         {HEADER_OPTIONS.map((data) => (
           <HeaderOption
             key={data.id}
@@ -21,9 +23,12 @@ function Header() {
             title={data.title}
             Icon={data.icon}
             name={data.name}
+            tooltip={data.tooltip}
           />
         ))}
+        
       </div>
+      <Hamburger color='gray'/>
     </div>
   );
 }
