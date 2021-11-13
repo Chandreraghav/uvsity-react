@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -74,6 +74,7 @@ function AccountMenu({ onClose, isOpen, anchor }) {
           RESPONSE_TYPES.INFO,
           toast.POSITION.TOP_CENTER
         );
+        // voluntarily logout
         SignOutService.signout()
           .then(() => {
             AuthService.logout();

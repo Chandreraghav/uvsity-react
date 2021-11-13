@@ -6,5 +6,10 @@ export const WORKFLOW_CODES = {
       ACCOUNT: "AS_ACCO",
       EXIT: "AS_EXIT",
     },
+    CONNECTION_TYPES: {
+      STUDENT:'CT_STUD',
+      ALUMNI:'CT_ALUM',
+      PROFESSOR:'CT_PROF',
+    }
   },
 };

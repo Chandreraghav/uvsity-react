@@ -1,12 +1,15 @@
-import { Avatar } from "@mui/material";
-import React, { useState, useEffect} from "react";
-import AccountBoxOutlinedIcon from "@mui/icons-material/AccountBoxOutlined";
-import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import React, { useState, useEffect } from "react";
 import SidebarStyle from "../../styles/Sidebar.module.css";
 import MiniProfile from "../Authorized/Profile/MiniProfile";
-import { useDataLayerContextValue } from "../../context/DataLayer"
+import { useDataLayerContextValue } from "../../context/DataLayer";
 import { AuthGuardService } from "../../auth-guard/service/AuthGuardService";
+import { formattedName } from "../../utils/utility";
+import Divider from "@mui/material/Divider";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import { TITLES, TOOLTIPS } from "../../constants/userdata";
+import Stats from "../Authorized/Profile/Connection/Stats";
+
+
 function Sidebar() {
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [loggedIn, setLoggedIn] = useState(false);
@@ -19,6 +22,7 @@ function Sidebar() {
       <p>{topic}</p>
     </div>
   );
+   
   if (!loggedIn) {
     return "";
   }
@@ -26,27 +30,23 @@ function Sidebar() {
     <div className={SidebarStyle.sidebar}>
       <div className={SidebarStyle.sidebar__top}>
         <MiniProfile
-          name="Swaroop Chakraborty"
-          title="Software Engineer"
+          name={formattedName(
+            USERDATA?.SUMMARY?.data?.firstName,
+            USERDATA?.SUMMARY?.data?.lastName
+          )}
+          title={USERDATA?.SUMMARY?.data?.userType}
           metaData={{
-            company: "Tata Consultancy Services",
-            location: "Bengaluru",
+            company: USERDATA?.SUMMARY?.data?.educationalInstitution,
+            location: USERDATA?.SUMMARY?.data?.city,
           }}
-          showProfileCompletionIndicator
+          profilePercentageCompletion={
+            USERDATA?.PROFILE_PERCENTAGE_COMPLETION?.data?.percentageOfProfileAlreadyCompleted
+          }
           coverImage="https://i.pinimg.com/originals/73/23/c1/7323c115f85c7d6653337e020b9180ae.png"
           profileImage={USERDATA?.SUMMARY?.data?.profilePicName}
         />
-
-        <div className={SidebarStyle.sidebar__stats}>
-          <div className={SidebarStyle.sidebar__stat}>
-            <p>Connections</p>
-            <p className={SidebarStyle.sidebar__statNumber}>2,543</p>
-          </div>
-          <div className={SidebarStyle.sidebar__stat}>
-            <p>Sessions by me</p>
-            <p className={SidebarStyle.sidebar__statNumber}>123</p>
-          </div>
-        </div>
+        <Stats summary={USERDATA?.SUMMARY} title={TITLES.CONNECTIONS} Icon={SupervisorAccountIcon} tooltip={TOOLTIPS.VIEW_ALL_CONNECTIONS}/>
+        <Divider className={SidebarStyle.sidebar__divider} />
       </div>
 
       {/* <div className={SidebarStyle.sidebar__bottom}>

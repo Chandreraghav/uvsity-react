@@ -1,0 +1,51 @@
+.stats {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  width: 100%;
+  padding: 10px;
+}
+.stat {
+  display: flex;
+  width: 100%;
+  margin-top: 5px;
+  justify-content: space-between;
+  padding: 5px;
+}
+.stat > p {
+  color: gray;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left !important;
+  cursor: pointer;
+}
+.statNumber {
+  font-weight: bold;
+  color: #0a66c2 !important;
+  cursor: pointer;
+}
+.stat:hover {
+  cursor: pointer;
+  background-color: #ebebeb;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+}
+
+.stat__divider {
+  width: 100%;
+  color: #ebebeb;
+}
+.stat__legend {
+  font-size: 1rem;
+  color: gray;
+  text-align: left;
+  display: flex;
+  gap: 1px;
+  padding-bottom: 8px;
+}
+.stat__legend:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+}

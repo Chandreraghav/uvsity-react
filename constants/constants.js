@@ -178,3 +178,10 @@ export const LOGIN_SOURCE={
   UVSITY: 'uvsity',
   GOOGLE:'Google'
 }
+export const LOADING_MESSAGE_DEFAULT='Loading...'
+export const TIME_OF_DAY_GREETING={
+  MORNING:'Good morning',
+  AFTERNOON:'Good afternoon',
+  EVENING:'Good evening',
+
+}

@@ -10,6 +10,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { WORKFLOW_CODES } from "./workflow-codes";
+import { timeOfDay } from "../utils/utility";
 
 export const HEADER_OPTIONS = [
   {
@@ -29,7 +30,7 @@ export const HEADER_OPTIONS = [
     icon: SupervisorAccountIcon,
     hasAvatar: false,
     avatar: null,
-    hidden: false,
+    hidden: true,
     name: null,
   },
 
@@ -53,7 +54,7 @@ export const HEADER_OPTIONS = [
     icon: TopicOutlinedIcon,
     hasAvatar: false,
     avatar: null,
-    hidden: true,
+    hidden: false,
     name: null,
   },
 
@@ -138,6 +139,62 @@ export const ACCOUNT_SETTINGS=[
   }
 ]
 
+export const CONNECTIONS=[
+  {
+    id: 1,
+    title: 'Students',
+    hidden: false,
+    tooltip:'Connections who are students',
+    code:WORKFLOW_CODES.USER.CONNECTION_TYPES.STUDENT
+
+  },
+  {
+    id: 2,
+    title: 'Professors',
+    hidden: false,
+    tooltip:'Connections who are professors',
+    code:WORKFLOW_CODES.USER.CONNECTION_TYPES.PROFESSOR
+
+  },
+  {
+    id: 3,
+    title: 'Alumni',
+    hidden: false,
+    tooltip:'Connections who are alumni',
+    code:WORKFLOW_CODES.USER.CONNECTION_TYPES.ALUMNI
+
+  }
+
+]
 export const PLACEHOLDERS={
     SEARCH: 'Search for people, sessions, topics...'
 }
+export const TITLES={
+  CONNECTIONS:'Connections'
+}
+export const TOOLTIPS={
+  GO_TO_PROFILE: 'Go to profile',
+  VIEW_ALL_CONNECTIONS: 'View all connections'
+}
+
+export const GREETING=`👋 ${timeOfDay()} <user>`
+export const INTRO_TEXT_KEYWORDS=[
+  "➕ Create something new today",
+  "🌐 Welcome to the world of hassle free conferencing",
+  "👩‍💼 Connect with industry experts here ",
+  "🌐 Connect, learn & grow here",
+  "💡 Mobilize your knowledge to empower",
+  "💰 Earn from your online sessions",
+  "🔼 Evaluate your worth as a presenter",
+  "💟 Go to Sponsor to sponsor a session",
+  "🤝 Welcome to the changemaker of online conferencing",
+  "⭐️ Your account is now preconfigured with zoom",
+  "💰 Your account is now verified",
+  "⭐️ To upgrade your membership, go to Upgrade Account",
+  "👩‍💼 Hear from speakers from industry",
+  "💼 Share your availability on your uvsity Calendar ",
+  "👨‍🏫 You now have access to educational events",
+  "👨‍⚕️ Get access to healthcare seminars",
+]
+
+

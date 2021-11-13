@@ -28,7 +28,7 @@ function CompletionProgress({ percentage }) {
               pathColor: `rgba(62, 152, 199, ${roundedValue / 100})`,
               textColor: "#5271FF",
               trailColor: "#d6d6d6",
-              textSize: "10px",})}
+              textSize: "16px",})}
             />
           );
         }}

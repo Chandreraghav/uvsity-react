@@ -1,3 +1,5 @@
+import { TIME_OF_DAY_GREETING } from "../constants/constants";
+
 export const truncate = (str, n) => {
   try {
     return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -24,8 +26,9 @@ export const areStringsEqual = (str1, str2) => {
 };
 export const isValidEmail = (email) => {
   if (!email) return false;
-  const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    return re.test(email);
+  const re =
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+  return re.test(email);
 };
 
 export const randomKeyWord = (keyword) => {
@@ -104,4 +107,22 @@ export const localTZDate = (data) => {
   let local_date = new Date(data).toString();
   local_date = local_date.substring(0, local_date.lastIndexOf(":"));
   return local_date;
+};
+
+export const formattedName = (firstName, lastName) => {
+  if (firstName && lastName) {
+    return firstName + " " + lastName;
+  }
+  return null;
+};
+export const timeOfDay = () => {
+  var today = new Date();
+  var curHr = today.getHours();
+  if (curHr < 12) {
+    return TIME_OF_DAY_GREETING.MORNING;
+  } else if (curHr < 18) {
+    return TIME_OF_DAY_GREETING.AFTERNOON;
+  } else {
+    return TIME_OF_DAY_GREETING.EVENING;
+  }
 };
