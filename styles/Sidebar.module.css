@@ -8,7 +8,6 @@
 }
 .sidebar__top {
   display: flex;
-  align-items: center;
   flex-direction: column;
   border: 1px solid lightgray;
   border-bottom: 5px solid #0081cb;

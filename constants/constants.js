@@ -172,6 +172,12 @@ export const RESPONSE_TYPES = {
   WARNING: "warn",
   INFO:'info'
 };
+export const RESPONSE_TYPES_COLOR = {
+  ERROR: {hex:"#A40000",rgb:'rgba(164,0,0)'},
+  SUCCESS: { hex: "#5CB85C", rgb: "rgba(92,184,92)" },
+  WARNING: {hex:"#ECBB27", rgb:'rgba(236,187,39)'},
+  INFO: {hex:"#22AB4B",rgb:'rgba(34,171,75)'}
+};
 export const DEFAULT_TIMEZONE='Asia/Calcutta'
 export const DEFAULT_IP='192.168.29.10'
 export const LOGIN_SOURCE={

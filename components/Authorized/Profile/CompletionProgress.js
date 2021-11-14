@@ -4,7 +4,7 @@ import "react-circular-progressbar/dist/styles.css";
 import { easeQuadInOut } from "d3-ease";
 import AnimatedProgressProvider from "../../Thirdparty/Animation/AnimatedProgressProvider";
 
-function CompletionProgress({ percentage }) {
+function CompletionProgress({ percentage,color }) {
     if(!percentage) return ''
   return (
     <div>
@@ -25,8 +25,8 @@ function CompletionProgress({ percentage }) {
               strokeWidth={3}
               styles={buildStyles({ 
               pathTransition: "none",
-              pathColor: `rgba(62, 152, 199, ${roundedValue / 100})`,
-              textColor: "#5271FF",
+              pathColor:color?`${color}`: `rgba(21, 101, 192, ${roundedValue / 100})`,
+              textColor: color?color:"#1565C0",
               trailColor: "#d6d6d6",
               textSize: "16px",})}
             />

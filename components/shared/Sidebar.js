@@ -6,7 +6,7 @@ import { AuthGuardService } from "../../auth-guard/service/AuthGuardService";
 import { formattedName } from "../../utils/utility";
 import Divider from "@mui/material/Divider";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import { TITLES, TOOLTIPS } from "../../constants/userdata";
+import { DEFAULT_COVER_IMAGE, TITLES, TOOLTIPS } from "../../constants/userdata";
 import Stats from "../Authorized/Profile/Connection/Stats";
 
 
@@ -42,7 +42,7 @@ function Sidebar() {
           profilePercentageCompletion={
             USERDATA?.PROFILE_PERCENTAGE_COMPLETION?.data?.percentageOfProfileAlreadyCompleted
           }
-          coverImage="https://i.pinimg.com/originals/73/23/c1/7323c115f85c7d6653337e020b9180ae.png"
+          coverImage={DEFAULT_COVER_IMAGE}
           profileImage={USERDATA?.SUMMARY?.data?.profilePicName}
         />
         <Stats summary={USERDATA?.SUMMARY} title={TITLES.CONNECTIONS} Icon={SupervisorAccountIcon} tooltip={TOOLTIPS.VIEW_ALL_CONNECTIONS}/>

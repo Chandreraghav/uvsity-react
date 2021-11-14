@@ -116,7 +116,6 @@ export default function SessionCard({ data, shimmerTime }) {
 
           <Divider
             variant="fullwidth"
-            textAlignLeft
             className={SessionStyle.session__card__divider}
             component="div"
           />
@@ -210,7 +209,6 @@ export default function SessionCard({ data, shimmerTime }) {
         </CardContent>
         <Divider
           variant="inset"
-          textAlignLeft
           className={SessionStyle.session__card__divider}
           component="div"
         />

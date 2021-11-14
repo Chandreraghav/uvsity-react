@@ -6,12 +6,15 @@
 .intro h2 {
   font-size: 1.2rem;
   color: #0081cb;
+  border-bottom: 5px solid #4d8cf5;
+  background-image: linear-gradient(to right, #fff, #3b3b8a);
   overflow: hidden;
   font-weight: bold;
-  height: 85px;
+  height: 40px;
   width: auto;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  padding: 0 8px 0 8px;
+  padding: 2px 2px 2px 2px;
+  margin-left: 1%;
 }
 
 @media only screen and (max-width: 640px) {
@@ -24,7 +27,6 @@
   color: white;
   object-fit: contain;
   position: relative;
-  
 }
 
 .intro__contents {
@@ -38,7 +40,7 @@
   font-weight: 800;
   padding-top: 10px;
   margin-left: 20px;
-  color:#212121;
+  color: #e2e2e2;
 }
 
 .intro__description {
@@ -52,9 +54,9 @@
 .intro__buttons {
   padding-top: 12px;
   padding-bottom: 16px;
-  padding-right:10px;
+  padding-right: 10px;
   margin-left: 20px;
-  margin-top:20px;
+  margin-top: 20px;
 }
 
 .intro__button {
@@ -79,5 +81,4 @@
     rgba(37, 37, 37, 0.61),
     #262626
   );
-  /* background-image: linear-gradient(to right, #262626, #3b3b8a); */
 }

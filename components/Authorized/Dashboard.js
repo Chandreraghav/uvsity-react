@@ -2,6 +2,7 @@ import React from "react";
 import DashboardStyle from "../../styles/authorized.dashboard.module.css";
 import Sidebar from "../shared/Sidebar";
 import Intro from "./MainContent/Intro";
+import CompletionDetail from "./Profile/CompletionDetail";
 function Dashboard() {
   return (
     <div className={DashboardStyle.dashboard}>
@@ -11,8 +12,8 @@ function Dashboard() {
 
       <div className={DashboardStyle.dashboard__main}>
         <Intro />
+        <CompletionDetail/>
         {/* Popular Session */}
-        {/* Profile Completion */}
         {/* Recent Updates */}
       </div>
 

@@ -115,3 +115,13 @@ button.danger {
   width: 80px !important;;
   height: 80px !important;
 }
+
+.evening{
+  background-image: linear-gradient(to right, #fff, #3b3b8a)!important;
+}
+.afternoon{
+  background-image: linear-gradient(to right, #fff, #F7B31C)!important;
+}
+.morning{
+  background-image: linear-gradient(to right, #fff, #48A74F)!important;
+}
