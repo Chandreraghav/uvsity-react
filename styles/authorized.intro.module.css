@@ -1,6 +1,5 @@
 .intro {
   display: flex;
-  width: 100%;
   flex-direction: column;
 }
 .intro h2 {
@@ -10,23 +9,8 @@
   background-image: linear-gradient(to right, #fff, #3b3b8a);
   overflow: hidden;
   font-weight: bold;
-  height: 40px;
   width: auto;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  padding: 2px 2px 2px 2px;
-  margin-left: 1%;
-}
-
-@media only screen and (max-width: 640px) {
-  .intro h2 {
-    font-size: 1rem;
-  }
-}
-
-.intro__banner {
-  color: white;
-  object-fit: contain;
-  position: relative;
+  padding: 2px;
 }
 
 .intro__contents {
@@ -35,21 +19,19 @@
   gap: 2px;
 }
 
+
 .intro__title {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 800;
   padding-top: 10px;
-  margin-left: 20px;
   color: #e2e2e2;
 }
+ 
 
 .intro__description {
-  width: 45rem;
   line-height: 1.3;
   padding-top: 1rem;
   font-size: 0.8rem;
-  max-width: 360px;
-  height: 80px;
 }
 .intro__buttons {
   padding-top: 12px;
@@ -64,7 +46,6 @@
   color: #fff;
   outline: none;
   border: none;
-  width: 15vw;
 }
 
 .intro__button:hover {
@@ -78,7 +59,7 @@
   background-image: linear-gradient(
     180deg,
     transparent,
-    rgba(37, 37, 37, 0.61),
-    #262626
+    #e2e2e2,
+    #1565C0
   );
 }

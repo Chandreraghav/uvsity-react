@@ -3,13 +3,8 @@ import ProfileCompletionDetailStyle from "../../../styles/ProfileCompletionDetai
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { AuthGuardService } from "../../../auth-guard/service/AuthGuardService";
 import CompletionProgress from "./CompletionProgress";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import CardActions from "@mui/material/CardActions";
-import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
 import {
   COMPLETION_DETAIL_ACTION,
   getProfileCompletionTexts,
@@ -17,6 +12,10 @@ import {
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import { TOOLTIPS } from "../../../constants/userdata";
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+import FlareOutlinedIcon from '@mui/icons-material/FlareOutlined';
+import BoltOutlinedIcon from '@mui/icons-material/BoltOutlined';
+import WarningOutlinedIcon from '@mui/icons-material/WarningOutlined';
 import {
   RESPONSE_TYPES,
   RESPONSE_TYPES_COLOR,
@@ -68,15 +67,29 @@ function CompletionDetail() {
       return RESPONSE_TYPES_COLOR.ERROR.hex;
     }
   };
+
+  const getIcon = () => {
+    if (completionTextObject.alertLevel === RESPONSE_TYPES.SUCCESS) {
+      return <CheckOutlinedIcon/>
+    }
+    if (completionTextObject.alertLevel === RESPONSE_TYPES.INFO) {
+      return <FlareOutlinedIcon/>
+    }
+    if (completionTextObject.alertLevel === RESPONSE_TYPES.WARNING) {
+      return <BoltOutlinedIcon/>
+    }
+    if (completionTextObject.alertLevel === RESPONSE_TYPES.ERROR) {
+      return <WarningOutlinedIcon/>
+    }
+  };
   return (
-    <div className={ProfileCompletionDetailStyle.profile__completion__detail}>
-      <Card
+    <div style={{borderBottom: `5px solid ${getColor()}`}} className={`  ${ProfileCompletionDetailStyle.profile__completion__detail}`}>
+      <div
         className={
           ProfileCompletionDetailStyle.profile__completion__detail__card
         }
-        sx={{ maxWidth: 345, borderBottom: `5px solid ${getColor()}` }}
       >
-        <Box
+        <div
           className={
             ProfileCompletionDetailStyle.profile__completion__detail__graph
           }
@@ -88,33 +101,38 @@ function CompletionDetail() {
                 ?.percentageOfProfileAlreadyCompleted
             }
           />
-        </Box>
+        </div>
 
-        <CardContent>
+        <div>
           <Typography
             className={
-              ProfileCompletionDetailStyle.profile__completion__detail__header__text
+              `text-center ${ProfileCompletionDetailStyle.profile__completion__detail__header__text}`
             }
             gutterBottom
             variant="h5"
             component="div"
           >
-            {completionTextObject.headerText}
+            {getIcon()}{' '}{completionTextObject.headerText}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <div className=' flex'>
+          <Typography className={
+                ProfileCompletionDetailStyle.profile__completion__detail__explanation__text
+              } variant="body2" color="text.secondary">
             {completionTextObject.icon} {completionTextObject.guidanceText}
           </Typography>
+          </div>
 
           {completionTextObject.needsWork && (
             <div
-              className={
-                ProfileCompletionDetailStyle.profile__completion__detail__suggestions
-              }
+             
+              className={` items-center
+                    ${ProfileCompletionDetailStyle.profile__completion__detail__suggestions}`
+                  }
             >
               <Tooltip title={TOOLTIPS.VIEW_SUGGESTIONS}>
                 <SettingsSuggestOutlinedIcon onClick={(e)=> toggleSuggestions()}
-                  className={
-                    ProfileCompletionDetailStyle.profile__completion__detail__suggestion__icon
+                  className={`
+                    ${ProfileCompletionDetailStyle.profile__completion__detail__suggestion__icon}`
                   }
                 />
               </Tooltip>
@@ -125,8 +143,8 @@ function CompletionDetail() {
               ))}
             </div>
           )}
-        </CardContent>
-        <CardActions>
+        </div>
+        <div className=" items-baseline">
           {COMPLETION_DETAIL_ACTION.map((action) => (
             <Tooltip key={action.id} title={action.tooltip}>
               {action.startIcon ? (
@@ -140,8 +158,8 @@ function CompletionDetail() {
               )}
             </Tooltip>
           ))}
-        </CardActions>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

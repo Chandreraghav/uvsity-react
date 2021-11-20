@@ -3,9 +3,18 @@ import React from "react";
 import { CONNECTIONS } from "../../../../constants/userdata";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import StatStyle from "../../../../styles/Stat.module.css";
-
-function Stats({ tooltip, title, Icon, summary }) {
-  if (!summary && !title) return "";
+import { TITLES, TOOLTIPS } from "../../../../constants/userdata";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import { useDataLayerContextValue } from "../../../../context/DataLayer";
+function Stats({ tooltip, title, Icon, summary, standalone }) {
+  if (!summary && !title && !standalone) return "";
+  const [USERDATA, dispatch] = useDataLayerContextValue();
+  if (standalone) {
+    summary = USERDATA?.SUMMARY;
+    title = TITLES.CONNECTIONS;
+    Icon = SupervisorAccountIcon;
+    tooltip = TOOLTIPS.VIEW_ALL_CONNECTIONS;
+  }
   const getTotalStatCount = () => {
     try {
       return (
@@ -32,7 +41,7 @@ function Stats({ tooltip, title, Icon, summary }) {
   };
   return (
     getTotalStatCount() > 0 && (
-      <div className={StatStyle.stats}>
+      <div className={ `${standalone?StatStyle.stats__standalone:''} ${StatStyle.stats}`}>
         <Tooltip title={tooltip ? tooltip : ""}>
           <div className={StatStyle.stat__legend}>
             {Icon && <Icon />}
@@ -41,7 +50,7 @@ function Stats({ tooltip, title, Icon, summary }) {
         </Tooltip>
 
         <Divider className={StatStyle.stat__divider} />
-        {CONNECTIONS.filter((hidden) => hidden!==true).map(
+        {CONNECTIONS.filter((hidden) => hidden !== true).map(
           (connection) =>
             getCount(connection.code) > 0 && (
               <div key={connection.id} className={StatStyle.stat}>

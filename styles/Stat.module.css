@@ -1,13 +1,17 @@
 .stats {
-  display: flex;
-  flex-direction: column;
   background-color: #fff;
-  width: 100%;
   padding: 10px;
+}
+.stats__standalone {
+  text-align: left;
+  padding: 10px;
+  border: 1px solid lightgray;
+  border-bottom: 5px solid #0081cb;
+  background-color: #fff;
+  border-radius: 10px;
 }
 .stat {
   display: flex;
-  width: 100%;
   margin-top: 5px;
   justify-content: space-between;
   padding: 5px;

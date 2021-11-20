@@ -20,7 +20,7 @@ import {
 } from "../../constants/constants";
 import CornerRibbon from "react-corner-ribbon";
 
-export default function SessionCard({ data, shimmerTime }) {
+export default function SessionCard({ data, shimmerTime,authorized }) {
   const [shimTimeOut, setShimTimeOut] = useState(SHIM_MAX_TIMEOUT_IN_MILLIS);
   const [showOriginalContent, setShowOriginalContent] = useState(false);
   useEffect(() => {
@@ -81,13 +81,16 @@ export default function SessionCard({ data, shimmerTime }) {
       </div>
     );
   };
+  if(authorized){
+    return (<div>Session</div>)
+  }
   if(!showOriginalContent){
-    return( <div className={`${SessionStyle.session__card__shimmering__behavior}`}><Shimmer visible={!showOriginalContent}/></div>)
+    return( <div className={`${SessionStyle.session__card__shimmering__behavior} ${authorized?'mt-0':''}`}><Shimmer visible={!showOriginalContent}/></div>)
   }
   return (
       <Card
-        className={`${SessionStyle.session__card} ${SessionStyle.session__card__lightblue__variant} 
-      mt-5 mb-5 ml-5 mr-5  max-w-lg
+        className={`${SessionStyle.session__card} ${!authorized ?SessionStyle.session__card__lightblue__variant:SessionStyle.session__card__white__variant} 
+      ${!authorized? 'mt-5 mb-5 ml-5 mr-5  max-w-lg':'mt-2 sm:w-48 md:w-72 lg:w-96'}
     shadow-3xl antialiased`}
       >
         <CornerRibbon
@@ -170,42 +173,32 @@ export default function SessionCard({ data, shimmerTime }) {
           </div>
           <div className="flex flex-row justify-between">
             {/* Reviews */}
-
             <div className="flex">
-              {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
+             {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
             </div>
             {/* Attending count */}
-
-            {data?.numberOfAttendees &&
-              data?.numberOfAttendees > 0 &&
-              !isNaN(data?.numberOfAttendees) && (
+            {
+              data?.numberOfAttendees > 0 && (
                 <div className="flex flex-row space-x-1">
-                  <span
-                    className={SessionStyle.session__card__attendance__count}
-                  >
-                    {data?.numberOfAttendees}
+                  <span className={SessionStyle.session__card__attendance__count}>
+                    {data?.numberOfAttendees
+                    }
                   </span>
-                  <span
-                    className={`${SessionStyle.session__card__attendance__text} line-clamp-1`}
-                  >
+                  <span className={`${SessionStyle.session__card__attendance__text} line-clamp-1`}>
                     attending
                   </span>
                 </div>
               )}
-            {data?.numberOfAttendees &&
-              (data?.numberOfAttendees <= 0 ||
-                isNaN(data?.numberOfAttendees)) && (
+            {
+              data?.numberOfAttendees <= 0 
+                 && (
                 <div className="flex flex-row space-x-1">
-                  <span
-                    className={`${SessionStyle.session__card__attendance__text} font-normal  line-clamp-1`}
-                  >
+                  <span className={`${SessionStyle.session__card__attendance__text} font-normal  line-clamp-1`}>
                     ..be the first to attend
                   </span>
                 </div>
               )}
           </div>
-
-          {/* Tags */}
         </CardContent>
         <Divider
           variant="inset"

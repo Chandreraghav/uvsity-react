@@ -31,7 +31,7 @@ export const isValidEmail = (email) => {
   return re.test(email);
 };
 
-export const randomKeyWord = (keyword) => {
+export const getRandomArrayElement = (keyword) => {
   if (keyword[Math.floor(Math.random() * keyword.length)] === undefined) {
     return keyword[0];
   }

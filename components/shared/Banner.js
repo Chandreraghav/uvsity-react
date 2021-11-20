@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import BannerStyle from "../../styles/Banner.module.css";
 import SignIn from "../Auth/SignIn";
-import {
-  LANDING_PAGE_HERO_KEYWORDS,
-  LANDING_PAGE_HERO_MESSAGE_LIST,
-} from "../../constants/constants";
-import { randomKeyWord } from "../../utils/utility";
+import { LANDING_PAGE_HERO_MESSAGE_LIST } from "../../constants/constants";
+import { getRandomArrayElement } from "../../utils/utility";
 
-function Banner() {
+function Banner({ bannerObject }) {
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
-  const [bannerHeader, setBannerHeader] = useState(
-    LANDING_PAGE_HERO_KEYWORDS[0]
-  );
+  const initialBannerObject = bannerObject[0];
+  const [bannerHeader, setBannerHeader] = useState((<>{initialBannerObject?.icon} {initialBannerObject?.phrase}</>));
   const handleSignInDialogOpen = () => {
     setOpenSignInDialog(true);
   };
@@ -21,10 +17,12 @@ function Banner() {
   };
   useEffect(() => {
     let controller = new AbortController();
-    setInterval(() => {
-      setBannerHeader(randomKeyWord(LANDING_PAGE_HERO_KEYWORDS));
-    }, 60000);
-
+    if (bannerObject) {
+      setInterval(() => {
+        let object = getRandomArrayElement(bannerObject)
+        setBannerHeader(<>{object?.icon} {object?.phrase}</>);
+      }, 60000);
+    }
     return () => {
       controller?.abort();
     };

@@ -229,7 +229,7 @@ function Landing() {
       <Layout title={`${process.env.NEXT_PUBLIC_APP_TITLE}`}>
       <Header isAuthorized={loggedIn} isShared={true} />
       <Dashboard isAuthorized={loggedIn} isShared={false} />
-      <Footer isAuthorized={loggedIn} />
+     
     </Layout> 
       ):(
         <Layout title={`${process.env.NEXT_PUBLIC_APP_TITLE}`}>

@@ -13,6 +13,23 @@ import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import PublicIcon from "@mui/icons-material/Public";
 import VideocamIcon from "@mui/icons-material/Videocam";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import SupervisedUserCircleOutlinedIcon from "@mui/icons-material/SupervisedUserCircleOutlined";
+import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import EjectOutlinedIcon from "@mui/icons-material/EjectOutlined";
+import AutoGraphOutlinedIcon from "@mui/icons-material/AutoGraphOutlined";
+import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
+import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
+import CastForEducationOutlinedIcon from "@mui/icons-material/CastForEducationOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import GroupWorkOutlinedIcon from '@mui/icons-material/GroupWorkOutlined';
+import VideoCameraFrontOutlinedIcon from '@mui/icons-material/VideoCameraFrontOutlined';
+import StreamOutlinedIcon from '@mui/icons-material/StreamOutlined';
+import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
+
 export const LANDING_PAGE_APP_FEATURES = [
   {
     id: 1,
@@ -99,25 +116,130 @@ confirm I’ve read and agree to ${process.env.NEXT_PUBLIC_APP_NAME}'s
 
 export const REGISTRATION_ACCEPTANCE_OATH = `I agree to ${process.env.NEXT_PUBLIC_APP_NAME}'s <a href='#' className='app__anchor'>Terms and Conditions</a>.`;
 export const LANDING_PAGE_HERO_KEYWORDS = [
-  "➕ Create your free session today",
-  "🌐 Hassle free online conferencing",
-  "👩‍💼 Learn from industry experts",
-  "🌐 Connect, learn & grow",
-  "💡 Mobilize your knowledge to empower",
-  "💰 Get paid for holding an online event",
-  "🔼 Evaluate your worth as a presenter",
-  "💟 Sponsor a session",
-  "🤝 Join the changemaker of online conferencing",
-  "⭐️ Get your account pre-configured with zoom",
-  "💻 Host your own private session today",
-  "👩‍💼 Invite speakers from industry",
-  "💼 Share your availability with peers ",
-  "👨‍🏫 Get access to educational events",
-  "💼 Hold your business meetings here for free",
-  "👨‍⚕️ Get access to healthcare seminars",
-  "💰 Earn from your own online sessions",
-  "🌟 Become a member and enjoy premium benefits",
+  {
+    id: 1,
+    phrase: "Create your free session today",
+    icon: <AddOutlinedIcon className='lg-icon' />,
+    strength: 1,
+  },
+  {
+    id: 2,
+    phrase: "Hassle free online conferencing",
+    icon: <LanguageOutlinedIcon className='lg-icon'/>,
+    strength: 1,
+  },
+  {
+    id: 3,
+    phrase: "Learn from industry experts",
+    icon: <SupervisedUserCircleOutlinedIcon className='lg-icon'/>,
+    strength: 1,
+  },
+
+  {
+    id: 4,
+    phrase: "Connect, learn & grow",
+    icon:<GroupWorkOutlinedIcon className='lg-icon'/>,
+    strength: 1,
+  },
+
+  {
+    id: 5,
+    phrase: "Mobilize your knowledge to empower",
+    icon: <LightbulbOutlinedIcon className='lg-icon'/>,
+    strength: 1,
+  },
+
+  {
+    id: 6,
+    phrase: "Get paid for holding an online event",
+    icon: <MonetizationOnOutlinedIcon className='lg-icon' />,
+    strength: 2,
+  },
+
+  {
+    id: 7,
+    phrase: "Evaluate your worth as a presenter",
+    icon: <EjectOutlinedIcon className='lg-icon' />,
+    strength: 1,
+  },
+
+  {
+    id: 8,
+    phrase: "Sponsor a session",
+    icon: <AutoGraphOutlinedIcon className='lg-icon' />,
+    strength: 1,
+  },
+
+  {
+    id: 9,
+    phrase: "Join the changemaker of online conferencing",
+    icon: <ThumbUpOutlinedIcon className='lg-icon' />,
+    strength: 1,
+  },
+
+  {
+    id: 10,
+    phrase: "Get your account pre-configured with zoom",
+    icon: <VideoCameraFrontOutlinedIcon className='lg-icon'/>,
+    strength: 1,
+  },
+
+  {
+    id: 11,
+    phrase: "Host your own private session today",
+    icon: <StreamOutlinedIcon className='lg-icon'/>,
+    strength: 1,
+  },
+
+  {
+    id: 12,
+    phrase: "Invite speakers from industry",
+    icon: <SupervisedUserCircleOutlinedIcon className='lg-icon' />,
+    strength: 1,
+  },
+
+  {
+    id: 13,
+    phrase: "Share your availability with peers",
+    icon: <ShareOutlinedIcon className='lg-icon' />,
+    strength: 1,
+  },
+
+  {
+    id: 14,
+    phrase: "Get access to educational events",
+    icon: <CastForEducationOutlinedIcon className='lg-icon' />,
+    strength: 1,
+  },
+
+  {
+    id: 15,
+    phrase: "Hold your business meetings here for free",
+    icon: <WorkOutlineIcon className='lg-icon' />,
+    strength: 1,
+  },
+
+  {
+    id: 16,
+    phrase: "Get access to healthcare seminars",
+    icon: <FavoriteBorderOutlinedIcon  className='lg-icon'/>,
+    strength: 1,
+  },
+
+  {
+    id: 17,
+    phrase: "Earn from your own online sessions",
+    icon: <MonetizationOnOutlinedIcon className='lg-icon'/>,
+    strength: 1,
+  },
+  {
+    id: 18,
+    phrase: "Become a member and enjoy premium benefits",
+    icon: <StarOutlinedIcon className='lg-icon'/>,
+    strength: 2,
+  },
 ];
+
 export const LANDING_PAGE_HERO_MESSAGE_LIST = [
   {
     id: 1,
@@ -170,24 +292,23 @@ export const RESPONSE_TYPES = {
   ERROR: "error",
   SUCCESS: "success",
   WARNING: "warn",
-  INFO:'info'
+  INFO: "info",
 };
 export const RESPONSE_TYPES_COLOR = {
-  ERROR: {hex:"#A40000",rgb:'rgba(164,0,0)'},
+  ERROR: { hex: "#A40000", rgb: "rgba(164,0,0)" },
   SUCCESS: { hex: "#5CB85C", rgb: "rgba(92,184,92)" },
-  WARNING: {hex:"#ECBB27", rgb:'rgba(236,187,39)'},
-  INFO: {hex:"#22AB4B",rgb:'rgba(34,171,75)'}
+  WARNING: { hex: "#ECBB27", rgb: "rgba(236,187,39)" },
+  INFO: { hex: "#22AB4B", rgb: "rgba(34,171,75)" },
 };
-export const DEFAULT_TIMEZONE='Asia/Calcutta'
-export const DEFAULT_IP='192.168.29.10'
-export const LOGIN_SOURCE={
-  UVSITY: 'uvsity',
-  GOOGLE:'Google'
-}
-export const LOADING_MESSAGE_DEFAULT='Loading...'
-export const TIME_OF_DAY_GREETING={
-  MORNING:'Good morning',
-  AFTERNOON:'Good afternoon',
-  EVENING:'Good evening',
-
-}
+export const DEFAULT_TIMEZONE = "Asia/Calcutta";
+export const DEFAULT_IP = "192.168.29.10";
+export const LOGIN_SOURCE = {
+  UVSITY: "uvsity",
+  GOOGLE: "Google",
+};
+export const LOADING_MESSAGE_DEFAULT = "Loading...";
+export const TIME_OF_DAY_GREETING = {
+  MORNING: "Good morning",
+  AFTERNOON: "Good afternoon",
+  EVENING: "Good evening",
+};

@@ -14,13 +14,27 @@ import AddIcon from "@mui/icons-material/Add";
 import CreateIcon from "@mui/icons-material/Create";
 import { WORKFLOW_CODES } from "./workflow-codes";
 import { timeOfDay } from "../utils/utility";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import ErrorOutlinedIcon from '@mui/icons-material/ErrorOutlined';
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
+import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
+import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { RESPONSE_TYPES } from "./constants";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import RecommendOutlinedIcon from "@mui/icons-material/RecommendOutlined";
+
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import SupervisedUserCircleOutlinedIcon from "@mui/icons-material/SupervisedUserCircleOutlined";
+import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import EjectOutlinedIcon from "@mui/icons-material/EjectOutlined";
+import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
+import CastForEducationOutlinedIcon from "@mui/icons-material/CastForEducationOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import GroupWorkOutlinedIcon from "@mui/icons-material/GroupWorkOutlined";
+import VideoCameraFrontOutlinedIcon from "@mui/icons-material/VideoCameraFrontOutlined";
+import VerifiedIcon from "@mui/icons-material/Verified";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 
 export const HEADER_OPTIONS = [
   {
@@ -201,8 +215,6 @@ export const INTRO_ACTIONS = [
   },
 ];
 
-
-
 export const COMPLETION_DETAIL_ACTION = [
   {
     id: 1,
@@ -211,7 +223,7 @@ export const COMPLETION_DETAIL_ACTION = [
     hidden: false,
     disabled: false,
     startIcon: true,
-    size:'small',
+    size: "small",
     tooltip: "Edit Profile",
     code: WORKFLOW_CODES.USER.PROFILE.EDIT,
   },
@@ -222,7 +234,7 @@ export const COMPLETION_DETAIL_ACTION = [
     hidden: false,
     disabled: false,
     startIcon: false,
-    size:'small',
+    size: "small",
     tooltip: "Request a recommendation from your connections",
     code: WORKFLOW_CODES.USER.PROFILE.REQUEST_RECOMMENDATION,
   },
@@ -237,7 +249,7 @@ export const TITLES = {
 export const TOOLTIPS = {
   GO_TO_PROFILE: "Go to profile",
   VIEW_ALL_CONNECTIONS: "View all connections",
-  VIEW_SUGGESTIONS: "Toggle suggestions"
+  VIEW_SUGGESTIONS: "Toggle suggestions",
 };
 
 export const GREETING = `👋 ${timeOfDay()} <user>`;
@@ -245,31 +257,126 @@ export const DEFAULT_COVER_IMAGE =
   "https://res.cloudinary.com/practicaldev/image/fetch/s--F7w_snYb--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/vda3askm2sbfjl717q9q.png";
 export const INTRO_BACKGROUND_GRADIENT =
   "https://images.unsplash.com/photo-1557683316-973673baf926?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80";
+
 export const INTRO_TEXT_KEYWORDS = [
-  "➕ Create something new today",
-  "🌐 Welcome to the world of hassle free conferencing",
-  "👩‍💼 Connect with industry experts here ",
-  "🌐 Connect, learn & grow here",
-  "💡 Mobilize your knowledge to empower",
-  "💰 Earn from your online sessions",
-  "🔼 Evaluate your worth as a presenter",
-  "💟 Go to Sponsor to sponsor a session",
-  "🤝 Welcome to the changemaker of online conferencing",
-  "⭐️ Your account is now preconfigured with zoom",
-  "🔐 Your account is now verified",
-  "⭐️ To upgrade your membership, go to Upgrade Account",
-  "👩‍💼 Hear from speakers from industry",
-  `🗓 Share your availability on your ${process.env.NEXT_PUBLIC_APP_NAME} Calendar `,
-  "👨‍🏫 You now have access to educational events",
-  "👨‍⚕️ Get access to healthcare seminars",
-]; 
+  {
+    id: 1,
+    phrase: "Create something new today",
+    icon: <AddOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+  {
+    id: 2,
+    phrase: "Welcome to the world of hassle free conferencing",
+    icon: <LanguageOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+  {
+    id: 3,
+    phrase: "Connect with industry experts here",
+    icon: <SupervisorAccountIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 4,
+    phrase: "Connect, learn & grow here",
+    icon: <GroupWorkOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 5,
+    phrase: "Mobilize your knowledge to empower",
+    icon: <LightbulbOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 6,
+    phrase: "Earn from your online sessions",
+    icon: <MonetizationOnOutlinedIcon className="md-icon" />,
+    strength: 2,
+  },
+
+  {
+    id: 7,
+    phrase: "Evaluate your worth as a presenter",
+    icon: <EjectOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 8,
+    phrase: "Go to Sponsor to sponsor a session",
+    icon: <AutoGraphOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 9,
+    phrase: "Welcome to the changemaker of online conferencing",
+    icon: <ThumbUpOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 10,
+    phrase: "Your account is now preconfigured with zoom",
+    icon: <VideoCameraFrontOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 11,
+    phrase: "Your account is now verified",
+    icon: <VerifiedIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 12,
+    phrase: "To upgrade your membership, go to Upgrade Account",
+    icon: <UpgradeIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 13,
+    phrase: "Hear from speakers from industry",
+    icon: <SupervisedUserCircleOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 14,
+    phrase: `Share your availability on your ${process.env.NEXT_PUBLIC_APP_NAME} Calendar`,
+    icon: <EventAvailableIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 15,
+    phrase: "You now have access to educational events",
+    icon: <CastForEducationOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+
+  {
+    id: 16,
+    phrase: "Get access to healthcare seminars",
+    icon: <FavoriteBorderOutlinedIcon className="md-icon" />,
+    strength: 1,
+  },
+];
+
 export const getProfileCompletionTexts = (profileCompletionData) => {
   let profileCompletionObject = {
     headerText: "",
     guidanceText: "",
     needsWork: true,
-    alertLevel:'',
-    icon:null,
+    alertLevel: "",
+    icon: null,
     recommendedSteps: [],
   };
   if (!profileCompletionData?.isAboutYouCompleted) {
@@ -312,37 +419,47 @@ export const getProfileCompletionTexts = (profileCompletionData) => {
     );
   }
   if (profileCompletionData?.percentageOfProfileAlreadyCompleted == 100) {
-    profileCompletionObject.headerText = "☑️Yay!! your profile is complete.";
+    profileCompletionObject.headerText = "Yay!! your profile is complete.";
     profileCompletionObject.recommendedSteps = [];
-    profileCompletionObject.guidanceText=`Superb. Though your profile is fully complete, but you may still want to keep your profile updated with the latest information and recommendations.`
+    profileCompletionObject.guidanceText = `Superb. Though your profile is fully complete, but you may still want to keep your profile updated with the latest information and recommendations.`;
     profileCompletionObject.needsWork = false;
-    profileCompletionObject.alertLevel=RESPONSE_TYPES.SUCCESS
-    profileCompletionObject.icon=<CheckOutlinedIcon/>
+    profileCompletionObject.alertLevel = RESPONSE_TYPES.SUCCESS;
+    profileCompletionObject.icon = <CheckOutlinedIcon />;
   } else if (
     profileCompletionData?.percentageOfProfileAlreadyCompleted >= 85 &&
     profileCompletionData?.percentageOfProfileAlreadyCompleted < 100
   ) {
     profileCompletionObject.headerText =
-      "🌟Great!! your profile is almost complete.";
-      profileCompletionObject.guidanceText=`Awesome. You are almost there. Go ahead and complete the rest of your profile for enhanced experience at ${process.env.NEXT_PUBLIC_APP_NAME}. Click on the suggestions icon to know what you can do next.`
-      profileCompletionObject.alertLevel=RESPONSE_TYPES.INFO
-      profileCompletionObject.icon=<InfoOutlinedIcon/>
+      "Great!! your profile is almost complete.";
+    profileCompletionObject.guidanceText = `Awesome. You are almost there. Go ahead and complete the rest of your profile for enhanced experience at ${process.env.NEXT_PUBLIC_APP_NAME}. Click on the suggestions icon to know what you can do next.`;
+    profileCompletionObject.alertLevel = RESPONSE_TYPES.INFO;
+    profileCompletionObject.icon = <InfoOutlinedIcon />;
   } else if (
     profileCompletionData?.percentageOfProfileAlreadyCompleted >= 50 &&
     profileCompletionData?.percentageOfProfileAlreadyCompleted <= 84
   ) {
     profileCompletionObject.headerText =
-      "📝Nice!! your profile needs some final touches.";
-      profileCompletionObject.guidanceText=`Brilliant. You are slowly moving ahead in the game. Slow and steady wins the race is true but do not forget to complete the rest of your profile for a better experience at ${process.env.NEXT_PUBLIC_APP_NAME}. Click on the suggestions icon to know what you can do next.`
-      profileCompletionObject.alertLevel=RESPONSE_TYPES.WARNING
-      profileCompletionObject.icon=<WarningAmberOutlinedIcon/>
+      "Nice!! your profile needs some final touches.";
+    profileCompletionObject.guidanceText = `Brilliant. You are slowly moving ahead in the game. Slow and steady wins the race is true but do not forget to complete the rest of your profile for a better experience at ${process.env.NEXT_PUBLIC_APP_NAME}. Click on the suggestions icon to know what you can do next.`;
+    profileCompletionObject.alertLevel = RESPONSE_TYPES.WARNING;
+    profileCompletionObject.icon = <WarningAmberOutlinedIcon />;
   } else {
     profileCompletionObject.headerText =
-      "⚠️Uh Oh!! hey you got to work on your profile.";
-      profileCompletionObject.guidanceText=`Action Required. You need to work on your profile and have few recommendations for a better reach and connectivity to your audience and peers. Do not slow down, you can do this better. Click on the suggestions icon to know what you can do to improve.`
-      profileCompletionObject.alertLevel=RESPONSE_TYPES.ERROR
-      profileCompletionObject.icon=<ErrorOutlinedIcon/>
+      "Uh Oh!! hey you got to work on your profile.";
+    profileCompletionObject.guidanceText = `Action Required. You need to work on your profile and have few recommendations for a better reach and connectivity to your audience and peers. Do not slow down, you can do this better. Click on the suggestions icon to know what you can do to improve.`;
+    profileCompletionObject.alertLevel = RESPONSE_TYPES.ERROR;
+    profileCompletionObject.icon = <ErrorOutlinedIcon />;
   }
 
-  return profileCompletionObject
+  return profileCompletionObject;
 };
+
+export const GREET_IMAGES = [
+  "static/images/greet/welcome-2.jpg",
+  "static/images/greet/welcome-1.jpg",
+  "static/images/greet/hello-1.jpg",
+  "static/images/greet/hello-2.jpg",
+  "static/images/greet/hello-3.jpg",
+  "static/images/greet/hello-4.jpg",
+  "static/images/greet/hello-5.png",
+];

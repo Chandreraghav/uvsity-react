@@ -8,27 +8,42 @@ import Divider from "@mui/material/Divider";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import { DEFAULT_COVER_IMAGE, TITLES, TOOLTIPS } from "../../constants/userdata";
 import Stats from "../Authorized/Profile/Connection/Stats";
+import CompletionDetail from "../Authorized/Profile/CompletionDetail";
 
 
 function Sidebar() {
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isSticky, setSticky] = useState(false);
   useEffect(() => {
     setLoggedIn(AuthGuardService.isUserLoggedIn());
   }, []);
-  const recentItem = (topic) => (
-    <div className={SidebarStyle.sidebar__recentItem}>
-      <span className={SidebarStyle.sidebar__hash}>#</span>
-      <p>{topic}</p>
-    </div>
-  );
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 60) {
+            setSticky(true)
+        }
+        else {
+            setSticky(false)
+        }
+    });
+    return () => {
+       try {
+        window.removeEventListener("scroll")
+       } catch (error) {
+         
+       }
+        
+    }
+}, []);
    
   if (!loggedIn) {
     return "";
   }
   return (
-    <div className={SidebarStyle.sidebar}>
-      <div className={SidebarStyle.sidebar__top}>
+    <div className={`${SidebarStyle.sidebar}`}>
+       
+      <div className={`${SidebarStyle.sidebar__top}`}>
         <MiniProfile
           name={formattedName(
             USERDATA?.SUMMARY?.data?.firstName,
@@ -39,24 +54,25 @@ function Sidebar() {
             company: USERDATA?.SUMMARY?.data?.educationalInstitution,
             location: USERDATA?.SUMMARY?.data?.city,
           }}
+          //showProfileCompletionDetailCard
           profilePercentageCompletion={
             USERDATA?.PROFILE_PERCENTAGE_COMPLETION?.data?.percentageOfProfileAlreadyCompleted
           }
           coverImage={DEFAULT_COVER_IMAGE}
           profileImage={USERDATA?.SUMMARY?.data?.profilePicName}
         />
-        <Stats summary={USERDATA?.SUMMARY} title={TITLES.CONNECTIONS} Icon={SupervisorAccountIcon} tooltip={TOOLTIPS.VIEW_ALL_CONNECTIONS}/>
-        <Divider className={SidebarStyle.sidebar__divider} />
       </div>
+      <CompletionDetail className="sticky"/>
+      <h3>People who viewed you </h3>
+      <div className={`hidden ${SidebarStyle.sidebar__bottom}`}>
+         {/* People who viewed you */}
 
-      {/* <div className={SidebarStyle.sidebar__bottom}>
-        <p>Recent</p>
-        {recentItem("software")}
-        {recentItem("devops")}
-        {recentItem("learning")}
-        {recentItem("skillshare")}
-        {recentItem("reactjs")}
-      </div> */}
+      <Stats summary={USERDATA?.SUMMARY} title={TITLES.CONNECTIONS} Icon={SupervisorAccountIcon} tooltip={TOOLTIPS.VIEW_ALL_CONNECTIONS}/>
+      
+       
+      </div>
+       
+      
     </div>
   );
 }

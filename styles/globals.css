@@ -1,9 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.app{
-  display:flex;
-  flex-direction:column;
+.app {
+  display: flex;
+  flex-direction: column;
 }
 html,
 body {
@@ -81,47 +81,64 @@ button.danger {
 .red__border__input {
   border: 2px solid red !important;
 }
-.app__toast{
-  font-size:0.8rem !important;
-   
-
+.app__toast {
+  font-size: 0.8rem !important;
 }
 
-.control__disabled{
-  pointer-events: none!important;
-  cursor: not-allowed!important;
+.control__disabled {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
 }
 
-.control__disabled__opaque{
-  pointer-events: none!important;
-  cursor: not-allowed!important;
+.control__disabled__opaque {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
   opacity: 0.6 !important;
 }
-.control__muted{
+.control__muted {
   color: lightgrey !important;
 }
 
-.app__workflow__loader{
- color:darkgrey !important;
- margin-top:1px !important;
- 
+.app__workflow__loader {
+  color: darkgrey !important;
+  margin-top: 1px !important;
 }
-.app__workflow__loader__sm{
-  width: 20px!important;
-  height: 20px!important;
+.app__workflow__loader__sm {
+  width: 20px !important;
+  height: 20px !important;
 }
 
-.MuiAvatar-root{
-  width: 80px !important;;
+.MuiAvatar-root {
+  width: 80px !important;
   height: 80px !important;
 }
 
-.evening{
-  background-image: linear-gradient(to right, #fff, #3b3b8a)!important;
+.evening {
+  background-image: linear-gradient(to right, #fff, #3b3b8a) !important;
 }
-.afternoon{
-  background-image: linear-gradient(to right, #fff, #F7B31C)!important;
+.afternoon {
+  background-image: linear-gradient(to right, #fff, #f7b31c) !important;
 }
-.morning{
-  background-image: linear-gradient(to right, #fff, #48A74F)!important;
+.morning {
+  background-image: linear-gradient(to right, #fff, #48a74f) !important;
+}
+.uvsity-card {
+  border-radius: 0.5rem;
+  border-width: 1px;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+}
+.lg-icon{
+  font-size: 4rem!important;
+}
+.md-icon{
+  font-size: 3rem!important;
+}
+.sticky__sidebar{
+    transform: translateZ(0px);
+    top: 30px;
+    position: fixed;
+    background: #fff;
+    z-index: 999;
+    
 }

@@ -2,14 +2,16 @@
     display: flex;
     width: 100%;
     padding:15px;
-    background-color:#F3F2EF
+    background-color:#F3F2EF;
+    justify-content:space-between
 }
 .dashboard__left__sidebar{
     flex: 0.2
 }
 
 .dashboard__main{
-    flex: 0.6
+    flex: 0.6;
+     
 }
 
 .dashboard__right__sidebar{

@@ -1,25 +1,19 @@
 .sidebar {
   top: 80px;
-  position: sticky;
-  flex: 0.2;
   border-radius: 10px;
-  text-align: center;
-  height: fit-content;
 }
 .sidebar__top {
-  display: flex;
-  flex-direction: column;
   border: 1px solid lightgray;
-  border-bottom: 5px solid #0081cb;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   background-color: #fff;
+  border-radius: 10px;
+  border-bottom: 5px solid #0081cb;
 }
 
 .sidebar__bottom {
   text-align: left;
   padding: 10px;
   border: 1px solid lightgray;
+  border-bottom: 5px solid #0081cb;
   background-color: #fff;
   border-radius: 10px;
   margin-top: 10px;
