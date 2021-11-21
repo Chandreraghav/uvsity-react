@@ -142,3 +142,50 @@ button.danger {
     z-index: 999;
     
 }
+ 
+.uvsity__card {
+
+  border-radius: .5rem;
+  border-width: 1px;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255,255,255,var(--tw-bg-opacity));
+}
+.uvsity__card__border__theme{
+  border-bottom: 5px solid #0081cb;
+}
+.uvsity__card__top {
+  border: 1px solid lightgray;
+  background-color: #fff;
+  border-radius: 10px;
+  border-bottom: 5px solid #0081cb;
+}
+.spacer {
+  padding: 5px;
+   
+}
+.divider{
+  width: 100%;
+  color: #ebebeb!important;
+}
+
+.uvsity__card__bottom {
+  text-align: left;
+  padding: 10px;
+  border: 1px solid lightgray;
+  border-bottom: 5px solid #0081cb;
+  background-color: #fff;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+.uvsity__card__bottom > p {
+  font-size: 13px;
+  padding-bottom: 10px;
+}
+.avatar-sm{
+  width: 56px !important;
+  height: 56px !important;
+}
+.avatar-dashboard{
+  width: 48px !important;
+  height: 48px !important;
+}

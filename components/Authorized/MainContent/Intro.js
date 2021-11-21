@@ -14,13 +14,14 @@ import Stack from "@mui/material/Stack";
 import { Tooltip } from "@mui/material";
 import { getRandomArrayElement } from "../../../utils/utility";
 import { TIME_OF_DAY_GREETING } from "../../../constants/constants";
+import Spacer from "../../shared/Spacer";
 function Intro() {
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [loggedIn, setLoggedIn] = useState(false);
   const [introMoodColor, setIntroMoodColor] = useState(null);
   const introObject = INTRO_TEXT_KEYWORDS[0];
-  const greetObject = GREET_IMAGES[0]
-  const [greetImage, setGreetImage]=useState(greetObject)
+  const greetObject = GREET_IMAGES[0];
+  const [greetImage, setGreetImage] = useState(greetObject);
   const [introHeader, setIntroHeader] = useState(
     <>
       {introObject?.icon} {introObject?.phrase}
@@ -42,8 +43,12 @@ function Intro() {
     let controller = new AbortController();
     if (INTRO_TEXT_KEYWORDS) {
       setInterval(() => {
-        let object = getRandomArrayElement(INTRO_TEXT_KEYWORDS)
-        setIntroHeader(<>{object?.icon} {object?.phrase}</>);
+        let object = getRandomArrayElement(INTRO_TEXT_KEYWORDS);
+        setIntroHeader(
+          <>
+            {object?.icon} {object?.phrase}
+          </>
+        );
       }, 60000);
     }
 
@@ -60,14 +65,31 @@ function Intro() {
     return "";
   }
   return (
-    <div className={` px-1 py-1 ${IntroStyles.intro}`}>
-      <h2 className={` text-left ${introMoodColor}`}>
-        {GREETING.replace("<user>", USERDATA?.SUMMARY?.data?.firstName)}
-      </h2>
+    <div className={` px-1 py-1 `}>
+      <div className={`flex flex-row items-center justify-between h-10 flex-1 overflow-auto ${introMoodColor}`}>
+        <p
+          className=" text-lg font-semibold  
+            leading-none xl:block dark:text-brand-grey-200"
+        >
+          👋 {GREETING.replace("<user>", USERDATA?.SUMMARY?.data?.firstName)}
+        </p>
+
+        <div className="flex flex-row">
+          <p
+            className="button-transparent font-semibold text-sm 
+              md:text-base px-2 md:px-3 md:mr-2 flex flex-row items-center 
+              active bg-brand-grey-100 dark:bg-brand-dark-grey-900 hover:bg-brand-grey-100 
+              dark:hover:bg-brand-dark-grey-700 flex flex-row items-center"
+          ></p>
+        </div>
+      </div>
+
+     <Spacer/>
+
       <header
         className={IntroStyles.intro__banner}
         style={{
-         // backgroundImage: `url(${INTRO_BACKGROUND_GRADIENT})`,
+          // backgroundImage: `url(${INTRO_BACKGROUND_GRADIENT})`,
           backgroundSize: "cover",
           backgroundPosition: "center center",
           backgroundAttachment: "fixed",
@@ -75,18 +97,17 @@ function Intro() {
         }}
       >
         <div className={IntroStyles.intro__contents}>
-        <div>
-          <img className={`block  items-center w-48 mx-auto object-contain`} 
-          src={`../${greetImage}`}/>
-         
+          <div>
+            <img
+              className={`block items-center w-48 mx-auto object-contain`}
+              src={`../${greetImage}`}
+            />
           </div>
           <div className={IntroStyles.intro__title}>
             <h3 className="text-left px-2 text-black">{introHeader}</h3>
           </div>
-       
-            
+
           <div className={IntroStyles.intro__buttons}>
-         
             <Stack direction="row" spacing={2}>
               {INTRO_ACTIONS.map((action) =>
                 action.disabled ? (
@@ -106,12 +127,13 @@ function Intro() {
                   </Tooltip>
                 )
               )}
-             
             </Stack>
           </div>
         </div>
-         <div className={IntroStyles.intro__Fade__Bottom}></div>
+        <div className={IntroStyles.intro__Fade__Bottom}></div>
       </header>
+      <Spacer/>
+
     </div>
   );
 }

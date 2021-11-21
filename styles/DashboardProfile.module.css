@@ -1,0 +1,28 @@
+.profile__name:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  color: #0081cb !important;
+}
+.profile__subtitle__icon {
+  font-size: 1rem !important;
+}
+.profile__event__time__subtitle {
+  border: none;
+  outline: none;
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: darkgrey;
+  margin-top: 2px;
+}
+.profile__event__time__subtitle__icon {
+  font-size: 1rem !important;
+}
+.profiles__header__text:hover{
+  cursor: pointer!important;
+  text-decoration: underline!important;
+  transition-timing-function: ease-in!important;
+  transition: all 0.8s!important;
+  color: #111!important;
+}

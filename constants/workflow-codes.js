@@ -8,8 +8,11 @@ export const WORKFLOW_CODES = {
     },
     PROFILE:{
        EDIT:'P_EDIT',
-       REQUEST_RECOMMENDATION:'P_REQR'
+       REQUEST_RECOMMENDATION:'P_REQR',
+      
     },
+    
+    
     CONNECTION_TYPES: {
       STUDENT:'CT_STUD',
       ALUMNI:'CT_ALUM',
@@ -20,4 +23,9 @@ export const WORKFLOW_CODES = {
       TOPIC:'IP_TOPI'
     }
   },
+  PEOPLE:{
+    WHO_VIEWED_ME:'P_WHOV',
+    WHO_ARE_INTERESTING:'P_WHOI',
+    PROFILE_VIEW:'P_PROV'
+  }
 };

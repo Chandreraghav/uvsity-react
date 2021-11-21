@@ -13,13 +13,15 @@ import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutl
 import Tooltip from "@mui/material/Tooltip";
 import { TOOLTIPS } from "../../../constants/userdata";
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import FlareOutlinedIcon from '@mui/icons-material/FlareOutlined';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import BoltOutlinedIcon from '@mui/icons-material/BoltOutlined';
 import WarningOutlinedIcon from '@mui/icons-material/WarningOutlined';
 import {
   RESPONSE_TYPES,
   RESPONSE_TYPES_COLOR,
 } from "../../../constants/constants";
+import DoubleArrowOutlinedIcon from '@mui/icons-material/DoubleArrowOutlined';
+import Spacer from "../../shared/Spacer";
 function CompletionDetail() {
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [suggestionShowed, setSuggestionShown] = useState(false)
@@ -73,7 +75,7 @@ function CompletionDetail() {
       return <CheckOutlinedIcon/>
     }
     if (completionTextObject.alertLevel === RESPONSE_TYPES.INFO) {
-      return <FlareOutlinedIcon/>
+      return <ThumbUpOutlinedIcon/>
     }
     if (completionTextObject.alertLevel === RESPONSE_TYPES.WARNING) {
       return <BoltOutlinedIcon/>
@@ -83,7 +85,9 @@ function CompletionDetail() {
     }
   };
   return (
-    <div style={{borderBottom: `5px solid ${getColor()}`}} className={`  ${ProfileCompletionDetailStyle.profile__completion__detail}`}>
+    <div>
+     <Spacer count={2}/>
+    <div style={{borderBottom: `5px solid ${getColor()}`}} className={` uvsity__card`}>
       <div
         className={
           ProfileCompletionDetailStyle.profile__completion__detail__card
@@ -139,12 +143,13 @@ function CompletionDetail() {
               { suggestionShowed && completionTextObject?.recommendedSteps.map((reco)=>(
                 <div className={ProfileCompletionDetailStyle.profile__completion__detail__guidance__text}>
                   
-                  ➡️&nbsp;{reco}</div>
+                  <DoubleArrowOutlinedIcon/>&nbsp;{reco}</div>
               ))}
             </div>
           )}
         </div>
         <div className=" items-baseline">
+        <Spacer/>
           {COMPLETION_DETAIL_ACTION.map((action) => (
             <Tooltip key={action.id} title={action.tooltip}>
               {action.startIcon ? (
@@ -158,8 +163,11 @@ function CompletionDetail() {
               )}
             </Tooltip>
           ))}
+             
         </div>
+     
       </div>
+    </div>
     </div>
   );
 }

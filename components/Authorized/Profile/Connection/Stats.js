@@ -1,20 +1,32 @@
-import { Divider, Tooltip } from "@mui/material";
-import React from "react";
-import { CONNECTIONS } from "../../../../constants/userdata";
+import { Divider, Tooltip, Typography } from "@mui/material";
+import React,{useEffect, useState} from "react";
+import {
+  CONNECTIONS,
+  IMAGE_PATHS,
+  PLACEHOLDERS,
+} from "../../../../constants/userdata";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import StatStyle from "../../../../styles/Stat.module.css";
 import { TITLES, TOOLTIPS } from "../../../../constants/userdata";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
-function Stats({ tooltip, title, Icon, summary, standalone }) {
-  if (!summary && !title && !standalone) return "";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
+import Spacer from "../../../shared/Spacer";
+function Stats() {
+  let tooltip, title, Icon, summary;
   const [USERDATA, dispatch] = useDataLayerContextValue();
-  if (standalone) {
-    summary = USERDATA?.SUMMARY;
-    title = TITLES.CONNECTIONS;
-    Icon = SupervisorAccountIcon;
-    tooltip = TOOLTIPS.VIEW_ALL_CONNECTIONS;
-  }
+  const [loggedIn, setLoggedIn] = useState(false);  
+  useEffect(() => {
+      setLoggedIn(AuthGuardService.isUserLoggedIn());
+
+  });
+  if(!loggedIn) {return ''}
+  summary = USERDATA?.SUMMARY;
+  title = TITLES.CONNECTIONS;
+  Icon = SupervisorAccountIcon;
+  tooltip = TOOLTIPS.VIEW_ALL_CONNECTIONS;
+
   const getTotalStatCount = () => {
     try {
       return (
@@ -39,30 +51,52 @@ function Stats({ tooltip, title, Icon, summary, standalone }) {
         return 0;
     }
   };
+
   return (
-    getTotalStatCount() > 0 && (
-      <div className={ `${standalone?StatStyle.stats__standalone:''} ${StatStyle.stats}`}>
+    <div>
+      <Spacer/>
+      <div className={`${"uvsity__card uvsity__card__border__theme"}`}>
         <Tooltip title={tooltip ? tooltip : ""}>
           <div className={StatStyle.stat__legend}>
             {Icon && <Icon />}
-            <div>{title}</div>
+            <div>
+              {title}({getTotalStatCount()})
+            </div>
           </div>
         </Tooltip>
 
         <Divider className={StatStyle.stat__divider} />
-        {CONNECTIONS.filter((hidden) => hidden !== true).map(
-          (connection) =>
-            getCount(connection.code) > 0 && (
-              <div key={connection.id} className={StatStyle.stat}>
-                <p>{connection.title}</p>
-                <p className={StatStyle.statNumber}>
-                  {getCount(connection.code)}
-                </p>
-              </div>
-            )
+      
+        {getTotalStatCount() > 0 ? (
+          CONNECTIONS.filter((hidden) => hidden !== true).map(
+            (connection) =>
+              getCount(connection.code) > 0 && (
+                <div key={connection.id} className={StatStyle.stat}>
+                  <p>{connection.title}</p>
+                  <p className={StatStyle.statNumber}>
+                    {getCount(connection.code)}
+                  </p>
+                </div>
+              )
+          )
+        ) : (
+          <div>
+              <img className={ 'object-contain'}
+              alt={TOOLTIPS.NO_CONNECTIONS}
+              src={IMAGE_PATHS.NO_CONNECTIONS}
+            />
+            <Typography
+              className={`font-semibold leading-tight ${StatStyle.stat__no__connections__text}`}
+              component="div"
+              variant="h5"
+            >
+              <InfoOutlinedIcon />
+              {PLACEHOLDERS.NO_CONNECTIONS}
+            </Typography>
+          </div>
         )}
       </div>
-    )
+    </div>
   );
 }
 

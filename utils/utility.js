@@ -113,8 +113,15 @@ export const formattedName = (firstName, lastName) => {
   if (firstName && lastName) {
     return firstName + " " + lastName;
   }
-  return null;
+  return '';
 };
+export const formattedProfileSubtitle=(str1, str2)=>{
+  if (str1 && str2) {
+    return str1 + ", " + str2;
+  }
+  return '';
+
+}
 export const timeOfDay = () => {
   var today = new Date();
   var curHr = today.getHours();

@@ -1,24 +1,22 @@
 import React from "react";
-import { avatarToString } from "../../../utils/utility";
+import { avatarToString, formattedProfileSubtitle } from "../../../utils/utility";
 import ProfileStyle from "../../../styles/Profile.module.css";
 import { Avatar } from "@mui/material";
-import CompletionProgress from "./CompletionProgress";
 import Tooltip from "@mui/material/Tooltip";
 import { TOOLTIPS } from "../../../constants/userdata";
-import CompletionDetail from "./CompletionDetail";
+import Spacer from "../../shared/Spacer";
 function MiniProfile({
   coverImage,
   profileImage,
   name,
   title,
-  metaData,
-  showProfileCompletionIndicator,
-  showProfileCompletionDetailCard,
-  profilePercentageCompletion,
+  metaData
 }) {
   if (!name) return "";
   return (
-    <div className={ProfileStyle.profile__mini}>
+    <div>
+      <Spacer/>
+    <div className={`uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__mini}`}>
       <img
         src={
           coverImage ? coverImage : process.env.NEXT_FALLBACK_PROFILE_COVER_URL
@@ -43,18 +41,14 @@ function MiniProfile({
           {title ? <h4>{title}</h4> : <span>Add title</span>}
           {metaData && (
             <h3>
-              {metaData.company}, {metaData.location}
+              {formattedProfileSubtitle(metaData.company,metaData.location)}
             </h3>
           )}
         </div>
       </div>
 
-      {showProfileCompletionIndicator && (
-        <div className={ProfileStyle.profile__completion__indicator}>
-          <CompletionProgress percentage={profilePercentageCompletion} />
-        </div>
-      )}
-      {showProfileCompletionDetailCard && <CompletionDetail />}
+     
+    </div>
     </div>
   );
 }

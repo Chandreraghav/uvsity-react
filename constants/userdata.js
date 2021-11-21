@@ -242,17 +242,33 @@ export const COMPLETION_DETAIL_ACTION = [
 
 export const PLACEHOLDERS = {
   SEARCH: "Search for people, sessions, topics...",
+  VIEW_DETAIL:'View Detail',
+  ATTENDING:'attending',
+  FREE:'Free',
+  NO_CONNECTIONS:'Uh Oh! it seems you do not have any connections in your network yet.Try adding few connections to your network for a better experience.'
 };
 export const TITLES = {
   CONNECTIONS: "Connections",
+  POPULAR_SESSION:'Popular Sessions',
+  PROBABLE_INTERESTING_CONNECTIONS:'Connections you might find interesting',
+  PEOPLE_WHO_VIEWED_YOU:'People who viewed you'
+  
 };
 export const TOOLTIPS = {
   GO_TO_PROFILE: "Go to profile",
   VIEW_ALL_CONNECTIONS: "View all connections",
   VIEW_SUGGESTIONS: "Toggle suggestions",
+  VIEW_PROFILE:"View profile",
+  FREE_SESSION:'This session is a free to attend session',
+  PAID_SESSION:'Paid session',
+  KNOW_MORE_SESSION:'Know more about this session',
+  NO_CONNECTIONS:'No connections',
+  PROBABLE_INTERESTING_CONNECTIONS:'View more people whom you might be interested on',
+  PEOPLE_WHO_VIEWED_YOU:'View more people who viewed your profile',
+  VIEW_MORE:'View more of such people'
 };
 
-export const GREETING = `👋 ${timeOfDay()} <user>`;
+export const GREETING = `${timeOfDay()} <user>`;
 export const DEFAULT_COVER_IMAGE =
   "https://res.cloudinary.com/practicaldev/image/fetch/s--F7w_snYb--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/vda3askm2sbfjl717q9q.png";
 export const INTRO_BACKGROUND_GRADIENT =
@@ -463,3 +479,8 @@ export const GREET_IMAGES = [
   "static/images/greet/hello-4.jpg",
   "static/images/greet/hello-5.png",
 ];
+export const IMAGE_PATHS={
+  NO_CONNECTIONS: "/static/images/nodata-illustrations/no-connections.jpg"
+}
+
+
