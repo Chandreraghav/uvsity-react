@@ -4,6 +4,7 @@ import HeaderOptionsStyle from "../../../styles/HeaderOption.module.css";
 import { avatarToString } from "../../../utils/utility";
 import Tooltip from "@mui/material/Tooltip";
 import AccountMenu from "../Profile/Account/AccountMenu";
+import { IMAGE_PATHS } from "../../../constants/userdata";
 
 function HeaderOption({
   avatar,
@@ -34,7 +35,7 @@ function HeaderOption({
       )}
 
       {isAuthorizedProfile ? (
-        avatar ? (
+        avatar && !avatar.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
           <div>
             <Tooltip title={tooltip}>
               <Avatar

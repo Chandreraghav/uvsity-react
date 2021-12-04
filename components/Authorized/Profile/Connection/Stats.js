@@ -55,7 +55,8 @@ function Stats() {
   return (
     <div>
       <Spacer/>
-      <div className={`${"uvsity__card uvsity__card__border__theme"}`}>
+      <div className={`${"uvsity__card uvsity__card__border__theme px-1 py-1"}`}>
+      <Spacer/>
         <Tooltip title={tooltip ? tooltip : ""}>
           <div className={StatStyle.stat__legend}>
             {Icon && <Icon />}
@@ -83,10 +84,10 @@ function Stats() {
           <div>
               <img className={ 'object-contain'}
               alt={TOOLTIPS.NO_CONNECTIONS}
-              src={IMAGE_PATHS.NO_CONNECTIONS}
+              src={IMAGE_PATHS.NO_DATA.CONNECTIONS}
             />
             <Typography
-              className={`font-semibold leading-tight ${StatStyle.stat__no__connections__text}`}
+              className={`font-semibold leading-tight no__data`}
               component="div"
               variant="h5"
             >

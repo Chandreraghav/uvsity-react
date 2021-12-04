@@ -5,12 +5,16 @@ import Profiles from "./Network/People/Profiles";
 import Intro from "./MainContent/Intro";
 import Stats from "./Profile/Connection/Stats";
 import CompactCard from "./Sessions/Preview/CompactCard";
-import { TITLES, TOOLTIPS } from "../../constants/userdata";
+import { ICONS, TITLES, TOOLTIPS } from "../../constants/userdata";
 
 function Dashboard() {
   return (
+    
+    
     <div
-    style={{zoom:0.9, scale:1}}  className="grid items-stretch grid-cols-12 gap-2 px-2 mx-auto xl:container md:gap-4 
+    style={{zoom:0.9, scale:1}} className="
+    grid items-stretch grid-cols-12 
+    gap-2 px-2 mx-auto xl:container md:gap-4 
     xl:grid-cols-8 2xl:px-5"
     >
       <div className="relative py-2 z-50 col-span-12 md:col-span-3 lg:col-span-2 xl:col-span-2">
@@ -24,13 +28,15 @@ function Dashboard() {
         <CompactCard title={TITLES.POPULAR_SESSION}/>
       </div>
 
-      <div className="col-span-12 pt-2 lg:block xl:col-span-2">
+      <div className="col-span-12 pt-2  xl:col-span-2">
       <Stats/>
-      <Profiles workflowRoute={WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING} 
+      <Profiles options={{connect:true, mixedMode:false}}  workflowRoute={WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING} 
       title={TITLES.PROBABLE_INTERESTING_CONNECTIONS}
       tooltip={TOOLTIPS.PROBABLE_INTERESTING_CONNECTIONS}
       dashboardPreview/>
       </div>
+
+ 
     </div>
   );
 }

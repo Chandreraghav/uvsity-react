@@ -189,3 +189,31 @@ button.danger {
   width: 48px !important;
   height: 48px !important;
 }
+.usticky{
+  
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    top: 0;
+    align-self: flex-start; /* <-- this is the fix */
+    
+  
+}
+
+.no__data{
+  font-size: 0.8rem!important;
+  padding: 6px !important;
+  text-align: left;
+  font-weight: 400!important;
+  color:gray !important;
+}
+.font-small{
+  font-size: 0.6rem!important;
+}
+.mt-3-5{
+margin-top:14px!important ;
+}
+.slow-transition{
+  transition-property: width;
+  transition-duration: 5s;
+  transition-delay: 2s;
+}

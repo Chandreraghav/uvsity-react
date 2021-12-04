@@ -24,7 +24,7 @@ import {
   SHIM_MAX_TIMEOUT_IN_MILLIS,
 } from "../../constants/constants";
 import CornerRibbon from "react-corner-ribbon";
-import { PLACEHOLDERS, TOOLTIPS } from "../../constants/userdata";
+import { IMAGE_PATHS, PLACEHOLDERS, TOOLTIPS } from "../../constants/userdata";
 import { Tooltip } from "@mui/material";
 
 export default function SessionCard({ data, shimmerTime, authorized }) {
@@ -164,7 +164,7 @@ export default function SessionCard({ data, shimmerTime, authorized }) {
               />
             )}
             {(data?.courseCreatorImageURL === "" ||
-              data?.courseCreatorImageURL == null) && (
+              data?.courseCreatorImageURL == null || data?.courseCreatorImageURL.includes(IMAGE_PATHS.NO_PROFILE_PICTURE)) && (
               <Avatar {...avatarToString(`${session_author}`)} />
             )}
           </div>

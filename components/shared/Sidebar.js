@@ -3,7 +3,7 @@ import MiniProfile from "../Authorized/Profile/MiniProfile";
 import { useDataLayerContextValue } from "../../context/DataLayer";
 import { AuthGuardService } from "../../auth-guard/service/AuthGuardService";
 import { formattedName } from "../../utils/utility";
-import { DEFAULT_COVER_IMAGE, TITLES, TOOLTIPS } from "../../constants/userdata";
+import { DEFAULT_COVER_IMAGE, ICONS, TITLES, TOOLTIPS } from "../../constants/userdata";
 import CompletionDetail from "../Authorized/Profile/CompletionDetail";
 import Profiles from "../Authorized/Network/People/Profiles";
 import { WORKFLOW_CODES } from "../../constants/workflow-codes";
@@ -17,7 +17,7 @@ function Sidebar() {
   }, []);
   useEffect(() => {
     window.addEventListener("scroll", () => {
-      if (window.scrollY > 60) {
+      if (window.scrollY > 120) {
         setSticky(true);
       } else {
         setSticky(false);
@@ -34,7 +34,7 @@ function Sidebar() {
     return "";
   }
   return (
-    <div>
+    <div className={isSticky ? `usticky`:''}>
       <MiniProfile
         name={formattedName(
           USERDATA?.SUMMARY?.data?.firstName,
@@ -50,10 +50,11 @@ function Sidebar() {
       />
 
       <CompletionDetail />
-      <Profiles
+      <Profiles options={{connect:false, mixedMode:true}}
         workflowRoute={WORKFLOW_CODES.PEOPLE.WHO_VIEWED_ME}
         title={TITLES.PEOPLE_WHO_VIEWED_YOU}
         tooltip={TOOLTIPS.PEOPLE_WHO_VIEWED_YOU}
+        icon={ICONS.PEOPLE_WHO_VIEWED_YOU}
         dashboardPreview
       />
     </div>

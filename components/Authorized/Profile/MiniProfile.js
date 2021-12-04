@@ -3,7 +3,7 @@ import { avatarToString, formattedProfileSubtitle } from "../../../utils/utility
 import ProfileStyle from "../../../styles/Profile.module.css";
 import { Avatar } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import { TOOLTIPS } from "../../../constants/userdata";
+import { IMAGE_PATHS, TOOLTIPS } from "../../../constants/userdata";
 import Spacer from "../../shared/Spacer";
 function MiniProfile({
   coverImage,
@@ -24,7 +24,7 @@ function MiniProfile({
         alt=""
       />
 
-      {profileImage ? (
+      {profileImage && !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
         <Avatar
           className={ProfileStyle.profile__mini__avatar}
           src={profileImage}

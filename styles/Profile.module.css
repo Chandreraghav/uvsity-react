@@ -45,7 +45,6 @@
   place-items: center;
   justify-content: center;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 .profile__mini > div > h2:hover {

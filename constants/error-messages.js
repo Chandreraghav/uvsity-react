@@ -43,3 +43,10 @@ export const LOGOUT={
 
 export const GENERIC_INTERNAL_ERROR =
   "An unexpected internal error has occured. Please try again.";
+
+export const PEOPLE={
+  NETWORK:{
+     CONNECTION_REQUEST_ERROR: "There occured a problem sending the connection request to",
+     CONNECTION_ACCEPT_ERROR: "There occured a problem accepting the connection request from"
+  }
+}

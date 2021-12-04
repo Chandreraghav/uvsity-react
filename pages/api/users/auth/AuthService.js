@@ -2,7 +2,6 @@ import {
   getLocalStorageObject,
   setLocalStorageObject,
   removeLocalStorageObject,
-  clearLocalStorage,
 } from "../../../../localStorage/local-storage";
 import { LOGIN_SOURCE } from "../../../../constants/constants";
 import { ENDPOINTS } from "../../../../async/endpoints";
@@ -96,10 +95,10 @@ export class AuthService {
 
   static logout() {
     try {
+      removeLocalStorageObject("uvsity-user");
       removeLocalStorageObject("uvsity-siteToken");
       removeLocalStorageObject("uvsity-googleToken");
       removeLocalStorageObject("uvsity-authToken");
-      removeLocalStorageObject("uvsity-user");
       removeLocalStorageObject("uvsity-loggedIn");
       removeLocalStorageObject("uvsity-loggedInSource");
       // we do not clear ip data on logout because of its global nature.

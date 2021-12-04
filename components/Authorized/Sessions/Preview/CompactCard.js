@@ -26,8 +26,8 @@ function CompactCard({ title }) {
       py-4 xl:container md:gap-4 xl:grid-cols-1 2xl:px-5 "
         >
           {USERDATA?.TOP_COURSES?.data.map((value) => (
-            <div>
-            <Preview data={value} key={value.courseId} authorized={loggedIn} />
+            <div key={value.courseId}>
+            <Preview data={value}  authorized={loggedIn} />
             <Spacer count={1}/>
             </div>
           ))}

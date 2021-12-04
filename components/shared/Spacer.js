@@ -6,9 +6,9 @@ function Spacer({ count }) {
     let jsx = [];
     for (var i = 0; i < _count; i++) {
       jsx.push(
-        <>
+        <React.Fragment key={i}>
           <div className="spacer"></div>
-        </>
+        </React.Fragment>
       );
     }
     return jsx;

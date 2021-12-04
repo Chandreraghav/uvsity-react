@@ -21,7 +21,7 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { RESPONSE_TYPES } from "./constants";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import RecommendOutlinedIcon from "@mui/icons-material/RecommendOutlined";
-
+import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import SupervisedUserCircleOutlinedIcon from "@mui/icons-material/SupervisedUserCircleOutlined";
@@ -35,7 +35,7 @@ import GroupWorkOutlinedIcon from "@mui/icons-material/GroupWorkOutlined";
 import VideoCameraFrontOutlinedIcon from "@mui/icons-material/VideoCameraFrontOutlined";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -242,30 +242,40 @@ export const COMPLETION_DETAIL_ACTION = [
 
 export const PLACEHOLDERS = {
   SEARCH: "Search for people, sessions, topics...",
-  VIEW_DETAIL:'View Detail',
-  ATTENDING:'attending',
-  FREE:'Free',
-  NO_CONNECTIONS:'Uh Oh! it seems you do not have any connections in your network yet.Try adding few connections to your network for a better experience.'
+  VIEW_DETAIL: "View Detail",
+  ATTENDING: "attending",
+  FREE: "Free",
+  NO_INTERESTING_PROFILE:
+    "No interesting profiles found for you. Try updating your profile to discover more people around you.",
+  NO_PEOPLE_VIEWED_YOU:
+    "No one has viewed your profile recently. Try ading new connections and updating your profile to discover more people around you.",
+
+  NO_CONNECTIONS:
+    "Uh Oh! it seems you do not have any connections in your network yet.Try adding few connections to your network for a better experience.",
 };
 export const TITLES = {
   CONNECTIONS: "Connections",
-  POPULAR_SESSION:'Popular Sessions',
-  PROBABLE_INTERESTING_CONNECTIONS:'Connections you might find interesting',
-  PEOPLE_WHO_VIEWED_YOU:'People who viewed you'
-  
+  POPULAR_SESSION: "Popular Sessions",
+  PROBABLE_INTERESTING_CONNECTIONS: "Connections you might find interesting",
+  PEOPLE_WHO_VIEWED_YOU: "People who viewed you",
+  CONNECT_TO_PERSON: "Connect",
+  CONNECTION_REQUEST_SENT: "request sent",
 };
 export const TOOLTIPS = {
   GO_TO_PROFILE: "Go to profile",
   VIEW_ALL_CONNECTIONS: "View all connections",
   VIEW_SUGGESTIONS: "Toggle suggestions",
-  VIEW_PROFILE:"View profile",
-  FREE_SESSION:'This session is a free to attend session',
-  PAID_SESSION:'Paid session',
-  KNOW_MORE_SESSION:'Know more about this session',
-  NO_CONNECTIONS:'No connections',
-  PROBABLE_INTERESTING_CONNECTIONS:'View more people whom you might be interested on',
-  PEOPLE_WHO_VIEWED_YOU:'View more people who viewed your profile',
-  VIEW_MORE:'View more of such people'
+  VIEW_PROFILE: "View profile",
+  FREE_SESSION: "This session is a free to attend session",
+  PAID_SESSION: "Paid session",
+  KNOW_MORE_SESSION: "Know more about this session",
+  NO_CONNECTIONS: "No connections",
+  NO_INTERESTING_PROFILE: "No interesting profiles available",
+  NO_PEOPLE_VIEWED_YOU: "No people viewed you yet",
+  PROBABLE_INTERESTING_CONNECTIONS:
+    "View more people whom you might be interested on",
+  PEOPLE_WHO_VIEWED_YOU: "View more people who viewed your profile",
+  VIEW_MORE: "View more of such people",
 };
 
 export const GREETING = `${timeOfDay()} <user>`;
@@ -431,7 +441,7 @@ export const getProfileCompletionTexts = (profileCompletionData) => {
 
   if (!profileCompletionData?.isRecommendationsPresentInInbox) {
     profileCompletionObject.recommendedSteps.push(
-      `Add ${profileCompletionData.recommendationPercent}% to your profile by getting recommended from your connections.`
+      `Add ${profileCompletionData?.recommendationPercent}% to your profile by getting recommended from your connections.`
     );
   }
   if (profileCompletionData?.percentageOfProfileAlreadyCompleted == 100) {
@@ -479,8 +489,27 @@ export const GREET_IMAGES = [
   "static/images/greet/hello-4.jpg",
   "static/images/greet/hello-5.png",
 ];
-export const IMAGE_PATHS={
-  NO_CONNECTIONS: "/static/images/nodata-illustrations/no-connections.jpg"
-}
-
-
+export const IMAGE_PATHS = {
+  NO_DATA: {
+    CONNECTIONS: "/static/images/nodata-illustrations/no-connections.jpg",
+    PEOPLE: "/static/images/nodata-illustrations/no-interesting-people.jpg",
+    PEOPLE_VIEWS: "/static/images/nodata-illustrations/no-views-on-profile.PNG",
+  },
+  NO_PROFILE_PICTURE: "profilebig.png",
+};
+export const ICONS = {
+  PROBABLE_INTERESTING_CONNECTIONS: <AutoAwesomeOutlinedIcon />,
+  PEOPLE_WHO_VIEWED_YOU: <VisibilityOutlinedIcon />,
+};
+export const NETWORK= 
+  {
+    CONNECTION_RELATION_STATE:{
+      IN_MY_NETWORK:'IN_MY_NETWORK',
+      AWAITING_RESPONSE:'WAITING_FOR_RESPONSE',
+      ACCEPT_REQUEST:'ACCEPT',
+      REJECT_REQUEST:'REJECT',
+      CONNECT:'INVITE'
+    }
+  }
+   
+  

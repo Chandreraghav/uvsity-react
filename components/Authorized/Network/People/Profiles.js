@@ -1,4 +1,4 @@
-import { Divider, Tooltip } from "@mui/material";
+import { Divider, Tooltip, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 import { TOOLTIPS } from "../../../../constants/userdata";
@@ -6,9 +6,18 @@ import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import Spacer from "../../../shared/Spacer";
 import Profile from "./Dashboard/Profile";
-import ProfileStyle from "../../../../styles/DashboardProfile.module.css"
+import ProfileStyle from "../../../../styles/DashboardProfile.module.css";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { IMAGE_PATHS, PLACEHOLDERS } from "../../../../constants/userdata";
 
-function Profiles({ title, tooltip, dashboardPreview, workflowRoute }) {
+function Profiles({
+  options,
+  title,
+  tooltip,
+  icon,
+  dashboardPreview,
+  workflowRoute,
+}) {
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [bo, setBO] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -30,15 +39,23 @@ function Profiles({ title, tooltip, dashboardPreview, workflowRoute }) {
   useEffect(() => {
     let controller = new AbortController();
     let isSubscribed = true;
+
     if (isSubscribed) {
       let _bo = [];
-      getProfileCollection()?.map((value) => {
-        if (workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING) {
-          _bo.push(value.suggestedFriend.webTO);
-        } else if (workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_VIEWED_ME) {
-          _bo.push(value.visitorUserSummary);
-        }
-      });
+      try {
+        getProfileCollection()?.map((value) => {
+          if (workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING) {
+            _bo.push(value.suggestedFriend.webTO);
+          } else if (workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_VIEWED_ME) {
+            value.visitorUserSummary.invitationAction=
+               value.invitationAction
+            
+            _bo.push(value.visitorUserSummary);
+          }
+        });
+      } catch (error) {
+        isSubscribed = false;
+      }
       setBO(_bo);
     }
 
@@ -62,30 +79,90 @@ function Profiles({ title, tooltip, dashboardPreview, workflowRoute }) {
   return (
     <div>
       <Spacer count={3} />
-      <div className={`${"uvsity__card uvsity__card__border__theme"}`}>
-        
-        <Tooltip  
-        title={tooltip?tooltip: TOOLTIPS.VIEW_MORE}>
-        <div 
-        className={`flex flex-row items-center justify-between px-2 pt-2 pb-2 
-         text-gray-600 font-medium leading-snug ${ProfileStyle.profiles__header__text}`}>
-          {title}
-        </div>
+      <div
+        className={` usticky ${"usticky uvsity__card uvsity__card__border__theme"}`}
+      >
+        <Tooltip
+          title={
+            bo.length > 0
+              ? tooltip
+                ? tooltip
+                : TOOLTIPS.VIEW_MORE
+              : workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
+              ? TOOLTIPS.NO_INTERESTING_PROFILE
+              : TOOLTIPS.NO_PEOPLE_VIEWED_YOU
+          }
+        >
+          <div
+            className={`flex flex-row items-center px-2 pt-2 pb-2  gap-1
+         text-gray-600 font-medium leading-snug  ${
+           bo.length > 0 ? ProfileStyle.profiles__header__text : ""
+         }`}
+          >
+            {icon ? (
+              <>
+                {icon}{" "}
+                {bo.length > 0
+                  ? title
+                  : workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
+                  ? TOOLTIPS.NO_INTERESTING_PROFILE
+                  : TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
+              </>
+            ) : (
+              <>
+                {bo.length > 0
+                  ? title
+                  : WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
+                  ? TOOLTIPS.NO_INTERESTING_PROFILE
+                  : TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
+              </>
+            )}
+          </div>
         </Tooltip>
-        <Divider className="divider"/>
-        <Spacer/>
-        <div className="px-3 text-base">
-          {bo?.map((value) => (
-            <Profile
-              firstName={value.firstName}
-              lastName={value.lastName}
-              avatar={value.profilePicName}
-              userType={value.userType}
-              instituition={value.educationalInstitution}
-              metaData={value}
+        <Divider className="divider" />
+        <Spacer />
+        {bo.length > 0 ? (
+          <div className="px-3 text-base">
+            {bo?.map((value) => (
+              <Profile
+                options={options}
+                key={value.userDetailsId}
+                firstName={value.firstName}
+                lastName={value.lastName}
+                avatar={value.profilePicName}
+                userType={value.userType}
+                instituition={value.educationalInstitution}
+                metaData={value}
+              />
+            ))}
+          </div>
+        ) : (
+          <div>
+            <img
+              className={"object-contain"}
+              alt={
+                workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
+                  ? TOOLTIPS.NO_INTERESTING_PROFILE
+                  : TOOLTIPS.NO_PEOPLE_VIEWED_YOU
+              }
+              src={
+                workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
+                  ? IMAGE_PATHS.NO_DATA.PEOPLE
+                  : IMAGE_PATHS.NO_DATA.PEOPLE_VIEWS
+              }
             />
-          ))}
-        </div>
+            <Typography
+              className={`font-semibold leading-tight no__data`}
+              component="div"
+              variant="h5"
+            >
+              <InfoOutlinedIcon />
+              {workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
+                ? PLACEHOLDERS.NO_INTERESTING_PROFILE
+                : PLACEHOLDERS.NO_PEOPLE_VIEWED_YOU}
+            </Typography>
+          </div>
+        )}
       </div>
     </div>
   );

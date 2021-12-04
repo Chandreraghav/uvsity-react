@@ -26,8 +26,15 @@ export const ENDPOINTS = {
       HOT_TOPICS: "/homepage/poll/hotTopics",
       TOP_COURSES: "/homepage/poll/topCourses",
     },
-    SIGN_OUT: "/logOff"
+    SIGN_OUT: "/logOff",
+    PEOPLE:{
+      NETWORK:{
+        ADD_REQUEST:'/inbox/send/invitationRequest',
+        ACCEPT_REQUEST:"/inbox/accept/invitationRequest/"
+      }
+    }
   },
+  
 };
 export const EXTERNAL_FULLY_QUALIFIED_ENDPOINTS = {
   IP_DATA: process.env.NEXT_PUBLIC_IP_INFO_ENDPOINT,
