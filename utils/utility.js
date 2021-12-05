@@ -1,4 +1,5 @@
 import { TIME_OF_DAY_GREETING } from "../constants/constants";
+import { getLocalStorageObject } from "../localStorage/local-storage";
 
 export const truncate = (str, n) => {
   try {
@@ -104,24 +105,37 @@ export const avatarToString = (name) => {
   };
 };
 export const localTZDate = (data) => {
-  let local_date = new Date(data).toString();
-  local_date = local_date.substring(0, local_date.lastIndexOf(":"));
+  let local_date = new Date(data).toLocaleString("en-US", {
+    timeZone: getTimezone(),
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   return local_date;
+};
+
+export const getTimezone = () => {
+  try {
+    return JSON.parse(getLocalStorageObject("uvsity-ipData")).time_zone.name;
+  } catch (error) {
+    return "America/New_York";
+  }
 };
 
 export const formattedName = (firstName, lastName) => {
   if (firstName && lastName) {
     return firstName + " " + lastName;
   }
-  return '';
+  return "";
 };
-export const formattedProfileSubtitle=(str1, str2)=>{
+export const formattedProfileSubtitle = (str1, str2) => {
   if (str1 && str2) {
     return str1 + ", " + str2;
   }
-  return '';
-
-}
+  return "";
+};
 export const timeOfDay = () => {
   var today = new Date();
   var curHr = today.getHours();

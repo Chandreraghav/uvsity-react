@@ -31,7 +31,8 @@ export const ENDPOINTS = {
       NETWORK:{
         ADD_REQUEST:'/inbox/send/invitationRequest',
         ACCEPT_REQUEST:"/inbox/accept/invitationRequest/"
-      }
+      },
+      ATTENDEES: "/course/#X#/attendees"
     }
   },
   

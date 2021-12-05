@@ -217,3 +217,20 @@ margin-top:14px!important ;
   transition-duration: 5s;
   transition-delay: 2s;
 }
+.-mt-2-5{
+  margin-top:-4px!important
+}
+.dialog-subtitle{
+  border-bottom: 1px solid #e2e2e2!important;
+}
+.dark-dialog{
+  background-color: #111 !important;
+  color: #fff !important;
+}
+.dialog-title:hover{
+cursor: pointer!important;
+text-decoration: underline;
+transition-timing-function: ease-in;
+transition: all 0.8s;
+color: #0081cb;
+}

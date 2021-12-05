@@ -246,9 +246,9 @@ export const PLACEHOLDERS = {
   ATTENDING: "attending",
   FREE: "Free",
   NO_INTERESTING_PROFILE:
-    "No interesting profiles found for you. Try updating your profile to discover more people around you.",
+    "No interesting profiles found for you. Please try again  in a while. To discover more people around you, try updating your profile.",
   NO_PEOPLE_VIEWED_YOU:
-    "No one has viewed your profile recently. Try ading new connections and updating your profile to discover more people around you.",
+    "No one has viewed your profile recently. Try adding new connections and updating your profile to discover more people around you.",
 
   NO_CONNECTIONS:
     "Uh Oh! it seems you do not have any connections in your network yet.Try adding few connections to your network for a better experience.",
@@ -260,7 +260,15 @@ export const TITLES = {
   PEOPLE_WHO_VIEWED_YOU: "People who viewed you",
   CONNECT_TO_PERSON: "Connect",
   CONNECTION_REQUEST_SENT: "request sent",
-};
+  CONNECTION_REQUEST_SENT_TO: "Connection request sent to ",
+  CONNECTED_PEOPLE:'You and #X# are now connected',
+  CONNECTED_PEOPLE_LATENT:'You and #X# are connected',
+  CONNECTION_REQUEST_PENDING:'Your connection request is yet pending from ',
+  CONNECTION_REQUEST_SENT_TO_LATENT:'You have sent a request to '
+  };
+export const PAYLOAD_DEFAULT_TEXTS={
+  CONNECTION_REQUEST_SENDING_TEXT:'Invitation Request sent by User Id #X# to User Id #Y#. Sent by REST Service.'
+}
 export const TOOLTIPS = {
   GO_TO_PROFILE: "Go to profile",
   VIEW_ALL_CONNECTIONS: "View all connections",
@@ -509,6 +517,13 @@ export const NETWORK=
       ACCEPT_REQUEST:'ACCEPT',
       REJECT_REQUEST:'REJECT',
       CONNECT:'INVITE'
+    },
+    REQUEST_TYPE:'INVITATION_REQUEST',
+    CONNECTION_ACTION_STATUS:{
+      PENDING:'pending',
+      CONNECTED:'connected',
+      ACCEPT:'Accept',
+
     }
   }
    

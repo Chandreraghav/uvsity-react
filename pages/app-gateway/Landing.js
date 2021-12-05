@@ -8,12 +8,15 @@ import UserDataService from "../api/users/data/UserDataService";
 import { useDataLayerContextValue } from "../../context/DataLayer";
 import { actionTypes } from "../../context/reducer";
 import Splash from "../../components/shared/Splash";
-import { asyncSubscriptions, standardSubscriptionPollDelay } from "../../async/subscriptions";
+import {
+  asyncSubscriptions,
+  standardSubscriptionPollDelay,
+} from "../../async/subscriptions";
 function Landing() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [{}, dispatch] = useDataLayerContextValue();
+  const [USER, dispatch] = useDataLayerContextValue();
   const [moduleError, setModuleError] = useState([]);
-  let poller1, poller2;
+  let profileVisitPoll, interestingConnectionsPoll;
 
   useEffect(() => {
     setTimeout(() => {
@@ -53,7 +56,7 @@ function Landing() {
   useEffect(async () => {
     let isSubscribed = true;
     let controller = new AbortController();
-    await topCourses(isSubscribed, dispatch, moduleError);
+    await topCourses(isSubscribed, dispatch, moduleError)
     return () => {
       controller?.abort();
       isSubscribed = false;
@@ -103,31 +106,37 @@ function Landing() {
   // ON DEMAND TIMED SUBSCRIPTIONS
   useEffect(() => {
     if (asyncSubscriptions.PROFILE_VISITS) {
-       AuthGuardService.pollSessionValidity()
+      AuthGuardService.pollSessionValidity()
         .then(() => {
-          poller1 = setInterval(() => {
+          profileVisitPoll = setInterval(() => {
             profileVisits(true, dispatch, moduleError);
           }, standardSubscriptionPollDelay);
         })
         .catch(() => {
-          clearInterval(poller1);
+          clearInterval(profileVisitPoll);
         });
     }
 
     if (asyncSubscriptions.INTERESTING_CONNECTIONS) {
-       AuthGuardService.pollSessionValidity()
+      AuthGuardService.pollSessionValidity()
         .then(() => {
-          poller2 = setInterval(() => {
+          interestingConnectionsPoll = setInterval(() => {
             interestingConnections(true, dispatch, moduleError);
           }, standardSubscriptionPollDelay);
         })
         .catch(() => {
-          clearInterval(poller2);
+          clearInterval(interestingConnectionsPoll);
         });
+    }
+
+    if (moduleError.length > 0) {
+      console.log("Internal errors handled gracefully. But System not OK");
+    } else {
+      console.log("System OK");
     }
   }, []);
 
-   const loggedInInformation=async(isSubscribed, dispatch, moduleError) =>{
+  const loggedInInformation = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getLoggedInInformation()
       .then((loggedInInformation) =>
         isSubscribed
@@ -145,9 +154,9 @@ function Landing() {
           });
         }
       });
-  }
-  
-   const hotTopics=async(isSubscribed, dispatch, moduleError) =>{
+  };
+
+  const hotTopics = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getHotTopics()
       .then((hotTopics) =>
         isSubscribed
@@ -165,9 +174,9 @@ function Landing() {
           });
         }
       });
-  }
-  
-   const networkUpdates=async(isSubscribed, dispatch, moduleError)=> {
+  };
+
+  const networkUpdates = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getNetworkUpdates()
       .then((networkUpdates) =>
         isSubscribed
@@ -185,12 +194,16 @@ function Landing() {
           });
         }
       });
-  }
-  
-   const interestingConnections=async(isSubscribed, dispatch, moduleError)=> {
+  };
+
+  const interestingConnections = async (
+    isSubscribed,
+    dispatch,
+    moduleError
+  ) => {
     await AuthGuardService.pollSessionValidity()
       .then(() => {
-         UserDataService.getSuggestedFriends()
+        UserDataService.getSuggestedFriends()
           .then((suggestedFriends) =>
             isSubscribed
               ? dispatch({
@@ -209,11 +222,11 @@ function Landing() {
           });
       })
       .catch(() => {
-        clearInterval(poller2);
+        clearInterval(interestingConnectionsPoll);
       });
-  }
-  
-   const topCourses=async (isSubscribed, dispatch, moduleError) =>{
+  };
+
+  const topCourses = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getTopCourses()
       .then((topCourses) =>
         isSubscribed
@@ -231,9 +244,32 @@ function Landing() {
           });
         }
       });
-  }
+  };
+
   
-   const profileSummary=async(isSubscribed, dispatch, moduleError) =>{
+const getAttendees= (isSubscribed, moduleError)=> {
+  let attendees_per_course = [];
+  let attendeePromise =[]
+  USER.TOP_COURSES?.data.map(async(course) => {
+      attendeePromise.push(
+        await UserDataService.getAttendeesPerCourse(course.courseId).then((response) => {
+          attendees_per_course.push(response);
+        }).catch((err) => {
+          if (isSubscribed) {
+            moduleError.push({
+              key: actionTypes.USER.COURSE_ATTENDEES,
+              err: err.message,
+            });
+          }
+        })
+      )
+    });
+    
+  
+  
+}
+
+  const profileSummary = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getSummary()
       .then((summary) =>
         isSubscribed
@@ -247,9 +283,9 @@ function Landing() {
         if (isSubscribed)
           moduleError.push({ key: actionTypes.USER.SUMMARY, err: err.message });
       });
-  }
-  
-   const profileCompletion=async(isSubscribed, dispatch, moduleError) =>{
+  };
+
+  const profileCompletion = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getProfilePercentageCompletion()
       .then((profilePerecentageCompletion) =>
         isSubscribed
@@ -267,12 +303,12 @@ function Landing() {
           });
         }
       });
-  }
-  
-   const profileVisits=async(isSubscribed, dispatch, moduleError)=> {
+  };
+
+  const profileVisits = async (isSubscribed, dispatch, moduleError) => {
     await AuthGuardService.pollSessionValidity()
       .then(() => {
-         UserDataService.getProfileVisits()
+        UserDataService.getProfileVisits()
           .then((profileVisits) =>
             isSubscribed
               ? dispatch({
@@ -291,9 +327,9 @@ function Landing() {
           });
       })
       .catch(() => {
-        clearInterval(poller1);
+        clearInterval(profileVisitPoll);
       });
-  }
+  };
   return loggedIn ? (
     <Layout title={`${process.env.NEXT_PUBLIC_APP_TITLE}`}>
       <Header isAuthorized={loggedIn} isShared={true} />

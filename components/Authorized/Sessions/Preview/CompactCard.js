@@ -19,7 +19,7 @@ function CompactCard({ title }) {
     <div>
       <div className="flex flex-col">
         <h2 className="font-bold text-lg pr-2">{title}</h2>
-        <Spacer/>
+        <Spacer />
         <Divider />
         <div
           className="grid items-stretch grid-cols-1 gap-2 px-2 
@@ -27,8 +27,8 @@ function CompactCard({ title }) {
         >
           {USERDATA?.TOP_COURSES?.data.map((value) => (
             <div key={value.courseId}>
-            <Preview data={value}  authorized={loggedIn} />
-            <Spacer count={1}/>
+              <Preview data={value} authorized={loggedIn} />
+              <Spacer />
             </div>
           ))}
         </div>

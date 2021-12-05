@@ -1,8 +1,9 @@
 import { Avatar, IconButton, Tooltip } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   IMAGE_PATHS,
   NETWORK,
+  PAYLOAD_DEFAULT_TEXTS,
   TITLES,
   TOOLTIPS,
 } from "../../../../../constants/userdata";
@@ -11,6 +12,7 @@ import {
   avatarToString,
   formattedName,
   formattedProfileSubtitle,
+  getTimezone,
   localTZDate,
 } from "../../../../../utils/utility";
 import EventIcon from "@mui/icons-material/Event";
@@ -38,8 +40,11 @@ function Profile({
   userType,
   instituition,
   isVisibleOnSessionCard,
+  oid,
   metaData,
+  origin
 }) {
+  
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
     useState(false);
@@ -63,6 +68,16 @@ function Profile({
     isConnectionAcceptRequestSendError,
     setConnectionAcceptRequestSendError,
   ] = useState(false);
+
+  const [
+    isMePrefixOnProfileName,
+    setMePrefixOnProfileName,
+  ] = useState(false);
+
+  useEffect(()=>{
+    setMePrefixOnProfileName(isItMe())
+  },[])
+
   const onHover = () => {
     setConnectToPersonShown(true);
   };
@@ -80,26 +95,45 @@ function Profile({
   };
   const profilePrimaryLine = formattedName(firstName, lastName);
   const profileSecondaryLine = formattedProfileSubtitle(userType, instituition);
+  
   const profileTertiaryLine = metaData
     ? formattedProfileSubtitle(metaData?.city, metaData?.country)
     : "";
 
-  const addToNetwork = (event) => {
-    setConnectionRequestInProgress(true);
+  const getPayload = (connection_state) => {
     let payload = {
       requestFrom: {
         userDetailsId: USERDATA?.LOGGED_IN_INFO?.data?.userDetailsId,
       },
       requestTo: { userDetailsId: metaData.userDetailsId },
       userRequestText: "",
-      userRequestType: "INVITATION_REQUEST",
+      userRequestType: NETWORK.REQUEST_TYPE,
     };
-    payload.userRequestText = `Invitation Request sent by User Id ${payload.requestFrom} to User Id ${payload.requestTo}. Sent by REST Service.`;
-    ConnectionService.sendConnectionRequest(payload)
+    let requestText =
+      PAYLOAD_DEFAULT_TEXTS.CONNECTION_REQUEST_SENDING_TEXT.replace(
+        "#X#",
+        payload.requestFrom
+      );
+    requestText = PAYLOAD_DEFAULT_TEXTS.CONNECTION_REQUEST_SENDING_TEXT.replace(
+      "#Y#",
+      payload.requestTo
+    );
+    payload.userRequestText = requestText;
+    return payload;
+  };
+  const isItMe=()=>{
+    return  USERDATA?.LOGGED_IN_INFO?.data?.userDetailsId===oid
+    
+  }
+  const addToNetwork = (event) => {
+    setConnectionRequestInProgress(true);
+    ConnectionService.sendConnectionRequest(
+      getPayload(NETWORK.CONNECTION_RELATION_STATE.CONNECT)
+    )
       .then((response) => {
         setConnectionRequestSendError(false);
         handleResponse(
-          `Connection request sent to ${firstName}`,
+          `${TITLES.CONNECTION_REQUEST_SENT_TO}${firstName}`,
           RESPONSE_TYPES.SUCCESS,
           toast.POSITION.TOP_RIGHT
         );
@@ -122,11 +156,13 @@ function Profile({
 
   const acceptRequest = (event) => {
     setConnectionAcceptRequestInProgress(true);
-    ConnectionService.acceptConnectionRequest(metaData.invitationAction.invitationRequestId)
+    ConnectionService.acceptConnectionRequest(
+      metaData.invitationAction.invitationRequestId
+    )
       .then((response) => {
         setConnectionAcceptRequestSendError(false);
         handleResponse(
-          `You and ${firstName} are now connected`,
+          TITLES.CONNECTED_PEOPLE.replace("#X#", firstName),
           RESPONSE_TYPES.SUCCESS,
           toast.POSITION.TOP_LEFT
         );
@@ -190,8 +226,8 @@ function Profile({
             <div
               className={`name font-bold flex flex-row flex-wrap items-center mb-px ${ProfileStyle.profile__name}`}
             >
-              <Tooltip title={TOOLTIPS.VIEW_PROFILE}>
-                <span className="name">{profilePrimaryLine}</span>
+              <Tooltip title={isMePrefixOnProfileName?TOOLTIPS.VIEW_PROFILE: TOOLTIPS.GO_TO_PROFILE}>
+                <span className="name">{profilePrimaryLine}{isMePrefixOnProfileName?(<>(Me)</>):(<></>)}</span>
               </Tooltip>
             </div>
             {options && options.connect && (
@@ -216,7 +252,7 @@ function Profile({
                   ) : isConnectionRequestSent ? (
                     <>
                       <DoneIcon fontSize="small" />
-                      <small className="text-sm font-small">
+                      <small title={`${TITLES.CONNECTION_REQUEST_SENT_TO_LATENT}${firstName}`} className="text-sm font-small">
                         {TITLES.CONNECTION_REQUEST_SENT}
                       </small>
                     </>
@@ -230,8 +266,7 @@ function Profile({
                     onClick={(e) => addToNetwork(e)}
                     className={`${ProfileStyle.profile__connect__request__text} 
                       font-small mt-3-5 font-medium text-gray-600 leading-tight cursor-pointer ${
-                        isConnectionRequestInProgress &&
-                        "control__disabled"
+                        isConnectionRequestInProgress && "control__disabled"
                       }`}
                   >
                     {TITLES.CONNECT_TO_PERSON}
@@ -281,8 +316,7 @@ function Profile({
                           ProfileStyle.profile__connect__request__text
                         } 
                     font-small mt-3-5 font-medium text-gray-600 leading-tight cursor-pointer ${
-                      isConnectionRequestInProgress &&
-                      "control__disabled"
+                      isConnectionRequestInProgress && "control__disabled"
                     }`}
                       >
                         {TITLES.CONNECT_TO_PERSON}
@@ -295,8 +329,7 @@ function Profile({
                   NETWORK.CONNECTION_RELATION_STATE.ACCEPT_REQUEST && (
                   <div
                     className={`flex cursor-pointer ml-auto slow-transition ${
-                      isConnectionAcceptRequestSent &&
-                      "control__disabled"
+                      isConnectionAcceptRequestSent && "control__disabled"
                     }`}
                     role="button"
                     onTouchStart={onHoverAccept}
@@ -319,7 +352,7 @@ function Profile({
                             fontSize="small"
                           />
                           <small className="text-sm font-small text-green-600">
-                            connected
+                            {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
                           </small>
                         </>
                       ) : (
@@ -334,11 +367,10 @@ function Profile({
                           ProfileStyle.profile__connect__request__text
                         } 
                     font-small mt-3-5 font-medium text-gray-600 leading-tight cursor-pointer ${
-                      isConnectionAcceptRequestInProgress &&
-                      "control__disabled"
+                      isConnectionAcceptRequestInProgress && "control__disabled"
                     }`}
                       >
-                        Accept
+                        {NETWORK.CONNECTION_ACTION_STATUS.ACCEPT}
                       </div>
                     )}
                   </div>
@@ -350,14 +382,19 @@ function Profile({
                     className={`flex cursor-pointer ml-auto slow-transition`}
                   >
                     <IconButton
-                      title={`You and ${firstName} are connected`}
+                      title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
+                        "#X#",
+                        firstName
+                      )}`}
                       className=" cursor-pointer inline-flex "
                       fontSize="small"
                       sx={{ color: "green" }}
                       aria-label="connected-to-person"
                     >
                       <CheckCircleIcon fontSize="small" />
-                      <small className="text-sm font-small">connected</small>
+                      <small className="text-sm font-small">
+                        {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
+                      </small>
                     </IconButton>
                   </div>
                 )}
@@ -368,14 +405,16 @@ function Profile({
                     className={`flex cursor-pointer ml-auto slow-transition`}
                   >
                     <IconButton
-                      title={`Your connection request is yet pending from ${firstName}`}
+                      title={`${TITLES.CONNECTION_REQUEST_PENDING}${firstName}`}
                       className=" cursor-pointer inline-flex "
                       fontSize="small"
                       sx={{ color: "#EF107D" }}
                       aria-label="awaiting-connection-response-from-person"
                     >
                       <PendingIcon fontSize="small" />
-                      <small className="text-sm font-small">pending</small>
+                      <small className="text-sm font-small">
+                        {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
+                      </small>
                     </IconButton>
                   </div>
                 )}
@@ -383,7 +422,7 @@ function Profile({
             )}
           </div>
 
-          <div className="sm:line-clamp-1 text-gray-700 text-xs text-brand-grey-700 dark:text-brand-grey-500">
+          <div className="  sm:line-clamp-1 text-gray-700 text-xs text-brand-grey-700 dark:text-brand-grey-500">
             {isVisibleOnSessionCard && profileSecondaryLine !== "" && (
               <>
                 <SchoolIcon
@@ -396,20 +435,20 @@ function Profile({
 
             {!isVisibleOnSessionCard && profileSecondaryLine !== "" && (
               <Tooltip title={profileSecondaryLine}>
-                <div>{profileSecondaryLine}</div>
+                <div className={`${origin?'':'-mt-1'}`}>{profileSecondaryLine}</div>
               </Tooltip>
             )}
           </div>
           {isVisibleOnSessionCard && (
             <div
               className={` ${ProfileStyle.profile__event__time__subtitle} 
-          sm:line-clamp-1 event-date text-brand-grey-700 dark:text-brand-grey-500`}
+          sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500`}
             >
-              <div className="flex">
+              <div className="flex ">
                 <EventIcon
-                  className={`${ProfileStyle.profile__event__time__subtitle__icon}`}
+                  className={` ${ProfileStyle.profile__event__time__subtitle__icon}`}
                 />
-                {localTZDate(sessionStartDTime)}
+                <div className='mt-0 leading-tight'>{localTZDate(sessionStartDTime)}({getTimezone()})</div>
               </div>
             </div>
           )}
@@ -417,7 +456,7 @@ function Profile({
           {!isVisibleOnSessionCard && metaData && profileTertiaryLine != "" && (
             <div
               className={` ${ProfileStyle.profile__event__time__subtitle} 
-          sm:line-clamp-1 event-date text-brand-grey-700 dark:text-brand-grey-500`}
+          sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500`}
             >
               <div className="flex">
                 <Tooltip title={profileTertiaryLine}>

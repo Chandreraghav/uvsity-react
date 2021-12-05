@@ -39,7 +39,6 @@ function Profiles({
   useEffect(() => {
     let controller = new AbortController();
     let isSubscribed = true;
-
     if (isSubscribed) {
       let _bo = [];
       try {
@@ -120,7 +119,8 @@ function Profiles({
           </div>
         </Tooltip>
         <Divider className="divider" />
-        <Spacer />
+        
+       {bo.length>0 &&  <Spacer />}
         {bo.length > 0 ? (
           <div className="px-3 text-base">
             {bo?.map((value) => (

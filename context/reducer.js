@@ -5,6 +5,7 @@ export const initialState = {
   PROFILE_PERCENTAGE_COMPLETION: null,
   PROFILE_VISITS: null,
   TOP_COURSES: null,
+  COURSE_ATTENDEES: null,
   SUGGESTED_FRIENDS: null,
   NETWORK_UPDATES: null,
   HOT_TOPICS: null,
@@ -17,6 +18,7 @@ export const actionTypes = {
     PROFILE_PERCENTAGE_COMPLETION: "PROFILE_PERCENTAGE_COMPLETION",
     PROFILE_VISITS: "PROFILE_VISITS",
     TOP_COURSES: "TOP_COURSES",
+    COURSE_ATTENDEES:"COURSE_ATTENDEES",
     SUGGESTED_FRIENDS: "SUGGESTED_FRIENDS",
     NETWORK_UPDATES: "NETWORK_UPDATES",
     HOT_TOPICS: "HOT_TOPICS",
@@ -63,6 +65,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         TOP_COURSES: action.TOP_COURSES,
+      };
+
+      case "COURSE_ATTENDEES":
+      return {
+        ...state,
+        COURSE_ATTENDEES: action.COURSE_ATTENDEES,
       };
 
     case "SUGGESTED_FRIENDS":

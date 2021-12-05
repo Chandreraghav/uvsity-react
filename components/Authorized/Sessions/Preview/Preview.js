@@ -1,5 +1,5 @@
 import { Tooltip } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import CardActions from "@mui/material/CardActions";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -12,9 +12,20 @@ import Button from "@mui/material/Button";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Profile from "../../Network/People/Dashboard/Profile";
 import Spacer from "../../../shared/Spacer";
+import CustomDialog from "../../../shared/modals/CustomDialog";
+import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 
 function Preview({ data, authorized }) {
   if (!authorized || !data) return "";
+  const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
+  const handleAttendeesDialogClose = () => {
+    setOpenAttendeesDialog(false);
+  };
+
+  const handleAttendeesDialogOpen = () => {
+    setOpenAttendeesDialog(true);
+  };
+
   const getSessionRatingDesignLayout = (reviewCount) => {
     if (
       !reviewCount ||
@@ -69,6 +80,9 @@ function Preview({ data, authorized }) {
       </Tooltip>
     );
   };
+
+  
+
   return (
     <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg md:px-2">
       {/* EVENT/SESSION/AUTHOR NAME */}
@@ -81,9 +95,10 @@ function Preview({ data, authorized }) {
               {data?.courseFullName}
             </h1>
           </Tooltip>
-          <Spacer/>
+          <Spacer />
 
           <Profile
+            oid={data.createdByUser}
             firstName={data.creator.firstName}
             lastName={data.creator.lastName}
             avatar={data.courseCreatorImageURL}
@@ -103,7 +118,7 @@ function Preview({ data, authorized }) {
           />
         </div>
       </div>
-      <Spacer/>
+      <Spacer />
 
       {/* MORE DETAIL */}
 
@@ -113,7 +128,10 @@ function Preview({ data, authorized }) {
             {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
           </div>
           {data?.numberOfAttendees > 0 && (
-            <div className="flex flex-row">
+            <div
+              onClick={(e) => handleAttendeesDialogOpen()}
+              className={`flex flex-row cursor-pointer leading-slug`}
+            >
               <span className={SessionStyle.session__card__attendance__count}>
                 {data?.numberOfAttendees}
               </span>
@@ -125,7 +143,7 @@ function Preview({ data, authorized }) {
             </div>
           )}
         </div>
-        <Spacer/>
+        <Spacer />
         <div>
           <Divider className={SessionStyle.preview__card__divider} />
         </div>
@@ -139,6 +157,17 @@ function Preview({ data, authorized }) {
           </Button>
         </Tooltip>
       </CardActions>
+      
+ 
+      <CustomDialog
+        dialogCloseRequest={handleAttendeesDialogClose}
+        isOpen={openAttendeesDialog}
+        title={data.courseFullName}
+        data={data}
+        workflow_code={WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION}
+        name='Attendees-Dialog'
+        theme='dark'
+      />
     </div>
   );
 }
