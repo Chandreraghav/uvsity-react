@@ -25,16 +25,6 @@ export default function CustomDialog({
   actions,
   theme,
 }) {
-  if (!workflow_code || !title || !data || isOpen === undefined) {
-    return <></>;
-  }
-  const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
-  const handleClose = () => {
-    if (dialogCloseRequest) dialogCloseRequest();
-  };
-
   const [dataJsx, setDataJsx] = useState(null);
   const [titleJsx, setTitleJsx] = useState(null);
   useEffect(() => {
@@ -47,6 +37,17 @@ export default function CustomDialog({
       isSubscribed = false;
     };
   }, [data]);
+  if (!workflow_code || !title || !data || isOpen === undefined) {
+    return <></>;
+  }
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+  const handleClose = () => {
+    if (dialogCloseRequest) dialogCloseRequest();
+  };
+
+  
   const populateDialogTitle = () => {
     let jsx = [];
     if (data && workflow_code === WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION) {
