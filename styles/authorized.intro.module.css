@@ -4,7 +4,7 @@
 }
 .intro h2 {
   font-size: 1.2rem;
-  color: #0081cb;
+  color: var(--blue)!important;
   border-bottom: 5px solid #4d8cf5;
   background-image: linear-gradient(to right, #fff, #3b3b8a);
   font-weight: bold;

@@ -121,7 +121,7 @@
   padding: 4px;
   margin: 4px;
   text-align: center;
-  background-color: blue;
+  background-color: var(--blue);
   line-height: 20px;
   width: 70px;
 }
@@ -171,11 +171,12 @@
   text-decoration: underline;
   transition-timing-function: ease-in;
   transition: all 0.8s;
-  color: #0081cb !important;
+  color: var(--blue) !important;
 }
 .preview__session__title:hover{
   cursor: pointer;
   text-decoration: underline;
   transition-timing-function: ease-in;
   transition: all 0.8s;
+  color: var(--blue) !important;
 }

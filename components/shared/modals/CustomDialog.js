@@ -8,11 +8,14 @@ import { Slide } from "@mui/material/Slide";
 import { Tooltip } from "@mui/material";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import Profile from "../../Authorized/Network/People/Dashboard/Profile";
-import UserDataService from "../../../pages/api/users/data/UserDataService";
-import { handleResponse } from "../../../toastr-response-handler/handler";
 import PeopleIcon from "@mui/icons-material/People";
 import { toast } from "react-toastify";
-import { formattedName, formattedProfileSubtitle, getTimezone, localTZDate } from "../../../utils/utility";
+import {
+  formattedName,
+  formattedProfileSubtitle,
+  getTimezone,
+  localTZDate,
+} from "../../../utils/utility";
 toast.configure();
 
 export default function CustomDialog({
@@ -22,6 +25,7 @@ export default function CustomDialog({
   title,
   name,
   data,
+  secondaryData,
   actions,
   theme,
 }) {
@@ -36,7 +40,7 @@ export default function CustomDialog({
       controller?.abort();
       isSubscribed = false;
     };
-  }, [data]);
+  }, [secondaryData]);
   if (!workflow_code || !title || !data || isOpen === undefined) {
     return <></>;
   }
@@ -47,27 +51,34 @@ export default function CustomDialog({
     if (dialogCloseRequest) dialogCloseRequest();
   };
 
-  
   const populateDialogTitle = () => {
     let jsx = [];
     if (data && workflow_code === WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION) {
-      const profilePrimaryLine = formattedName(data.creator.firstName, data.creator.lastName);
-      const profileSecondaryLine = formattedProfileSubtitle(data.creator.userType, data.creator.educationalInstitute);
-      const profileTertiaryLine = localTZDate(data.courseStartDTime)
+      const profilePrimaryLine = formattedName(
+        data.creator.firstName,
+        data.creator.lastName
+      );
+      const profileSecondaryLine = formattedProfileSubtitle(
+        data.creator.userType,
+        data.creator.educationalInstitute
+      );
+      const profileTertiaryLine = localTZDate(data.courseStartDTime);
       jsx.push(
         <>
-        <div className="flex flex-col py-1 mb-1 gap-1">
-        <div className="flex gap-1 text-sm">
-          <div className="">by</div>
-          <div>{profilePrimaryLine}</div>
-          <div>|</div>
-          <div>{profileSecondaryLine}</div>
-          </div>
+          <div className="flex flex-col py-1 mb-1 gap-1">
+            <div className="flex gap-1 text-sm">
+              <div className="">by</div>
+              <div>{profilePrimaryLine}</div>
+              {profileSecondaryLine && <div>|</div>}
+              <div>{profileSecondaryLine}</div>
+            </div>
 
-          <div className="flex gap-1 text-gray-400 text-xs">
-          <div className="">on</div>
-          <div>{profileTertiaryLine}({getTimezone()})</div>
-          </div>
+            <div className="flex gap-1 text-gray-400 text-xs">
+              <div className="">on</div>
+              <div>
+                {profileTertiaryLine}({getTimezone()})
+              </div>
+            </div>
           </div>
         </>
       );
@@ -76,65 +87,57 @@ export default function CustomDialog({
   };
   const populateDialogData = (isSubscribed) => {
     if (
-      data &&
+      secondaryData &&
       workflow_code === WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION &&
       isSubscribed
     ) {
       let jsx = [];
-      UserDataService.getAttendeesPerCourse(data.courseId)
-        .then((response) => {
-          response.data?.users.map((user) => {
-            user.invitationAction = {
-              invitationAction: user.connectionStatus,
-            };
-            jsx.push(
-              <Profile
-                oid={user.userDetailsId}
-                options={{ connect: false, mixedMode: true }}
-                key={user.userDetailsId}
-                firstName={user.firstName}
-                lastName={user.lastName}
-                avatar={user.profilePicName}
-                userType={user.userType}
-                instituition={user.educationalInstitute}
-                metaData={user}
-                origin={name}
-              />
-            );
-          });
-          Promise.all(jsx).then((response) => {
-            if (jsx.length > 0) {
-              setDataJsx(
-                <>
-                  <div
-                    className={`flex gap-1 mb-1 dialog-subtitle font-medium text-sm`}
-                  >
-                    <PeopleIcon />
-                    <div>People who are attending</div>
-                  </div>
-                  {jsx}
-                </>
-              );
-            }
-          });
-        })
-        .catch(() => {
-          setDataJsx(<></>);
-          handleClose();
-          handleResponse(
-            "There occured an internal error while trying to retrieve the attendees for this session. Please try again in sometime.",
-            RESPONSE_TYPES.ERROR,
-            toast.POSITION.BOTTOM_CENTER
+      secondaryData.map((user, idx) => {
+        user.invitationAction = {
+          invitationAction: user.connectionStatus,
+        };
+        jsx.push(
+          <Profile
+            oid={user.userDetailsId}
+            options={{ connect: false, mixedMode: true }}
+            key={user.userDetailsId}
+            firstName={user.firstName}
+            lastName={user.lastName}
+            avatar={user.profilePicName}
+            userType={user.userType}
+            instituition={user.educationalInstitute}
+            metaData={user}
+            origin={name}
+          />
+        );
+      });
+      Promise.all(jsx).then((response) => {
+        if (jsx.length > 0) {
+          setDataJsx(
+            <>
+              <div
+                className={`flex gap-1 mb-1 ${
+                  theme ? "dialog-dark-subtitle" : "dialog-subtitle"
+                }  font-medium text-sm`}
+              >
+                <PeopleIcon />
+                <div>People who are attending</div>
+              </div>
+              {jsx.map((val, idx) => (
+                <div key={idx}>{val}</div>
+              ))}
+            </>
           );
-        });
+        }
+      });
     }
   };
-  const isTitleALink=()=>{
-    if(workflow_code===WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION){
-      return true
+  const isTitleALink = () => {
+    if (workflow_code === WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION) {
+      return true;
     }
-    return false
-  }
+    return false;
+  };
   return (
     <>
       <Dialog
@@ -146,11 +149,24 @@ export default function CustomDialog({
       >
         <div className={`${theme ? "dark-dialog" : ""}`}>
           <div className="flex justify-between">
-            <div className={` px-4 py-3 leading-tight line-clamp-2 text-left font-bold flex-col`}>
-              <Typography className={`${isTitleALink()?'dialog-title':''}`} gutterBottom variant="h6" component="div">
-               {isTitleALink ? (<Tooltip title="View detail"><div>{title}{" "}</div></Tooltip>):(<>{title}{" "}</>)} 
+            <div
+              className={` px-4 py-3 leading-tight line-clamp-2 text-left font-bold flex-col`}
+            >
+              <Typography
+                className={`${isTitleALink() ? "dialog-title" : ""}`}
+                gutterBottom
+                variant="h6"
+                component="div"
+              >
+                {isTitleALink ? (
+                  <Tooltip title="View detail">
+                    <div>{title} </div>
+                  </Tooltip>
+                ) : (
+                  <>{title} </>
+                )}
               </Typography>
-              <div>{titleJsx}</div>
+              {titleJsx && <div>{titleJsx}</div>}
             </div>
             <Tooltip title="close">
               <div>

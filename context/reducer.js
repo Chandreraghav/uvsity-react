@@ -5,7 +5,7 @@ export const initialState = {
   PROFILE_PERCENTAGE_COMPLETION: null,
   PROFILE_VISITS: null,
   TOP_COURSES: null,
-  COURSE_ATTENDEES: null,
+  COURSE_ATTENDEES: [],
   SUGGESTED_FRIENDS: null,
   NETWORK_UPDATES: null,
   HOT_TOPICS: null,
@@ -29,6 +29,7 @@ const reducer = (state, action) => {
     "Reducer: Setting the incoming api data into the data layer context"
   );
   console.log(action);
+  
   //action has 2 types-> type, [payload]
   switch (action.type) {
     case "SET_USER":
@@ -70,13 +71,14 @@ const reducer = (state, action) => {
       case "COURSE_ATTENDEES":
       return {
         ...state,
-        COURSE_ATTENDEES: action.COURSE_ATTENDEES,
+        COURSE_ATTENDEES: [state.COURSE_ATTENDEES, action.COURSE_ATTENDEES ] 
       };
 
     case "SUGGESTED_FRIENDS":
       return {
         ...state,
         SUGGESTED_FRIENDS: action.SUGGESTED_FRIENDS,
+        
       };
 
     case "NETWORK_UPDATES":

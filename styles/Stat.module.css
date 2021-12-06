@@ -6,7 +6,7 @@
   text-align: left;
   padding: 10px;
   border: 1px solid lightgray;
-  border-bottom: 5px solid #0081cb;
+  border-bottom: 5px solid var(--blue);
   background-color: #fff;
   border-radius: 10px;
 }

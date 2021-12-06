@@ -243,6 +243,8 @@ export const COMPLETION_DETAIL_ACTION = [
 export const PLACEHOLDERS = {
   SEARCH: "Search for people, sessions, topics...",
   VIEW_DETAIL: "View Detail",
+  REGISTER_SESSION: "Register",
+  SPONSOR_SESSION: "Sponsor",
   ATTENDING: "attending",
   FREE: "Free",
   NO_INTERESTING_PROFILE:
@@ -277,6 +279,8 @@ export const TOOLTIPS = {
   FREE_SESSION: "This session is a free to attend session",
   PAID_SESSION: "Paid session",
   KNOW_MORE_SESSION: "Know more about this session",
+  REGISTER_SESSION: "Register for this session",
+  SPONSOR_SESSION: "Sponsor this session",
   NO_CONNECTIONS: "No connections",
   NO_INTERESTING_PROFILE: "No interesting profiles available",
   NO_PEOPLE_VIEWED_YOU: "No people viewed you yet",

@@ -5,7 +5,7 @@ import Profiles from "./Network/People/Profiles";
 import Intro from "./MainContent/Intro";
 import Stats from "./Profile/Connection/Stats";
 import CompactCard from "./Sessions/Preview/CompactCard";
-import { ICONS, TITLES, TOOLTIPS } from "../../constants/userdata";
+import { TITLES, TOOLTIPS } from "../../constants/userdata";
 
 function Dashboard() {
   return (

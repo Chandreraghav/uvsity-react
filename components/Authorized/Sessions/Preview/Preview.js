@@ -1,6 +1,5 @@
 import { Tooltip } from "@mui/material";
-import React, { useState } from "react";
-import CardActions from "@mui/material/CardActions";
+import React, { useState, useEffect } from "react";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarRateIcon from "@mui/icons-material/StarRate";
@@ -14,16 +13,79 @@ import Profile from "../../Network/People/Dashboard/Profile";
 import Spacer from "../../../shared/Spacer";
 import CustomDialog from "../../../shared/modals/CustomDialog";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
+import UserDataService from "../../../../pages/api/users/data/UserDataService";
+import { useDataLayerContextValue } from "../../../../context/DataLayer";
+import parse from "html-react-parser";
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import AutoGraphOutlinedIcon from "@mui/icons-material/AutoGraphOutlined";
 
 function Preview({ data, authorized }) {
   if (!authorized || !data) return "";
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
+  const [attendees, setAttendees] = useState([]);
+  const [USER, dispatch] = useDataLayerContextValue();
+  console.log(data)
+  useEffect(() => {
+    let isSubscribed = true;
+    let controller = new AbortController();
+    if (data.numberOfAttendees > 0 && isSubscribed) {
+      UserDataService.getAttendeesPerCourse(data.courseId).then((response) => {
+        setAttendees(response?.data?.users);
+      });
+    }
+    return () => {
+      controller?.abort();
+      isSubscribed = false;
+    };
+  }, [data]);
+  const amIAttending = () => {
+    const index = attendees?.findIndex((x) => {
+      return x.userDetailsId == USER?.LOGGED_IN_INFO?.data?.userDetailsId;
+    });
+    return index !== -1;
+  };
   const handleAttendeesDialogClose = () => {
     setOpenAttendeesDialog(false);
   };
 
+  const amITheOnlyOneAttending = amIAttending() && data?.numberOfAttendees == 1;
+
   const handleAttendeesDialogOpen = () => {
+    if (amITheOnlyOneAttending) {
+      return;
+    }
     setOpenAttendeesDialog(true);
+  };
+  const getAttendanceJSX = () => {
+    return (
+      <>
+        <div
+          className={` ${
+            amITheOnlyOneAttending ? "" : "dialog-title"
+          }  text-xs font-medium leading-tight`}
+        >
+          {amIAttending() && data?.numberOfAttendees > 1 ? (
+            <>
+              <span>
+                You and {data?.numberOfAttendees - 1}{" "}
+                {data?.numberOfAttendees - 1 === 1 ? "other" : "others"}{" "}
+                {PLACEHOLDERS.ATTENDING}
+              </span>
+            </>
+          ) : amITheOnlyOneAttending ? (
+            <>
+              <span>You are {PLACEHOLDERS.ATTENDING}</span>
+            </>
+          ) : (
+            <>
+              <span>
+                {data?.numberOfAttendees} {PLACEHOLDERS.ATTENDING}
+              </span>
+            </>
+          )}
+        </div>
+      </>
+    );
   };
 
   const getSessionRatingDesignLayout = (reviewCount) => {
@@ -81,12 +143,11 @@ function Preview({ data, authorized }) {
     );
   };
 
-  
-
   return (
     <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg md:px-2">
       {/* EVENT/SESSION/AUTHOR NAME */}
       <div className="flex flex-row flex-wrap flex-grow-0">
+      
         <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5">
           <Tooltip title={data?.courseFullName}>
             <h1
@@ -96,7 +157,7 @@ function Preview({ data, authorized }) {
             </h1>
           </Tooltip>
           <Spacer />
-
+          <div className="flex flex-col ">
           <Profile
             oid={data.createdByUser}
             firstName={data.creator.firstName}
@@ -107,9 +168,13 @@ function Preview({ data, authorized }) {
             instituition={data.creator.educationalInstitute}
             isVisibleOnSessionCard
           />
+<div className="  line-clamp-2 text-gray-700 py-1 mb-1 leading-snug  ">{ parse(data.courseSummary.substring(0,data.courseSummary.lastIndexOf('</p>')+4))}</div>
+          </div>
         </div>
+        
 
-        {/* EVENT POSTER */}
+        {/* EVENT POSTER & CO-HOST   */}
+        <div className="flex flex-col">
         <div className="w-full h-auto pt-2 xl:w-56">
           <img
             className="block w-full overflow-hidden object-contain bg-gray-100 bg-center bg-cover rounded post-cover dark:bg-brand-grey-800 dark:border-brand-grey-800"
@@ -117,9 +182,29 @@ function Preview({ data, authorized }) {
             alt={data?.courseFullName}
           />
         </div>
+        {data.coHosts.length>0 && (
+        <div>
+           
+          <div className="text-md text-gray-700 font-medium py-1">Co-Host</div>
+          <Divider/>
+         <div className=" transform scale-100 flex flex-row flex-wrap flex-grow-0 px-2 py-2">
+         <Profile
+               
+               firstName={data.coHosts[0]?.firstName}
+               lastName={data.coHosts[0]?.lastName}
+               avatar={data.coHosts[0]?.profilePicName}
+               userType={data.coHosts[0]?.userBaseType}
+               instituition={data.coHosts[0]?.educationalInstitution}
+             />
+           </div>
+           </div>
+      )}
+   
+        </div>
+      
+       
       </div>
-      <Spacer />
-
+     
       {/* MORE DETAIL */}
 
       <div className="flex flex-col">
@@ -132,14 +217,7 @@ function Preview({ data, authorized }) {
               onClick={(e) => handleAttendeesDialogOpen()}
               className={`flex flex-row cursor-pointer leading-slug`}
             >
-              <span className={SessionStyle.session__card__attendance__count}>
-                {data?.numberOfAttendees}
-              </span>
-              <span
-                className={`${SessionStyle.session__card__attendance__text}`}
-              >
-                {PLACEHOLDERS.ATTENDING}
-              </span>
+              {getAttendanceJSX()}
             </div>
           )}
         </div>
@@ -149,24 +227,38 @@ function Preview({ data, authorized }) {
         </div>
       </div>
 
-      <CardActions className="justify-between">
+      <div className="flex flex-wrap px-2 py-2 justify-between">
         {generateMonetizationAmountOnCard(data.cost)}
+       
+
+        <Tooltip title={TOOLTIPS.REGISTER_SESSION}>
+          <Button endIcon={<AppRegistrationIcon />} variant="outlined">
+            {PLACEHOLDERS.REGISTER_SESSION}
+          </Button>
+        </Tooltip>
+
+        <Tooltip title={TOOLTIPS.SPONSOR_SESSION}>
+          <Button startIcon={<AutoGraphOutlinedIcon />} variant="outlined">
+            {PLACEHOLDERS.SPONSOR_SESSION}
+          </Button>
+        </Tooltip>
+
         <Tooltip title={TOOLTIPS.KNOW_MORE_SESSION}>
           <Button endIcon={<ArrowForwardIcon />} variant="outlined">
             {PLACEHOLDERS.VIEW_DETAIL}
           </Button>
         </Tooltip>
-      </CardActions>
-      
- 
+      </div>
+
       <CustomDialog
         dialogCloseRequest={handleAttendeesDialogClose}
         isOpen={openAttendeesDialog}
         title={data.courseFullName}
         data={data}
+        secondaryData={attendees}
         workflow_code={WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION}
-        name='Attendees-Dialog'
-        theme='dark'
+        name="Attendees-Dialog"
+        theme="dark"
       />
     </div>
   );

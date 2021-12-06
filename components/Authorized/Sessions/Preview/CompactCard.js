@@ -9,6 +9,7 @@ function CompactCard({ title }) {
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [loggedIn, setLoggedIn] = useState(false);
 
+   
   useEffect(() => {
     setLoggedIn(AuthGuardService.isUserLoggedIn());
   }, []);
@@ -27,7 +28,7 @@ function CompactCard({ title }) {
         >
           {USERDATA?.TOP_COURSES?.data.map((value) => (
             <div key={value.courseId}>
-              <Preview data={value} authorized={loggedIn} />
+              <Preview key={value.courseId} data={value} authorized={loggedIn} />
               <Spacer />
             </div>
           ))}
