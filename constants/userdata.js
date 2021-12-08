@@ -36,6 +36,8 @@ import VideoCameraFrontOutlinedIcon from "@mui/icons-material/VideoCameraFrontOu
 import VerifiedIcon from "@mui/icons-material/Verified";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import PreviewIcon from '@mui/icons-material/Preview';
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -530,5 +532,40 @@ export const NETWORK=
 
     }
   }
+
+
+  export const SESSION_ACTIONS = [
+    {
+      id: 1,
+      title:  PLACEHOLDERS.REGISTER_SESSION,
+      icon: <AppRegistrationIcon />,
+      hidden: false,
+      disabled: false,
+      size: "small",
+      tooltip: TOOLTIPS.REGISTER_SESSION,
+      code: WORKFLOW_CODES.USER.SESSION.REGISTER,
+    },
+    {
+      id: 2,
+      title:  PLACEHOLDERS.SPONSOR_SESSION,
+      icon: <AutoGraphOutlinedIcon />,
+      hidden: false,
+      disabled: false,
+      size: "small",
+      tooltip: TOOLTIPS.SPONSOR_SESSION,
+      code: WORKFLOW_CODES.USER.SESSION.SPONSOR,
+    },
+
+    {
+      id: 3,
+      title:  PLACEHOLDERS.VIEW_DETAIL,
+      icon: <PreviewIcon />,
+      hidden: false,
+      disabled: false,
+      size: "small",
+      tooltip: TOOLTIPS.KNOW_MORE_SESSION,
+      code: WORKFLOW_CODES.USER.SESSION.VIEW,
+    },
+  ];
    
   

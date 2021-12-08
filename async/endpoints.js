@@ -32,8 +32,10 @@ export const ENDPOINTS = {
         ADD_REQUEST:'/inbox/send/invitationRequest',
         ACCEPT_REQUEST:"/inbox/accept/invitationRequest/"
       },
-      ATTENDEES: "/course/#X#/attendees"
-    }
+      ATTENDEES: "/course/#X#/attendees",
+     
+    },
+    SESSION_BY_ID:'/courses/#X#'
   },
   
 };

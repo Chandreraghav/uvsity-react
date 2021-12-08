@@ -39,4 +39,12 @@ export default class UserDataService {
     );
     return await asyncInstance.get(endpoint, {data:null});
   }
+
+  static async getSessionDetailPerCourse(course_id) {
+    let endpoint = ENDPOINTS.USER.SESSION_BY_ID.replace(
+      "#X#",
+      course_id.toString()
+    );
+    return await asyncInstance.get(endpoint, {data:null});
+  }
 }

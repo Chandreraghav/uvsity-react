@@ -71,7 +71,7 @@ const reducer = (state, action) => {
       case "COURSE_ATTENDEES":
       return {
         ...state,
-        COURSE_ATTENDEES: [state.COURSE_ATTENDEES, action.COURSE_ATTENDEES ] 
+        COURSE_ATTENDEES: state.COURSE_ATTENDEES.concat(action.COURSE_ATTENDEES)
       };
 
     case "SUGGESTED_FRIENDS":

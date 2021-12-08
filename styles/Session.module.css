@@ -180,3 +180,15 @@
   transition: all 0.8s;
   color: var(--blue) !important;
 }
+.session__actions{
+  color:darkgrey;
+}
+
+.session__action:hover{
+  cursor: pointer;
+  text-decoration: underline;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  color: var(--blue) !important;
+}
+ 

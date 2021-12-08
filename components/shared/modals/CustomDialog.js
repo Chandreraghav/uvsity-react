@@ -68,14 +68,14 @@ export default function CustomDialog({
           <div className="flex flex-col py-1 mb-1 gap-1">
             <div className="flex gap-1 text-sm">
               <div className="">by</div>
-              <div>{profilePrimaryLine}</div>
+              <div className="line-clamp-1">{profilePrimaryLine}</div>
               {profileSecondaryLine && <div>|</div>}
-              <div>{profileSecondaryLine}</div>
+              <div className="line-clamp-1">{profileSecondaryLine}</div>
             </div>
 
             <div className="flex gap-1 text-gray-400 text-xs">
               <div className="">on</div>
-              <div>
+              <div className='line-clamp-1' title={`${profileTertiaryLine}(${getTimezone()})`}>
                 {profileTertiaryLine}({getTimezone()})
               </div>
             </div>
@@ -150,10 +150,10 @@ export default function CustomDialog({
         <div className={`${theme ? "dark-dialog" : ""}`}>
           <div className="flex justify-between">
             <div
-              className={` px-4 py-3 leading-tight line-clamp-2 text-left font-bold flex-col`}
+              className={` px-4 py-3 leading-tight  text-left font-bold flex-col`}
             >
               <Typography
-                className={`${isTitleALink() ? "dialog-title" : ""}`}
+                className={`${isTitleALink() ? "dialog-title" : ""} line-clamp-1`}
                 gutterBottom
                 variant="h6"
                 component="div"
