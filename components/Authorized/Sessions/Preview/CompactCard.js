@@ -28,8 +28,8 @@ function CompactCard({ title }) {
         >
           {USERDATA?.TOP_COURSES?.data.map((value) => (
             <div key={value.courseId}>
-              <Preview key={value.courseId} data={value} authorized={loggedIn} />
-              <Spacer />
+              <Preview   data={value} authorized={loggedIn} />
+              <Spacer    />
             </div>
           ))}
         </div>

@@ -233,6 +233,11 @@ margin-top:14px!important ;
   background-color: #111 !important;
   color: #fff !important;
 }
+.dark-dialog-variant{
+  background-color: #18191A!important;
+  color: #fff !important;
+
+}
 .dialog-title:hover{
 cursor: pointer!important;
 text-decoration: underline;
@@ -244,4 +249,13 @@ color: var(--blue);
 .vertical-bar{
   border-right: 1px solid #e2e2e2;
   padding:4px;
+}
+.theme-color{
+  color: var(--blue);
+}
+.rectangular-md-card{
+  width: 400px;
+  height: 200px;
+  z-index: 10001!important;
+  padding: 20px !important;
 }

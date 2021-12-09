@@ -15,7 +15,6 @@ import UserDataService from "../../../../pages/api/users/data/UserDataService";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import parse from "html-react-parser";
 import Actions from "../ActionableItems/Actions";
-import { actionTypes, initialState } from "../../../../context/reducer";
 
 function Preview({ data, authorized }) {
   if (!authorized || !data) return "";

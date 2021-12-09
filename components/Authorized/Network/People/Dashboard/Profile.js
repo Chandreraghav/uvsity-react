@@ -1,6 +1,7 @@
 import { Avatar, IconButton, Tooltip } from "@mui/material";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
+  DEFAULT_COVER_IMAGE,
   IMAGE_PATHS,
   NETWORK,
   PAYLOAD_DEFAULT_TEXTS,
@@ -30,6 +31,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
 import AddTaskIcon from "@mui/icons-material/AddTask";
+import PeekProfile from "../Peek/Profile";
 toast.configure();
 function Profile({
   options,
@@ -42,11 +44,13 @@ function Profile({
   isVisibleOnSessionCard,
   oid,
   metaData,
-  origin
+  origin,
 }) {
-  
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
+    useState(false);
+
+    const [isProfilePeekviewShown, setProfilePeekViewShown] =
     useState(false);
 
   const [isAcceptPersonRequestOptionShown, setAcceptPersonRequestOptionShown] =
@@ -69,14 +73,11 @@ function Profile({
     setConnectionAcceptRequestSendError,
   ] = useState(false);
 
-  const [
-    isMePrefixOnProfileName,
-    setMePrefixOnProfileName,
-  ] = useState(false);
+  const [isMePrefixOnProfileName, setMePrefixOnProfileName] = useState(false);
 
-  useEffect(()=>{
-    setMePrefixOnProfileName(isItMe())
-  },[])
+  useEffect(() => {
+    setMePrefixOnProfileName(isItMe());
+  }, []);
 
   const onHover = () => {
     setConnectToPersonShown(true);
@@ -85,6 +86,14 @@ function Profile({
   const onLeave = () => {
     setConnectToPersonShown(false);
   };
+
+  const onHoverProfile=()=>{
+    setProfilePeekViewShown(true)
+  }
+
+  const onLeaveProfile=()=>{
+    setProfilePeekViewShown(false)
+  }
 
   const onHoverAccept = () => {
     setAcceptPersonRequestOptionShown(true);
@@ -95,7 +104,7 @@ function Profile({
   };
   const profilePrimaryLine = formattedName(firstName, lastName);
   const profileSecondaryLine = formattedProfileSubtitle(userType, instituition);
-  
+
   const profileTertiaryLine = metaData
     ? formattedProfileSubtitle(metaData?.city, metaData?.country)
     : "";
@@ -121,10 +130,9 @@ function Profile({
     payload.userRequestText = requestText;
     return payload;
   };
-  const isItMe=()=>{
-    return  USERDATA?.LOGGED_IN_INFO?.data?.userDetailsId===oid
-    
-  }
+  const isItMe = () => {
+    return USERDATA?.LOGGED_IN_INFO?.data?.userDetailsId === oid;
+  };
   const addToNetwork = (event) => {
     setConnectionRequestInProgress(true);
     ConnectionService.sendConnectionRequest(
@@ -182,7 +190,12 @@ function Profile({
         setConnectionAcceptRequestSent(true);
       });
   };
-
+  const isProfilePeekable = () => {
+    if (profileSecondaryLine.trim() == "" || profileTertiaryLine.trim() == "") {
+      return false;
+    }
+    return true;
+  };
   if (
     profilePrimaryLine.trim() == "" &&
     profileSecondaryLine.trim() == "" &&
@@ -190,15 +203,34 @@ function Profile({
   ) {
     return "";
   }
+
   return (
     <div>
+      {isProfilePeekable() && !isItMe() && (
+        <PeekProfile
+        onClickOutside={() => {setProfilePeekViewShown(false)}}
+        onMovedOutside={() => {setProfilePeekViewShown(false)}}
+          isOpen={isProfilePeekviewShown}
+          data={{
+            oid:oid,
+            avatar: avatar,
+            primary: profilePrimaryLine,
+            secondary: profileSecondaryLine,
+            tertiary: profileTertiaryLine,
+          }}
+        />
+      )}
       <div className="flex flex-row items-center flex-1 mb-4 gap-2 pt-2">
         {/* AVATAR */}
-        <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
+        <div  
+       
+        className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
           {avatar !== "" && !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) && (
             <Tooltip title={TOOLTIPS.VIEW_PROFILE}>
               <Avatar
-                className={`${
+                 onTouchStart={onHoverProfile}
+                 onMouseEnter={onHoverProfile}
+                 className={`${
                   isVisibleOnSessionCard ? "avatar-sm" : "avatar-dashboard"
                 }`}
                 alt={`${profilePrimaryLine}`}
@@ -211,6 +243,8 @@ function Profile({
             avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE)) && (
             <Tooltip title={TOOLTIPS.VIEW_PROFILE}>
               <Avatar
+              onTouchStart={onHoverProfile}
+              onMouseEnter={onHoverProfile}
                 className={`${
                   isVisibleOnSessionCard ? "avatar-sm" : "avatar-dashboard"
                 }`}
@@ -226,8 +260,17 @@ function Profile({
             <div
               className={`name font-bold flex flex-row flex-wrap items-center mb-px ${ProfileStyle.profile__name}`}
             >
-              <Tooltip title={isMePrefixOnProfileName?TOOLTIPS.VIEW_PROFILE: TOOLTIPS.GO_TO_PROFILE}>
-                <span className="name">{profilePrimaryLine}{isMePrefixOnProfileName?(<>(Me)</>):(<></>)}</span>
+              <Tooltip
+                title={
+                  isMePrefixOnProfileName
+                    ? TOOLTIPS.VIEW_PROFILE
+                    : TOOLTIPS.GO_TO_PROFILE
+                }
+              >
+                <span className="name">
+                  {profilePrimaryLine}
+                  {isMePrefixOnProfileName ? <>(Me)</> : <></>}
+                </span>
               </Tooltip>
             </div>
             {options && options.connect && (
@@ -252,7 +295,10 @@ function Profile({
                   ) : isConnectionRequestSent ? (
                     <>
                       <DoneIcon fontSize="small" />
-                      <small title={`${TITLES.CONNECTION_REQUEST_SENT_TO_LATENT}${firstName}`} className="text-sm font-small">
+                      <small
+                        title={`${TITLES.CONNECTION_REQUEST_SENT_TO_LATENT}${firstName}`}
+                        className="text-sm font-small"
+                      >
                         {TITLES.CONNECTION_REQUEST_SENT}
                       </small>
                     </>
@@ -435,7 +481,9 @@ function Profile({
 
             {!isVisibleOnSessionCard && profileSecondaryLine !== "" && (
               <Tooltip title={profileSecondaryLine}>
-                <div className={`${origin?'':'-mt-1'}`}>{profileSecondaryLine}</div>
+                <div className={`${origin ? "" : "-mt-1"}`}>
+                  {profileSecondaryLine}
+                </div>
               </Tooltip>
             )}
           </div>
@@ -448,7 +496,9 @@ function Profile({
                 <EventIcon
                   className={` ${ProfileStyle.profile__event__time__subtitle__icon}`}
                 />
-                <div className='mt-0 leading-tight'>{localTZDate(sessionStartDTime)}({getTimezone()})</div>
+                <div className="mt-0 leading-tight">
+                  {localTZDate(sessionStartDTime)}({getTimezone()})
+                </div>
               </div>
             </div>
           )}

@@ -16,6 +16,7 @@ import {
   getTimezone,
   localTZDate,
 } from "../../../utils/utility";
+
 toast.configure();
 
 export default function CustomDialog({
@@ -92,7 +93,7 @@ export default function CustomDialog({
       isSubscribed
     ) {
       let jsx = [];
-      secondaryData.map((user, idx) => {
+      secondaryData.forEach((user, idx) => {
         user.invitationAction = {
           invitationAction: user.connectionStatus,
         };
@@ -100,7 +101,6 @@ export default function CustomDialog({
           <Profile
             oid={user.userDetailsId}
             options={{ connect: false, mixedMode: true }}
-            key={user.userDetailsId}
             firstName={user.firstName}
             lastName={user.lastName}
             avatar={user.profilePicName}
@@ -124,7 +124,7 @@ export default function CustomDialog({
                 <div>People who are attending</div>
               </div>
               {jsx.map((val, idx) => (
-                <div key={idx}>{val}</div>
+                <div key={`${idx}-attendee`}>{val}</div>
               ))}
             </>
           );
@@ -160,10 +160,10 @@ export default function CustomDialog({
               >
                 {isTitleALink ? (
                   <Tooltip title="View detail">
-                    <div>{title} </div>
+                    <div>{title || 'Title'} </div>
                   </Tooltip>
                 ) : (
-                  <>{title} </>
+                  <>{title || 'Title'} </>
                 )}
               </Typography>
               {titleJsx && <div>{titleJsx}</div>}
