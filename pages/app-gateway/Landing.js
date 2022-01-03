@@ -10,14 +10,14 @@ import { actionTypes } from "../../context/reducer";
 import Splash from "../../components/shared/Splash";
 import {
   asyncSubscriptions,
-  standardSubscriptionPollDelay,
 } from "../../async/subscriptions";
 function Landing() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [USER, dispatch] = useDataLayerContextValue();
   const [moduleError, setModuleError] = useState([]);
-  let profileVisitPoll, interestingConnectionsPoll;
-
+  const layoutObj={
+    title:`${process.env.NEXT_PUBLIC_APP_TITLE}`
+  }
   useEffect(() => {
     setTimeout(() => {
       setLoggedIn(AuthGuardService.isUserLoggedIn());
@@ -56,7 +56,7 @@ function Landing() {
   useEffect(async () => {
     let isSubscribed = true;
     let controller = new AbortController();
-    await topCourses(isSubscribed, dispatch, moduleError)
+    await topCourses(isSubscribed, dispatch, moduleError);
     return () => {
       controller?.abort();
       isSubscribed = false;
@@ -103,29 +103,52 @@ function Landing() {
     };
   }, []);
 
-  // ON DEMAND TIMED SUBSCRIPTIONS
+  // ON DEMAND TIMED SUBSCRIPTIONS - PAGE SPECIFIC
   useEffect(() => {
-    if (asyncSubscriptions.PROFILE_VISITS) {
+    // cancel all subs prior to registering them again
+    AuthGuardService.cancelAllSubscriptions(false);
+    if (
+      asyncSubscriptions.PROFILE_VISITS.enabled &&
+      !asyncSubscriptions.PROFILE_VISITS.subscribed
+    ) {
       AuthGuardService.pollSessionValidity()
         .then(() => {
-          profileVisitPoll = setInterval(() => {
+          window.profileVisitPoll = setInterval(() => {
             profileVisits(true, dispatch, moduleError);
-          }, standardSubscriptionPollDelay);
+          }, asyncSubscriptions.PROFILE_VISITS.pollEvery);
+          asyncSubscriptions.PROFILE_VISITS.subscribed = true;
         })
         .catch(() => {
-          clearInterval(profileVisitPoll);
+          window.clearInterval(window.profileVisitPoll);
         });
     }
 
-    if (asyncSubscriptions.INTERESTING_CONNECTIONS) {
+    if (
+      asyncSubscriptions.INTERESTING_CONNECTIONS.enabled &&
+      !asyncSubscriptions.INTERESTING_CONNECTIONS.subscribed
+    ) {
       AuthGuardService.pollSessionValidity()
         .then(() => {
-          interestingConnectionsPoll = setInterval(() => {
+          window.interestingConnectionsPoll = setInterval(() => {
             interestingConnections(true, dispatch, moduleError);
-          }, standardSubscriptionPollDelay);
+          }, asyncSubscriptions.INTERESTING_CONNECTIONS.pollEvery);
+          asyncSubscriptions.INTERESTING_CONNECTIONS.subscribed = true;
         })
         .catch(() => {
-          clearInterval(interestingConnectionsPoll);
+          window.clearInterval(window.interestingConnectionsPoll);
+        });
+    }
+
+    if (asyncSubscriptions.LOGGED_IN_USER_INFO.enabled && !asyncSubscriptions.LOGGED_IN_USER_INFO.subscribed) {
+      AuthGuardService.pollSessionValidity()
+        .then(() => {
+          window.loggedinUserPoll = setInterval(() => {
+            loggedInInformation(true, dispatch, moduleError);
+          }, asyncSubscriptions.LOGGED_IN_USER_INFO.pollEvery);
+          asyncSubscriptions.LOGGED_IN_USER_INFO.subscribed=true
+        })
+        .catch(() => {
+          window.clearInterval(window.interestingConnectionsPoll);
         });
     }
 
@@ -222,7 +245,7 @@ function Landing() {
           });
       })
       .catch(() => {
-        clearInterval(interestingConnectionsPoll);
+        window.clearInterval(window.interestingConnectionsPoll);
       });
   };
 
@@ -246,28 +269,26 @@ function Landing() {
       });
   };
 
-  
-const getAttendees= (isSubscribed, moduleError)=> {
-  let attendees_per_course = [];
-  let attendeePromise =[]
-  USER.TOP_COURSES?.data.map(async(course) => {
+  const getAttendees = (isSubscribed, moduleError) => {
+    let attendees_per_course = [];
+    let attendeePromise = [];
+    USER.TOP_COURSES?.data.map(async (course) => {
       attendeePromise.push(
-        await UserDataService.getAttendeesPerCourse(course.courseId).then((response) => {
-          attendees_per_course.push(response);
-        }).catch((err) => {
-          if (isSubscribed) {
-            moduleError.push({
-              key: actionTypes.USER.COURSE_ATTENDEES,
-              err: err.message,
-            });
-          }
-        })
-      )
+        await UserDataService.getAttendeesPerCourse(course.courseId)
+          .then((response) => {
+            attendees_per_course.push(response);
+          })
+          .catch((err) => {
+            if (isSubscribed) {
+              moduleError.push({
+                key: actionTypes.USER.COURSE_ATTENDEES,
+                err: err.message,
+              });
+            }
+          })
+      );
     });
-    
-  
-  
-}
+  };
 
   const profileSummary = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getSummary()
@@ -327,20 +348,19 @@ const getAttendees= (isSubscribed, moduleError)=> {
           });
       })
       .catch(() => {
-        clearInterval(profileVisitPoll);
+        window.clearInterval(window.profileVisitPoll);
       });
   };
   return loggedIn ? (
-    <Layout title={`${process.env.NEXT_PUBLIC_APP_TITLE}`}>
+    <Layout options={layoutObj}>
       <Header isAuthorized={loggedIn} isShared={true} />
       <Dashboard isAuthorized={loggedIn} isShared={false} />
       <Footer isAuthorized={loggedIn} isShared={true} />
     </Layout>
   ) : (
-    <Layout title={`${process.env.NEXT_PUBLIC_APP_TITLE}`}>
+    <Layout options={{title:process.env.NEXT_PUBLIC_APP_TITLE}}>
       <Splash />
     </Layout>
   );
 }
 export default Landing;
-

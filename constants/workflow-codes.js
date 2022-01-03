@@ -14,6 +14,7 @@ export const WORKFLOW_CODES = {
       REGISTER: "S_REG",
       SPONSOR: "S_SPO",
       VIEW: "S_VIE",
+      FEED:'S_FEE'
     },
 
     CONNECTION_TYPES: {

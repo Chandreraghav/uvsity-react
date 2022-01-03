@@ -1,6 +1,9 @@
 export const AUTHORIZED_ROUTES={
    AUTHORIZED:{
-    DASHBOARD: '/app-gateway/Landing'
+    DASHBOARD: '/app-gateway/Landing',
+    SESSION:{
+       CREATE:"/app-gateway/Session/Create"
+    }
    }
     
 }

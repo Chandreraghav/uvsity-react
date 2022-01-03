@@ -5,6 +5,7 @@
 .app {
   display: flex;
   flex-direction: column;
+  background-color: #F0F0F0!important;
  
 }
 html,
@@ -223,6 +224,9 @@ margin-top:14px!important ;
 .-mt-2-5{
   margin-top:-4px!important
 }
+.-mt-2-px{
+  margin-top:-2px!important
+}
 .dialog-subtitle{
   border-bottom: 1px solid #e2e2e2!important;
 }
@@ -237,6 +241,10 @@ margin-top:14px!important ;
   background-color: #18191A!important;
   color: #fff !important;
 
+}
+.default-dialog-variant{
+  background-color: #fff!important;
+  color: #111 !important;
 }
 .dialog-title:hover{
 cursor: pointer!important;
@@ -255,7 +263,19 @@ color: var(--blue);
 }
 .rectangular-md-card{
   width: 400px;
-  height: 200px;
-  z-index: 10001!important;
+  z-index: 1000!important;
   padding: 20px !important;
+  overflow: hidden !important;
+}
+.rectangular-md-card-fixed-height{
+  height:200px!important;
+}
+
+@media (max-width: 768px) {
+  .rectangular-md-card {
+    zoom:0.9
+  }
+}
+.border-white-override{
+  border-color: #fff !important;
 }

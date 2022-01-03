@@ -16,6 +16,7 @@ import {
   getTimezone,
   localTZDate,
 } from "../../../utils/utility";
+import { PLACEHOLDERS, TITLES, TOOLTIPS } from "../../../constants/userdata";
 
 toast.configure();
 
@@ -121,7 +122,7 @@ export default function CustomDialog({
                 }  font-medium text-sm`}
               >
                 <PeopleIcon />
-                <div>People who are attending</div>
+                <div>{TITLES.PEOPLE_ATTENDING}</div>
               </div>
               {jsx.map((val, idx) => (
                 <div key={`${idx}-attendee`}>{val}</div>
@@ -159,7 +160,7 @@ export default function CustomDialog({
                 component="div"
               >
                 {isTitleALink ? (
-                  <Tooltip title="View detail">
+                  <Tooltip title={`${workflow_code===WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION? TOOLTIPS.KNOW_MORE_SESSION:PLACEHOLDERS.VIEW_DETAIL}`}>
                     <div>{title || 'Title'} </div>
                   </Tooltip>
                 ) : (

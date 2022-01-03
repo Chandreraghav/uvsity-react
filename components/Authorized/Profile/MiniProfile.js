@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { avatarToString, formattedProfileSubtitle } from "../../../utils/utility";
 import ProfileStyle from "../../../styles/Profile.module.css";
-import { Avatar } from "@mui/material";
+import { Avatar, Popover } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { IMAGE_PATHS, TOOLTIPS } from "../../../constants/userdata";
 import Spacer from "../../shared/Spacer";
+import PeekProfile from "../Network/People/Peek/Profile";
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles((theme) => ({
+  popover: {
+    pointerEvents: "none",
+    border: "none",
+  },
+  popoverContent: {
+    pointerEvents: "auto",
+  },
+  paper: {
+    padding: theme.spacing(3),
+  },
+}));
 function MiniProfile({
   coverImage,
   profileImage,
@@ -12,10 +26,55 @@ function MiniProfile({
   title,
   metaData
 }) {
+  const classes = useStyles();
+  const popoverAnchor = useRef(null);
+  const [openedPopover, setOpenedPopover] = useState(false);
+  const handlePopoverOpen = (event) => {
+    setOpenedPopover(true);
+  };
+
+  const handlePopoverClose = () => {
+    setOpenedPopover(false);
+  };
+
   if (!name) return "";
   return (
     <div>
       <Spacer/>
+      <Popover
+          id="mouse-over-popover"
+          className={classes.popover}
+          classes={{
+            paper: classes.popoverContent,
+          }}
+          open={openedPopover}
+          anchorEl={popoverAnchor.current}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          disableRestoreFocus
+          PaperProps={{
+            onMouseEnter: handlePopoverOpen,
+            onMouseLeave: handlePopoverClose,
+          }}
+        >
+          <PeekProfile
+            isOpen={openedPopover}
+            dark
+            data={{
+              avatar: profileImage,
+              primary: name,
+              secondary: formattedProfileSubtitle(title, metaData?.company),
+              tertiary: formattedProfileSubtitle(metaData?.city, metaData?.country),
+              isItMe:true
+            }}
+          />
+        </Popover>
     <div className={`uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__mini}`}>
       <img
         src={
@@ -26,11 +85,23 @@ function MiniProfile({
 
       {profileImage && !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
         <Avatar
+        ref={popoverAnchor}
+                onTouchStart={handlePopoverOpen}
+                onTouchEnd={handlePopoverClose}
+                onMouseEnter={handlePopoverOpen}
+                onMouseLeave={handlePopoverClose}
           className={ProfileStyle.profile__mini__avatar}
           src={profileImage}
         />
       ) : (
-        <Avatar {...avatarToString(`${name}`)} />
+        <Avatar
+        
+        ref={popoverAnchor}
+                onTouchStart={handlePopoverOpen}
+                onTouchEnd={handlePopoverClose}
+                onMouseEnter={handlePopoverOpen}
+                onMouseLeave={handlePopoverClose}
+        {...avatarToString(`${name}`)} />
       )}
 
       <div className={ProfileStyle.profile__mini__information}>

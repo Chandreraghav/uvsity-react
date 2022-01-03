@@ -5,7 +5,7 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { SESSION_REVIEW_MAX_STAR_COUNT } from "../../../../constants/constants";
-import { PLACEHOLDERS, TOOLTIPS } from "../../../../constants/userdata";
+import { IMAGE_PATHS, PLACEHOLDERS, TOOLTIPS } from "../../../../constants/userdata";
 import SessionStyle from "../../../../styles/Session.module.css";
 import Profile from "../../Network/People/Dashboard/Profile";
 import Spacer from "../../../shared/Spacer";
@@ -21,15 +21,21 @@ function Preview({ data, authorized }) {
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
   const [attendees, setAttendees] = useState([]);
   const [sessionDetail, setSessionDetail] = useState({});
+  const [sessionCreatorDetail, setSessionCreatorDetail] = useState({});
   const [USER, dispatch] = useDataLayerContextValue();
+  const getEventPoster = () => {
+    if (data.imageURL) {
+      return data.imageURL;
+    }
+    return IMAGE_PATHS.NO_DATA.EVENT_POSTER;
+  };
+  const [eventPosterSrc, setEventPosterSrc] = useState(getEventPoster());
   useEffect(() => {
     let isSubscribed = true;
     let controller = new AbortController();
     if (data.numberOfAttendees > 0 && isSubscribed) {
       UserDataService.getAttendeesPerCourse(data.courseId).then((response) => {
         setAttendees(response?.data?.users);
-         
-        
       });
     }
     return () => {
@@ -37,15 +43,16 @@ function Preview({ data, authorized }) {
       isSubscribed = false;
     };
   }, [data]);
-
 
   useEffect(() => {
     let isSubscribed = true;
     let controller = new AbortController();
-    if (  isSubscribed) {
-      UserDataService.getSessionDetailPerCourse(data.courseId).then((response) => {
-        setSessionDetail(response?.data);
-      });
+    if (isSubscribed) {
+      UserDataService.getSessionDetailPerCourse(data.courseId).then(
+        (response) => {
+          setSessionDetail(response?.data);
+        }
+      );
     }
     return () => {
       controller?.abort();
@@ -53,7 +60,22 @@ function Preview({ data, authorized }) {
     };
   }, [data]);
 
-
+  useEffect(() => {
+    let isSubscribed = true;
+    let controller = new AbortController();
+    if (isSubscribed) {
+      UserDataService.getUserById(data.creator.userDetailsId).then(
+        (response) => {
+          setSessionCreatorDetail(response?.data);
+          data.associatedUserData = response?.data;
+        }
+      );
+    }
+    return () => {
+      controller?.abort();
+      isSubscribed = false;
+    };
+  }, [data]);
 
   const amIAttending = () => {
     const index = attendees?.findIndex((x) => {
@@ -161,10 +183,10 @@ function Preview({ data, authorized }) {
   };
 
   return (
-    <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg md:px-2">
+    <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg px-2">
       {/* EVENT/SESSION/AUTHOR NAME */}
       <div className="flex flex-row flex-wrap flex-grow-0">
-        <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5">
+        <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5 px-2 py-2">
           <Tooltip title={data?.courseFullName}>
             <h1
               className={`${SessionStyle.preview__session__title} line-clamp-2 mb-1 text-3xl font-semibold leading-tight tracking-tight text-brand-black dark:text-brand-grey-100`}
@@ -173,7 +195,7 @@ function Preview({ data, authorized }) {
             </h1>
           </Tooltip>
           <Spacer />
-          <div className="flex flex-col ">
+          <div className="flex flex-col px-2 py-2">
             <Profile
               oid={data.createdByUser}
               firstName={data.creator.firstName}
@@ -183,14 +205,11 @@ function Preview({ data, authorized }) {
               userType={data.creator.userType}
               instituition={data.creator.educationalInstitute}
               isVisibleOnSessionCard
+              metaData={data}
+              options={{ connect: false, mixedMode: true }}
             />
             <div className="  line-clamp-2 text-gray-700 py-1 mb-1 leading-snug  ">
-              {parse(
-                data.courseSummary.substring(
-                  0,
-                  data.courseSummary.lastIndexOf("</p>") + 4
-                )
-              )}
+              {parse(data.courseSummary)}
             </div>
           </div>
         </div>
@@ -200,13 +219,13 @@ function Preview({ data, authorized }) {
           <div className="w-full h-auto pt-2 xl:w-56">
             <img
               className="block w-full overflow-hidden object-contain bg-gray-100 bg-center bg-cover rounded post-cover dark:bg-brand-grey-800 dark:border-brand-grey-800"
-              src={data?.imageURL}
+              src={eventPosterSrc}
               alt={data?.courseFullName}
             />
           </div>
           {data.coHosts.length > 0 && (
             <div>
-              <div className="text-md text-gray-700 font-medium py-1">
+              <div className="text-md text-gray-700 font-medium    ">
                 Co-Host
               </div>
               <Divider />
@@ -225,16 +244,16 @@ function Preview({ data, authorized }) {
       </div>
 
       {/* MORE DETAIL */}
-      {data.coHosts.length==0 && ( <Spacer />)}
+      {data.coHosts.length == 0 && <Spacer />}
       <div className="flex flex-col">
         <div className="flex justify-between">
-          <div className="flex gap-0">
+          <div className="flex gap-0 px-2 py-2">
             {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
           </div>
           {data?.numberOfAttendees > 0 && (
             <div
               onClick={(e) => handleAttendeesDialogOpen()}
-              className={`flex flex-row cursor-pointer leading-slug`}
+              className={`flex flex-row cursor-pointer leading-slug px-2 py-2`}
             >
               {getAttendanceJSX()}
             </div>

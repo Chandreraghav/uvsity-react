@@ -94,7 +94,7 @@ function Profiles({
         >
           <div
             className={`flex flex-row items-center px-2 pt-2 pb-2  gap-1
-         text-gray-600 font-medium leading-snug  ${
+         text-gray-600 font-medium leading-snug  ${workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING ? 'text-sm':''}  ${
            bo.length > 0 ? ProfileStyle.profiles__header__text : ""
          }`}
           >

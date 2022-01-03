@@ -62,6 +62,7 @@ function AccountMenu({ onClose, isOpen, anchor }) {
       type: actionTypes.USER.LOGGED_IN_INFO,
       LOGGED_IN_INFO: null,
     });
+    AuthService.cancelAllSubscriptions(true)
   };
   const handleMenuAction = (actionCode) => {
     if (!actionCode) {

@@ -1,8 +1,8 @@
-import { Avatar, IconButton, Tooltip } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import { Avatar, IconButton, Popover, Tooltip } from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  DEFAULT_COVER_IMAGE,
   IMAGE_PATHS,
+  ME,
   NETWORK,
   PAYLOAD_DEFAULT_TEXTS,
   TITLES,
@@ -32,7 +32,21 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import PeekProfile from "../Peek/Profile";
+import { makeStyles } from "@material-ui/core/styles";
 toast.configure();
+const useStyles = makeStyles((theme) => ({
+  popover: {
+    pointerEvents: "none",
+    border: "none",
+  },
+  popoverContent: {
+    pointerEvents: "auto",
+  },
+  paper: {
+    padding: theme.spacing(3),
+  },
+}));
+
 function Profile({
   options,
   firstName,
@@ -46,12 +60,21 @@ function Profile({
   metaData,
   origin,
 }) {
+  
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
     useState(false);
 
-    const [isProfilePeekviewShown, setProfilePeekViewShown] =
-    useState(false);
+  const classes = useStyles();
+  const popoverAnchor = useRef(null);
+  const [openedPopover, setOpenedPopover] = useState(false);
+  const handlePopoverOpen = (event) => {
+    setOpenedPopover(true);
+  };
+
+  const handlePopoverClose = () => {
+    setOpenedPopover(false);
+  };
 
   const [isAcceptPersonRequestOptionShown, setAcceptPersonRequestOptionShown] =
     useState(false);
@@ -87,14 +110,6 @@ function Profile({
     setConnectToPersonShown(false);
   };
 
-  const onHoverProfile=()=>{
-    setProfilePeekViewShown(true)
-  }
-
-  const onLeaveProfile=()=>{
-    setProfilePeekViewShown(false)
-  }
-
   const onHoverAccept = () => {
     setAcceptPersonRequestOptionShown(true);
   };
@@ -105,11 +120,12 @@ function Profile({
   const profilePrimaryLine = formattedName(firstName, lastName);
   const profileSecondaryLine = formattedProfileSubtitle(userType, instituition);
 
-  const profileTertiaryLine = metaData
-    ? formattedProfileSubtitle(metaData?.city, metaData?.country)
-    : "";
+  const profileTertiaryLine = ()=>{
+    let _tertiaryLine = formattedProfileSubtitle(metaData?.city, metaData?.country);
+    return _tertiaryLine===''? formattedProfileSubtitle(metaData?.creator?.city, metaData?.creator?.country):_tertiaryLine
+  }
 
-  const getPayload = (connection_state) => {
+  const getPayload = () => {
     let payload = {
       requestFrom: {
         userDetailsId: USERDATA?.LOGGED_IN_INFO?.data?.userDetailsId,
@@ -133,12 +149,12 @@ function Profile({
   const isItMe = () => {
     return USERDATA?.LOGGED_IN_INFO?.data?.userDetailsId === oid;
   };
-  const addToNetwork = (event) => {
+  const addToNetwork = () => {
     setConnectionRequestInProgress(true);
     ConnectionService.sendConnectionRequest(
       getPayload(NETWORK.CONNECTION_RELATION_STATE.CONNECT)
     )
-      .then((response) => {
+      .then(() => {
         setConnectionRequestSendError(false);
         handleResponse(
           `${TITLES.CONNECTION_REQUEST_SENT_TO}${firstName}`,
@@ -162,12 +178,12 @@ function Profile({
       });
   };
 
-  const acceptRequest = (event) => {
+  const acceptRequest = () => {
     setConnectionAcceptRequestInProgress(true);
     ConnectionService.acceptConnectionRequest(
       metaData.invitationAction.invitationRequestId
     )
-      .then((response) => {
+      .then(() => {
         setConnectionAcceptRequestSendError(false);
         handleResponse(
           TITLES.CONNECTED_PEOPLE.replace("#X#", firstName),
@@ -190,67 +206,102 @@ function Profile({
         setConnectionAcceptRequestSent(true);
       });
   };
-  const isProfilePeekable = () => {
-    if (profileSecondaryLine.trim() == "" || profileTertiaryLine.trim() == "") {
-      return false;
-    }
-    return true;
-  };
+  
   if (
     profilePrimaryLine.trim() == "" &&
     profileSecondaryLine.trim() == "" &&
-    profileTertiaryLine.trim() == ""
+    profileTertiaryLine().trim() == ""
   ) {
     return "";
   }
 
   return (
     <div>
-      {isProfilePeekable() && !isItMe() && (
-        <PeekProfile
-        onClickOutside={() => {setProfilePeekViewShown(false)}}
-        onMovedOutside={() => {setProfilePeekViewShown(false)}}
-          isOpen={isProfilePeekviewShown}
-          data={{
-            oid:oid,
-            avatar: avatar,
-            primary: profilePrimaryLine,
-            secondary: profileSecondaryLine,
-            tertiary: profileTertiaryLine,
+       
+        <Popover
+          id="mouse-over-popover"
+          className={classes.popover}
+          classes={{
+            paper: classes.popoverContent,
           }}
-        />
-      )}
+          open={openedPopover}
+          anchorEl={popoverAnchor.current}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          disableRestoreFocus
+          PaperProps={{
+            onMouseEnter: handlePopoverOpen,
+            onMouseLeave: handlePopoverClose,
+          }}
+        >
+          <PeekProfile
+            isOpen={openedPopover}
+            options={{connect:options?.connect, mixedMode:options?.mixedMode}}
+            metaData={metaData}
+            addToNetwork={addToNetwork}
+            acceptRequest={acceptRequest}
+            isConnectToPersonOptionShown={isConnectToPersonOptionShown}
+            isAcceptPersonRequestOptionShown={isAcceptPersonRequestOptionShown}
+            isConnectionRequestSent={isConnectionRequestSent}
+            isConnectionAcceptRequestSent={isConnectionAcceptRequestSent}
+            isConnectionRequestInProgress={isConnectionRequestInProgress}
+            isConnectionAcceptRequestInProgress={isConnectionAcceptRequestInProgress}
+            isConnectionRequestSendError={isConnectionRequestSendError}
+            isConnectionAcceptRequestSendError={isConnectionAcceptRequestSendError}
+            onHover={onHover}
+            onLeave={onLeave}
+            onHoverAccept={onHoverAccept}
+            onLeaveAccept={onLeaveAccept}
+            dark
+            data={{
+              oid: oid,
+              avatar: avatar,
+              primary: profilePrimaryLine,
+              secondary: profileSecondaryLine,
+              tertiary: profileTertiaryLine(),
+              isItMe:isItMe()
+            }}
+          />
+        </Popover>
+      
       <div className="flex flex-row items-center flex-1 mb-4 gap-2 pt-2">
         {/* AVATAR */}
-        <div  
-       
-        className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
-          {avatar !== "" && !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) && (
-            <Tooltip title={TOOLTIPS.VIEW_PROFILE}>
+        <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
+          {avatar !== "" &&
+            !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) && (
               <Avatar
-                 onTouchStart={onHoverProfile}
-                 onMouseEnter={onHoverProfile}
-                 className={`${
+                ref={popoverAnchor}
+                onTouchStart={handlePopoverOpen}
+                onTouchEnd={handlePopoverClose}
+                onMouseEnter={handlePopoverOpen}
+                onMouseLeave={handlePopoverClose}
+                className={`${
                   isVisibleOnSessionCard ? "avatar-sm" : "avatar-dashboard"
                 }`}
                 alt={`${profilePrimaryLine}`}
                 src={avatar}
               />
-            </Tooltip>
-          )}
+            )}
           {(avatar === "" ||
             avatar == null ||
             avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE)) && (
-            <Tooltip title={TOOLTIPS.VIEW_PROFILE}>
-              <Avatar
-              onTouchStart={onHoverProfile}
-              onMouseEnter={onHoverProfile}
-                className={`${
-                  isVisibleOnSessionCard ? "avatar-sm" : "avatar-dashboard"
-                }`}
-                {...avatarToString(`${profilePrimaryLine}`)}
-              />
-            </Tooltip>
+            <Avatar
+              ref={popoverAnchor}
+              onTouchStart={handlePopoverOpen}
+              onTouchEnd={handlePopoverClose}
+              onMouseEnter={handlePopoverOpen}
+              onMouseLeave={handlePopoverClose}
+              className={`${
+                isVisibleOnSessionCard ? "avatar-sm" : "avatar-dashboard"
+              }`}
+              {...avatarToString(`${profilePrimaryLine}`)}
+            />
           )}
         </div>
 
@@ -263,16 +314,17 @@ function Profile({
               <Tooltip
                 title={
                   isMePrefixOnProfileName
-                    ? TOOLTIPS.VIEW_PROFILE
-                    : TOOLTIPS.GO_TO_PROFILE
+                    ? TOOLTIPS.GO_TO_PROFILE
+                    : TOOLTIPS.VIEW_PROFILE
                 }
               >
                 <span className="name">
                   {profilePrimaryLine}
-                  {isMePrefixOnProfileName ? <>(Me)</> : <></>}
+                  {isMePrefixOnProfileName ? <>{ME}</> : <></>}
                 </span>
               </Tooltip>
             </div>
+            {/* ONLY CONNECTED OPTIONS */}
             {options && options.connect && (
               <div
                 className={`flex cursor-pointer ml-auto slow-transition ${
@@ -481,7 +533,7 @@ function Profile({
 
             {!isVisibleOnSessionCard && profileSecondaryLine !== "" && (
               <Tooltip title={profileSecondaryLine}>
-                <div className={`${origin ? "" : "-mt-1"}`}>
+                <div className={`${origin ? "" : "-mt-2-px"}`}>
                   {profileSecondaryLine}
                 </div>
               </Tooltip>
@@ -492,25 +544,27 @@ function Profile({
               className={` ${ProfileStyle.profile__event__time__subtitle} 
           sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500`}
             >
-              <div className="flex ">
+              <div className="flex text-xs  ">
                 <EventIcon
                   className={` ${ProfileStyle.profile__event__time__subtitle__icon}`}
                 />
-                <div className="mt-0 leading-tight">
-                  {localTZDate(sessionStartDTime)}({getTimezone()})
+                <div className="mt-0 leading-tight text-xs">
+                  {localTZDate(sessionStartDTime)}
                 </div>
+                
               </div>
+              <div>{getTimezone()}</div>
             </div>
           )}
 
-          {!isVisibleOnSessionCard && metaData && profileTertiaryLine != "" && (
+          {!isVisibleOnSessionCard && metaData && profileTertiaryLine() != "" && (
             <div
               className={` ${ProfileStyle.profile__event__time__subtitle} 
           sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500`}
             >
               <div className="flex">
-                <Tooltip title={profileTertiaryLine}>
-                  <div>{profileTertiaryLine}</div>
+                <Tooltip title={profileTertiaryLine()}>
+                  <div>{profileTertiaryLine()}</div>
                 </Tooltip>
               </div>
             </div>

@@ -27,17 +27,20 @@ export const ENDPOINTS = {
       TOP_COURSES: "/homepage/poll/topCourses",
     },
     SIGN_OUT: "/logOff",
-    PEOPLE:{
-      NETWORK:{
-        ADD_REQUEST:'/inbox/send/invitationRequest',
-        ACCEPT_REQUEST:"/inbox/accept/invitationRequest/"
+    PEOPLE: {
+      NETWORK: {
+        ADD_REQUEST: "/inbox/send/invitationRequest",
+        ACCEPT_REQUEST: "/inbox/accept/invitationRequest/",
       },
       ATTENDEES: "/course/#X#/attendees",
-     
     },
-    SESSION_BY_ID:'/courses/#X#'
+    DETAILS: "/view/profile/",
+    SESSION_BY_ID: "/courses/#X#",
+    METADATA: {
+      ROOT: "/courses/metadata",
+      STATIC: "/courses/staticmetadata",
+    },
   },
-  
 };
 export const EXTERNAL_FULLY_QUALIFIED_ENDPOINTS = {
   IP_DATA: process.env.NEXT_PUBLIC_IP_INFO_ENDPOINT,

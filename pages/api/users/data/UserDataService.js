@@ -47,4 +47,8 @@ export default class UserDataService {
     );
     return await asyncInstance.get(endpoint, {data:null});
   }
+
+  static async getUserById(id){
+    return await asyncInstance.get(ENDPOINTS.USER.DETAILS+id, {data:null});
+  }
 }

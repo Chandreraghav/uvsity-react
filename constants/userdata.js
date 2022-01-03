@@ -256,12 +256,17 @@ export const PLACEHOLDERS = {
 
   NO_CONNECTIONS:
     "Uh Oh! it seems you do not have any connections in your network yet.Try adding few connections to your network for a better experience.",
-};
+
+    NO_POPULAR_SESSIONS:
+    "There are no popular sessions available right now. How about creating your own session, invite people to join and grow your connectivity.",
+
+  };
 export const TITLES = {
   CONNECTIONS: "Connections",
   POPULAR_SESSION: "Popular Sessions",
   PROBABLE_INTERESTING_CONNECTIONS: "Connections you might find interesting",
   PEOPLE_WHO_VIEWED_YOU: "People who viewed you",
+  PEOPLE_ATTENDING:"People who are attending",
   CONNECT_TO_PERSON: "Connect",
   CONNECTION_REQUEST_SENT: "request sent",
   CONNECTION_REQUEST_SENT_TO: "Connection request sent to ",
@@ -508,6 +513,8 @@ export const IMAGE_PATHS = {
     CONNECTIONS: "/static/images/nodata-illustrations/no-connections.jpg",
     PEOPLE: "/static/images/nodata-illustrations/no-interesting-people.jpg",
     PEOPLE_VIEWS: "/static/images/nodata-illustrations/no-views-on-profile.PNG",
+    SESSION:"/static/images/nodata-illustrations/no-session-illustration.jpg",
+    EVENT_POSTER:"/static/images/nodata-illustrations/default-placeholder.PNG"
   },
   NO_PROFILE_PICTURE: "profilebig.png",
 };
@@ -523,6 +530,13 @@ export const NETWORK=
       ACCEPT_REQUEST:'ACCEPT',
       REJECT_REQUEST:'REJECT',
       CONNECT:'INVITE'
+    },
+    CONNECTION_RELATION_STATE_ALT:{
+      IN_MY_NETWORK:'In My Network',
+      AWAITING_RESPONSE:'Waiting for Response',
+      ACCEPT_REQUEST:'Accept',
+      REJECT_REQUEST:'Reject',
+      CONNECT:'Invite'
     },
     REQUEST_TYPE:'INVITATION_REQUEST',
     CONNECTION_ACTION_STATUS:{
@@ -567,5 +581,7 @@ export const NETWORK=
       code: WORKFLOW_CODES.USER.SESSION.VIEW,
     },
   ];
+
+  export const ME ="(Me)"
    
   

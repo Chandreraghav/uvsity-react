@@ -13,7 +13,12 @@ import { Tooltip } from "@mui/material";
 import { getRandomArrayElement } from "../../../utils/utility";
 import { TIME_OF_DAY_GREETING } from "../../../constants/constants";
 import Spacer from "../../shared/Spacer";
+import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
+import { useRouter } from "next/router";
+import { AUTHORIZED_ROUTES } from "../../../constants/routes";
+import { uuid } from "uuidv4";
 function Intro() {
+  const router = useRouter();
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [loggedIn, setLoggedIn] = useState(false);
   const [introMoodColor, setIntroMoodColor] = useState(null);
@@ -55,8 +60,17 @@ function Intro() {
   if (!loggedIn) {
     return "";
   }
+
+  const invokeIntroAction = (code) => {
+    if (code === WORKFLOW_CODES.USER.INTRO_PATHS.SESSION) {
+      router.push({
+        pathname: AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
+        query: { token: uuid() },
+      });
+    }
+  };
   return (
-    <div className={` px-1 py-1 `}>
+    <div className={` mt-2 px-1 py-1 `}>
       <div
         className={`flex flex-row items-center justify-between h-10 flex-1 overflow-auto ${introMoodColor}`}
       >
@@ -98,7 +112,11 @@ function Intro() {
                   </Button>
                 ) : (
                   <Tooltip key={action.id} title={action.tooltip}>
-                    <Button variant="contained" startIcon={action.icon}>
+                    <Button
+                      onClick={(e) => invokeIntroAction(action.code)}
+                      variant="contained"
+                      startIcon={action.icon}
+                    >
                       {action.title}
                     </Button>
                   </Tooltip>
