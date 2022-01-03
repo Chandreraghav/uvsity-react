@@ -3,7 +3,7 @@
   text-decoration: underline;
   transition-timing-function: ease-in;
   transition: all 0.8s;
-  color: #0081cb !important;
+  color: var(--blue)!important;
 }
 .profile__subtitle__icon {
   font-size: 1rem !important;

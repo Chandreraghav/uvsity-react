@@ -5,6 +5,7 @@ export const initialState = {
   PROFILE_PERCENTAGE_COMPLETION: null,
   PROFILE_VISITS: null,
   TOP_COURSES: null,
+  COURSE_ATTENDEES: [],
   SUGGESTED_FRIENDS: null,
   NETWORK_UPDATES: null,
   HOT_TOPICS: null,
@@ -17,6 +18,7 @@ export const actionTypes = {
     PROFILE_PERCENTAGE_COMPLETION: "PROFILE_PERCENTAGE_COMPLETION",
     PROFILE_VISITS: "PROFILE_VISITS",
     TOP_COURSES: "TOP_COURSES",
+    COURSE_ATTENDEES:"COURSE_ATTENDEES",
     SUGGESTED_FRIENDS: "SUGGESTED_FRIENDS",
     NETWORK_UPDATES: "NETWORK_UPDATES",
     HOT_TOPICS: "HOT_TOPICS",
@@ -27,6 +29,7 @@ const reducer = (state, action) => {
     "Reducer: Setting the incoming api data into the data layer context"
   );
   console.log(action);
+  
   //action has 2 types-> type, [payload]
   switch (action.type) {
     case "SET_USER":
@@ -65,10 +68,17 @@ const reducer = (state, action) => {
         TOP_COURSES: action.TOP_COURSES,
       };
 
+      case "COURSE_ATTENDEES":
+      return {
+        ...state,
+        COURSE_ATTENDEES: state.COURSE_ATTENDEES.concat(action.COURSE_ATTENDEES)
+      };
+
     case "SUGGESTED_FRIENDS":
       return {
         ...state,
         SUGGESTED_FRIENDS: action.SUGGESTED_FRIENDS,
+        
       };
 
     case "NETWORK_UPDATES":

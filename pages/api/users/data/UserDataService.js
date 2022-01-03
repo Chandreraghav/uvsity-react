@@ -31,4 +31,24 @@ export default class UserDataService {
   static async getTopCourses() {
     return await asyncInstance.get(ENDPOINTS.USER.HOMEPAGE.TOP_COURSES);
   }
+
+  static async getAttendeesPerCourse(course_id) {
+    let endpoint = ENDPOINTS.USER.PEOPLE.ATTENDEES.replace(
+      "#X#",
+      course_id.toString()
+    );
+    return await asyncInstance.get(endpoint, {data:null});
+  }
+
+  static async getSessionDetailPerCourse(course_id) {
+    let endpoint = ENDPOINTS.USER.SESSION_BY_ID.replace(
+      "#X#",
+      course_id.toString()
+    );
+    return await asyncInstance.get(endpoint, {data:null});
+  }
+
+  static async getUserById(id){
+    return await asyncInstance.get(ENDPOINTS.USER.DETAILS+id, {data:null});
+  }
 }

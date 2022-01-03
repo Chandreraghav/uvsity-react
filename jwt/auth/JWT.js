@@ -9,7 +9,7 @@ export class JWT {
    */
   static preAuthJWT() {
     return {
-      headers: {
+      headers:{
         "content-type": "application/json",
       },
     };

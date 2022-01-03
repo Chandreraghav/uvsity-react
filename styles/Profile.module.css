@@ -52,7 +52,7 @@
   text-decoration: underline;
   transition-timing-function: ease-in;
   transition: all 0.8s;
-  color: #0081cb!important;
+  color: var(--blue)!important;
 }
 
 .profile__mini > div > h2:hover {
@@ -60,5 +60,5 @@
   text-decoration: underline;
   transition-timing-function: ease-in;
   transition: all 0.8s;
-  color: #0081cb!important;
+  color: var(--blue)!important;
 }

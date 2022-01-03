@@ -8,13 +8,16 @@ import UserDataService from "../api/users/data/UserDataService";
 import { useDataLayerContextValue } from "../../context/DataLayer";
 import { actionTypes } from "../../context/reducer";
 import Splash from "../../components/shared/Splash";
-import { asyncSubscriptions, standardSubscriptionPollDelay } from "../../async/subscriptions";
+import {
+  asyncSubscriptions,
+} from "../../async/subscriptions";
 function Landing() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [{}, dispatch] = useDataLayerContextValue();
+  const [USER, dispatch] = useDataLayerContextValue();
   const [moduleError, setModuleError] = useState([]);
-  let poller1, poller2;
-
+  const layoutObj={
+    title:`${process.env.NEXT_PUBLIC_APP_TITLE}`
+  }
   useEffect(() => {
     setTimeout(() => {
       setLoggedIn(AuthGuardService.isUserLoggedIn());
@@ -100,34 +103,63 @@ function Landing() {
     };
   }, []);
 
-  // ON DEMAND TIMED SUBSCRIPTIONS
+  // ON DEMAND TIMED SUBSCRIPTIONS - PAGE SPECIFIC
   useEffect(() => {
-    if (asyncSubscriptions.PROFILE_VISITS) {
-       AuthGuardService.pollSessionValidity()
+    // cancel all subs prior to registering them again
+    AuthGuardService.cancelAllSubscriptions(false);
+    if (
+      asyncSubscriptions.PROFILE_VISITS.enabled &&
+      !asyncSubscriptions.PROFILE_VISITS.subscribed
+    ) {
+      AuthGuardService.pollSessionValidity()
         .then(() => {
-          poller1 = setInterval(() => {
+          window.profileVisitPoll = setInterval(() => {
             profileVisits(true, dispatch, moduleError);
-          }, standardSubscriptionPollDelay);
+          }, asyncSubscriptions.PROFILE_VISITS.pollEvery);
+          asyncSubscriptions.PROFILE_VISITS.subscribed = true;
         })
         .catch(() => {
-          clearInterval(poller1);
+          window.clearInterval(window.profileVisitPoll);
         });
     }
 
-    if (asyncSubscriptions.INTERESTING_CONNECTIONS) {
-       AuthGuardService.pollSessionValidity()
+    if (
+      asyncSubscriptions.INTERESTING_CONNECTIONS.enabled &&
+      !asyncSubscriptions.INTERESTING_CONNECTIONS.subscribed
+    ) {
+      AuthGuardService.pollSessionValidity()
         .then(() => {
-          poller2 = setInterval(() => {
+          window.interestingConnectionsPoll = setInterval(() => {
             interestingConnections(true, dispatch, moduleError);
-          }, standardSubscriptionPollDelay);
+          }, asyncSubscriptions.INTERESTING_CONNECTIONS.pollEvery);
+          asyncSubscriptions.INTERESTING_CONNECTIONS.subscribed = true;
         })
         .catch(() => {
-          clearInterval(poller2);
+          window.clearInterval(window.interestingConnectionsPoll);
         });
+    }
+
+    if (asyncSubscriptions.LOGGED_IN_USER_INFO.enabled && !asyncSubscriptions.LOGGED_IN_USER_INFO.subscribed) {
+      AuthGuardService.pollSessionValidity()
+        .then(() => {
+          window.loggedinUserPoll = setInterval(() => {
+            loggedInInformation(true, dispatch, moduleError);
+          }, asyncSubscriptions.LOGGED_IN_USER_INFO.pollEvery);
+          asyncSubscriptions.LOGGED_IN_USER_INFO.subscribed=true
+        })
+        .catch(() => {
+          window.clearInterval(window.interestingConnectionsPoll);
+        });
+    }
+
+    if (moduleError.length > 0) {
+      console.log("Internal errors handled gracefully. But System not OK");
+    } else {
+      console.log("System OK");
     }
   }, []);
 
-   const loggedInInformation=async(isSubscribed, dispatch, moduleError) =>{
+  const loggedInInformation = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getLoggedInInformation()
       .then((loggedInInformation) =>
         isSubscribed
@@ -145,9 +177,9 @@ function Landing() {
           });
         }
       });
-  }
-  
-   const hotTopics=async(isSubscribed, dispatch, moduleError) =>{
+  };
+
+  const hotTopics = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getHotTopics()
       .then((hotTopics) =>
         isSubscribed
@@ -165,9 +197,9 @@ function Landing() {
           });
         }
       });
-  }
-  
-   const networkUpdates=async(isSubscribed, dispatch, moduleError)=> {
+  };
+
+  const networkUpdates = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getNetworkUpdates()
       .then((networkUpdates) =>
         isSubscribed
@@ -185,12 +217,16 @@ function Landing() {
           });
         }
       });
-  }
-  
-   const interestingConnections=async(isSubscribed, dispatch, moduleError)=> {
+  };
+
+  const interestingConnections = async (
+    isSubscribed,
+    dispatch,
+    moduleError
+  ) => {
     await AuthGuardService.pollSessionValidity()
       .then(() => {
-         UserDataService.getSuggestedFriends()
+        UserDataService.getSuggestedFriends()
           .then((suggestedFriends) =>
             isSubscribed
               ? dispatch({
@@ -209,11 +245,11 @@ function Landing() {
           });
       })
       .catch(() => {
-        clearInterval(poller2);
+        window.clearInterval(window.interestingConnectionsPoll);
       });
-  }
-  
-   const topCourses=async (isSubscribed, dispatch, moduleError) =>{
+  };
+
+  const topCourses = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getTopCourses()
       .then((topCourses) =>
         isSubscribed
@@ -231,9 +267,30 @@ function Landing() {
           });
         }
       });
-  }
-  
-   const profileSummary=async(isSubscribed, dispatch, moduleError) =>{
+  };
+
+  const getAttendees = (isSubscribed, moduleError) => {
+    let attendees_per_course = [];
+    let attendeePromise = [];
+    USER.TOP_COURSES?.data.map(async (course) => {
+      attendeePromise.push(
+        await UserDataService.getAttendeesPerCourse(course.courseId)
+          .then((response) => {
+            attendees_per_course.push(response);
+          })
+          .catch((err) => {
+            if (isSubscribed) {
+              moduleError.push({
+                key: actionTypes.USER.COURSE_ATTENDEES,
+                err: err.message,
+              });
+            }
+          })
+      );
+    });
+  };
+
+  const profileSummary = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getSummary()
       .then((summary) =>
         isSubscribed
@@ -247,9 +304,9 @@ function Landing() {
         if (isSubscribed)
           moduleError.push({ key: actionTypes.USER.SUMMARY, err: err.message });
       });
-  }
-  
-   const profileCompletion=async(isSubscribed, dispatch, moduleError) =>{
+  };
+
+  const profileCompletion = async (isSubscribed, dispatch, moduleError) => {
     await UserDataService.getProfilePercentageCompletion()
       .then((profilePerecentageCompletion) =>
         isSubscribed
@@ -267,12 +324,12 @@ function Landing() {
           });
         }
       });
-  }
-  
-   const profileVisits=async(isSubscribed, dispatch, moduleError)=> {
+  };
+
+  const profileVisits = async (isSubscribed, dispatch, moduleError) => {
     await AuthGuardService.pollSessionValidity()
       .then(() => {
-         UserDataService.getProfileVisits()
+        UserDataService.getProfileVisits()
           .then((profileVisits) =>
             isSubscribed
               ? dispatch({
@@ -291,20 +348,19 @@ function Landing() {
           });
       })
       .catch(() => {
-        clearInterval(poller1);
+        window.clearInterval(window.profileVisitPoll);
       });
-  }
+  };
   return loggedIn ? (
-    <Layout title={`${process.env.NEXT_PUBLIC_APP_TITLE}`}>
+    <Layout options={layoutObj}>
       <Header isAuthorized={loggedIn} isShared={true} />
       <Dashboard isAuthorized={loggedIn} isShared={false} />
       <Footer isAuthorized={loggedIn} isShared={true} />
     </Layout>
   ) : (
-    <Layout title={`${process.env.NEXT_PUBLIC_APP_TITLE}`}>
+    <Layout options={{title:process.env.NEXT_PUBLIC_APP_TITLE}}>
       <Splash />
     </Layout>
   );
 }
 export default Landing;
-

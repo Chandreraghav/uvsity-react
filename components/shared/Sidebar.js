@@ -44,6 +44,8 @@ function Sidebar() {
         metaData={{
           company: USERDATA?.SUMMARY?.data?.educationalInstitution,
           location: USERDATA?.SUMMARY?.data?.city,
+          city: USERDATA?.SUMMARY?.data?.city,
+          country: USERDATA?.SUMMARY?.data?.country
         }}
         coverImage={DEFAULT_COVER_IMAGE}
         profileImage={USERDATA?.SUMMARY?.data?.profilePicName}

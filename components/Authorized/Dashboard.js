@@ -5,15 +5,15 @@ import Profiles from "./Network/People/Profiles";
 import Intro from "./MainContent/Intro";
 import Stats from "./Profile/Connection/Stats";
 import CompactCard from "./Sessions/Preview/CompactCard";
-import { ICONS, TITLES, TOOLTIPS } from "../../constants/userdata";
+import { TITLES, TOOLTIPS } from "../../constants/userdata";
 
 function Dashboard() {
   return (
     
     
     <div
-    style={{zoom:0.9, scale:1}} className="
-    grid items-stretch grid-cols-12 
+    style={{width:"92vw"}} className="
+    grid items-stretch grid-cols-12
     gap-2 px-2 mx-auto xl:container md:gap-4 
     xl:grid-cols-8 2xl:px-5"
     >
@@ -25,7 +25,7 @@ function Dashboard() {
 
       <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-5 xl:col-span-4">
         <Intro />
-        <CompactCard title={TITLES.POPULAR_SESSION}/>
+        <CompactCard  title={TITLES.POPULAR_SESSION}/>
       </div>
 
       <div className="col-span-12 pt-2  xl:col-span-2">

@@ -26,7 +26,7 @@ function Banner({ bannerObject }) {
     return () => {
       controller?.abort();
     };
-  }, []);
+  }, [bannerObject]);
   return (
     <div>
       <div className={BannerStyle.banner__contents}>

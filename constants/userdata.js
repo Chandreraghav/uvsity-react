@@ -36,6 +36,8 @@ import VideoCameraFrontOutlinedIcon from "@mui/icons-material/VideoCameraFrontOu
 import VerifiedIcon from "@mui/icons-material/Verified";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import PreviewIcon from '@mui/icons-material/Preview';
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -243,24 +245,39 @@ export const COMPLETION_DETAIL_ACTION = [
 export const PLACEHOLDERS = {
   SEARCH: "Search for people, sessions, topics...",
   VIEW_DETAIL: "View Detail",
+  REGISTER_SESSION: "Register",
+  SPONSOR_SESSION: "Sponsor",
   ATTENDING: "attending",
   FREE: "Free",
   NO_INTERESTING_PROFILE:
-    "No interesting profiles found for you. Try updating your profile to discover more people around you.",
+    "No interesting profiles found for you. Please try again  in a while. To discover more people around you, try updating your profile.",
   NO_PEOPLE_VIEWED_YOU:
-    "No one has viewed your profile recently. Try ading new connections and updating your profile to discover more people around you.",
+    "No one has viewed your profile recently. Try adding new connections and updating your profile to discover more people around you.",
 
   NO_CONNECTIONS:
     "Uh Oh! it seems you do not have any connections in your network yet.Try adding few connections to your network for a better experience.",
-};
+
+    NO_POPULAR_SESSIONS:
+    "There are no popular sessions available right now. How about creating your own session, invite people to join and grow your connectivity.",
+
+  };
 export const TITLES = {
   CONNECTIONS: "Connections",
   POPULAR_SESSION: "Popular Sessions",
   PROBABLE_INTERESTING_CONNECTIONS: "Connections you might find interesting",
   PEOPLE_WHO_VIEWED_YOU: "People who viewed you",
+  PEOPLE_ATTENDING:"People who are attending",
   CONNECT_TO_PERSON: "Connect",
   CONNECTION_REQUEST_SENT: "request sent",
-};
+  CONNECTION_REQUEST_SENT_TO: "Connection request sent to ",
+  CONNECTED_PEOPLE:'You and #X# are now connected',
+  CONNECTED_PEOPLE_LATENT:'You and #X# are connected',
+  CONNECTION_REQUEST_PENDING:'Your connection request is yet pending from ',
+  CONNECTION_REQUEST_SENT_TO_LATENT:'You have sent a request to '
+  };
+export const PAYLOAD_DEFAULT_TEXTS={
+  CONNECTION_REQUEST_SENDING_TEXT:'Invitation Request sent by User Id #X# to User Id #Y#. Sent by REST Service.'
+}
 export const TOOLTIPS = {
   GO_TO_PROFILE: "Go to profile",
   VIEW_ALL_CONNECTIONS: "View all connections",
@@ -269,6 +286,8 @@ export const TOOLTIPS = {
   FREE_SESSION: "This session is a free to attend session",
   PAID_SESSION: "Paid session",
   KNOW_MORE_SESSION: "Know more about this session",
+  REGISTER_SESSION: "Register for this session",
+  SPONSOR_SESSION: "Sponsor this session",
   NO_CONNECTIONS: "No connections",
   NO_INTERESTING_PROFILE: "No interesting profiles available",
   NO_PEOPLE_VIEWED_YOU: "No people viewed you yet",
@@ -494,6 +513,8 @@ export const IMAGE_PATHS = {
     CONNECTIONS: "/static/images/nodata-illustrations/no-connections.jpg",
     PEOPLE: "/static/images/nodata-illustrations/no-interesting-people.jpg",
     PEOPLE_VIEWS: "/static/images/nodata-illustrations/no-views-on-profile.PNG",
+    SESSION:"/static/images/nodata-illustrations/no-session-illustration.jpg",
+    EVENT_POSTER:"/static/images/nodata-illustrations/default-placeholder.PNG"
   },
   NO_PROFILE_PICTURE: "profilebig.png",
 };
@@ -509,7 +530,58 @@ export const NETWORK=
       ACCEPT_REQUEST:'ACCEPT',
       REJECT_REQUEST:'REJECT',
       CONNECT:'INVITE'
+    },
+    CONNECTION_RELATION_STATE_ALT:{
+      IN_MY_NETWORK:'In My Network',
+      AWAITING_RESPONSE:'Waiting for Response',
+      ACCEPT_REQUEST:'Accept',
+      REJECT_REQUEST:'Reject',
+      CONNECT:'Invite'
+    },
+    REQUEST_TYPE:'INVITATION_REQUEST',
+    CONNECTION_ACTION_STATUS:{
+      PENDING:'pending',
+      CONNECTED:'connected',
+      ACCEPT:'Accept',
+
     }
   }
+
+
+  export const SESSION_ACTIONS = [
+    {
+      id: 1,
+      title:  PLACEHOLDERS.REGISTER_SESSION,
+      icon: <AppRegistrationIcon />,
+      hidden: false,
+      disabled: false,
+      size: "small",
+      tooltip: TOOLTIPS.REGISTER_SESSION,
+      code: WORKFLOW_CODES.USER.SESSION.REGISTER,
+    },
+    {
+      id: 2,
+      title:  PLACEHOLDERS.SPONSOR_SESSION,
+      icon: <AutoGraphOutlinedIcon />,
+      hidden: false,
+      disabled: false,
+      size: "small",
+      tooltip: TOOLTIPS.SPONSOR_SESSION,
+      code: WORKFLOW_CODES.USER.SESSION.SPONSOR,
+    },
+
+    {
+      id: 3,
+      title:  PLACEHOLDERS.VIEW_DETAIL,
+      icon: <PreviewIcon />,
+      hidden: false,
+      disabled: false,
+      size: "small",
+      tooltip: TOOLTIPS.KNOW_MORE_SESSION,
+      code: WORKFLOW_CODES.USER.SESSION.VIEW,
+    },
+  ];
+
+  export const ME ="(Me)"
    
   

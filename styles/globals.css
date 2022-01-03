@@ -1,9 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+ 
 .app {
   display: flex;
   flex-direction: column;
+  background-color: #F0F0F0!important;
+ 
 }
 html,
 body {
@@ -11,6 +14,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    --blue: #0081cb;
 }
 
 a {
@@ -151,13 +155,13 @@ button.danger {
   background-color: rgba(255,255,255,var(--tw-bg-opacity));
 }
 .uvsity__card__border__theme{
-  border-bottom: 5px solid #0081cb;
+  border-bottom: 5px solid var(--blue);
 }
 .uvsity__card__top {
   border: 1px solid lightgray;
   background-color: #fff;
   border-radius: 10px;
-  border-bottom: 5px solid #0081cb;
+  border-bottom: 5px solid var(--blue);
 }
 .spacer {
   padding: 5px;
@@ -172,7 +176,7 @@ button.danger {
   text-align: left;
   padding: 10px;
   border: 1px solid lightgray;
-  border-bottom: 5px solid #0081cb;
+  border-bottom: 5px solid var(--blue);
   background-color: #fff;
   border-radius: 10px;
   margin-top: 10px;
@@ -216,4 +220,62 @@ margin-top:14px!important ;
   transition-property: width;
   transition-duration: 5s;
   transition-delay: 2s;
+}
+.-mt-2-5{
+  margin-top:-4px!important
+}
+.-mt-2-px{
+  margin-top:-2px!important
+}
+.dialog-subtitle{
+  border-bottom: 1px solid #e2e2e2!important;
+}
+.dialog-dark-subtitle{
+  border-bottom: 1px solid dimgrey!important;
+}
+.dark-dialog{
+  background-color: #111 !important;
+  color: #fff !important;
+}
+.dark-dialog-variant{
+  background-color: #18191A!important;
+  color: #fff !important;
+
+}
+.default-dialog-variant{
+  background-color: #fff!important;
+  color: #111 !important;
+}
+.dialog-title:hover{
+cursor: pointer!important;
+text-decoration: underline;
+transition-timing-function: ease-in;
+transition: all 0.8s;
+color: var(--blue);
+
+}
+.vertical-bar{
+  border-right: 1px solid #e2e2e2;
+  padding:4px;
+}
+.theme-color{
+  color: var(--blue);
+}
+.rectangular-md-card{
+  width: 400px;
+  z-index: 1000!important;
+  padding: 20px !important;
+  overflow: hidden !important;
+}
+.rectangular-md-card-fixed-height{
+  height:200px!important;
+}
+
+@media (max-width: 768px) {
+  .rectangular-md-card {
+    zoom:0.9
+  }
+}
+.border-white-override{
+  border-color: #fff !important;
 }

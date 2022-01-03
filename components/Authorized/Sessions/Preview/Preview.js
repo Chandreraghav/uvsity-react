@@ -1,20 +1,132 @@
 import { Tooltip } from "@mui/material";
-import React from "react";
-import CardActions from "@mui/material/CardActions";
+import React, { useState, useEffect } from "react";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { SESSION_REVIEW_MAX_STAR_COUNT } from "../../../../constants/constants";
-import { PLACEHOLDERS, TOOLTIPS } from "../../../../constants/userdata";
+import { IMAGE_PATHS, PLACEHOLDERS, TOOLTIPS } from "../../../../constants/userdata";
 import SessionStyle from "../../../../styles/Session.module.css";
-import Button from "@mui/material/Button";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Profile from "../../Network/People/Dashboard/Profile";
 import Spacer from "../../../shared/Spacer";
+import CustomDialog from "../../../shared/modals/CustomDialog";
+import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
+import UserDataService from "../../../../pages/api/users/data/UserDataService";
+import { useDataLayerContextValue } from "../../../../context/DataLayer";
+import parse from "html-react-parser";
+import Actions from "../ActionableItems/Actions";
 
 function Preview({ data, authorized }) {
   if (!authorized || !data) return "";
+  const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
+  const [attendees, setAttendees] = useState([]);
+  const [sessionDetail, setSessionDetail] = useState({});
+  const [sessionCreatorDetail, setSessionCreatorDetail] = useState({});
+  const [USER, dispatch] = useDataLayerContextValue();
+  const getEventPoster = () => {
+    if (data.imageURL) {
+      return data.imageURL;
+    }
+    return IMAGE_PATHS.NO_DATA.EVENT_POSTER;
+  };
+  const [eventPosterSrc, setEventPosterSrc] = useState(getEventPoster());
+  useEffect(() => {
+    let isSubscribed = true;
+    let controller = new AbortController();
+    if (data.numberOfAttendees > 0 && isSubscribed) {
+      UserDataService.getAttendeesPerCourse(data.courseId).then((response) => {
+        setAttendees(response?.data?.users);
+      });
+    }
+    return () => {
+      controller?.abort();
+      isSubscribed = false;
+    };
+  }, [data]);
+
+  useEffect(() => {
+    let isSubscribed = true;
+    let controller = new AbortController();
+    if (isSubscribed) {
+      UserDataService.getSessionDetailPerCourse(data.courseId).then(
+        (response) => {
+          setSessionDetail(response?.data);
+        }
+      );
+    }
+    return () => {
+      controller?.abort();
+      isSubscribed = false;
+    };
+  }, [data]);
+
+  useEffect(() => {
+    let isSubscribed = true;
+    let controller = new AbortController();
+    if (isSubscribed) {
+      UserDataService.getUserById(data.creator.userDetailsId).then(
+        (response) => {
+          setSessionCreatorDetail(response?.data);
+          data.associatedUserData = response?.data;
+        }
+      );
+    }
+    return () => {
+      controller?.abort();
+      isSubscribed = false;
+    };
+  }, [data]);
+
+  const amIAttending = () => {
+    const index = attendees?.findIndex((x) => {
+      return x.userDetailsId == USER?.LOGGED_IN_INFO?.data?.userDetailsId;
+    });
+    return index !== -1;
+  };
+  const handleAttendeesDialogClose = () => {
+    setOpenAttendeesDialog(false);
+  };
+
+  const amITheOnlyOneAttending = amIAttending() && data?.numberOfAttendees == 1;
+
+  const handleAttendeesDialogOpen = () => {
+    if (amITheOnlyOneAttending) {
+      return;
+    }
+    setOpenAttendeesDialog(true);
+  };
+  const getAttendanceJSX = () => {
+    return (
+      <>
+        <div
+          className={` ${
+            amITheOnlyOneAttending ? "" : "dialog-title"
+          }  text-xs font-medium leading-tight`}
+        >
+          {amIAttending() && data?.numberOfAttendees > 1 ? (
+            <>
+              <span>
+                You and {data?.numberOfAttendees - 1}{" "}
+                {data?.numberOfAttendees - 1 === 1 ? "other" : "others"}{" "}
+                {PLACEHOLDERS.ATTENDING}
+              </span>
+            </>
+          ) : amITheOnlyOneAttending ? (
+            <>
+              <span>You are {PLACEHOLDERS.ATTENDING}</span>
+            </>
+          ) : (
+            <>
+              <span>
+                {data?.numberOfAttendees} {PLACEHOLDERS.ATTENDING}
+              </span>
+            </>
+          )}
+        </div>
+      </>
+    );
+  };
+
   const getSessionRatingDesignLayout = (reviewCount) => {
     if (
       !reviewCount ||
@@ -50,7 +162,7 @@ function Preview({ data, authorized }) {
     if (!amount || amount == 0 || isNaN(amount)) {
       return (
         <Tooltip title={TOOLTIPS.FREE_SESSION}>
-          <div className={`${SessionStyle.session__card__costing}`}>
+          <div className={`${SessionStyle.session__card__costing} mt-2`}>
             {PLACEHOLDERS.FREE}
           </div>
         </Tooltip>
@@ -69,11 +181,12 @@ function Preview({ data, authorized }) {
       </Tooltip>
     );
   };
+
   return (
-    <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg md:px-2">
+    <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg px-2">
       {/* EVENT/SESSION/AUTHOR NAME */}
       <div className="flex flex-row flex-wrap flex-grow-0">
-        <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5">
+        <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5 px-2 py-2">
           <Tooltip title={data?.courseFullName}>
             <h1
               className={`${SessionStyle.preview__session__title} line-clamp-2 mb-1 text-3xl font-semibold leading-tight tracking-tight text-brand-black dark:text-brand-grey-100`}
@@ -81,64 +194,93 @@ function Preview({ data, authorized }) {
               {data?.courseFullName}
             </h1>
           </Tooltip>
-          <Spacer/>
-
-          <Profile
-            firstName={data.creator.firstName}
-            lastName={data.creator.lastName}
-            avatar={data.courseCreatorImageURL}
-            sessionStartDTime={data.courseStartDTime}
-            userType={data.creator.userType}
-            instituition={data.creator.educationalInstitute}
-            isVisibleOnSessionCard
-          />
-        </div>
-
-        {/* EVENT POSTER */}
-        <div className="w-full h-auto pt-2 xl:w-56">
-          <img
-            className="block w-full overflow-hidden object-contain bg-gray-100 bg-center bg-cover rounded post-cover dark:bg-brand-grey-800 dark:border-brand-grey-800"
-            src={data?.imageURL}
-            alt={data?.courseFullName}
-          />
-        </div>
-      </div>
-      <Spacer/>
-
-      {/* MORE DETAIL */}
-
-      <div className="flex flex-col">
-        <div className="flex justify-between">
-          <div className="flex gap-0">
-            {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
+          <Spacer />
+          <div className="flex flex-col px-2 py-2">
+            <Profile
+              oid={data.createdByUser}
+              firstName={data.creator.firstName}
+              lastName={data.creator.lastName}
+              avatar={data.courseCreatorImageURL}
+              sessionStartDTime={data.courseStartDTime}
+              userType={data.creator.userType}
+              instituition={data.creator.educationalInstitute}
+              isVisibleOnSessionCard
+              metaData={data}
+              options={{ connect: false, mixedMode: true }}
+            />
+            <div className="  line-clamp-2 text-gray-700 py-1 mb-1 leading-snug  ">
+              {parse(data.courseSummary)}
+            </div>
           </div>
-          {data?.numberOfAttendees > 0 && (
-            <div className="flex flex-row">
-              <span className={SessionStyle.session__card__attendance__count}>
-                {data?.numberOfAttendees}
-              </span>
-              <span
-                className={`${SessionStyle.session__card__attendance__text}`}
-              >
-                {PLACEHOLDERS.ATTENDING}
-              </span>
+        </div>
+
+        {/* EVENT POSTER & CO-HOST   */}
+        <div className="flex flex-col">
+          <div className="w-full h-auto pt-2 xl:w-56">
+            <img
+              className="block w-full overflow-hidden object-contain bg-gray-100 bg-center bg-cover rounded post-cover dark:bg-brand-grey-800 dark:border-brand-grey-800"
+              src={eventPosterSrc}
+              alt={data?.courseFullName}
+            />
+          </div>
+          {data.coHosts.length > 0 && (
+            <div>
+              <div className="text-md text-gray-700 font-medium    ">
+                Co-Host
+              </div>
+              <Divider />
+              <div className=" transform scale-100 flex flex-row flex-wrap flex-grow-0 px-2 py-2">
+                <Profile
+                  firstName={data.coHosts[0]?.firstName}
+                  lastName={data.coHosts[0]?.lastName}
+                  avatar={data.coHosts[0]?.profilePicName}
+                  userType={data.coHosts[0]?.userBaseType}
+                  instituition={data.coHosts[0]?.educationalInstitution}
+                />
+              </div>
             </div>
           )}
         </div>
-        <Spacer/>
+      </div>
+
+      {/* MORE DETAIL */}
+      {data.coHosts.length == 0 && <Spacer />}
+      <div className="flex flex-col">
+        <div className="flex justify-between">
+          <div className="flex gap-0 px-2 py-2">
+            {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
+          </div>
+          {data?.numberOfAttendees > 0 && (
+            <div
+              onClick={(e) => handleAttendeesDialogOpen()}
+              className={`flex flex-row cursor-pointer leading-slug px-2 py-2`}
+            >
+              {getAttendanceJSX()}
+            </div>
+          )}
+        </div>
+        <Spacer />
         <div>
           <Divider className={SessionStyle.preview__card__divider} />
         </div>
       </div>
-
-      <CardActions className="justify-between">
+      {/* Session Actions */}
+      <div className="flex flex-wrap px-2 py-2 gap-4">
         {generateMonetizationAmountOnCard(data.cost)}
-        <Tooltip title={TOOLTIPS.KNOW_MORE_SESSION}>
-          <Button endIcon={<ArrowForwardIcon />} variant="outlined">
-            {PLACEHOLDERS.VIEW_DETAIL}
-          </Button>
-        </Tooltip>
-      </CardActions>
+
+        <Actions data={sessionDetail} />
+      </div>
+
+      <CustomDialog
+        dialogCloseRequest={handleAttendeesDialogClose}
+        isOpen={openAttendeesDialog}
+        title={data.courseFullName}
+        data={data}
+        secondaryData={attendees}
+        workflow_code={WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION}
+        name="Attendees-Dialog"
+        theme="dark"
+      />
     </div>
   );
 }
