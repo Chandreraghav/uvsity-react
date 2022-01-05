@@ -16,7 +16,7 @@ import Spacer from "../../shared/Spacer";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import { AUTHORIZED_ROUTES } from "../../../constants/routes";
-import { uuid } from "uuidv4";
+import { uuid, v4 as uuidv4 } from "uuidv4";
 function Intro() {
   const router = useRouter();
   const [USERDATA, dispatch] = useDataLayerContextValue();
