@@ -201,7 +201,7 @@ function Preview({ data, authorized }) {
               firstName={data.creator.firstName}
               lastName={data.creator.lastName}
               avatar={data.courseCreatorImageURL}
-              sessionStartDTime={data.courseStartDTime}
+              sessionStartDTime={data.displayStartDate}
               userType={data.creator.userType}
               instituition={data.creator.educationalInstitute}
               isVisibleOnSessionCard

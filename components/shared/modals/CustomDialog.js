@@ -64,7 +64,7 @@ export default function CustomDialog({
         data.creator.userType,
         data.creator.educationalInstitute
       );
-      const profileTertiaryLine = localTZDate(data.courseStartDTime);
+      const profileTertiaryLine = localTZDate(data.displayStartDate);
       jsx.push(
         <>
           <div className="flex flex-col py-1 mb-1 gap-1">

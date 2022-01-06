@@ -199,7 +199,7 @@ export default function SessionCard({ data, shimmerTime, authorized }) {
                 <EventIcon
                   className={SessionStyle.session__card__event__icon}
                 />
-                {localTZDate(data.courseStartDTime)}
+                {localTZDate(data.displayStartDate)}
               </span>
             </div>
           </div>

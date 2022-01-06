@@ -514,7 +514,7 @@ export const IMAGE_PATHS = {
     PEOPLE: "/static/images/nodata-illustrations/no-interesting-people.jpg",
     PEOPLE_VIEWS: "/static/images/nodata-illustrations/no-views-on-profile.PNG",
     SESSION:"/static/images/nodata-illustrations/no-session-illustration.jpg",
-    EVENT_POSTER:"/static/images/nodata-illustrations/default-placeholder.PNG"
+    EVENT_POSTER:"/static/images/nodata-illustrations/default-placeholder.png"
   },
   NO_PROFILE_PICTURE: "profilebig.png",
 };
