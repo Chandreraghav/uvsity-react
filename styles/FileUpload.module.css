@@ -1,0 +1,7 @@
+.fileupload__container{
+    border:2px dashed lightgrey;
+    height:auto;
+    width:auto;
+    overflow:hidden;
+    padding:5px;
+}

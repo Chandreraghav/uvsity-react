@@ -4,6 +4,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.css";
 import "../styles/responsive-menu.css";
+import 'react-quill/dist/quill.snow.css'
 /***
  * GLOBAL APP CSS
  */

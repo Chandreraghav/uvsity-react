@@ -147,3 +147,7 @@ export const timeOfDay = () => {
     return TIME_OF_DAY_GREETING.EVENING;
   }
 };
+export const  isValidURL = URL => {
+  const regex = new RegExp('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?');    
+  return regex.test(URL);
+};
