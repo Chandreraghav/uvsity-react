@@ -36,8 +36,11 @@ import VideoCameraFrontOutlinedIcon from "@mui/icons-material/VideoCameraFrontOu
 import VerifiedIcon from "@mui/icons-material/Verified";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import PreviewIcon from '@mui/icons-material/Preview';
+import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+import PreviewIcon from "@mui/icons-material/Preview";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import ImageIcon from '@mui/icons-material/Image';
+import ArticleIcon from '@mui/icons-material/Article';
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -257,27 +260,27 @@ export const PLACEHOLDERS = {
   NO_CONNECTIONS:
     "Uh Oh! it seems you do not have any connections in your network yet.Try adding few connections to your network for a better experience.",
 
-    NO_POPULAR_SESSIONS:
+  NO_POPULAR_SESSIONS:
     "There are no popular sessions available right now. How about creating your own session, invite people to join and grow your connectivity.",
-
-  };
+};
 export const TITLES = {
   CONNECTIONS: "Connections",
   POPULAR_SESSION: "Popular Sessions",
   PROBABLE_INTERESTING_CONNECTIONS: "Connections you might find interesting",
   PEOPLE_WHO_VIEWED_YOU: "People who viewed you",
-  PEOPLE_ATTENDING:"People who are attending",
+  PEOPLE_ATTENDING: "People who are attending",
   CONNECT_TO_PERSON: "Connect",
   CONNECTION_REQUEST_SENT: "request sent",
   CONNECTION_REQUEST_SENT_TO: "Connection request sent to ",
-  CONNECTED_PEOPLE:'You and #X# are now connected',
-  CONNECTED_PEOPLE_LATENT:'You and #X# are connected',
-  CONNECTION_REQUEST_PENDING:'Your connection request is yet pending from ',
-  CONNECTION_REQUEST_SENT_TO_LATENT:'You have sent a request to '
-  };
-export const PAYLOAD_DEFAULT_TEXTS={
-  CONNECTION_REQUEST_SENDING_TEXT:'Invitation Request sent by User Id #X# to User Id #Y#. Sent by REST Service.'
-}
+  CONNECTED_PEOPLE: "You and #X# are now connected",
+  CONNECTED_PEOPLE_LATENT: "You and #X# are connected",
+  CONNECTION_REQUEST_PENDING: "Your connection request is yet pending from ",
+  CONNECTION_REQUEST_SENT_TO_LATENT: "You have sent a request to ",
+};
+export const PAYLOAD_DEFAULT_TEXTS = {
+  CONNECTION_REQUEST_SENDING_TEXT:
+    "Invitation Request sent by User Id #X# to User Id #Y#. Sent by REST Service.",
+};
 export const TOOLTIPS = {
   GO_TO_PROFILE: "Go to profile",
   VIEW_ALL_CONNECTIONS: "View all connections",
@@ -513,8 +516,8 @@ export const IMAGE_PATHS = {
     CONNECTIONS: "/static/images/nodata-illustrations/no-connections.jpg",
     PEOPLE: "/static/images/nodata-illustrations/no-interesting-people.jpg",
     PEOPLE_VIEWS: "/static/images/nodata-illustrations/no-views-on-profile.PNG",
-    SESSION:"/static/images/nodata-illustrations/no-session-illustration.jpg",
-    EVENT_POSTER:"/static/images/nodata-illustrations/default-placeholder.png"
+    SESSION: "/static/images/nodata-illustrations/no-session-illustration.jpg",
+    EVENT_POSTER: "/static/images/nodata-illustrations/default-placeholder.png",
   },
   NO_PROFILE_PICTURE: "profilebig.png",
 };
@@ -522,66 +525,100 @@ export const ICONS = {
   PROBABLE_INTERESTING_CONNECTIONS: <AutoAwesomeOutlinedIcon />,
   PEOPLE_WHO_VIEWED_YOU: <VisibilityOutlinedIcon />,
 };
-export const NETWORK= 
+export const NETWORK = {
+  CONNECTION_RELATION_STATE: {
+    IN_MY_NETWORK: "IN_MY_NETWORK",
+    AWAITING_RESPONSE: "WAITING_FOR_RESPONSE",
+    ACCEPT_REQUEST: "ACCEPT",
+    REJECT_REQUEST: "REJECT",
+    CONNECT: "INVITE",
+  },
+  CONNECTION_RELATION_STATE_ALT: {
+    IN_MY_NETWORK: "In My Network",
+    AWAITING_RESPONSE: "Waiting for Response",
+    ACCEPT_REQUEST: "Accept",
+    REJECT_REQUEST: "Reject",
+    CONNECT: "Invite",
+  },
+  REQUEST_TYPE: "INVITATION_REQUEST",
+  CONNECTION_ACTION_STATUS: {
+    PENDING: "pending",
+    CONNECTED: "connected",
+    ACCEPT: "Accept",
+  },
+};
+
+export const SESSION_ACTIONS = [
   {
-    CONNECTION_RELATION_STATE:{
-      IN_MY_NETWORK:'IN_MY_NETWORK',
-      AWAITING_RESPONSE:'WAITING_FOR_RESPONSE',
-      ACCEPT_REQUEST:'ACCEPT',
-      REJECT_REQUEST:'REJECT',
-      CONNECT:'INVITE'
-    },
-    CONNECTION_RELATION_STATE_ALT:{
-      IN_MY_NETWORK:'In My Network',
-      AWAITING_RESPONSE:'Waiting for Response',
-      ACCEPT_REQUEST:'Accept',
-      REJECT_REQUEST:'Reject',
-      CONNECT:'Invite'
-    },
-    REQUEST_TYPE:'INVITATION_REQUEST',
-    CONNECTION_ACTION_STATUS:{
-      PENDING:'pending',
-      CONNECTED:'connected',
-      ACCEPT:'Accept',
+    id: 1,
+    title: PLACEHOLDERS.REGISTER_SESSION,
+    icon: <AppRegistrationIcon />,
+    hidden: false,
+    disabled: false,
+    size: "small",
+    tooltip: TOOLTIPS.REGISTER_SESSION,
+    code: WORKFLOW_CODES.USER.SESSION.REGISTER,
+  },
+  {
+    id: 2,
+    title: PLACEHOLDERS.SPONSOR_SESSION,
+    icon: <AutoGraphOutlinedIcon />,
+    hidden: false,
+    disabled: false,
+    size: "small",
+    tooltip: TOOLTIPS.SPONSOR_SESSION,
+    code: WORKFLOW_CODES.USER.SESSION.SPONSOR,
+  },
 
-    }
-  }
+  {
+    id: 3,
+    title: PLACEHOLDERS.VIEW_DETAIL,
+    icon: <PreviewIcon />,
+    hidden: false,
+    disabled: false,
+    size: "small",
+    tooltip: TOOLTIPS.KNOW_MORE_SESSION,
+    code: WORKFLOW_CODES.USER.SESSION.VIEW,
+  },
+];
 
+export const ME = "(Me)";
+export const SESSION_POSTER = {
+  id: "session-poster",
+  title: "Poster",
+  description:
+    "Drag and drop a poster or click to select one",
+  preview: true,
+  accept: "image/jpeg, image/png, image/jpg, image/gif",
+  multiple: false,
+  validation: {
+    maxAllowedSize: 5,
+    maxAllowedDimension: "575x150",
+    allowedExtensions:['jpg','png','gif'],
+    maxAllowedSizeInBytes:5242880
+  },
+  consent:null,
+  icon: <ImageIcon/>,
+  required:true
+};
 
-  export const SESSION_ACTIONS = [
-    {
-      id: 1,
-      title:  PLACEHOLDERS.REGISTER_SESSION,
-      icon: <AppRegistrationIcon />,
-      hidden: false,
-      disabled: false,
-      size: "small",
-      tooltip: TOOLTIPS.REGISTER_SESSION,
-      code: WORKFLOW_CODES.USER.SESSION.REGISTER,
-    },
-    {
-      id: 2,
-      title:  PLACEHOLDERS.SPONSOR_SESSION,
-      icon: <AutoGraphOutlinedIcon />,
-      hidden: false,
-      disabled: false,
-      size: "small",
-      tooltip: TOOLTIPS.SPONSOR_SESSION,
-      code: WORKFLOW_CODES.USER.SESSION.SPONSOR,
-    },
-
-    {
-      id: 3,
-      title:  PLACEHOLDERS.VIEW_DETAIL,
-      icon: <PreviewIcon />,
-      hidden: false,
-      disabled: false,
-      size: "small",
-      tooltip: TOOLTIPS.KNOW_MORE_SESSION,
-      code: WORKFLOW_CODES.USER.SESSION.VIEW,
-    },
-  ];
-
-  export const ME ="(Me)"
-   
-  
+export const SESSION_DOCUMENT = {
+  id: "session-document",
+  title: "Document",
+  description:
+    "Drag and drop a doc or click to select one",
+  preview: true,
+  accept: "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, application/vnd.openxmlformats-officedocument.presentationml.presentation,text/xml,application/zip,application/x-7z-compressed,text/plain",
+  multiple: false,
+  validation: {
+    maxAllowedSize: 50,
+    allowedExtensions:['docx','doc','pdf','zip'],
+    maxAllowedSizeInBytes:52428800
+  },
+  icon: <ArticleIcon/>,
+  required:false,
+  consent:{
+    text:`I agree that this document doesn't violate other's copyright or privacy rights.`,
+    element:'checkbox'
+  },
+};

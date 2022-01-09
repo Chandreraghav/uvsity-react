@@ -279,3 +279,10 @@ color: var(--blue);
 .border-white-override{
   border-color: #fff !important;
 }
+
+.MuiInputLabel-root.Mui-focused{
+  margin-top:8px!important
+}
+.MuiFormLabel-filled{
+  margin-top:8px!important
+}

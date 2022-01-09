@@ -61,7 +61,10 @@ function Create() {
     <Layout options={layoutObj}>
       <Header isAuthorized={loggedIn} isShared={true} />
       <CreateSession
-        data={{ static: staticMetaData, root: rootMetaData, workflow:workflowObj }}
+        data={{ 
+          static: staticMetaData, 
+          root: rootMetaData, 
+          workflow:workflowObj }}
       />
       <Footer isAuthorized={loggedIn} isShared={true} />
     </Layout>
