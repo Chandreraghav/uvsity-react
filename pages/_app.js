@@ -98,6 +98,7 @@ function MyApp({ Component, pageProps }) {
     // INITIALIZE POLLER TO CHECK USER SESSION EXPIRY EVERY 1 MINUTE ON LOAD OF AN AUTHORIZED ROUTE
     await AuthGuardService.pollSessionValidity()
       .then(() => {
+        
         // we are good. do nothing, session is valid
         console.log("Logged in");
       })
