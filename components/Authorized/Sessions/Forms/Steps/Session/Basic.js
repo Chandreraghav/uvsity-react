@@ -45,7 +45,7 @@ function Basic(props) {
                 label="Category"
               >
                 {props.data?.static?.categories?.map((category) => (
-                  <MenuItem value={category.courseCategoryId}>
+                  <MenuItem className=" block p-2" key={category.courseCategoryId} value={category.courseCategoryId}>
                     {category.courseCategoryName}
                   </MenuItem>
                 ))}
@@ -84,7 +84,7 @@ function Basic(props) {
                     {props?.data?.root?.expiredCourses &&
                       Object.values(props?.data?.root?.expiredCourses).map(
                         (session) => (
-                          <MenuItem value={session.courseId}>
+                          <MenuItem className=" block p-2" key={session.courseId} value={session.courseId}>
                             {session.courseFullName}
                           </MenuItem>
                         )

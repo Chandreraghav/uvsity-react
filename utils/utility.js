@@ -151,3 +151,10 @@ export const  isValidURL = URL => {
   const regex = new RegExp('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?');    
   return regex.test(URL);
 };
+export const formatTime=(time)=>{
+  let hours = time.hour;
+  var AmOrPm = hours >= 12 ? 'PM' : 'AM';
+  hours = (hours % 12) || 12;
+  var minutes = time.minute;
+  return hours + ":" + minutes + " " + AmOrPm;
+}
