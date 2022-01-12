@@ -158,3 +158,10 @@ export const formatTime=(time)=>{
   var minutes = time.minute;
   return hours + ":" + minutes + " " + AmOrPm;
 }
+
+export const HTMLUnderlineByCharacterIndex=(str, pos)=>{
+ if(!str) return null;
+ if(!pos) pos =0;
+ let _str = "<u>"+str.charAt(pos)+"</u>" + str.slice(1)
+ return `${_str}`
+}

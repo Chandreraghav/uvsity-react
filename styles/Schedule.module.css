@@ -1,0 +1,23 @@
+.schedule__form__helper__text {
+  font-weight: 600 !important;
+  color: darkgrey !important;
+  font-size: 18px !important;
+  font-style: italic !important;
+  margin-left: -2px !important;
+}
+.schedule__select > div {
+  padding: 15px !important;
+}
+.schedule__occurence__select > div {
+  padding: 4px !important;
+  font-size: small !important;
+}
+.schedule__occurence__select p {
+  margin-left: -3px !important;
+  font-style: italic !important;
+  color: darkgrey !important;
+}
+.schedule__endsOnWrapper{
+  border-left: 1px dotted #111!important;
+}
+ 
