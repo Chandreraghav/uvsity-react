@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { DatePicker } from "@material-ui/pickers";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -41,6 +38,17 @@ import IconButton from "@mui/material/IconButton";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Tooltip } from "@material-ui/core";
+import StaticDatePicker from "@mui/lab/StaticDatePicker";
+import ScheduleService from "../../../../../../pages/api/session/ScheduleService";
+import { handleResponse } from "../../../../../../toastr-response-handler/handler";
+import { getWorkflowError } from "../../../../../../error-handler/handler";
+import { toast } from "react-toastify";
+import { GENERIC_INTERNAL_ERROR } from "../../../../../../constants/error-messages";
+import { Typography } from "@mui/material";
+import { RESPONSE_TYPES } from "../../../../../../constants/constants";
+import InfoIcon from "@mui/icons-material/Info";
+import PublicIcon from '@mui/icons-material/Public';
+toast.configure();
 function Schedule(props) {
   const [timezone, setTimeZone] = useState(getTimezone());
   const [schedule, setSchedule] = useState(SCHEDULE);
@@ -63,6 +71,9 @@ function Schedule(props) {
   const [endsOnAfterValue, setEndsOnAfterValue] = React.useState("Occurence");
   const [endsOnDate, setEndsOnDate] = React.useState(new Date());
   const [scheduleFixed, setScheduleFixed] = useState(false);
+  const [processInProgress, setProcessInProgress] = useState(false);
+  const [scheduleSummary, setScheduleSummary] = useState(null);
+  const [scheduleFixatedObject, setScheduleFixatedObject] = useState({});
   useEffect(() => {
     canRepeatBeEnabled();
   }, [props.data?.static.times]);
@@ -76,6 +87,14 @@ function Schedule(props) {
 
   const handleRepeatCheckChange = (event) => {
     setRepeatChecked(event.target.checked);
+    setTimeout(() => {
+      if (!event.target.checked) {
+        setRepeatValue("");
+        setScheduleFixed(false);
+        setScheduleSummary(null);
+        setScheduleFixatedObject({});
+      }
+    }, 120);
   };
   const handleOccurenceCountChange = (event) => {
     setOccurenceCount(event.target.value);
@@ -92,6 +111,9 @@ function Schedule(props) {
     }
 
     setOccurenceCount(repeatObject.endAfter.occurences);
+    setEndsOnDate(
+      getDateAfter(repeatObject.endAfter.occurences, selectedStartDate)
+    );
     setRepeatObject(repeatObject);
     setRepeatValue(event.target.value);
   };
@@ -99,6 +121,9 @@ function Schedule(props) {
     setRepeatEvery(event.target.value);
   };
   const handleEndsOnAfterChange = (event) => {
+    if (event.target.value === "OnDate") {
+      setEndsOnDate(getDateAfter(occurenceCount, selectedStartDate));
+    }
     setEndsOnAfterValue(event.target.value);
   };
   const label = {
@@ -107,9 +132,7 @@ function Schedule(props) {
       id: "repeat-label",
     },
   };
-  const changedDate = () => {
-    console.log();
-  };
+
   const handleStartDateChange = (event) => {
     setSelectedStartDate(event);
     if (isToday(event)) {
@@ -136,6 +159,7 @@ function Schedule(props) {
     setCheckedRepeatByDaysOfWeekState(updatedCheckedState);
   };
   const handleScheduleFixation = () => {
+    setProcessInProgress(true);
     const _startTimeCollection = props.data?.static.times.filter(
       (time) => time.timeId === startTime
     );
@@ -147,18 +171,25 @@ function Schedule(props) {
 
     _startTime.setHours(parseInt(_startTimeCollection[0].hour));
     _startTime.setMinutes(parseInt(_startTimeCollection[0].minute));
-    
-    const _endTime = _startTime;
-    
-    _endTime.setHours(
-      _startTime.getHours() + Number(_durationCollection[0].durationDisplay)
-    );
-   
 
-    const _startMonth = _endTime.getMonth()+1
+    const _endTime = new Date(selectedStartDate);
+
+    _endTime.setHours(_startTime.getHours());
+    _endTime.setMinutes(
+      _startTime.getMinutes() +
+        Number(_durationCollection[0].durationDisplay) * 60
+    );
+
+    const _startMonth = _endTime.getMonth() + 1;
     const startDate = {
-      day:  _startTime.getDate() < 10?"0"+_startTime.getDate().toString():_startTime.getDate().toString(),
-      month: _startMonth<10?"0"+_startMonth.toString():_startMonth.toString(),
+      day:
+        _startTime.getDate() < 10
+          ? "0" + _startTime.getDate().toString()
+          : _startTime.getDate().toString(),
+      month:
+        _startMonth < 10
+          ? "0" + _startMonth.toString()
+          : _startMonth.toString(),
       year: _startTime.getFullYear().toString(),
       hour:
         _startTime.getHours() < 10
@@ -172,23 +203,66 @@ function Schedule(props) {
       dateSeparator: "/",
       hourMinuteSeparator: ":",
     };
-    const _endMonth = _endTime.getMonth()+1
-    const endDate= {
-      day: _endTime.getDate()<10?"0"+_endTime.getDate().toString():_endTime.getDate().toString(),
-      month: _endMonth<10?"0"+_endMonth.toString():_endMonth.toString(),
+    const _endMonth = _endTime.getMonth() + 1;
+    const endDate = {
+      day:
+        _endTime.getDate() < 10
+          ? "0" + _endTime.getDate().toString()
+          : _endTime.getDate().toString(),
+      month: _endMonth < 10 ? "0" + _endMonth.toString() : _endMonth.toString(),
       year: _endTime.getFullYear().toString(),
       hour:
-      _endTime.getHours() < 10
+        _endTime.getHours() < 10
           ? "0" + _endTime.getHours().toString()
           : _endTime.getHours().toString(),
       minute:
-      _endTime.getMinutes() < 10
+        _endTime.getMinutes() < 10
           ? "0" + _endTime.getMinutes().toString()
           : _endTime.getMinutes().toString(),
       second: "00",
       dateSeparator: "/",
       hourMinuteSeparator: ":",
     };
+    const daysOfWeekSelected = repeatByDaysOfWeek.filter((obj) => obj.checked);
+    let daysOfWeek = [];
+    daysOfWeekSelected.map((day, index) => {
+      if (checkedRepeatByDaysOfWeekState[index]) {
+        daysOfWeek.push(day.value);
+      }
+    });
+    if (repeatValue === "Weekly" && daysOfWeek.length == 0) {
+      checkedRepeatByDaysOfWeekState[0] = true;
+      daysOfWeek.push("Sun");
+    }
+    let schedulerEndOnDate = null;
+    if (endsOnAfterValue === "OnDate") {
+      endsOnDate.setHours(_endTime.getHours());
+      endsOnDate.setMinutes(_endTime.getMinutes());
+      const _endOnDayMonth = endsOnDate.getMonth() + 1;
+      schedulerEndOnDate = {
+        day:
+          endsOnDate.getDate() < 10
+            ? "0" + endsOnDate.getDate().toString()
+            : endsOnDate.getDate().toString(),
+        month:
+          _endOnDayMonth < 10
+            ? "0" + _endOnDayMonth.toString()
+            : _endOnDayMonth.toString(),
+        year: endsOnDate.getFullYear().toString(),
+        hour:
+          endsOnDate.getHours() < 10
+            ? "0" + endsOnDate.getHours().toString()
+            : endsOnDate.getHours().toString(),
+        minute:
+          endsOnDate.getMinutes() < 10
+            ? "0" + endsOnDate.getMinutes().toString()
+            : endsOnDate.getMinutes().toString(),
+        second: "00",
+        dateSeparator: "/",
+        hourMinuteSeparator: ":",
+      };
+    }
+
     const obj = {
       timeZone: timezone,
       startTime: {
@@ -209,7 +283,29 @@ function Schedule(props) {
             : _endTime.getMinutes().toString(),
         hourMinuteSeparator: _startTimeCollection[0].hourMinuteSeparator,
       },
-
+      currentSchedule: {
+        repeateEveryCount: repeatEvery === 0 ? 1 : repeatEvery,
+        monthlyRepeatTypeStr: "DayOfMonth",
+        endOfMeetingTypeStr: endsOnAfterValue,
+        isScheduleValid: true,
+        occurence:
+          endsOnAfterValue === "Occurence" ? occurenceCount.toString() : "0",
+        repeatTypeStr: repeatValue,
+        selectedDaysOfWeekStr: repeatValue === "Weekly" ? daysOfWeek : [],
+      },
+      courseScheduleEndDateStr: schedulerEndOnDate
+        ? schedulerEndOnDate.month +
+          schedulerEndOnDate.dateSeparator +
+          schedulerEndOnDate.day +
+          schedulerEndOnDate.dateSeparator +
+          schedulerEndOnDate.year +
+          " " +
+          schedulerEndOnDate.hour +
+          schedulerEndOnDate.hourMinuteSeparator +
+          schedulerEndOnDate.minute +
+          schedulerEndOnDate.hourMinuteSeparator +
+          schedulerEndOnDate.second
+        : null,
       courseStartDateStr:
         startDate.month +
         startDate.dateSeparator +
@@ -223,7 +319,8 @@ function Schedule(props) {
         startDate.hourMinuteSeparator +
         startDate.second,
 
-        courseEndDateStr: endDate.month +
+      courseEndDateStr:
+        endDate.month +
         endDate.dateSeparator +
         endDate.day +
         endDate.dateSeparator +
@@ -235,8 +332,24 @@ function Schedule(props) {
         endDate.hourMinuteSeparator +
         endDate.second,
     };
-    console.log(obj);
-    setScheduleFixed(true);
+
+    ScheduleService.postScheduleAndreceiveSchedulingInformation(obj)
+      .then((res) => {
+        setScheduleFixed(true);
+        setScheduleFixatedObject(obj);
+        setScheduleSummary(res.data.value.summary);
+      })
+      .catch((err) => {
+        setScheduleFixed(false);
+        handleResponse(
+          getWorkflowError(GENERIC_INTERNAL_ERROR),
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.TOP_RIGHT
+        );
+      })
+      .finally(() => {
+        setProcessInProgress(false);
+      });
   };
   const handleDurationChange = (event) => {
     setDuration(event.target.value);
@@ -270,29 +383,96 @@ function Schedule(props) {
   const handleEndsOnChange = (event) => {
     setEndsOnDate(event);
   };
+
+  const getTimeByID = (id) => {
+    const _time = props.data?.static.times.filter((time) => time.timeId === id);
+    return formatTime(_time[0]);
+  };
+
+  const getEndTime = () => {
+    const _startTimeCollection = props.data?.static.times.filter(
+      (time) => time.timeId === startTime
+    );
+    const _durationCollection = props.data?.static.times.filter(
+      (time) => time.timeId === duration
+    );
+
+    const _startTime = new Date(selectedStartDate);
+
+    _startTime.setHours(parseInt(_startTimeCollection[0].hour));
+    _startTime.setMinutes(parseInt(_startTimeCollection[0].minute));
+
+    const _endTime = new Date(selectedStartDate);
+
+    _endTime.setHours(_startTime.getHours());
+    _endTime.setMinutes(
+      _startTime.getMinutes() +
+        Number(_durationCollection[0].durationDisplay) * 60
+    );
+
+    const _endMonth = _endTime.getMonth() + 1;
+    const endDate = {
+      day: _endTime.getDate(),
+      month: _endMonth,
+      year: _endTime,
+      hour: _endTime.getHours(),
+      minute:_endTime.getMinutes()<10? "0"+_endTime.getMinutes().toString():_endTime.getMinutes().toString(),
+      second: "00",
+      dateSeparator: "/",
+      hourMinuteSeparator: ":",
+    };
+    return formatTime(endDate);
+  };
+
+  const handleScheduleCancelation = () => {
+    setProcessInProgress(true);
+    setRepeatChecked(false);
+    setTimeout(() => {
+      setRepeatValue("");
+      setScheduleFixed(false);
+      setScheduleSummary(null);
+      setScheduleFixatedObject({});
+      setProcessInProgress(false);
+    }, 120);
+  };
   return (
-    <div className={`p-2`}>
+    <div
+      className={`p-2 ${processInProgress ? "control__disabled__opaque" : ""}`}
+    >
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item sm={4} lg={6} md={6} xs={12}>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                <DatePicker
-                  autoOk
-                  orientation="landscape"
-                  variant="static"
-                  disablePast
-                  openTo="date"
-                  value={selectedStartDate}
-                  onChangeCapture={() => changedDate()}
-                  onChange={handleStartDateChange}
-                />
-              </FormControl>
-            </MuiPickersUtilsProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <StaticDatePicker
+                orientation="landscape"
+                disablePast
+                label="Start Date"
+                autoOk
+                openTo="day"
+                value={selectedStartDate}
+                onChange={handleStartDateChange}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+
+            <div className="flex flex-col gap-1 text-xs text-gray-600 leading-tight">
+              <div className="flex gap-1">
+              <InfoIcon size="small" />
+              <Typography gutterBottom component="div">
+                Your session will start from{" "}
+                <strong>
+                  {selectedStartDate.toDateString()} {getTimeByID(startTime)}
+                </strong>{" "}
+                and will end at <strong>{getEndTime()}</strong>
+              </Typography>
+              </div>
+              
+              <div className="text-center items-center leading-tight 
+              text-xs text-gray-500 font-semibold flex gap-1">
+                <PublicIcon/>
+                <div>{timezone}</div>
+                </div>
+            </div>
           </Grid>
 
           <Grid item sm={4} lg={6} md={6} xs={12}>
@@ -395,7 +575,7 @@ function Schedule(props) {
                 </Select>
               </FormControl>
 
-              <div className="ml-2">
+              <div className="flex flex-col">
                 <Spacer />
                 <FormControlLabel
                   className="text-sm text-gray-700"
@@ -411,9 +591,21 @@ function Schedule(props) {
                   label="Repeat"
                   labelPlacement="end"
                 />
+                {scheduleSummary && (
+                  <div className="flex gap-1 text-xs text-gray-600 leading-tight">
+                    <InfoIcon size="small" />
+                    <Typography
+                      className="small-text "
+                      gutterBottom
+                      component="div"
+                    >
+                      {scheduleSummary}
+                    </Typography>
+                  </div>
+                )}
               </div>
 
-              {repeatChecked && (
+              {repeatChecked && !scheduleFixed && (
                 <div className="schedule__repeat__scheduler__wrapper mt-2">
                   <FormControl
                     fullWidth={true}
@@ -485,35 +677,37 @@ function Schedule(props) {
                               <div className="text-gray-500 leading-tight clear-both whitespace-nowrap lg:line-clamp-1  overflow-ellipsis text-xs font-semibold lg:text-sm">
                                 Repeat by
                               </div>
-                              <div className="flex repeat-by-days -mt-2 ml-2 ">
+                              <div className="flex leading-tight repeat-by-days -mt-2  text-sm border-dotted border-2 ">
                                 {repeatByDaysOfWeek
                                   .filter((obj) => !obj.disabled)
                                   .map((day, index) => (
-                                    <FormControlLabel
-                                      key={day.id}
-                                      className=" text-gray-500 text-sm border-dotted border-2 "
-                                      disabled={false}
-                                      control={
-                                        <Checkbox
-                                          size="small"
-                                          checked={
-                                            checkedRepeatByDaysOfWeekState[
-                                              index
-                                            ]
-                                          }
-                                          value={day.value}
-                                          onChange={(e) =>
-                                            handleRepeatByDayOfWeekChange(
-                                              e,
-                                              day,
-                                              index
-                                            )
-                                          }
-                                        />
-                                      }
-                                      label={day.value}
-                                      labelPlacement="end"
-                                    />
+                                    <Tooltip title={day.display.long}>
+                                      <FormControlLabel
+                                        key={day.id}
+                                        className=" text-gray-500   "
+                                        disabled={false}
+                                        control={
+                                          <Checkbox
+                                            size="small"
+                                            checked={
+                                              checkedRepeatByDaysOfWeekState[
+                                                index
+                                              ]
+                                            }
+                                            value={day.value}
+                                            onChange={(e) =>
+                                              handleRepeatByDayOfWeekChange(
+                                                e,
+                                                day,
+                                                index
+                                              )
+                                            }
+                                          />
+                                        }
+                                        label={day.display.short}
+                                        labelPlacement="end"
+                                      ></FormControlLabel>
+                                    </Tooltip>
                                   ))}
                               </div>
                               <Spacer />
@@ -616,7 +810,11 @@ function Schedule(props) {
                           </IconButton>
                         </Tooltip>
                         <Tooltip title={"Cancel"}>
-                          <IconButton aria-label="schedule-cancel" size="small">
+                          <IconButton
+                            onClick={handleScheduleCancelation}
+                            aria-label="schedule-cancel"
+                            size="small"
+                          >
                             <CancelIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>

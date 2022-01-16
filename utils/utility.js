@@ -171,7 +171,7 @@ export const HTMLUnderlineByCharacterIndex = (str, pos) => {
 export const getDateAfter = (days, date) => {
   if (!days) return new Date();
   var result = !date ?new Date(): new Date(date);
-  result.setDate(result.getDate() + days);
+  result.setDate(result.getDate() + parseInt(days));
   return result;
 };
 

@@ -14,7 +14,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   --blue: #0081cb;
+  height:100%
 }
+
 
 a {
   color: inherit;
@@ -290,3 +292,4 @@ button.danger {
 .block{display: block!important}
 .blue-text{color: #3f51b5 !important;}
 .red-text{color: rgba(185, 28, 28, var(--tw-text-opacity)) !important;}
+.small-text {font-size:14px !important;}
