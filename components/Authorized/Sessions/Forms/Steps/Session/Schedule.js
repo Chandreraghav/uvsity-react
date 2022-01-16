@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -11,40 +11,95 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import ListSubheader from "@mui/material/ListSubheader";
 import { TIMEZONE } from "../../../../../../constants/timezones";
-import { formatTime, getTimezone } from "../../../../../../utils/utility";
+import {
+  formatTime,
+  getDateAfter,
+  getDifferenceOfTimeWithCurrentTimeInMinutes,
+  getTimeAfter,
+  getTimezone,
+  HTMLUnderlineByCharacterIndex,
+  isToday,
+} from "../../../../../../utils/utility";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Spacer from "../../../../../shared/Spacer";
-import { SCHEDULE } from "../../../../../../constants/schedule";
+import {
+  SCHEDULE,
+  DEFAULTS,
+  SCHEDULE_MESSAGES,
+} from "../../../../../../constants/schedule";
 import FormHelperText from "@mui/material/FormHelperText";
 import ScheduleModuleCSS from "../../../../../../styles/Schedule.module.css";
 import parse from "html-react-parser";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormLabel from "@mui/material/FormLabel";
+import IconButton from "@mui/material/IconButton";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { Tooltip } from "@material-ui/core";
 function Schedule(props) {
   const [timezone, setTimeZone] = useState(getTimezone());
   const [schedule, setSchedule] = useState(SCHEDULE);
+  const [duration, setDuration] = useState(DEFAULTS.TIME_ID); // 291 is the default time id for duration
+  const [startTime, setStartTime] = useState(
+    getTimeAfter(props.data?.static.times, 1)
+  );
+  const [errorInStartTime, setErrorInStartTime] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = React.useState(new Date());
   const [repeatObject, setRepeatObject] = useState(null);
   const [repeatChecked, setRepeatChecked] = useState(false);
+  const [repeatDisabled, setRepeatDisabled] = useState(true);
   const [repeatValue, setRepeatValue] = useState("");
   const [repeatEvery, setRepeatEvery] = useState(0);
   const [occurenceCount, setOccurenceCount] = useState(0);
+  const [repeatByDaysOfWeek, setRepeatByDaysOfWeek] = useState([]);
+  const [checkedRepeatByDaysOfWeekState, setCheckedRepeatByDaysOfWeekState] =
+    useState(new Array(repeatByDaysOfWeek.length).fill(true));
+  const [startMinDate, setStartMinDate] = useState(new Date());
+  const [endsOnAfterValue, setEndsOnAfterValue] = React.useState("Occurence");
+  const [endsOnDate, setEndsOnDate] = React.useState(new Date());
+  const [scheduleFixed, setScheduleFixed] = useState(false);
+  useEffect(() => {
+    canRepeatBeEnabled();
+  }, [props.data?.static.times]);
+  useEffect(() => {
+    setEndsOnDate(getDateAfter(occurenceCount, selectedStartDate));
+  }, [selectedStartDate]);
+  const handleTimezoneChange = (event) => {
+    setTimeZone(event.target.value);
+    canRepeatBeEnabled();
+  };
+
   const handleRepeatCheckChange = (event) => {
     setRepeatChecked(event.target.checked);
   };
   const handleOccurenceCountChange = (event) => {
-    console.log(event);
     setOccurenceCount(event.target.value);
   };
   const handleRepeatsChange = (event) => {
     const repeatObject = schedule.find(
       (_sch) => _sch.value === event.target.value
     );
+    if (repeatObject.weeklyRepeatBy.length > 0) {
+      setRepeatByDaysOfWeek(repeatObject.weeklyRepeatBy);
+      setCheckedRepeatByDaysOfWeekState(
+        new Array(repeatObject.weeklyRepeatBy.length).fill(true)
+      );
+    }
+
     setOccurenceCount(repeatObject.endAfter.occurences);
     setRepeatObject(repeatObject);
     setRepeatValue(event.target.value);
   };
   const handleRepeatEveryChange = (event) => {
     setRepeatEvery(event.target.value);
+  };
+  const handleEndsOnAfterChange = (event) => {
+    setEndsOnAfterValue(event.target.value);
   };
   const label = {
     inputProps: {
@@ -56,8 +111,164 @@ function Schedule(props) {
     console.log();
   };
   const handleStartDateChange = (event) => {
-    console.log(event);
-    //setSelectedStartDate(new Date(event.target.value))
+    setSelectedStartDate(event);
+    if (isToday(event)) {
+      const p = props.data?.static.times.filter(
+        (obj) => obj.timeId === startTime
+      );
+      const selectedDate = event;
+      const selectedHour = parseInt(p[0].hour);
+      selectedDate.setHours(selectedHour);
+      const selectedMinute = parseInt(p[0].minute);
+      selectedDate.setMinutes(selectedMinute);
+      if (getDifferenceOfTimeWithCurrentTimeInMinutes(selectedDate) < 60) {
+        setStartTime(getTimeAfter(props.data?.static.times, 2));
+      }
+    } else {
+      setErrorInStartTime(false);
+    }
+    canRepeatBeEnabled();
+  };
+  const handleRepeatByDayOfWeekChange = (event, day, position) => {
+    const updatedCheckedState = checkedRepeatByDaysOfWeekState.map(
+      (item, index) => (index === position ? !item : item)
+    );
+    setCheckedRepeatByDaysOfWeekState(updatedCheckedState);
+  };
+  const handleScheduleFixation = () => {
+    const _startTimeCollection = props.data?.static.times.filter(
+      (time) => time.timeId === startTime
+    );
+    const _durationCollection = props.data?.static.times.filter(
+      (time) => time.timeId === duration
+    );
+
+    const _startTime = new Date(selectedStartDate);
+
+    _startTime.setHours(parseInt(_startTimeCollection[0].hour));
+    _startTime.setMinutes(parseInt(_startTimeCollection[0].minute));
+    
+    const _endTime = _startTime;
+    
+    _endTime.setHours(
+      _startTime.getHours() + Number(_durationCollection[0].durationDisplay)
+    );
+   
+
+    const _startMonth = _endTime.getMonth()+1
+    const startDate = {
+      day:  _startTime.getDate() < 10?"0"+_startTime.getDate().toString():_startTime.getDate().toString(),
+      month: _startMonth<10?"0"+_startMonth.toString():_startMonth.toString(),
+      year: _startTime.getFullYear().toString(),
+      hour:
+        _startTime.getHours() < 10
+          ? "0" + _startTime.getHours().toString()
+          : _startTime.getHours().toString(),
+      minute:
+        _startTime.getMinutes() < 10
+          ? "0" + _startTime.getMinutes().toString()
+          : _startTime.getMinutes().toString(),
+      second: "00",
+      dateSeparator: "/",
+      hourMinuteSeparator: ":",
+    };
+    const _endMonth = _endTime.getMonth()+1
+    const endDate= {
+      day: _endTime.getDate()<10?"0"+_endTime.getDate().toString():_endTime.getDate().toString(),
+      month: _endMonth<10?"0"+_endMonth.toString():_endMonth.toString(),
+      year: _endTime.getFullYear().toString(),
+      hour:
+      _endTime.getHours() < 10
+          ? "0" + _endTime.getHours().toString()
+          : _endTime.getHours().toString(),
+      minute:
+      _endTime.getMinutes() < 10
+          ? "0" + _endTime.getMinutes().toString()
+          : _endTime.getMinutes().toString(),
+      second: "00",
+      dateSeparator: "/",
+      hourMinuteSeparator: ":",
+    };
+    const obj = {
+      timeZone: timezone,
+      startTime: {
+        timeId: _startTimeCollection[0].timeId,
+        hour: _startTimeCollection[0].hour,
+        minute: _startTimeCollection[0].minute,
+        hourMinuteSeparator: _startTimeCollection[0].hourMinuteSeparator,
+      },
+      endTime: {
+        timeId: _startTimeCollection[0].timeId,
+        hour:
+          _endTime.getHours() < 10
+            ? "0" + _endTime.getHours().toString()
+            : _endTime.getHours().toString(),
+        minute:
+          _endTime.getMinutes() < 10
+            ? "0" + _endTime.getMinutes().toString()
+            : _endTime.getMinutes().toString(),
+        hourMinuteSeparator: _startTimeCollection[0].hourMinuteSeparator,
+      },
+
+      courseStartDateStr:
+        startDate.month +
+        startDate.dateSeparator +
+        startDate.day +
+        startDate.dateSeparator +
+        startDate.year +
+        " " +
+        startDate.hour +
+        startDate.hourMinuteSeparator +
+        startDate.minute +
+        startDate.hourMinuteSeparator +
+        startDate.second,
+
+        courseEndDateStr: endDate.month +
+        endDate.dateSeparator +
+        endDate.day +
+        endDate.dateSeparator +
+        endDate.year +
+        " " +
+        endDate.hour +
+        endDate.hourMinuteSeparator +
+        endDate.minute +
+        endDate.hourMinuteSeparator +
+        endDate.second,
+    };
+    console.log(obj);
+    setScheduleFixed(true);
+  };
+  const handleDurationChange = (event) => {
+    setDuration(event.target.value);
+    canRepeatBeEnabled();
+  };
+  const handleStartTime = (event) => {
+    const p = props.data?.static.times.filter(
+      (obj) => obj.timeId === event.target.value
+    );
+    const selectedDate = new Date(selectedStartDate);
+    const selectedHour = parseInt(p[0].hour);
+    selectedDate.setHours(selectedHour);
+    const selectedMinute = parseInt(p[0].minute);
+    selectedDate.setMinutes(selectedMinute);
+    if (getDifferenceOfTimeWithCurrentTimeInMinutes(selectedDate) < 60) {
+      setStartTime(getTimeAfter(props.data?.static.times, 2));
+      setErrorInStartTime(true);
+      return;
+    }
+    setErrorInStartTime(false);
+    setStartTime(event.target.value);
+    canRepeatBeEnabled();
+  };
+  const canRepeatBeEnabled = () => {
+    if (selectedStartDate && startTime && duration && timezone) {
+      setRepeatDisabled(false);
+    } else {
+      setRepeatDisabled(true);
+    }
+  };
+  const handleEndsOnChange = (event) => {
+    setEndsOnDate(event);
   };
   return (
     <div className={`p-2`}>
@@ -95,7 +306,8 @@ function Schedule(props) {
                   Timezone
                 </InputLabel>
                 <Select
-                  defaultValue={timezone}
+                  value={timezone}
+                  onChange={handleTimezoneChange}
                   id="grouped-select-timezone"
                   label="Timezone"
                 >
@@ -130,7 +342,8 @@ function Schedule(props) {
                 <Select
                   labelId="select-time-label"
                   id="select-time"
-                  value={""}
+                  value={startTime}
+                  onChange={handleStartTime}
                   label="Start time"
                 >
                   {props.data?.static.times?.map((time) => (
@@ -143,6 +356,14 @@ function Schedule(props) {
                     </MenuItem>
                   ))}
                 </Select>
+                {errorInStartTime && (
+                  <FormHelperText
+                    className="blue-text leading-tight text-red-700 font-semibold"
+                    id="select-time-helper-text"
+                  >
+                    {SCHEDULE_MESSAGES.START_TIME.ERROR}
+                  </FormHelperText>
+                )}
               </FormControl>
               <FormControl
                 fullWidth={true}
@@ -155,12 +376,16 @@ function Schedule(props) {
                 <Select
                   labelId="select-duration-label"
                   id="select-duration"
-                  value={""}
+                  value={duration}
+                  onChange={handleDurationChange}
                   label="Duration"
                 >
                   {props.data?.static.times?.map((time) => (
                     <MenuItem
-                      className="block p-3"
+                      disabled={time.timeId === 290}
+                      className={`block p-3 ${
+                        time.timeId === DEFAULTS.DEAD_TIME_ID ? "disabled" : ""
+                      }`}
                       key={time.timeId}
                       value={time.timeId}
                     >
@@ -170,11 +395,11 @@ function Schedule(props) {
                 </Select>
               </FormControl>
 
-              <div>
+              <div className="ml-2">
                 <Spacer />
                 <FormControlLabel
-                  className="text-sm ml-0.5 text-gray-700"
-                  disabled={false}
+                  className="text-sm text-gray-700"
+                  disabled={repeatDisabled}
                   control={
                     <Checkbox
                       onChange={handleRepeatCheckChange}
@@ -197,11 +422,6 @@ function Schedule(props) {
                   >
                     <InputLabel id="repeats-label">Repeats</InputLabel>
                     <Select
-                      className={`${
-                        repeatValue !== ""
-                          ? ScheduleModuleCSS.schedule__select
-                          : ScheduleModuleCSS.schedule__select
-                      }`}
                       labelId="repeats-label"
                       id="repeats"
                       value={repeatValue}
@@ -228,17 +448,12 @@ function Schedule(props) {
                         fullWidth={true}
                         variant="outlined"
                         className={` mt-4`}
-                        sx={{ marginBottom: 1, marginTop: 3 }}
+                        sx={{ marginBottom: 1 }}
                       >
                         <InputLabel id="repeat-every-label">
                           Repeat every
                         </InputLabel>
                         <Select
-                          className={`${
-                            repeatEvery > 0
-                              ? ScheduleModuleCSS.schedule__select
-                              : ""
-                          }`}
                           labelId="repeat-every-label"
                           id="repeat-every"
                           value={repeatEvery}
@@ -263,67 +478,148 @@ function Schedule(props) {
                           {parse(repeatObject.repeatsEvery.label)}
                         </FormHelperText>
                       </FormControl>
-                      <FormControl
-                        fullWidth={true}
-                        variant="outlined"
-                        sx={{ marginBottom: 1, marginTop: 1 }}
-                      >
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                          <DatePicker
+                      {repeatValue === "Weekly" &&
+                        repeatByDaysOfWeek.length > 0 && (
+                          <>
+                            <div className="flex flex-col gap-4">
+                              <div className="text-gray-500 leading-tight clear-both whitespace-nowrap lg:line-clamp-1  overflow-ellipsis text-xs font-semibold lg:text-sm">
+                                Repeat by
+                              </div>
+                              <div className="flex repeat-by-days -mt-2 ml-2 ">
+                                {repeatByDaysOfWeek
+                                  .filter((obj) => !obj.disabled)
+                                  .map((day, index) => (
+                                    <FormControlLabel
+                                      key={day.id}
+                                      className=" text-gray-500 text-sm border-dotted border-2 "
+                                      disabled={false}
+                                      control={
+                                        <Checkbox
+                                          size="small"
+                                          checked={
+                                            checkedRepeatByDaysOfWeekState[
+                                              index
+                                            ]
+                                          }
+                                          value={day.value}
+                                          onChange={(e) =>
+                                            handleRepeatByDayOfWeekChange(
+                                              e,
+                                              day,
+                                              index
+                                            )
+                                          }
+                                        />
+                                      }
+                                      label={day.value}
+                                      labelPlacement="end"
+                                    />
+                                  ))}
+                              </div>
+                              <Spacer />
+                            </div>
+                          </>
+                        )}
+
+                      <FormControl variant="outlined" sx={{ marginBottom: 1 }}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                          <DesktopDatePicker
                             disableToolbar
-                            variant="inline"
                             label="Starts on"
+                            variant="inline"
+                            margin="normal"
+                            inputFormat="MM/dd/yyyy"
+                            renderInput={(params) => <TextField {...params} />}
+                            minDate={startMinDate}
+                            disablePast
                             value={selectedStartDate}
                             disabled
-                            disabledPast
                           />
-                        </MuiPickersUtilsProvider>
+                        </LocalizationProvider>
                       </FormControl>
 
-                      <div className="flex flex-col mt-2">
-                        <h4 className="text-gray-500 text-sm font-semibold">
-                          Ends
-                        </h4>
-
-                        <div
-                          className={`flex flex-col ${ScheduleModuleCSS.schedule__endsOnWrapper}`}
-                        >
-                          <div className="flex gap-2">
-                            <div className=" p-1 text-gray-500 text-xs font-semibold">
-                              After
-                            </div>
-                            <FormControl
-                              variant="filled"
-                              sx={{ marginBottom: 1, marginTop: 1, padding: 2 }}
-                            >
-                              <TextField
-                                onChange={handleOccurenceCountChange}
-                                value={occurenceCount}
-                                id="occurences"
-                                helperText="occurences"
-                                type="number"
-                                className={`${ScheduleModuleCSS.schedule__occurence__select}`}
+                      <div
+                        className={`flex flex-col mt-2 ml-1 ${ScheduleModuleCSS.schedule__endsOnWrapper}`}
+                      >
+                        <FormControl>
+                          <FormLabel className="text-sm text-gray-700">
+                            {parse(HTMLUnderlineByCharacterIndex("Ends", 0))}
+                          </FormLabel>
+                          <RadioGroup
+                            aria-label="ends-after-on"
+                            name="row-radio-buttons-group"
+                            value={endsOnAfterValue}
+                            onChange={handleEndsOnAfterChange}
+                          >
+                            <div className="mt-1 ml-3">
+                              <FormControlLabel
+                                value="Occurence"
+                                control={<Radio />}
+                                label="After"
+                                className="ml-2 mt-3 text-xs text-gray-700"
                               />
-                            </FormControl>
-                          </div>
-                          <div className="flex gap-2">
-                            <div className=" p-1 text-gray-500 text-xs font-semibold">
-                              On
+                              <FormControl
+                                variant="filled"
+                                sx={{ marginBottom: 1, marginTop: 1 }}
+                              >
+                                <TextField
+                                  label="Occurences"
+                                  onChange={handleOccurenceCountChange}
+                                  value={occurenceCount}
+                                  id="occurences"
+                                  type="number"
+                                  disabled={endsOnAfterValue !== "Occurence"}
+                                  className={`${ScheduleModuleCSS.schedule__occurence__select}`}
+                                />
+                              </FormControl>
                             </div>
-                            <FormControl
-                              variant="filled"
-                              sx={{ marginBottom: 1, marginTop: 1 }}
-                            >
-                              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <DatePicker
+                            <div className="mt-1 ml-3">
+                              <FormControlLabel
+                                value="OnDate"
+                                control={<Radio />}
+                                label="On"
+                                className="ml-2 mt-3 text-xs text-gray-700"
+                              />
+                              <LocalizationProvider
+                                dateAdapter={AdapterDateFns}
+                              >
+                                <DesktopDatePicker
                                   disableToolbar
                                   variant="inline"
-                                  disabledPast
+                                  margin="normal"
+                                  inputFormat="MM/dd/yyyy"
+                                  renderInput={(params) => (
+                                    <TextField {...params} />
+                                  )}
+                                  minDate={startMinDate}
+                                  disablePast
+                                  onChange={handleEndsOnChange}
+                                  value={endsOnDate}
+                                  disabled={endsOnAfterValue !== "OnDate"}
+                                  allowKeyboardControl={false}
+                                  autoFill={false}
+                                  InputProps={{ readOnly: true }}
                                 />
-                              </MuiPickersUtilsProvider>
-                            </FormControl>
-                          </div>
-                        </div>
+                              </LocalizationProvider>
+                            </div>
+                          </RadioGroup>
+                        </FormControl>
+                      </div>
+                      <div className="schedule-action-buttons float-right border-dotted border-2">
+                        <Tooltip title={"Fix Schedule"}>
+                          <IconButton
+                            onClick={handleScheduleFixation}
+                            aria-label="schedule-done"
+                            size="small"
+                          >
+                            <CheckCircleIcon color="primary" fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title={"Cancel"}>
+                          <IconButton aria-label="schedule-cancel" size="small">
+                            <CancelIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
                       </div>
                     </>
                   )}

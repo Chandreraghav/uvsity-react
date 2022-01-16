@@ -147,21 +147,76 @@ export const timeOfDay = () => {
     return TIME_OF_DAY_GREETING.EVENING;
   }
 };
-export const  isValidURL = URL => {
-  const regex = new RegExp('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?');    
+export const isValidURL = (URL) => {
+  const regex = new RegExp(
+    "(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?"
+  );
   return regex.test(URL);
 };
-export const formatTime=(time)=>{
+export const formatTime = (time) => {
   let hours = time.hour;
-  var AmOrPm = hours >= 12 ? 'PM' : 'AM';
-  hours = (hours % 12) || 12;
+  var AmOrPm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
   var minutes = time.minute;
   return hours + ":" + minutes + " " + AmOrPm;
-}
+};
 
-export const HTMLUnderlineByCharacterIndex=(str, pos)=>{
- if(!str) return null;
- if(!pos) pos =0;
- let _str = "<u>"+str.charAt(pos)+"</u>" + str.slice(1)
- return `${_str}`
+export const HTMLUnderlineByCharacterIndex = (str, pos) => {
+  if (!str) return null;
+  if (!pos) pos = 0;
+  let _str = "<u>" + str.charAt(pos) + "</u>" + str.slice(1);
+  return `${_str}`;
+};
+
+export const getDateAfter = (days, date) => {
+  if (!days) return new Date();
+  var result = !date ?new Date(): new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
+export const getTimeAfter = (time, hourUnits) => {
+  var dt = new Date();
+  dt.setHours(dt.getHours() + hourUnits);
+
+  const s = roundTimeBy(dt, 30);
+  const _time = time.filter(
+    (t) =>
+      parseInt(t.hour) === s.getHours() && parseInt(t.minute) === s.getMinutes()
+  );
+  const differenceOfRoundedTimeWithCurrentTimeInMins =
+    getDifferenceOfTimeWithCurrentTimeInMinutes(s);
+  if (differenceOfRoundedTimeWithCurrentTimeInMins < 60) {
+    return getTimeAfter(time, 2);
+  }
+  return _time[0].timeId;
+};
+export const getNearEndTime = (time) => {
+  let hours = time.hour;
+  hours = hours % 12 || 12;
+  var minutes = time.minute;
+  minutes = minutes % 30 || 30;
+  return hours + "#" + minutes;
+};
+
+const roundTimeBy = (time, roundByMins) => {
+  var timeToReturn = new Date(time);
+  timeToReturn.setMilliseconds(
+    Math.round(timeToReturn.getMilliseconds() / 1000) * 1000
+  );
+  timeToReturn.setSeconds(Math.round(timeToReturn.getSeconds() / 60) * 60);
+  timeToReturn.setMinutes(
+    Math.round(timeToReturn.getMinutes() / roundByMins) * roundByMins
+  );
+  return timeToReturn;
+};
+export const getDifferenceOfTimeWithCurrentTimeInMinutes = (time) => {
+  if(!time) return 0;
+  return Math.ceil((time.getTime() - new Date().getTime()) / 1000 / 60);
+};
+export const isToday = (someDate) => {
+  const today = new Date()
+  return someDate.getDate() == today.getDate() &&
+    someDate.getMonth() == today.getMonth() &&
+    someDate.getFullYear() == today.getFullYear()
 }

@@ -122,3 +122,12 @@ export const SCHEDULE = [
     },
   },
 ];
+export const DEFAULTS={
+  TIME_ID:291,
+  DEAD_TIME_ID:290
+}
+export const SCHEDULE_MESSAGES={
+  START_TIME:{
+    ERROR:`The start time you selected is not available. We've selected you a suitable start time.`
+  }
+}

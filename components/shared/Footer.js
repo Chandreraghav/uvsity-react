@@ -6,7 +6,7 @@ function Footer() {
       <div className={FooterStyle.footer}>
         <ul className={FooterStyle.child__footer__links}>
           <li className={FooterStyle.child__footer__link__wrapper}>
-            <a className={FooterStyle.child__footer__link} href="/browse/subtitles">
+            <a className={`${FooterStyle.child__footer__link} app__anchor`} href="/browse/subtitles">
               <span className={FooterStyle.child__footer__link__content}>
                User Agreement
               </span>
@@ -14,7 +14,7 @@ function Footer() {
           </li>
 
           <li className={FooterStyle.child__footer__link__wrapper}>
-            <a className={FooterStyle.child__footer__link} href="/browse/subtitles">
+            <a className={`${FooterStyle.child__footer__link} app__anchor`} href="/browse/subtitles">
               <span className={FooterStyle.child__footer__link__content}>
                 Privacy Policy
               </span>
@@ -22,7 +22,7 @@ function Footer() {
           </li>
 
           <li className={FooterStyle.child__footer__link__wrapper}>
-            <a className={FooterStyle.child__footer__link} href="/browse/subtitles">
+            <a className={`${FooterStyle.child__footer__link} app__anchor`} href="/browse/subtitles">
               <span className={FooterStyle.child__footer__link__content}>
                Help Center
               </span>
@@ -30,7 +30,7 @@ function Footer() {
           </li>
 
           <li className={FooterStyle.child__footer__link__wrapper}>
-            <a className={FooterStyle.child__footer__link} href="/browse/subtitles">
+            <a className={`${FooterStyle.child__footer__link} app__anchor`} href="/browse/subtitles">
               <span className={FooterStyle.child__footer__link__content}>
                Contact us
               </span>

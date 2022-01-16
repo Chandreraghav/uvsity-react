@@ -484,9 +484,9 @@ function Profile({
                         "#X#",
                         firstName
                       )}`}
-                      className=" cursor-pointer inline-flex "
+                      className=" cursor-pointer inline-flex text-green-700 "
                       fontSize="small"
-                      sx={{ color: "green" }}
+                      sx={{ color: "green!important" }}
                       aria-label="connected-to-person"
                     >
                       <CheckCircleIcon fontSize="small" />

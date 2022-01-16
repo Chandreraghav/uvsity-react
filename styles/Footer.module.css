@@ -1,8 +1,14 @@
 .footer {
-  max-width: 980px;
   margin: 20px auto 0;
   padding: 0 4%;
   color: grey;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #111;
+  text-align: center;
+  z-index: 100
 }
 
 .child__footer__links {
@@ -27,7 +33,7 @@
   -moz-box-align: start;
   -ms-flex-align: start;
   align-items: flex-start;
-  margin: 0 0 0 0;
+  margin: 2px 0 0 0;
   padding: 0;
 }
 
@@ -57,12 +63,12 @@
 .child__footer,
 .child__footer__link,
 .child__footer__link__content {
-  color: grey !important;
+  color: #e2e2e2!important;
   text-decoration: none !important;
 }
 
 .child__footer__link:hover {
-  text-decoration: underline !important;
+  text-decoration: underline!important;
 }
 
 .child__footer__link__content :hover {
