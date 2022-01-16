@@ -1,14 +1,14 @@
 .footer {
-  margin: 20px auto 0;
   padding: 0 4%;
   color: grey;
-  position: fixed;
+  clear: both;
   left: 0;
   bottom: 0;
   width: 100%;
   background-color: #111;
   text-align: center;
-  z-index: 100
+  margin-top:auto;
+  
 }
 
 .child__footer__links {
@@ -93,7 +93,7 @@
 .child__footer,
 .child__footer__copyright {
   font-size: 11px;
-  margin-bottom: 15px;
+   
 }
 
 .child__footer {

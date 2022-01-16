@@ -10,7 +10,7 @@ import { TITLES, TOOLTIPS } from "../../constants/userdata";
 function Dashboard() {
   return (
     
-    
+     
     <div
     style={{width:"92vw"}} className="
     grid items-stretch grid-cols-12
@@ -38,6 +38,7 @@ function Dashboard() {
 
  
     </div>
+     
   );
 }
 

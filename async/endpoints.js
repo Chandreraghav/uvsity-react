@@ -13,6 +13,7 @@ export const ENDPOINTS = {
     POLLER: {
       VALIDITY_CHECK: "/poll/sessionExpiryCheck",
     },
+    SCHEDULED_END_DATE:"/courses/scheduledEndDate"
   },
 
   USER: {
