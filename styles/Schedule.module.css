@@ -9,11 +9,9 @@
   padding: 15px !important;
 }
 .schedule__occurence__select > div {
-  padding: 4px !important;
   font-size: small !important;
 }
 .schedule__occurence__select p {
-  margin-left: -3px !important;
   font-style: italic !important;
   color: darkgrey !important;
 }
