@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarRateIcon from "@mui/icons-material/StarRate";
+import CoPresentIcon from '@mui/icons-material/CoPresent';
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { SESSION_REVIEW_MAX_STAR_COUNT } from "../../../../constants/constants";
 import { IMAGE_PATHS, PLACEHOLDERS, TOOLTIPS } from "../../../../constants/userdata";
@@ -22,6 +23,7 @@ function Preview({ data, authorized }) {
   const [attendees, setAttendees] = useState([]);
   const [sessionDetail, setSessionDetail] = useState({});
   const [sessionCreatorDetail, setSessionCreatorDetail] = useState({});
+  const [cohostDetail, setCoHostDetail] = useState({});
   const [USER, dispatch] = useDataLayerContextValue();
   const getEventPoster = () => {
     if (data.imageURL) {
@@ -76,6 +78,22 @@ function Preview({ data, authorized }) {
       isSubscribed = false;
     };
   }, [data]);
+
+  useEffect(() => {
+    let isSubscribed = true;
+    let controller = new AbortController();
+    if (isSubscribed && data.coHosts.length===1) {
+      UserDataService.getUserById(data.coHosts[0].userDetailsId).then(
+        (response) => {
+          setCoHostDetail(response?.data);
+        }
+      );
+    }
+    return () => {
+      controller?.abort();
+      isSubscribed = false;
+    };
+  }, [data.coHosts]);
 
   const amIAttending = () => {
     const index = attendees?.findIndex((x) => {
@@ -181,6 +199,7 @@ function Preview({ data, authorized }) {
       </Tooltip>
     );
   };
+  console.log(data)
 
   return (
     <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg px-2">
@@ -208,7 +227,7 @@ function Preview({ data, authorized }) {
               metaData={data}
               options={{ connect: false, mixedMode: true }}
             />
-            <div className="  line-clamp-2 text-gray-700 py-1 mb-1 leading-snug  ">
+            <div className={` ${SessionStyle.session__description__clamp} line-clamp-3 text-gray-700 py-1 mb-1 leading-snug`}>
               {parse(data.courseSummary)}
             </div>
           </div>
@@ -222,11 +241,11 @@ function Preview({ data, authorized }) {
               src={eventPosterSrc}
               alt={data?.courseFullName}
             />
-          </div>
-          {data.coHosts.length > 0 && (
+              {data.coHosts.length > 0 && (
             <div>
-              <div className="text-md text-gray-700 font-medium    ">
-                Co-Host
+              <div className="text-md flex gap-1 text-gray-700 font-medium py-2 px-2">
+                <CoPresentIcon/>
+                <div>Co-Host</div>
               </div>
               <Divider />
               <div className=" transform scale-100 flex flex-row flex-wrap flex-grow-0 px-2 py-2">
@@ -236,10 +255,16 @@ function Preview({ data, authorized }) {
                   avatar={data.coHosts[0]?.profilePicName}
                   userType={data.coHosts[0]?.userBaseType}
                   instituition={data.coHosts[0]?.educationalInstitution}
+                  isVisibleAsCoHost
+                  metaData={{associatedCoHostData:cohostDetail}}
+                  options={{ connect: false, mixedMode: true }}
                 />
               </div>
             </div>
           )}
+             
+          </div>
+        
         </div>
       </div>
 

@@ -55,6 +55,7 @@
   -ms-flex: 0 0 25%;
   flex: 0 0 25%;
   margin-bottom: 5px;
+  padding:5px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -63,19 +64,14 @@
 .child__footer,
 .child__footer__link,
 .child__footer__link__content {
-  color: #e2e2e2!important;
-  text-decoration: none !important;
+  color: #e2e2e2;
+   
 }
 
-.child__footer__link:hover {
-  text-decoration: underline!important;
-}
+ 
 
-.child__footer__link__content :hover {
-  text-decoration: underline !important;
-}
 
-.child__footer,
+ 
 .service__code {
   margin-bottom: 20px;
   font-size: 13px;
@@ -95,11 +91,7 @@
   font-size: 11px;
    
 }
-
-.child__footer {
-  padding: 0 4px;
-  display: inline-block;
-}
+ 
 .child__footer__copyright__instance {
   display: block;
   font-size: 0.6rem;

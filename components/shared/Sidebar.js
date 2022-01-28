@@ -3,7 +3,12 @@ import MiniProfile from "../Authorized/Profile/MiniProfile";
 import { useDataLayerContextValue } from "../../context/DataLayer";
 import { AuthGuardService } from "../../auth-guard/service/AuthGuardService";
 import { formattedName } from "../../utils/utility";
-import { DEFAULT_COVER_IMAGE, ICONS, TITLES, TOOLTIPS } from "../../constants/userdata";
+import {
+  DEFAULT_COVER_IMAGE,
+  ICONS,
+  TITLES,
+  TOOLTIPS,
+} from "../../constants/userdata";
 import CompletionDetail from "../Authorized/Profile/CompletionDetail";
 import Profiles from "../Authorized/Network/People/Profiles";
 import { WORKFLOW_CODES } from "../../constants/workflow-codes";
@@ -34,7 +39,7 @@ function Sidebar() {
     return "";
   }
   return (
-    <div className={isSticky ? `usticky`:''}>
+    <div className={isSticky ? `usticky` : ""}>
       <MiniProfile
         name={formattedName(
           USERDATA?.SUMMARY?.data?.firstName,
@@ -45,14 +50,15 @@ function Sidebar() {
           company: USERDATA?.SUMMARY?.data?.educationalInstitution,
           location: USERDATA?.SUMMARY?.data?.city,
           city: USERDATA?.SUMMARY?.data?.city,
-          country: USERDATA?.SUMMARY?.data?.country
+          country: USERDATA?.SUMMARY?.data?.country,
         }}
         coverImage={DEFAULT_COVER_IMAGE}
         profileImage={USERDATA?.SUMMARY?.data?.profilePicName}
       />
 
       <CompletionDetail />
-      <Profiles options={{connect:false, mixedMode:true}}
+      <Profiles
+        options={{ connect: false, mixedMode: true }}
         workflowRoute={WORKFLOW_CODES.PEOPLE.WHO_VIEWED_ME}
         title={TITLES.PEOPLE_WHO_VIEWED_YOU}
         tooltip={TOOLTIPS.PEOPLE_WHO_VIEWED_YOU}

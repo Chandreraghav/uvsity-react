@@ -191,4 +191,8 @@
   transition: all 0.8s;
   color: var(--blue) !important;
 }
+
+.session__description__clamp{
+  height:4.3rem
+}
  

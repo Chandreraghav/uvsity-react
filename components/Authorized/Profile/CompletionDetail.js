@@ -148,9 +148,10 @@ function CompletionDetail() {
             </div>
           )}
         </div>
-        <div className=" items-baseline">
+        <div className=" items-baseline p-2">
         <Spacer/>
           {COMPLETION_DETAIL_ACTION.map((action) => (
+            
             <Tooltip key={action.id} title={action.tooltip}>
               {action.startIcon ? (
                 <Button startIcon={action.icon} size={action.size}>
@@ -162,6 +163,7 @@ function CompletionDetail() {
                 </Button>
               )}
             </Tooltip>
+            
           ))}
              
         </div>
