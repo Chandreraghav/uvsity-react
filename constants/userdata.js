@@ -594,7 +594,9 @@ export const SESSION_POSTER = {
   validation: {
     maxAllowedSize: 5,
     maxAllowedDimension: "575x150",
-    allowedExtensions:['jpg','png','gif'],
+    width:575,
+    height:150,
+    allowedExtensions:['jpg','png','gif','jpeg'],
     maxAllowedSizeInBytes:5242880
   },
   consent:null,

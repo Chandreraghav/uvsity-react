@@ -56,6 +56,7 @@ function Profile({
   userType,
   instituition,
   isVisibleOnSessionCard,
+  isVisibleAsCoHost,
   oid,
   metaData,
   origin,
@@ -121,6 +122,10 @@ function Profile({
   const profileSecondaryLine = formattedProfileSubtitle(userType, instituition);
 
   const profileTertiaryLine = ()=>{
+    if(isVisibleAsCoHost){
+      return    formattedProfileSubtitle(metaData?.associatedCoHostData?.city, metaData?.associatedCoHostData?.country);
+    
+    }
     let _tertiaryLine = formattedProfileSubtitle(metaData?.city, metaData?.country);
     return _tertiaryLine===''? formattedProfileSubtitle(metaData?.creator?.city, metaData?.creator?.country):_tertiaryLine
   }
@@ -270,7 +275,7 @@ function Profile({
           />
         </Popover>
       
-      <div className="flex flex-row items-center flex-1 mb-4 gap-2 pt-2">
+      <div className={`flex flex-row items-center flex-1 mb-4 ${!isVisibleAsCoHost ?'gap-2':'gap-0'} pt-2`}>
         {/* AVATAR */}
         <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
           {avatar !== "" &&
@@ -282,7 +287,7 @@ function Profile({
                 onMouseEnter={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}
                 className={`${
-                  isVisibleOnSessionCard ? "avatar-sm" : "avatar-dashboard"
+                  isVisibleOnSessionCard? "avatar-sm" : isVisibleAsCoHost?'avatar-xs': "avatar-dashboard"
                 }`}
                 alt={`${profilePrimaryLine}`}
                 src={avatar}
@@ -298,7 +303,7 @@ function Profile({
               onMouseEnter={handlePopoverOpen}
               onMouseLeave={handlePopoverClose}
               className={`${
-                isVisibleOnSessionCard ? "avatar-sm" : "avatar-dashboard"
+                isVisibleOnSessionCard? "avatar-sm" : isVisibleAsCoHost?'avatar-xs': "avatar-dashboard"
               }`}
               {...avatarToString(`${profilePrimaryLine}`)}
             />

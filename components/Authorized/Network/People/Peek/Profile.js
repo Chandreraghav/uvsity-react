@@ -22,22 +22,28 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { toast } from "react-toastify";
 toast.configure();
 function PeekProfile(props) {
-  console.log(props)
+  console.log(props.metaData)
   if (!props.isOpen) return <></>;
   const invitedState =
     props.metaData?.invitationAction?.invitationAction ===
       NETWORK.CONNECTION_RELATION_STATE.CONNECT ||
     props.metaData?.associatedUserData?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT ||
+    props.metaData?.associatedCoHostData?.invitationAction ===
       NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT;
   const acceptanceState =
     props.metaData?.invitationAction?.invitationAction ===
       NETWORK.CONNECTION_RELATION_STATE.ACCEPT_REQUEST ||
     props.metaData?.associatedUserData?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST ||
+    props.metaData?.associatedCoHostData?.invitationAction ===
       NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
   const pendingState =
     props.metaData?.invitationAction?.invitationAction ===
       NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE ||
     props.metaData?.associatedUserData?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE ||
+    props.metaData?.associatedCoHostData?.invitationAction ===
       NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE;
   const isAConnection = () => {
     let metadata = props.metaData;
@@ -51,6 +57,19 @@ function PeekProfile(props) {
           ) {
             return true;
           }
+        }
+
+        
+      }
+
+      if (metadata.associatedCoHostData) {
+        // meta data contains data about posted session co-host and associated user data.
+
+        if (
+          metadata.associatedCoHostData.invitationAction ===
+          NETWORK.CONNECTION_RELATION_STATE_ALT.IN_MY_NETWORK
+        ) {
+          return true;
         }
       }
 
@@ -83,7 +102,11 @@ function PeekProfile(props) {
       className={` relative border-0   rounded
        overflow-hidden ${
          props.dark ? "dark-dialog-variant" : "default-dialog-variant"
-       }  flex flex-col rectangular-md-card ${props?.options?.mixedMode===false?'rectangular-md-card-fixed-height':''}`}
+       }  flex flex-col rectangular-md-card ${
+        props?.options?.mixedMode === false
+          ? "rectangular-md-card-fixed-height"
+          : ""
+      }`}
     >
       <div className="flex">
         <div className="flex flex-col">
@@ -292,7 +315,8 @@ function PeekProfile(props) {
                     title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
                       "#X#",
                       props.metaData.firstName ||
-                        props.metaData?.associatedUserData?.firstName
+                        props.metaData?.associatedUserData?.firstName ||
+                        props.metaData?.associatedCoHostData?.firstName
                     )}`}
                     className=" cursor-pointer inline-flex text-green-700 "
                     fontSize="small"

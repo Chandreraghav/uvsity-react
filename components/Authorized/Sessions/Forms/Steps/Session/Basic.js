@@ -96,7 +96,7 @@ function Basic(props) {
           <Grid item xs={12}>
             <Spacer />
           </Grid>
-          <Grid item lg={7} sm={7} md={7} xs={9}>
+          <Grid item lg={12} sm={12} md={12} xs={12}>
             {/* Full name */}
             <FormControl
               fullWidth={true}
@@ -106,7 +106,7 @@ function Basic(props) {
               <TextField required label="Full Name" id="fullName" />
             </FormControl>
           </Grid>
-          <Grid item lg={5} sm={5} md={5} xs={3}>
+          <Grid item lg={12} sm={12} md={12} xs={12}>
             {/* Short name */}
             <FormControl
               fullWidth={true}

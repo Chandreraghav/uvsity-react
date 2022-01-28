@@ -61,10 +61,10 @@ a {
   color: #f8ac41;
 }
 .app__anchor:hover {
-  text-decoration: underline;
+  text-decoration: underline!important;
   transition-timing-function: ease-in;
   transition: all 0.8s;
-  color: #5271ff;
+  color: #5271ff!important;
 }
 button.success {
   background-color: #5271ff !important;
@@ -190,6 +190,11 @@ button.danger {
 .avatar-dashboard {
   width: 48px !important;
   height: 48px !important;
+}
+
+.avatar-xs {
+  width: 40px !important;
+  height: 40px !important;
 }
 .usticky {
   position: -webkit-sticky; /* for Safari */

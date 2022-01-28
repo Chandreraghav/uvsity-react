@@ -48,9 +48,9 @@ function QuillEditor() {
       ]
     return (
        // You are ready now to use Quill, using onChange, value , placeholder props
-        <>
-        <QuillNoSSRWrapper modules={modules} formats={formats} theme="snow" />
-        </>
+        <div >
+        <QuillNoSSRWrapper className=" h-48  mb-24 xl:mb-12 lg:mb-12 md:mb-12" modules={modules} formats={formats} theme="snow" />
+        </div>
     )
 }
 
