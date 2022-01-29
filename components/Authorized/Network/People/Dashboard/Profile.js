@@ -60,6 +60,7 @@ function Profile({
   oid,
   metaData,
   origin,
+  sticky
 }) {
   
   const [USERDATA, dispatch] = useDataLayerContextValue();
@@ -275,7 +276,7 @@ function Profile({
           />
         </Popover>
       
-      <div className={`flex flex-row items-center flex-1 mb-4 ${!isVisibleAsCoHost ?'gap-2':'gap-0'} pt-2`}>
+      <div className={`flex flex-row items-center flex-1 ${sticky?'mb-2':'mb-4'} ${!isVisibleAsCoHost ?'gap-2':'gap-0'} pt-2`}>
         {/* AVATAR */}
         <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
           {avatar !== "" &&

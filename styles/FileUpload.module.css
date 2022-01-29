@@ -1,7 +1,30 @@
-.fileupload__container{
-    border:2px dashed lightgrey;
-    height:auto;
-    width:auto;
-    overflow:hidden;
-    padding:5px;
+.fileupload__container {
+  border: 2px dashed lightgrey;
+  height: auto;
+  width: auto;
+  overflow: hidden;
+  padding: 5px;
+}
+
+.file__upload__thumb {
+  display: "inline-flex";
+  border-radius: 2;
+  border: "1px solid #eaeaea";
+  margin-bottom: 8;
+  margin-right: 8;
+  width: 100;
+  height: 100;
+  padding: 4;
+  box-sizing: "border-box";
+}
+.file__upload__thumbInner {
+  display: "flex";
+  min-width: 0;
+  overflow: "hidden";
+}
+.file__upload__img__preview {
+  display: "block";
+  width: "auto";
+  height: "100%";
+  object-fit: "contain";
 }
