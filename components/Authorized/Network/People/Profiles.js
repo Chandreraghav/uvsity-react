@@ -17,6 +17,7 @@ function Profiles({
   icon,
   dashboardPreview,
   workflowRoute,
+  sticky
 }) {
   const [USERDATA, dispatch] = useDataLayerContextValue();
   const [bo, setBO] = useState([]);
@@ -32,6 +33,7 @@ function Profiles({
         break;
     }
   };
+   
   useEffect(() => {
     setLoggedIn(AuthGuardService.isUserLoggedIn());
   }, []);
@@ -76,10 +78,10 @@ function Profiles({
     );
   }
   return (
-    <div>
-      <Spacer count={3} />
+     
+      
       <div
-        className={` usticky ${"usticky uvsity__card uvsity__card__border__theme"}`}
+        className={` ${sticky?'md:sticky top-20 lg:sticky top-20 xl:sticky top-20  ':''}  ${" uvsity__card uvsity__card__border__theme"}`}
       >
         <Tooltip
           title={
@@ -122,7 +124,7 @@ function Profiles({
         
        {bo.length>0 &&  <Spacer />}
         {bo.length > 0 ? (
-          <div className="px-3 text-base">
+          <div className={`px-3 text-base `}>
             {bo?.map((value) => (
               <Profile
                 options={options}
@@ -133,6 +135,7 @@ function Profiles({
                 userType={value.userType}
                 instituition={value.educationalInstitution}
                 metaData={value}
+                sticky
               />
             ))}
           </div>
@@ -163,8 +166,9 @@ function Profiles({
             </Typography>
           </div>
         )}
+        
       </div>
-    </div>
+     
   );
 }
 

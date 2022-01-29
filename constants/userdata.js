@@ -38,9 +38,11 @@ import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import PreviewIcon from "@mui/icons-material/Preview";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import ImageIcon from '@mui/icons-material/Image';
 import ArticleIcon from '@mui/icons-material/Article';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import FolderZipIcon from '@mui/icons-material/FolderZip';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -593,7 +595,7 @@ export const SESSION_POSTER = {
   multiple: false,
   validation: {
     maxAllowedSize: 5,
-    maxAllowedDimension: "575x150",
+    minAllowedDimension: "575x150",
     width:575,
     height:150,
     allowedExtensions:['jpg','png','gif','jpeg'],
@@ -614,8 +616,15 @@ export const SESSION_DOCUMENT = {
   multiple: false,
   validation: {
     maxAllowedSize: 50,
-    allowedExtensions:['docx','doc','pdf','zip'],
+    allowedExtensions:['docx','doc','pdf','zip','txt'],
     maxAllowedSizeInBytes:52428800
+  },
+  icons:{
+    TXT:<TextSnippetIcon/>,
+    DOCX:<ArticleIcon/>,
+    DOC:<ArticleIcon/>,
+    PDF:<PictureAsPdfIcon/>,
+    ZIP:<FolderZipIcon/>
   },
   icon: <ArticleIcon/>,
   required:false,

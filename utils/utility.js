@@ -220,3 +220,10 @@ export const isToday = (someDate) => {
     someDate.getMonth() == today.getMonth() &&
     someDate.getFullYear() == today.getFullYear()
 }
+
+export const getFileExtension=(fileName,separator,limit)=>{
+  if(!separator) separator ='.';
+  return fileName.split(separator).pop()
+}
+
+
