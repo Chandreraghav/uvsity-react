@@ -1,28 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import TrendingSessionsStyle from "../../styles/TrendingSessions.module.css";
 import SessionCard from "../SessionCards/SessionCard";
 import SessionService from "../../pages/api/session/SessionService";
 import Loader from "../shared/Loader";
 import { SHIMMER_TIMEOUT_IN_MILLIS } from "../../constants/constants";
+import { useQuery } from "react-query";
+import { KEYS } from "../../async/queries/keys/unique-keys";
 
+const getTrendingSessions =async()=> {
+const res=  await SessionService.getPopularSessions();
+return res.data;
+};
 function TrendingSessions() {
-  const [trendingSessions, setTrendingSessions] = useState([]);
-  const [loaderVisibility, setLoaderVisibility] = useState(true);
-  useEffect(async () => {
-    let controller = new AbortController();
-    let isSubscribed = true;
-    await new SessionService().getPopularSessions().then((response) => {
-      if (isSubscribed) {
-        setTrendingSessions(response.data);
-        setLoaderVisibility(false);
-      } else {
-      }
-    });
-    return () => {
-      controller?.abort();
-      isSubscribed = false;
-    };
-  }, []);
+  const trendingSessions = useQuery(
+    [KEYS.SESSION.PUBLIC.TOP],
+    getTrendingSessions
+  );
   return (
     <div id="discover-popular-live-sessions">
       <div
@@ -46,16 +39,16 @@ function TrendingSessions() {
             />
           </a>
         </div>
-        <Loader visible={loaderVisibility} />
+        <Loader visible={trendingSessions.isLoading} />
       </div>
 
       <div
         id="sessionsPreview"
         className={`${TrendingSessionsStyle.trending__sessions__wrapper__white__variant} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  bg-yellow-300`}
       >
-        {!loaderVisibility &&
-          trendingSessions &&
-          trendingSessions?.map((session, index) => (
+        {trendingSessions.isSuccess &&
+          trendingSessions && trendingSessions?.data &&
+          trendingSessions?.data?.map((session, index) => (
             <SessionCard
               key={index}
               data={session}

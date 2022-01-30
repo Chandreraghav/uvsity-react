@@ -46,7 +46,6 @@ export class JWT {
     const refreshToken = async () => {
       const newAuthRes = await res.reloadAuthResponse();
       refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
-      console.log("newAuthRes:", newAuthRes);
       localStorage.setItem("uvsity-authToken", newAuthRes.id_token);
       setLocalStorageObject("uvsity-authToken", newAuthRes.id_token);
       // Setup the other timer after the first one

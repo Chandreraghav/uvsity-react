@@ -27,42 +27,7 @@ function AccountMenu({ onClose, isOpen, anchor }) {
       type: actionTypes.SET_USER,
       user: null,
     });
-    unauthorize({
-      type: actionTypes.USER.PROFILE_VISITS,
-      PROFILE_VISITS: null,
-    });
-    unauthorize({
-      type: actionTypes.USER.PROFILE_PERCENTAGE_COMPLETION,
-      PROFILE_PERCENTAGE_COMPLETION: null,
-    });
-
-    unauthorize({
-      type: actionTypes.USER.SUMMARY,
-      SUMMARY: null,
-    });
-    unauthorize({
-      type: actionTypes.USER.TOP_COURSES,
-      TOP_COURSES: null,
-    });
-    unauthorize({
-      type: actionTypes.USER.SUGGESTED_FRIENDS,
-      SUGGESTED_FRIENDS: null,
-    });
-
-    unauthorize({
-      type: actionTypes.USER.NETWORK_UPDATES,
-      NETWORK_UPDATES: null,
-    });
-    unauthorize({
-      type: actionTypes.USER.HOT_TOPICS,
-      HOT_TOPICS: null,
-    });
-
-    unauthorize({
-      type: actionTypes.USER.LOGGED_IN_INFO,
-      LOGGED_IN_INFO: null,
-    });
-    AuthService.cancelAllSubscriptions(true)
+    AuthService.cancelAppLayerSubscriptions(true)
   };
   const handleMenuAction = (actionCode) => {
     if (!actionCode) {

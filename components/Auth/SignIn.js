@@ -89,7 +89,6 @@ function SignIn({ dialogCloseRequest, isOpen }) {
 
       })
       .catch((err) => {
-        console.log(err)
         handleResponse(
           getWorkflowError(err),
           RESPONSE_TYPES.ERROR,

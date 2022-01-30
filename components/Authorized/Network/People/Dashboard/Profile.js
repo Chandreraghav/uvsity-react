@@ -8,7 +8,6 @@ import {
   TITLES,
   TOOLTIPS,
 } from "../../../../../constants/userdata";
-import { useDataLayerContextValue } from "../../../../../context/DataLayer";
 import {
   avatarToString,
   formattedName,
@@ -60,12 +59,13 @@ function Profile({
   oid,
   metaData,
   origin,
-  sticky
+  sticky,
+  userdata
 }) {
-  
-  const [USERDATA, dispatch] = useDataLayerContextValue();
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
     useState(false);
+
+  
 
   const classes = useStyles();
   const popoverAnchor = useRef(null);
@@ -134,7 +134,7 @@ function Profile({
   const getPayload = () => {
     let payload = {
       requestFrom: {
-        userDetailsId: USERDATA?.LOGGED_IN_INFO?.data?.userDetailsId,
+        userDetailsId: userdata?.userDetailsId,
       },
       requestTo: { userDetailsId: metaData.userDetailsId },
       userRequestText: "",
@@ -153,7 +153,7 @@ function Profile({
     return payload;
   };
   const isItMe = () => {
-    return USERDATA?.LOGGED_IN_INFO?.data?.userDetailsId === oid;
+    return userdata?.userDetailsId === oid;
   };
   const addToNetwork = () => {
     setConnectionRequestInProgress(true);

@@ -13,18 +13,18 @@ import Spacer from "../../../shared/Spacer";
 import CustomDialog from "../../../shared/modals/CustomDialog";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import UserDataService from "../../../../pages/api/users/data/UserDataService";
-import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import parse from "html-react-parser";
 import Actions from "../ActionableItems/Actions";
 
-function Preview({ data, authorized }) {
+function Preview({ data, authorized,userdata }) {
   if (!authorized || !data) return "";
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
   const [attendees, setAttendees] = useState([]);
   const [sessionDetail, setSessionDetail] = useState({});
   const [sessionCreatorDetail, setSessionCreatorDetail] = useState({});
   const [cohostDetail, setCoHostDetail] = useState({});
-  const [USER, dispatch] = useDataLayerContextValue();
+   
+ 
   const getEventPoster = () => {
     if (data.imageURL) {
       return data.imageURL;
@@ -97,7 +97,7 @@ function Preview({ data, authorized }) {
 
   const amIAttending = () => {
     const index = attendees?.findIndex((x) => {
-      return x.userDetailsId == USER?.LOGGED_IN_INFO?.data?.userDetailsId;
+      return x.userDetailsId == userdata?.userDetailsId;
     });
     return index !== -1;
   };
@@ -199,7 +199,7 @@ function Preview({ data, authorized }) {
       </Tooltip>
     );
   };
-  console.log(data)
+
 
   return (
     <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg px-2">
@@ -225,6 +225,7 @@ function Preview({ data, authorized }) {
               instituition={data.creator.educationalInstitute}
               isVisibleOnSessionCard
               metaData={data}
+              userdata={userdata}
               options={{ connect: false, mixedMode: true }}
             />
             <div className={` ${SessionStyle.session__description__clamp} line-clamp-3 text-gray-700 py-1 mb-1 leading-snug`}>
@@ -258,6 +259,7 @@ function Preview({ data, authorized }) {
                   isVisibleAsCoHost
                   metaData={{associatedCoHostData:cohostDetail}}
                   options={{ connect: false, mixedMode: true }}
+                  userdata={userdata}
                 />
               </div>
             </div>

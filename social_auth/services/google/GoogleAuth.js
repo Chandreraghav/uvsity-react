@@ -55,12 +55,11 @@ function GoogleAuth() {
           AuthService.logout();
         });
     } else {
-      console.log("Already logged in user: currentUser:", res);
+      
     }
   };
   
   const onFailure = (res) => {
-    console.log("Login failed: res:", res);
     handleResponse(LOGIN_ERRORS.SOCIAL.GOOGLE.LOGIN_FAILED, "error");
     AuthService.logout();
   };

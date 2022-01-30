@@ -4,8 +4,8 @@ import Intro from "./MainContent/Intro";
 import CompactCard from "./Sessions/Preview/CompactCard";
 import { TITLES } from "../../constants/userdata";
 
-function Dashboard() {
- 
+function Dashboard({data}) {
+   
   return (
     <div
        
@@ -16,17 +16,17 @@ function Dashboard() {
     >
       <div className="relative py-2 z-50 col-span-12 md:col-span-3 lg:col-span-3 xl:col-span-2">
             
-          <Sidebar type='left' />
+          <Sidebar data={data}  type='left' />
         
       </div>
 
       <div className="z-40 col-span-12 md:pt-2 md:col-span-6 lg:col-span-6 xl:col-span-4">
-        <Intro />
-        <CompactCard title={TITLES.POPULAR_SESSION} />
+        <Intro data={data?.USER_PROFILE_SUMMARY?.data} />
+        <CompactCard data={data} title={TITLES.POPULAR_SESSION} />
        
       </div>
       <div className=" col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
-      <Sidebar type='right' />
+      <Sidebar data={data} type='right' />
          
       </div>
     </div>

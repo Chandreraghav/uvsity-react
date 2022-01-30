@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ProfileCompletionDetailStyle from "../../../styles/ProfileCompletionDetail.module.css";
-import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { AuthGuardService } from "../../../auth-guard/service/AuthGuardService";
 import CompletionProgress from "./CompletionProgress";
 import Button from "@mui/material/Button";
@@ -12,36 +11,35 @@ import {
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import { TOOLTIPS } from "../../../constants/userdata";
-import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import BoltOutlinedIcon from '@mui/icons-material/BoltOutlined';
-import WarningOutlinedIcon from '@mui/icons-material/WarningOutlined';
+import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
+import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
+import BoltOutlinedIcon from "@mui/icons-material/BoltOutlined";
+import WarningOutlinedIcon from "@mui/icons-material/WarningOutlined";
 import {
   RESPONSE_TYPES,
   RESPONSE_TYPES_COLOR,
 } from "../../../constants/constants";
-import DoubleArrowOutlinedIcon from '@mui/icons-material/DoubleArrowOutlined';
+import DoubleArrowOutlinedIcon from "@mui/icons-material/DoubleArrowOutlined";
 import Spacer from "../../shared/Spacer";
-function CompletionDetail() {
-  const [USERDATA, dispatch] = useDataLayerContextValue();
-  const [suggestionShowed, setSuggestionShown] = useState(false)
+function CompletionDetail({data}) {
+  const [suggestionShowed, setSuggestionShown] = useState(false);
   const [completionTextObject, setCompletionTextObject] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
-  const toggleSuggestions=(e)=>{
-    setSuggestionShown(!suggestionShowed)
-  }
+  const toggleSuggestions = (e) => {
+    setSuggestionShown(!suggestionShowed);
+  };
   useEffect(() => {
     setLoggedIn(AuthGuardService.isUserLoggedIn());
   }, []);
   useEffect(() => {
     setCompletionTextObject(
-      getProfileCompletionTexts(USERDATA?.PROFILE_PERCENTAGE_COMPLETION?.data)
+      getProfileCompletionTexts(data?.USER_PROFILE_PERCENTAGE_COMPLETION?.data)
     );
-  }, [USERDATA]);
+  }, [data?.USER_PROFILE_PERCENTAGE_COMPLETION]);
   if (!loggedIn) {
     return "";
   }
-  const getRGBColor=()=>{
+  const getRGBColor = () => {
     if (completionTextObject.alertLevel === RESPONSE_TYPES.SUCCESS) {
       return RESPONSE_TYPES_COLOR.SUCCESS.rgb;
     }
@@ -54,7 +52,7 @@ function CompletionDetail() {
     if (completionTextObject.alertLevel === RESPONSE_TYPES.ERROR) {
       return RESPONSE_TYPES_COLOR.ERROR.rgb;
     }
-  }
+  };
   const getColor = () => {
     if (completionTextObject.alertLevel === RESPONSE_TYPES.SUCCESS) {
       return RESPONSE_TYPES_COLOR.SUCCESS.hex;
@@ -72,104 +70,109 @@ function CompletionDetail() {
 
   const getIcon = () => {
     if (completionTextObject.alertLevel === RESPONSE_TYPES.SUCCESS) {
-      return <CheckOutlinedIcon/>
+      return <CheckOutlinedIcon />;
     }
     if (completionTextObject.alertLevel === RESPONSE_TYPES.INFO) {
-      return <ThumbUpOutlinedIcon/>
+      return <ThumbUpOutlinedIcon />;
     }
     if (completionTextObject.alertLevel === RESPONSE_TYPES.WARNING) {
-      return <BoltOutlinedIcon/>
+      return <BoltOutlinedIcon />;
     }
     if (completionTextObject.alertLevel === RESPONSE_TYPES.ERROR) {
-      return <WarningOutlinedIcon/>
+      return <WarningOutlinedIcon />;
     }
   };
   return (
     <div>
-     <Spacer count={2}/>
-    <div style={{borderBottom: `5px solid ${getColor()}`}} className={` uvsity__card`}>
+      <Spacer count={2} />
       <div
-        className={
-          ProfileCompletionDetailStyle.profile__completion__detail__card
-        }
+        style={{ borderBottom: `5px solid ${getColor()}` }}
+        className={` uvsity__card`}
       >
         <div
           className={
-            ProfileCompletionDetailStyle.profile__completion__detail__graph
+            ProfileCompletionDetailStyle.profile__completion__detail__card
           }
         >
-          <CompletionProgress
-            color={getRGBColor()}
-            percentage={
-              USERDATA?.PROFILE_PERCENTAGE_COMPLETION?.data
-                ?.percentageOfProfileAlreadyCompleted
-            }
-          />
-        </div>
-
-        <div>
-          <Typography
+          <div
             className={
-              `text-center ${ProfileCompletionDetailStyle.profile__completion__detail__header__text}`
+              ProfileCompletionDetailStyle.profile__completion__detail__graph
             }
-            gutterBottom
-            variant="h5"
-            component="div"
           >
-            {getIcon()}{' '}{completionTextObject.headerText}
-          </Typography>
-          <div className=' flex'>
-          <Typography className={
-                ProfileCompletionDetailStyle.profile__completion__detail__explanation__text
-              } variant="body2" color="text.secondary">
-            {completionTextObject.icon} {completionTextObject.guidanceText}
-          </Typography>
+            <CompletionProgress
+              color={getRGBColor()}
+              percentage={
+                data?.USER_PROFILE_PERCENTAGE_COMPLETION?.data
+                  ?.percentageOfProfileAlreadyCompleted
+              }
+            />
           </div>
 
-          {completionTextObject.needsWork && (
-            <div
-             
-              className={` items-center
-                    ${ProfileCompletionDetailStyle.profile__completion__detail__suggestions}`
-                  }
+          <div>
+            <Typography
+              className={`text-center ${ProfileCompletionDetailStyle.profile__completion__detail__header__text}`}
+              gutterBottom
+              variant="h5"
+              component="div"
             >
-              <Tooltip title={TOOLTIPS.VIEW_SUGGESTIONS}>
-                <SettingsSuggestOutlinedIcon onClick={(e)=> toggleSuggestions()}
-                  className={`
-                    ${ProfileCompletionDetailStyle.profile__completion__detail__suggestion__icon}`
-                  }
-                />
-              </Tooltip>
-              { suggestionShowed && completionTextObject?.recommendedSteps.map((reco)=>(
-                <div className={ProfileCompletionDetailStyle.profile__completion__detail__guidance__text}>
-                  
-                  <DoubleArrowOutlinedIcon/>&nbsp;{reco}</div>
-              ))}
+              {getIcon()} {completionTextObject.headerText}
+            </Typography>
+            <div className=" flex">
+              <Typography
+                className={
+                  ProfileCompletionDetailStyle.profile__completion__detail__explanation__text
+                }
+                variant="body2"
+                color="text.secondary"
+              >
+                {completionTextObject.icon} {completionTextObject.guidanceText}
+              </Typography>
             </div>
-          )}
+
+            {completionTextObject.needsWork && (
+              <div
+                className={` items-center
+                    ${ProfileCompletionDetailStyle.profile__completion__detail__suggestions}`}
+              >
+                <Tooltip title={TOOLTIPS.VIEW_SUGGESTIONS}>
+                  <SettingsSuggestOutlinedIcon
+                    onClick={(e) => toggleSuggestions()}
+                    className={`
+                    ${ProfileCompletionDetailStyle.profile__completion__detail__suggestion__icon}`}
+                  />
+                </Tooltip>
+                {suggestionShowed &&
+                  completionTextObject?.recommendedSteps.map((reco) => (
+                    <div
+                      className={
+                        ProfileCompletionDetailStyle.profile__completion__detail__guidance__text
+                      }
+                    >
+                      <DoubleArrowOutlinedIcon />
+                      &nbsp;{reco}
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+          <div className=" items-baseline p-2">
+            <Spacer />
+            {COMPLETION_DETAIL_ACTION.map((action) => (
+              <Tooltip key={action.id} title={action.tooltip}>
+                {action.startIcon ? (
+                  <Button startIcon={action.icon} size={action.size}>
+                    {action.title}
+                  </Button>
+                ) : (
+                  <Button endIcon={action.icon} size={action.size}>
+                    {action.title}
+                  </Button>
+                )}
+              </Tooltip>
+            ))}
+          </div>
         </div>
-        <div className=" items-baseline p-2">
-        <Spacer/>
-          {COMPLETION_DETAIL_ACTION.map((action) => (
-            
-            <Tooltip key={action.id} title={action.tooltip}>
-              {action.startIcon ? (
-                <Button startIcon={action.icon} size={action.size}>
-                  {action.title}
-                </Button>
-              ) : (
-                <Button endIcon={action.icon} size={action.size}>
-                  {action.title}
-                </Button>
-              )}
-            </Tooltip>
-            
-          ))}
-             
-        </div>
-     
       </div>
-    </div>
     </div>
   );
 }
