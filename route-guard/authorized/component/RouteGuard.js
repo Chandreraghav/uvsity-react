@@ -33,41 +33,7 @@ function RouteGuard({ children }) {
       type: actionTypes.SET_USER,
       user: null,
     });
-    authorize({
-      type: actionTypes.USER.PROFILE_VISITS,
-      PROFILE_VISITS: null,
-    });
-    authorize({
-      type: actionTypes.USER.PROFILE_PERCENTAGE_COMPLETION,
-      PROFILE_PERCENTAGE_COMPLETION: null,
-    });
-
-    authorize({
-      type: actionTypes.USER.SUMMARY,
-      SUMMARY: null,
-    });
-    authorize({
-      type: actionTypes.USER.TOP_COURSES,
-      TOP_COURSES: null,
-    });
-    authorize({
-      type: actionTypes.USER.SUGGESTED_FRIENDS,
-      SUGGESTED_FRIENDS: null,
-    });
-
-    authorize({
-      type: actionTypes.USER.NETWORK_UPDATES,
-      NETWORK_UPDATES: null,
-    });
-    authorize({
-      type: actionTypes.USER.HOT_TOPICS,
-      HOT_TOPICS: null,
-    });
-
-    authorize({
-      type: actionTypes.USER.LOGGED_IN_INFO,
-      LOGGED_IN_INFO: null,
-    });
+    
   };
   function authCheck(url) {
     // redirect to public dashboard if accessing a private page and not logged in
