@@ -101,30 +101,17 @@ export class AuthService {
       removeLocalStorageObject("uvsity-authToken");
       removeLocalStorageObject("uvsity-loggedIn");
       removeLocalStorageObject("uvsity-loggedInSource");
-      this.cancelAllSubscriptions(true)
+      this.cancelAppLayerSubscriptions(true)
       // we do not clear ip data on logout because of its global nature.
     } catch (error) {}
   }
 
-  static cancelAllSubscriptions(cancelSessionPolling) {
+  static cancelAppLayerSubscriptions(cancelSessionPolling) {
     if(cancelSessionPolling){
       if (window.sessionValidityPoller != undefined &&
         window.sessionValidityPoller != "undefined") {
         window.clearInterval(window.sessionValidityPoller);
       }
-    }
-    if (window.profileVisitPoll != undefined &&
-      window.profileVisitPoll != "undefined") {
-      window.clearInterval(window.profileVisitPoll);
-    }
-    if (window.interestingConnectionsPoll != undefined &&
-      window.interestingConnectionsPoll != "undefined") {
-      window.clearInterval(window.interestingConnectionsPoll);
-    }
-
-    if (window.loggedinUserPoll != undefined &&
-      window.loggedinUserPoll != "undefined") {
-      window.clearInterval(window.loggedinUserPoll);
     }
   }
 }

@@ -9,31 +9,28 @@ import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import StatStyle from "../../../../styles/Stat.module.css";
 import { TITLES, TOOLTIPS } from "../../../../constants/userdata";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 import Spacer from "../../../shared/Spacer";
-function Stats() {
+function Stats({data}) {
   let tooltip, title, Icon, summary;
-  const [USERDATA, dispatch] = useDataLayerContextValue();
   const [loggedIn, setLoggedIn] = useState(false);  
   useEffect(() => {
       setLoggedIn(AuthGuardService.isUserLoggedIn());
-
   });
   if(!loggedIn) {return ''}
-  summary = USERDATA?.SUMMARY;
+  summary = data?.USER_PROFILE_SUMMARY;
   title = TITLES.CONNECTIONS;
   Icon = SupervisorAccountIcon;
   tooltip = TOOLTIPS.VIEW_ALL_CONNECTIONS;
 
   const getTotalStatCount = () => {
     try {
-      return (
-        parseInt(summary?.data?.studentConnectionCount) +
-        parseInt(summary?.data?.alumniConnectionCount) +
-        parseInt(summary?.data?.professorConnectionCount)
-      );
+      const count =  parseInt(summary?.data?.studentConnectionCount) +
+      parseInt(summary?.data?.alumniConnectionCount) +
+      parseInt(summary?.data?.professorConnectionCount);
+      if(isNaN(count)) {return 0}
+       return count;
     } catch (error) {
       return 0;
     }

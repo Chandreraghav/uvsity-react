@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import IntroStyles from "../../../styles/authorized.intro.module.css";
-import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { AuthGuardService } from "../../../auth-guard/service/AuthGuardService";
 import {
   GREETING,
@@ -16,10 +15,10 @@ import Spacer from "../../shared/Spacer";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import { AUTHORIZED_ROUTES } from "../../../constants/routes";
-import { uuid, v4 as uuidv4 } from "uuidv4";
-function Intro() {
+import { uuid } from "uuidv4";
+
+function Intro({data}) {
   const router = useRouter();
-  const [USERDATA, dispatch] = useDataLayerContextValue();
   const [loggedIn, setLoggedIn] = useState(false);
   const [introMoodColor, setIntroMoodColor] = useState(null);
   const introObject = INTRO_TEXT_KEYWORDS[0];
@@ -78,7 +77,7 @@ function Intro() {
           className=" text-lg font-semibold  
             leading-none xl:block dark:text-brand-grey-200"
         >
-          👋 {GREETING.replace("<user>", USERDATA?.SUMMARY?.data?.firstName)}
+          👋 {GREETING.replace("<user>", data?.firstName)}
         </p>
       </div>
 

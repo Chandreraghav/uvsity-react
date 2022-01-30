@@ -17,6 +17,7 @@ import {
   localTZDate,
 } from "../../../utils/utility";
 import { PLACEHOLDERS, TITLES, TOOLTIPS } from "../../../constants/userdata";
+import { useDataLayerContextValue } from "../../../context/DataLayer";
 
 toast.configure();
 
@@ -33,6 +34,7 @@ export default function CustomDialog({
 }) {
   const [dataJsx, setDataJsx] = useState(null);
   const [titleJsx, setTitleJsx] = useState(null);
+
   useEffect(() => {
     let isSubscribed = true;
     let controller = new AbortController();

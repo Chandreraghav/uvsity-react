@@ -1,0 +1,6 @@
+System is using useQuery from React Query to fetch data from API.
+System is using useReducer Data Layer Context API of React as state management technique to access data that are frequently needed through out the system such as login info, tokens etc.
+System is using direct service call techniques for API that perform DML operations. We are not using any mutation here.
+System is using a SSR Route Guard Security Layer on top of the component layer which takes care of the private and public routes, meaning one cannot access a private page without login.
+System is using a SSR Hydrate Mechanism Caching Layer under the Route guard layer so that it renders our React Application on server side and hydrate the JavaScript bundle on the client side which make our application fast and also allow the search engines to crawl your pages for SEO purposes.
+System is using the generic polling mechanism(setInterval) for session polling which it directly does from the application layer(_app.js), in case a session is found to be expired from server, the client logs out to the landing page as guest.

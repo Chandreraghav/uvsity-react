@@ -22,7 +22,6 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { toast } from "react-toastify";
 toast.configure();
 function PeekProfile(props) {
-  console.log(props.metaData)
   if (!props.isOpen) return <></>;
   const invitedState =
     props.metaData?.invitationAction?.invitationAction ===

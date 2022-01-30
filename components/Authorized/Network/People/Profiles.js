@@ -3,12 +3,13 @@ import React, { useState, useEffect } from "react";
 import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 import { TOOLTIPS } from "../../../../constants/userdata";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
-import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import Spacer from "../../../shared/Spacer";
 import Profile from "./Dashboard/Profile";
 import ProfileStyle from "../../../../styles/DashboardProfile.module.css";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { IMAGE_PATHS, PLACEHOLDERS } from "../../../../constants/userdata";
+import { useDataLayerContextValue } from '../../../../context/DataLayer'
+
 
 function Profiles({
   options,
@@ -17,18 +18,21 @@ function Profiles({
   icon,
   dashboardPreview,
   workflowRoute,
-  sticky
+  sticky,
+  data
 }) {
-  const [USERDATA, dispatch] = useDataLayerContextValue();
+  
+  
+  
   const [bo, setBO] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const getProfileCollection = () => {
     switch (workflowRoute) {
       case WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING:
-        return USERDATA?.SUGGESTED_FRIENDS?.data;
+        return data?.SUGGESTED_FRIENDS?.data;
 
       case WORKFLOW_CODES.PEOPLE.WHO_VIEWED_ME:
-        return USERDATA?.PROFILE_VISITS?.data;
+        return data?.PROFILE_VISITS?.data;
       default:
         break;
     }
@@ -64,7 +68,7 @@ function Profiles({
       controller?.abort();
       isSubscribed = false;
     };
-  }, [USERDATA]);
+  }, [data?.PROFILE_VISITS?.data, data?.SUGGESTED_FRIENDS?.data]);
 
   if (!loggedIn) {
     return "";
@@ -136,6 +140,7 @@ function Profiles({
                 instituition={value.educationalInstitution}
                 metaData={value}
                 sticky
+                userdata={data?.USER_LOGIN_INFO?.data}
               />
             ))}
           </div>

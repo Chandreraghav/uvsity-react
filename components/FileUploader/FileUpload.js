@@ -101,7 +101,6 @@ function FileUpload(props) {
   };
   const removeDocument=(event)=>{
     event.preventDefault();
-    console.log('ok')
     setErrors([])
     setFiles([])
 

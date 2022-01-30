@@ -1,14 +1,10 @@
 import { Tooltip } from "@mui/material";
 import React from "react";
 import { SESSION_ACTIONS } from "../../../../constants/userdata";
-import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import SessionStyle from "../../../../styles/Session.module.css";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 function Actions(props) {
-  const [USERDATA, dispatch] = useDataLayerContextValue();
-  const isMeTheOwner = (oid) => {
-    return USERDATA?.LOGGED_IN_INFO?.data?.userDetailsId === oid;
-  };
+  
   const isSessionRegistrationPossible = () => {
     if (props.data.owner) {
       //you the owner of the session
@@ -230,7 +226,7 @@ function Actions(props) {
       ).map((action, index) => {
         return (
           <div
-            onClick={(e) => initiateActionRequest(action)}
+            onClick={() => initiateActionRequest(action)}
             key={index}
             className={`flex ${SessionStyle.session__action} ${
               getStatus(action, "boolean") && getActionStatus() !== "Registered"

@@ -4,16 +4,27 @@ import SignIn from "../Auth/SignIn";
 import { LANDING_PAGE_HERO_MESSAGE_LIST } from "../../constants/constants";
 import { getRandomArrayElement } from "../../utils/utility";
 
-function Banner({ bannerObject }) {
+function Banner({ bannerObject,signedInDialogOpened,setSignedInDialogClosed }) {
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
   const initialBannerObject = bannerObject[0];
   const [bannerHeader, setBannerHeader] = useState((<>{initialBannerObject?.icon} {initialBannerObject?.phrase}</>));
+  useEffect(()=>{
+    if(signedInDialogOpened){
+      setOpenSignInDialog(true);
+    }
+    else {
+      setOpenSignInDialog(false);
+    }
+  },[signedInDialogOpened])
+  
   const handleSignInDialogOpen = () => {
     setOpenSignInDialog(true);
   };
 
   const handleSignInDialogClose = () => {
     setOpenSignInDialog(false);
+    if(setSignedInDialogClosed)
+    setSignedInDialogClosed()
   };
   useEffect(() => {
     let controller = new AbortController();

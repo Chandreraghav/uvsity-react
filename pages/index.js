@@ -8,9 +8,16 @@ import Stats from "../components/Landing/Stats";
 import { AuthGuardService } from "../auth-guard/service/AuthGuardService";
 import { useEffect, useState } from "react";
 const Home = () => {
+  const [openSignInDialog, setOpenSignInDialog] = useState(false);
   const layoutObj={
     title:process.env.NEXT_PUBLIC_APP_TITLE
   }
+  const handleSignInDialogOpen = () => {
+    setOpenSignInDialog(true);
+  };
+  const handleSignInDialogClose = () => {
+    setOpenSignInDialog(false);
+  };
   const [loggedIn, setLoggedIn]= useState(false)
   useEffect(()=>{
      setLoggedIn(AuthGuardService.isUserLoggedIn());
@@ -18,8 +25,8 @@ const Home = () => {
   
   return (
     <Layout options={layoutObj}>
-      <Header isAuthorized={loggedIn} isShared={true} />
-      <Hero isAuthorized={loggedIn} isShared={false} />
+      <Header  setSignInDialogOpen={handleSignInDialogOpen} isAuthorized={loggedIn} isShared={true} />
+      <Hero setSignInDialogClose={handleSignInDialogClose} signedInDialogOpened={openSignInDialog}  isAuthorized={loggedIn} isShared={false} />
       <Feature isAuthorized={loggedIn} isShared={false}/>
       <TrendingSessions isAuthorized={loggedIn} isShared={false} />
       {/* Stats will be replaced by About us section in the future */}

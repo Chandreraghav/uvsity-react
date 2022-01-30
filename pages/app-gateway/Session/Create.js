@@ -25,7 +25,6 @@ function Create() {
 
   useEffect(() => {
     setLoggedIn(AuthGuardService.isUserLoggedIn());
-    AuthGuardService.cancelAllSubscriptions(false);
   }, []);
   useEffect(async () => {
     let isSubscribed = true;

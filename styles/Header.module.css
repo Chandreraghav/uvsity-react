@@ -17,7 +17,7 @@
 
 .nav__contents {
   display: flex;
-  justify-content: space-between;
+  gap:5px;
 }
 
 .nav__black {
@@ -74,7 +74,6 @@
 }
 .nav__button__sm {
   outline: none;
-  position: fixed;
   right: 160px;
   padding: 6px 10px;
   font-size: 0.8rem;
