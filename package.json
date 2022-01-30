@@ -46,6 +46,7 @@
     "react-hook-form": "^7.17.0",
     "react-loader-spinner": "^4.0.0",
     "react-loading-overlay-ts": "^0.2.0",
+    "react-loading-skeleton": "^3.0.2",
     "react-move": "^6.5.0",
     "react-mui-fileuploader": "^0.1.2",
     "react-player": "^2.9.0",

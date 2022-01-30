@@ -8,8 +8,7 @@ import Profile from "./Dashboard/Profile";
 import ProfileStyle from "../../../../styles/DashboardProfile.module.css";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { IMAGE_PATHS, PLACEHOLDERS } from "../../../../constants/userdata";
-import { useDataLayerContextValue } from '../../../../context/DataLayer'
-
+import Shimmer from '../Shimmers/Shimmer'
 
 function Profiles({
   options,
@@ -21,9 +20,6 @@ function Profiles({
   sticky,
   data
 }) {
-  
-  
-  
   const [bo, setBO] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const getProfileCollection = () => {
@@ -85,7 +81,7 @@ function Profiles({
      
       
       <div
-        className={` ${sticky?'md:sticky top-20 lg:sticky top-20 xl:sticky top-20  ':''}  ${" uvsity__card uvsity__card__border__theme"}`}
+        className={` ${sticky && bo.length>0?'md:sticky top-20 lg:sticky top-20 xl:sticky top-20  ':''}  ${" uvsity__card uvsity__card__border__theme"}`}
       >
         <Tooltip
           title={
@@ -94,8 +90,8 @@ function Profiles({
                 ? tooltip
                 : TOOLTIPS.VIEW_MORE
               : workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
-              ? TOOLTIPS.NO_INTERESTING_PROFILE
-              : TOOLTIPS.NO_PEOPLE_VIEWED_YOU
+              ? bo?.isLoading?'Searching interesting profiles for you...': TOOLTIPS.NO_INTERESTING_PROFILE
+              : bo?.isLoading?'Finding people who viewed you...':TOOLTIPS.NO_PEOPLE_VIEWED_YOU
           }
         >
           <div
@@ -110,25 +106,30 @@ function Profiles({
                 {bo.length > 0
                   ? title
                   : workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
-                  ? TOOLTIPS.NO_INTERESTING_PROFILE
-                  : TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
+                  ? bo?.isLoading?'Searching interesting profiles for you...': TOOLTIPS.NO_INTERESTING_PROFILE
+                  : bo?.isLoading?'Finding people who viewed you...':TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
               </>
             ) : (
               <>
                 {bo.length > 0
                   ? title
                   : WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
-                  ? TOOLTIPS.NO_INTERESTING_PROFILE
-                  : TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
+                  ? bo?.isLoading?'Searching interesting profiles for you...': TOOLTIPS.NO_INTERESTING_PROFILE
+                  : bo?.isLoading?'Finding people who viewed you...':TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
+              
               </>
             )}
           </div>
         </Tooltip>
         <Divider className="divider" />
-        
-       {bo.length>0 &&  <Spacer />}
-        {bo.length > 0 ? (
+        {bo?.isLoading && (<div className="px-1 text-base">
+        <Spacer />
+          {[1,2,3,4,5].map((shim,index)=>(<><Shimmer key={index} visible/><Spacer /></>))}
+        </div>)}
+       
+        {bo.length > 0 && (
           <div className={`px-3 text-base `}>
+            <Spacer />
             {bo?.map((value) => (
               <Profile
                 options={options}
@@ -144,8 +145,9 @@ function Profiles({
               />
             ))}
           </div>
-        ) : (
-          <div>
+        )  
+            }
+          {bo.length ===0 && (bo?.isSuccess || bo?.isError || bo?.isIdle) && !bo?.isLoading && (<>
             <img
               className={"object-contain"}
               alt={
@@ -169,8 +171,9 @@ function Profiles({
                 ? PLACEHOLDERS.NO_INTERESTING_PROFILE
                 : PLACEHOLDERS.NO_PEOPLE_VIEWED_YOU}
             </Typography>
-          </div>
-        )}
+           
+          </>)}
+        
         
       </div>
      

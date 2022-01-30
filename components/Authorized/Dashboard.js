@@ -3,7 +3,6 @@ import Sidebar from "../shared/Sidebar";
 import Intro from "./MainContent/Intro";
 import CompactCard from "./Sessions/Preview/CompactCard";
 import { TITLES } from "../../constants/userdata";
-
 function Dashboard({data}) {
    
   return (
@@ -23,7 +22,7 @@ function Dashboard({data}) {
       <div className="z-40 col-span-12 md:pt-2 md:col-span-6 lg:col-span-6 xl:col-span-4">
         <Intro data={data?.USER_PROFILE_SUMMARY?.data} />
         <CompactCard data={data} title={TITLES.POPULAR_SESSION} />
-       
+        
       </div>
       <div className=" col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
       <Sidebar data={data} type='right' />
