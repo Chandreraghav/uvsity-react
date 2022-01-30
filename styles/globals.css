@@ -164,6 +164,9 @@ button.danger {
 .uvsity__card__border__theme {
   border-bottom: 5px solid var(--blue);
 }
+.uvsity__card__border__disabled {
+  border-bottom: 5px solid darkgrey;
+}
 .uvsity__card__top {
   border: 1px solid lightgray;
   background-color: #fff;

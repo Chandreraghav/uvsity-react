@@ -6,6 +6,7 @@ import Spacer from "../../../shared/Spacer";
 import { IMAGE_PATHS, PLACEHOLDERS } from "../../../../constants/userdata";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Loader from "../../../shared/Loader";
+import Shimmer from "./Shimmer/Shimmer";
 function CompactCard({data, title }) {
   const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
@@ -38,9 +39,8 @@ function CompactCard({data, title }) {
           className="grid items-stretch grid-cols-1 gap-2 px-2 
       py-4 xl:container md:gap-4 xl:grid-cols-1 2xl:px-5 "
         >
-          <Loader
-            visible={data?.TOP_SESSIONS.isLoading}
-          />
+         <Shimmer visible={data?.TOP_SESSIONS.isLoading}/>
+         <Shimmer visible={data?.TOP_SESSIONS.isLoading}/>
           {data?.TOP_SESSIONS.isSuccess &&
             data?.TOP_SESSIONS?.data?.map((value) => (
               <div key={value.courseId}>

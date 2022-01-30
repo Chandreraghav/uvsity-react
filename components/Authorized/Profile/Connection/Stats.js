@@ -1,5 +1,5 @@
 import { Divider, Tooltip, Typography } from "@mui/material";
-import React,{useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   CONNECTIONS,
   IMAGE_PATHS,
@@ -12,13 +12,16 @@ import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 import Spacer from "../../../shared/Spacer";
-function Stats({data}) {
+import Shimmer from "../Shimmer.js/Shimmer";
+function Stats({ data }) {
   let tooltip, title, Icon, summary;
-  const [loggedIn, setLoggedIn] = useState(false);  
+  const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
-      setLoggedIn(AuthGuardService.isUserLoggedIn());
+    setLoggedIn(AuthGuardService.isUserLoggedIn());
   });
-  if(!loggedIn) {return ''}
+  if (!loggedIn) {
+    return "";
+  }
   summary = data?.USER_PROFILE_SUMMARY;
   title = TITLES.CONNECTIONS;
   Icon = SupervisorAccountIcon;
@@ -26,11 +29,14 @@ function Stats({data}) {
 
   const getTotalStatCount = () => {
     try {
-      const count =  parseInt(summary?.data?.studentConnectionCount) +
-      parseInt(summary?.data?.alumniConnectionCount) +
-      parseInt(summary?.data?.professorConnectionCount);
-      if(isNaN(count)) {return 0}
-       return count;
+      const count =
+        parseInt(summary?.data?.studentConnectionCount) +
+        parseInt(summary?.data?.alumniConnectionCount) +
+        parseInt(summary?.data?.professorConnectionCount);
+      if (isNaN(count)) {
+        return 0;
+      }
+      return count;
     } catch (error) {
       return 0;
     }
@@ -51,9 +57,11 @@ function Stats({data}) {
 
   return (
     <div>
-      <Spacer/>
-      <div className={`${"uvsity__card uvsity__card__border__theme px-1 py-1"}`}>
-      <Spacer/>
+      <Spacer />
+      <div
+        className={`${"uvsity__card uvsity__card__border__theme px-1 py-1"}`}
+      >
+        <Spacer />
         <Tooltip title={tooltip ? tooltip : ""}>
           <div className={StatStyle.stat__legend}>
             {Icon && <Icon />}
@@ -64,8 +72,18 @@ function Stats({data}) {
         </Tooltip>
 
         <Divider className={StatStyle.stat__divider} />
-      
-        {getTotalStatCount() > 0 ? (
+        {summary?.isLoading && (
+          <>
+            
+            {[1, 2, 3].map((shim, index) => (
+              <div className={StatStyle.stat}>
+                <Shimmer key={index} visible />
+                <Spacer />
+              </div>
+            ))}
+          </>
+        )}
+        {getTotalStatCount() >0 &&
           CONNECTIONS.filter((hidden) => hidden !== true).map(
             (connection) =>
               getCount(connection.code) > 0 && (
@@ -76,10 +94,11 @@ function Stats({data}) {
                   </p>
                 </div>
               )
-          )
-        ) : (
+          )}
+        {getTotalStatCount() === 0 && summary?.isSuccess && (
           <div>
-              <img className={ 'object-contain'}
+            <img
+              className={"object-contain"}
               alt={TOOLTIPS.NO_CONNECTIONS}
               src={IMAGE_PATHS.NO_DATA.CONNECTIONS}
             />
