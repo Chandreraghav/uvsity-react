@@ -109,7 +109,7 @@ function MyApp({ Component, pageProps }) {
           //in case of any error returned, means the session is invalid, clear interval, logout & redirect to public dashboard
           // automatic logout
           setVerified(false);
-          queryClient.invalidateQueries();
+          queryClient.removeQueries();
           AuthService.logout();
           router.replace("/");
         });
@@ -126,7 +126,7 @@ function MyApp({ Component, pageProps }) {
         //in case of any error returned, means the session is invalid, clear interval, logout & redirect to public dashboard
         // automatic logout
         setVerified(false);
-        queryClient.invalidateQueries();
+        queryClient.removeQueries();
         AuthService.logout();
         router.replace("/");
       });

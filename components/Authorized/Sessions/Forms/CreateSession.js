@@ -65,7 +65,7 @@ function CreateSession(props) {
 
   return (
      
-    <div className="px-4 py-2 bg-white app__body">
+    <div className="px-4 py-2 bg-white">
      <Typography variant="h6" component="div">
           {props.data.workflow.workflow.alias}
         </Typography>

@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
   },
   popoverContent: {
     pointerEvents: "auto",
+    transition: "all 5s",
+    transitionTimingFunction: "linear",
+    transitionDelay: 2000,
   },
   paper: {
     padding: theme.spacing(3),
@@ -60,12 +63,10 @@ function Profile({
   metaData,
   origin,
   sticky,
-  userdata
+  userdata,
 }) {
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
     useState(false);
-
-  
 
   const classes = useStyles();
   const popoverAnchor = useRef(null);
@@ -122,14 +123,24 @@ function Profile({
   const profilePrimaryLine = formattedName(firstName, lastName);
   const profileSecondaryLine = formattedProfileSubtitle(userType, instituition);
 
-  const profileTertiaryLine = ()=>{
-    if(isVisibleAsCoHost){
-      return    formattedProfileSubtitle(metaData?.associatedCoHostData?.city, metaData?.associatedCoHostData?.country);
-    
+  const profileTertiaryLine = () => {
+    if (isVisibleAsCoHost) {
+      return formattedProfileSubtitle(
+        metaData?.associatedCoHostData?.city,
+        metaData?.associatedCoHostData?.country
+      );
     }
-    let _tertiaryLine = formattedProfileSubtitle(metaData?.city, metaData?.country);
-    return _tertiaryLine===''? formattedProfileSubtitle(metaData?.creator?.city, metaData?.creator?.country):_tertiaryLine
-  }
+    let _tertiaryLine = formattedProfileSubtitle(
+      metaData?.city,
+      metaData?.country
+    );
+    return _tertiaryLine === ""
+      ? formattedProfileSubtitle(
+          metaData?.creator?.city,
+          metaData?.creator?.country
+        )
+      : _tertiaryLine;
+  };
 
   const getPayload = () => {
     let payload = {
@@ -186,7 +197,10 @@ function Profile({
 
   const acceptRequest = () => {
     setConnectionAcceptRequestInProgress(true);
-    if(metaData.invitationAction && metaData.invitationAction.invitationRequestId){
+    if (
+      metaData.invitationAction &&
+      metaData.invitationAction.invitationRequestId
+    ) {
       ConnectionService.acceptConnectionRequest(
         metaData.invitationAction.invitationRequestId
       )
@@ -212,8 +226,7 @@ function Profile({
           setConnectionAcceptRequestInProgress(false);
           setConnectionAcceptRequestSent(true);
         });
-    }
-    else {
+    } else {
       setConnectionAcceptRequestSendError(true);
       handleResponse(
         TITLES.CONNECTED_PEOPLE_ALREADY.replace("#X#", firstName),
@@ -221,9 +234,8 @@ function Profile({
         toast.POSITION.TOP_RIGHT
       );
     }
-   
   };
-  
+
   if (
     profilePrimaryLine.trim() == "" &&
     profileSecondaryLine.trim() == "" &&
@@ -234,80 +246,72 @@ function Profile({
 
   return (
     <div>
-       
-        <Popover
-          id="mouse-over-popover"
-          className={classes.popover}
-          classes={{
-            paper: classes.popoverContent,
+      <Popover
+        style={{ zoom: "0.85" }}
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.popoverContent,
+        }}
+        open={openedPopover}
+        anchorEl={popoverAnchor.current}
+        transformOrigin={{
+          horizontal: "center",
+          vertical: "top",
+        }}
+        anchorOrigin={{
+          horizontal: "center",
+          vertical: "bottom",
+        }}
+        disableRestoreFocus
+        PaperProps={{
+          onMouseEnter: handlePopoverOpen,
+          onMouseLeave: handlePopoverClose,
+        }}
+      >
+        <PeekProfile
+          isOpen={openedPopover}
+          options={{ connect: options?.connect, mixedMode: options?.mixedMode }}
+          metaData={metaData}
+          addToNetwork={addToNetwork}
+          acceptRequest={acceptRequest}
+          isConnectToPersonOptionShown={isConnectToPersonOptionShown}
+          isAcceptPersonRequestOptionShown={isAcceptPersonRequestOptionShown}
+          isConnectionRequestSent={isConnectionRequestSent}
+          isConnectionAcceptRequestSent={isConnectionAcceptRequestSent}
+          isConnectionRequestInProgress={isConnectionRequestInProgress}
+          isConnectionAcceptRequestInProgress={
+            isConnectionAcceptRequestInProgress
+          }
+          isConnectionRequestSendError={isConnectionRequestSendError}
+          isConnectionAcceptRequestSendError={
+            isConnectionAcceptRequestSendError
+          }
+          onHover={onHover}
+          onLeave={onLeave}
+          onHoverAccept={onHoverAccept}
+          onLeaveAccept={onLeaveAccept}
+          dark
+          data={{
+            oid: oid,
+            avatar: avatar,
+            primary: profilePrimaryLine,
+            secondary: profileSecondaryLine,
+            tertiary: profileTertiaryLine(),
+            isItMe: isItMe(),
           }}
-          open={openedPopover}
-          anchorEl={popoverAnchor.current}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-          disableRestoreFocus
-          PaperProps={{
-            onMouseEnter: handlePopoverOpen,
-            onMouseLeave: handlePopoverClose,
-          }}
-        >
-          <PeekProfile
-            isOpen={openedPopover}
-            options={{connect:options?.connect, mixedMode:options?.mixedMode}}
-            metaData={metaData}
-            addToNetwork={addToNetwork}
-            acceptRequest={acceptRequest}
-            isConnectToPersonOptionShown={isConnectToPersonOptionShown}
-            isAcceptPersonRequestOptionShown={isAcceptPersonRequestOptionShown}
-            isConnectionRequestSent={isConnectionRequestSent}
-            isConnectionAcceptRequestSent={isConnectionAcceptRequestSent}
-            isConnectionRequestInProgress={isConnectionRequestInProgress}
-            isConnectionAcceptRequestInProgress={isConnectionAcceptRequestInProgress}
-            isConnectionRequestSendError={isConnectionRequestSendError}
-            isConnectionAcceptRequestSendError={isConnectionAcceptRequestSendError}
-            onHover={onHover}
-            onLeave={onLeave}
-            onHoverAccept={onHoverAccept}
-            onLeaveAccept={onLeaveAccept}
-            dark
-            data={{
-              oid: oid,
-              avatar: avatar,
-              primary: profilePrimaryLine,
-              secondary: profileSecondaryLine,
-              tertiary: profileTertiaryLine(),
-              isItMe:isItMe()
-            }}
-          />
-        </Popover>
-      
-      <div className={`flex flex-row items-center flex-1 ${sticky?'mb-2':'mb-4'} ${!isVisibleAsCoHost ?'gap-2':'gap-0'} pt-2`}>
+        />
+      </Popover>
+
+      <div
+        className={`flex flex-row items-center flex-1 ${
+          sticky ? "mb-2" : "mb-4"
+        } ${!isVisibleAsCoHost ? "gap-2" : "gap-0"} pt-2`}
+      >
         {/* AVATAR */}
         <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
           {avatar !== "" &&
-            !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) && (
-              <Avatar
-                ref={popoverAnchor}
-                onTouchStart={handlePopoverOpen}
-                onTouchEnd={handlePopoverClose}
-                onMouseEnter={handlePopoverOpen}
-                onMouseLeave={handlePopoverClose}
-                className={`${
-                  isVisibleOnSessionCard? "avatar-sm" : isVisibleAsCoHost?'avatar-xs': "avatar-dashboard"
-                }`}
-                alt={`${profilePrimaryLine}`}
-                src={avatar}
-              />
-            )}
-          {(avatar === "" ||
-            avatar == null ||
-            avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE)) && (
+          !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
             <Avatar
               ref={popoverAnchor}
               onTouchStart={handlePopoverOpen}
@@ -315,7 +319,28 @@ function Profile({
               onMouseEnter={handlePopoverOpen}
               onMouseLeave={handlePopoverClose}
               className={`${
-                isVisibleOnSessionCard? "avatar-sm" : isVisibleAsCoHost?'avatar-xs': "avatar-dashboard"
+                isVisibleOnSessionCard
+                  ? "avatar-sm"
+                  : isVisibleAsCoHost
+                  ? "avatar-xs"
+                  : "avatar-dashboard"
+              }`}
+              alt={`${profilePrimaryLine}`}
+              src={avatar}
+            />
+          ) : (
+            <Avatar
+              ref={popoverAnchor}
+              onTouchStart={handlePopoverOpen}
+              onTouchEnd={handlePopoverClose}
+              onMouseEnter={handlePopoverOpen}
+              onMouseLeave={handlePopoverClose}
+              className={`${
+                isVisibleOnSessionCard
+                  ? "avatar-sm"
+                  : isVisibleAsCoHost
+                  ? "avatar-xs"
+                  : "avatar-dashboard"
               }`}
               {...avatarToString(`${profilePrimaryLine}`)}
             />
@@ -568,7 +593,6 @@ function Profile({
                 <div className="mt-0 leading-tight text-xs">
                   {localTZDate(sessionStartDTime)}
                 </div>
-                
               </div>
               <div>{getTimezone()}</div>
             </div>

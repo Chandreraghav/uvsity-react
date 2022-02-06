@@ -24,24 +24,31 @@ const PrivateRoute = (WrappedComponent, verifyToken) => {
       // if no accessToken was found,then we erase context, invalidate queries and redirect to "/" page.
       if (!accessToken) {
         setVerified(false);
-        queryClient.invalidateQueries();
+        queryClient.removeQueries();
         AuthService.logout();
         eraseContext();
         Router.replace("/");
       } else {
         // we call the api that verifies the token.
-        const data = await AuthGuardService.pollSessionValidity();
-        // if token was verified we set the state.
-        if (data.status === 200) {
-          setVerified(true);
-        } else {
-          // If the token was fraud/session is invalid we remove it from localStorage/erase context, invalidate queries, and then redirect to "/"
+        await AuthGuardService.pollSessionValidity().then((data) => {
+          // if token was verified we set the state.
+          if (data.status === 200) {
+            setVerified(true);
+          } else {
+            // If the token was fraud/session is invalid we remove it from localStorage/erase context, invalidate queries, and then redirect to "/"
+            setVerified(false);
+            queryClient.removeQueries();
+            AuthService.logout();
+            eraseContext();
+            Router.replace("/");
+          }
+        }).catch((err)=>{
           setVerified(false);
-          queryClient.invalidateQueries();
+          queryClient.removeQueries();
           AuthService.logout();
           eraseContext();
           Router.replace("/");
-        }
+        })
       }
     }, []);
 

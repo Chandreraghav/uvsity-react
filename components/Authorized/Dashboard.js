@@ -8,7 +8,7 @@ function Dashboard({data}) {
   return (
     <div
        
-      className=" app__body
+      className=" 
     grid items-stretch grid-cols-12  
     gap-2 px-2 mx-auto xl:container md:gap-4 
     xl:grid-cols-8 2xl:px-5 "
