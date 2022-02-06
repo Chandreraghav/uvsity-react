@@ -1,6 +1,20 @@
-System is using useQuery from React Query to fetch data from API.
+Data Fetching & State Management:
+-----------------------
+System uses React useQuery to fetch all business object data from uvsity API.
+System uses React useEffect at Super HOC level(_app.js) to fetch iterative business object data that are dependent on one or more useQuery implementations.
+System uses React useEffect at Super HOC level(_app.js) to fetch Common IP Data(only once)
+System uses React useEffect at Super HOC level(_app.js) to fetch the session validity(only once) and finally sets an interval for session validity check(every 1 minute) at the server side.
 System is using useReducer Data Layer Context API of React as state management technique to access data that are frequently needed through out the system such as login info, tokens etc.
 System is using direct service call techniques for API that perform DML operations. We are not using any mutation here.
-System is using a SSR Route Guard Security Layer on top of the component layer which takes care of the private and public routes, meaning one cannot access a private page without login.
 System is using a SSR Hydrate Mechanism Caching Layer under the Route guard layer so that it renders our React Application on server side and hydrate the JavaScript bundle on the client side which make our application fast and also allow the search engines to crawl your pages for SEO purposes.
-System is using the generic polling mechanism(setInterval) for session polling which it directly does from the application layer(_app.js), in case a session is found to be expired from server, the client logs out to the landing page as guest.
+
+
+Authentication & Authorization 
+-------------------------------
+User is authenticated by an API when username and password are supplied.
+On successful authentication/login(JWT token is returned), user becomes authorized to access the uvsity API data via the JWT token that is returned after succesful authentication.
+On successful authentication/login, non sensitive information such as user First Name, Last Name are stored in React Context API and local storage.
+No sensitive information is stored in client.
+System uses React Private Routing Mechanism at HOC Level which enables only authenticated users to view private pages/routes.
+On voluntary logout, system clears the session(called via uvsity API), invalidates all business queries, cancels all timed data subscriptions, deletes local storage and destroys react context.
+On session expiry auto logout, system invalidates all business queries, cancels all timed data subscriptions, deletes local storage and destroys react context.
