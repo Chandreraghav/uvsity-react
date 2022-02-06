@@ -1,5 +1,8 @@
 import React, { useRef, useState } from "react";
-import { avatarToString, formattedProfileSubtitle } from "../../../utils/utility";
+import {
+  avatarToString,
+  formattedProfileSubtitle,
+} from "../../../utils/utility";
 import ProfileStyle from "../../../styles/Profile.module.css";
 import { Avatar, Popover } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
@@ -7,6 +10,7 @@ import { IMAGE_PATHS, TOOLTIPS } from "../../../constants/userdata";
 import Spacer from "../../shared/Spacer";
 import PeekProfile from "../Network/People/Peek/Profile";
 import { makeStyles } from "@material-ui/core/styles";
+import MiniProfileShimmer from './Shimmer/MiniProfileShimmer'
 const useStyles = makeStyles((theme) => ({
   popover: {
     pointerEvents: "none",
@@ -24,7 +28,8 @@ function MiniProfile({
   profileImage,
   name,
   title,
-  metaData
+  metaData,
+  masterData,
 }) {
   const classes = useStyles();
   const popoverAnchor = useRef(null);
@@ -40,86 +45,104 @@ function MiniProfile({
   if (!name) return "";
   return (
     <div>
-      <Spacer/>
+      <Spacer />
       <Popover
-          id="mouse-over-popover"
-          className={classes.popover}
-          classes={{
-            paper: classes.popoverContent,
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.popoverContent,
+        }}
+        open={openedPopover}
+        anchorEl={popoverAnchor.current}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        disableRestoreFocus
+        PaperProps={{
+          onMouseEnter: handlePopoverOpen,
+          onMouseLeave: handlePopoverClose,
+        }}
+      >
+        <PeekProfile
+          isOpen={openedPopover}
+          dark
+          data={{
+            avatar: profileImage,
+            primary: name,
+            secondary: formattedProfileSubtitle(title, metaData?.company),
+            tertiary: formattedProfileSubtitle(
+              metaData?.city,
+              metaData?.country
+            ),
+            isItMe: true,
           }}
-          open={openedPopover}
-          anchorEl={popoverAnchor.current}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-          disableRestoreFocus
-          PaperProps={{
-            onMouseEnter: handlePopoverOpen,
-            onMouseLeave: handlePopoverClose,
-          }}
-        >
-          <PeekProfile
-            isOpen={openedPopover}
-            dark
-            data={{
-              avatar: profileImage,
-              primary: name,
-              secondary: formattedProfileSubtitle(title, metaData?.company),
-              tertiary: formattedProfileSubtitle(metaData?.city, metaData?.country),
-              isItMe:true
-            }}
-          />
-        </Popover>
-    <div className={`uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__mini}`}>
-      <img
-        src={
-          coverImage ? coverImage : process.env.NEXT_FALLBACK_PROFILE_COVER_URL
-        }
-        alt=""
-      />
-
-      {profileImage && !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
-        <Avatar
-        ref={popoverAnchor}
-                onTouchStart={handlePopoverOpen}
-                onTouchEnd={handlePopoverClose}
-                onMouseEnter={handlePopoverOpen}
-                onMouseLeave={handlePopoverClose}
-          className={ProfileStyle.profile__mini__avatar}
-          src={profileImage}
         />
-      ) : (
-        <Avatar
-        
-        ref={popoverAnchor}
-                onTouchStart={handlePopoverOpen}
-                onTouchEnd={handlePopoverClose}
-                onMouseEnter={handlePopoverOpen}
-                onMouseLeave={handlePopoverClose}
-        {...avatarToString(`${name}`)} />
+      </Popover>
+      {masterData.isLoading && (
+        <>
+          <MiniProfileShimmer visible />
+        </>
       )}
+      {masterData.isSuccess && (
+        <div
+          className={`uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__mini}`}
+        >
+          <img
+            src={
+              coverImage
+                ? coverImage
+                : process.env.NEXT_FALLBACK_PROFILE_COVER_URL
+            }
+            alt=""
+          />
 
-      <div className={ProfileStyle.profile__mini__information}>
-        <Tooltip title={TOOLTIPS.GO_TO_PROFILE}>
-          <h2>{name}</h2>
-        </Tooltip>
-        <div className={`text-center ${ProfileStyle.profile__mini__secondary__information}`}>
-          {title ? <h4>{title}</h4> : <span>Add title</span>}
-          {metaData && (
-            <h3>
-              {formattedProfileSubtitle(metaData.company,metaData.location)}
-            </h3>
+          {profileImage &&
+          !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
+            <Avatar
+              ref={popoverAnchor}
+              onTouchStart={handlePopoverOpen}
+              onTouchEnd={handlePopoverClose}
+              onMouseEnter={handlePopoverOpen}
+              onMouseLeave={handlePopoverClose}
+              className={ProfileStyle.profile__mini__avatar}
+              src={profileImage}
+            />
+          ) : (
+            <Avatar
+              ref={popoverAnchor}
+              onTouchStart={handlePopoverOpen}
+              onTouchEnd={handlePopoverClose}
+              onMouseEnter={handlePopoverOpen}
+              onMouseLeave={handlePopoverClose}
+              {...avatarToString(`${name}`)}
+            />
           )}
-        </div>
-      </div>
 
-     
-    </div>
+          <div className={ProfileStyle.profile__mini__information}>
+            <Tooltip title={TOOLTIPS.GO_TO_PROFILE}>
+              <h2>{name}</h2>
+            </Tooltip>
+            <div
+              className={`text-center ${ProfileStyle.profile__mini__secondary__information}`}
+            >
+              {title ? <h4>{title}</h4> : <span>Add title</span>}
+              {metaData && (
+                <h3>
+                  {formattedProfileSubtitle(
+                    metaData.company,
+                    metaData.location
+                  )}
+                </h3>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

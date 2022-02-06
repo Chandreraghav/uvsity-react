@@ -17,13 +17,13 @@ import parse from "html-react-parser";
 import Actions from "../ActionableItems/Actions";
 
 function Preview({ data, authorized,userdata }) {
-  if (!authorized || !data) return "";
+  if (!data) return "";
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
   const [attendees, setAttendees] = useState([]);
   const [sessionDetail, setSessionDetail] = useState({});
   const [sessionCreatorDetail, setSessionCreatorDetail] = useState({});
   const [cohostDetail, setCoHostDetail] = useState({});
-   
+    
  
   const getEventPoster = () => {
     if (data.imageURL) {

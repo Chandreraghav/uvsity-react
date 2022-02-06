@@ -276,6 +276,7 @@ export const TITLES = {
   CONNECTION_REQUEST_SENT_TO: "Connection request sent to ",
   CONNECTED_PEOPLE: "You and #X# are now connected",
   CONNECTED_PEOPLE_LATENT: "You and #X# are connected",
+  CONNECTED_PEOPLE_ALREADY: "You and #X# are already connected",
   CONNECTION_REQUEST_PENDING: "Your connection request is yet pending from ",
   CONNECTION_REQUEST_SENT_TO_LATENT: "You have sent a request to ",
 };
@@ -430,42 +431,35 @@ export const getProfileCompletionTexts = (profileCompletionData) => {
     recommendedSteps: [],
   };
   if (!profileCompletionData?.isAboutYouCompleted) {
-    profileCompletionObject.recommendedSteps.push(
-      `Add ${profileCompletionData?.aboutYouPercent}% to your profile by updating about you.`
+    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.aboutYouPercent}% to your profile by updating about you.`
     );
   }
   if (!profileCompletionData?.isPastEducationAdded) {
-    profileCompletionObject.recommendedSteps.push(
-      `Add ${profileCompletionData?.pastEducationPercent}% to your profile by updating your past education details.`
+    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.pastEducationPercent}% to your profile by updating your past education details.`
     );
   }
   if (!profileCompletionData?.isPhotoAdded) {
-    profileCompletionObject.recommendedSteps.push(
-      `Add ${profileCompletionData?.photoAddedPercent}% to your profile by adding a new profile picture.`
+    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.photoAddedPercent}% to your profile by adding a new profile picture.`
     );
   }
 
   if (!profileCompletionData?.isProjResExpAdded) {
-    profileCompletionObject.recommendedSteps.push(
-      `Add ${profileCompletionData?.projResExpsPercent}% to your profile by updating your Project/Research/Work Experience.`
+    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.projResExpsPercent}% to your profile by updating your Project/Research/Work Experience.`
     );
   }
 
   if (!profileCompletionData?.isSkllsetAdded) {
-    profileCompletionObject.recommendedSteps.push(
-      `Add ${profileCompletionData?.skillSetPercent}% to your profile by updating your Specialties/Skills.`
+    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.skillSetPercent}% to your profile by updating your Specialties/Skills.`
     );
   }
 
   if (!profileCompletionData?.isFriendsPresent) {
-    profileCompletionObject.recommendedSteps.push(
-      `Add ${profileCompletionData?.friendPresentPercent}% to your profile by adding new connections.`
+    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.friendPresentPercent}% to your profile by adding new connections.`
     );
   }
 
   if (!profileCompletionData?.isRecommendationsPresentInInbox) {
-    profileCompletionObject.recommendedSteps.push(
-      `Add ${profileCompletionData?.recommendationPercent}% to your profile by getting recommended from your connections.`
+    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.recommendationPercent}% to your profile by getting recommended from your connections.`
     );
   }
   if (profileCompletionData?.percentageOfProfileAlreadyCompleted == 100) {

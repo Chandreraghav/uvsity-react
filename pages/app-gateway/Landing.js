@@ -2,23 +2,16 @@ import Layout from "../../components/Main/Layout";
 import Header from "../../components/Authorized/Shared/Header";
 import Footer from "../../components/shared/Footer";
 import Dashboard from "../../components/Authorized/Dashboard";
-import { AuthGuardService } from "../../auth-guard/service/AuthGuardService";
-import { useState, useEffect } from "react";
-import Splash from "../../components/shared/Splash";
 import { useQuery } from "react-query";
 import { KEYS } from "../../async/queries/keys/unique-keys";
 import UserDataService from "../api/users/data/UserDataService";
 import { asyncSubscriptions } from "../../async/subscriptions";
+import PrivateRoute from "../../components/Routes/PrivateRoute";
 function Landing() {
-  const [loggedIn, setLoggedIn] = useState(false);
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_TITLE}`,
   };
-  useEffect(() => {
-    setTimeout(() => {
-      setLoggedIn(AuthGuardService.isUserLoggedIn());
-    }, 3000);
-  }, []);
+
   const getSummary = async () => (await UserDataService.getSummary()).data;
   const getProfilePercentageCompletion = async () =>
     (await UserDataService.getProfilePercentageCompletion()).data;
@@ -68,16 +61,13 @@ function Landing() {
     TOP_SESSIONS,
     SUGGESTED_FRIENDS,
   };
-  return loggedIn ? (
+   
+  return (
     <Layout options={layoutObj}>
-      <Header isAuthorized={loggedIn} isShared={true} />
-      <Dashboard data={getData} isAuthorized={loggedIn} isShared={false} />
-      <Footer isAuthorized={loggedIn} isShared={true} />
-    </Layout>
-  ) : (
-    <Layout options={{ title: process.env.NEXT_PUBLIC_APP_TITLE }}>
-      <Splash />
+      <Header data={getData.USER_PROFILE_SUMMARY}  />
+      <Dashboard data={getData} />
+      <Footer />
     </Layout>
   );
 }
-export default Landing;
+export default PrivateRoute(Landing);

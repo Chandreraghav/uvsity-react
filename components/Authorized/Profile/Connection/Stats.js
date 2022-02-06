@@ -12,7 +12,7 @@ import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 import Spacer from "../../../shared/Spacer";
-import Shimmer from "../Shimmer.js/Shimmer";
+import Shimmer from "../Shimmer/Shimmer";
 function Stats({ data }) {
   let tooltip, title, Icon, summary;
   const [loggedIn, setLoggedIn] = useState(false);
@@ -76,7 +76,7 @@ function Stats({ data }) {
           <>
             
             {[1, 2, 3].map((shim, index) => (
-              <div className={StatStyle.stat}>
+              <div key={index} className={StatStyle.stat}>
                 <Shimmer key={index} visible />
                 <Spacer />
               </div>

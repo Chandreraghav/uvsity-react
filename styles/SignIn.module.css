@@ -151,11 +151,11 @@
   zoom: 0.8 !important;
 }
 
-.signin__Dialog__signin__with__google__option > div>button> img {
-  object-fit: contain!important;
-  width: auto!important;
+.signin__Dialog__signin__with__google__option   {
+  
+  
   cursor: pointer!important;
-  margin-top: 4px!important;
+  margin-top: 16px!important;
 }
 .signin__Dialog__alternative__or {
   font-family: Verdana, Geneva, Tahoma, sans-serif;

@@ -20,7 +20,7 @@ function Dashboard({data}) {
       </div>
 
       <div className="z-40 col-span-12 md:pt-2 md:col-span-6 lg:col-span-6 xl:col-span-4">
-        <Intro data={data?.USER_PROFILE_SUMMARY?.data} />
+        <Intro data={data?.USER_PROFILE_SUMMARY} />
         <CompactCard data={data} title={TITLES.POPULAR_SESSION} />
         
       </div>

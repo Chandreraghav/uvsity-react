@@ -14,8 +14,8 @@ import { WORKFLOW_CODES } from "../../constants/workflow-codes";
 import Spacer from "./Spacer";
 import Stats from "../Authorized/Profile/Connection/Stats";
 
-function Sidebar({data, type}) {
-  
+
+function Sidebar({ data, type }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isSticky, setSticky] = useState(false);
   useEffect(() => {
@@ -23,7 +23,7 @@ function Sidebar({data, type}) {
   }, []);
   useEffect(() => {
     window.addEventListener("scroll", () => {
-      const scrollheightLimit= type==='left'?500:700;
+      const scrollheightLimit = type === "left" ? 500 : 700;
       if (window.scrollY > scrollheightLimit) {
         setSticky(true);
       } else {
@@ -43,23 +43,24 @@ function Sidebar({data, type}) {
   if (type === "left") {
     return (
       <>
-        <MiniProfile
-          name={formattedName(
-            data?.USER_PROFILE_SUMMARY?.data?.firstName,
-            data?.USER_PROFILE_SUMMARY?.data?.lastName
-          )}
-          title={data?.USER_PROFILE_SUMMARY?.data?.userType}
-          metaData={{
-            company: data?.USER_PROFILE_SUMMARY?.data?.educationalInstitution,
-            location: data?.USER_PROFILE_SUMMARY?.data?.city,
-            city: data?.USER_PROFILE_SUMMARY?.data?.city,
-            country: data?.USER_PROFILE_SUMMARY?.data?.country,
-          }}
-          coverImage={DEFAULT_COVER_IMAGE}
-          profileImage={data?.USER_PROFILE_SUMMARY?.data?.profilePicName}
-        />
-
-        <CompletionDetail data={data?data:null} />
+        
+          <MiniProfile
+            name={formattedName(
+              data?.USER_PROFILE_SUMMARY?.data?.firstName,
+              data?.USER_PROFILE_SUMMARY?.data?.lastName
+            )}
+            title={data?.USER_PROFILE_SUMMARY?.data?.userType}
+            metaData={{
+              company: data?.USER_PROFILE_SUMMARY?.data?.educationalInstitution,
+              location: data?.USER_PROFILE_SUMMARY?.data?.city,
+              city: data?.USER_PROFILE_SUMMARY?.data?.city,
+              country: data?.USER_PROFILE_SUMMARY?.data?.country,
+            }}
+            coverImage={DEFAULT_COVER_IMAGE}
+            profileImage={data?.USER_PROFILE_SUMMARY?.data?.profilePicName}
+            masterData={data?.USER_PROFILE_SUMMARY}
+          />
+        <CompletionDetail data={data ? data : null} />
         {/* People who viewed you */}
         <Spacer count={3} />
 
@@ -71,14 +72,14 @@ function Sidebar({data, type}) {
           icon={ICONS.PEOPLE_WHO_VIEWED_YOU}
           dashboardPreview
           sticky={isSticky}
-          data={data?data:null}
+          data={data ? data : null}
         />
       </>
     );
   } else {
     return (
       <>
-        <Stats data={data?data:null} />
+        <Stats data={data ? data : null} />
         <Spacer />
         <Profiles
           options={{ connect: true, mixedMode: false }}
@@ -87,7 +88,7 @@ function Sidebar({data, type}) {
           tooltip={TOOLTIPS.PROBABLE_INTERESTING_CONNECTIONS}
           dashboardPreview
           sticky={isSticky}
-          data={data?data:null}
+          data={data ? data : null}
         />
       </>
     );

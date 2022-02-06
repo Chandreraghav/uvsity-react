@@ -16,20 +16,27 @@ import {
   setLocalStorageObject,
   getLocalStorageObject,
 } from "../localStorage/local-storage";
-import React, { useEffect } from "react";
-import { RouteGuard } from "../route-guard/authorized/component/RouteGuard";
+import React, { useEffect, useState } from "react";
 import { AuthGuardService } from "../auth-guard/service/AuthGuardService";
 import { useRouter } from "next/router";
-import { DEFAULT_ROUTE } from "../constants/routes";
-import SignOutService from "./api/users/auth/SignOutService";
 import { asyncSubscriptions } from "../async/subscriptions";
 import { AuthService } from "./api/users/auth/AuthService";
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import Layout from "../components/Main/Layout";
+import Splash from "../components/shared/Splash";
 
 function MyApp({ Component, pageProps }) {
   const [queryClient] = React.useState(() => new QueryClient());
+  const [verified, setVerified] = useState(true);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  
+  //MANDATORY PWA ENABLER ON TOP PF EVERY COMPONENT
   useEffect(() => {
     let controller = new AbortController();
     // ENABLE PWA ABILITY
@@ -43,6 +50,7 @@ function MyApp({ Component, pageProps }) {
       controller?.abort();
     };
   }, []);
+  // MANDATORY IP DATA COLLECTION ON TOP OF EVERY COMPONENT(SUPER HOC)
   useEffect(async () => {
     // GET IPDATA
     if (!getLocalStorageObject("uvsity-ipData")) {
@@ -58,16 +66,22 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  // MANDATORY SESSION CHECK SUBSCRIPTION.
+  // MANDATORY SESSION CHECK SUBSCRIPTION ON TOP OF EVERY LAYER(SUPER HOC).
   useEffect(() => {
     let controller = new AbortController();
     let isSubscribed = true;
-    if (isSubscribed) getSessionValidity(router);
+    if (isSubscribed)
+      getSessionValidity(router).finally(() => {
+        AuthGuardService.loadGAPIClient().then(()=>{
+           setLoading(false)
+        })
+      });
     return () => {
       controller?.abort();
       isSubscribed = false;
     };
   }, []);
+
   async function getSessionValidity(router) {
     if (
       asyncSubscriptions.SESSION_EXPIRY.enabled &&
@@ -84,15 +98,10 @@ function MyApp({ Component, pageProps }) {
         .catch(() => {
           //in case of any error returned, means the session is invalid, clear interval, logout & redirect to public dashboard
           // automatic logout
-          SignOutService.signout()
-            .then(() => {})
-            .catch(() => {})
-            .finally(() => {
-              AuthGuardService.logout();
-              router.push({
-                pathname: DEFAULT_ROUTE.DASHBOARD,
-              });
-            });
+          setVerified(false);
+          queryClient.invalidateQueries();
+          AuthService.logout();
+          router.replace("/");
         });
     }
   }
@@ -106,27 +115,27 @@ function MyApp({ Component, pageProps }) {
       .catch(() => {
         //in case of any error returned, means the session is invalid, clear interval, logout & redirect to public dashboard
         // automatic logout
-        SignOutService.signout()
-          .then(() => {})
-          .catch(() => {})
-          .finally(() => {
-            AuthGuardService.logout();
-            router.push({
-              pathname: DEFAULT_ROUTE.DASHBOARD,
-            });
-          });
+        setVerified(false);
+        queryClient.invalidateQueries();
+        AuthService.logout();
+        router.replace("/");
       });
   }
-  return (
+
+  return loading ? (
+    <>
+      <Layout options={{ title: process.env.NEXT_PUBLIC_APP_TITLE }}>
+        <Splash />
+      </Layout>
+    </>
+  ) : (
     <>
       <QueryClientProvider client={queryClient}>
         <DataLayer initialState={initialState} reducer={reducer}>
-          <RouteGuard>
-            <Hydrate state={pageProps.dehydratedState}>
-              <Component {...pageProps} />
-              <ReactQueryDevtools initialIsOpen={false} />
-            </Hydrate>
-          </RouteGuard>
+          <Hydrate state={pageProps.dehydratedState}>
+            <Component {...pageProps} />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </Hydrate>
         </DataLayer>
       </QueryClientProvider>
     </>

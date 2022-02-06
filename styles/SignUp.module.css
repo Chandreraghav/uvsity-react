@@ -175,12 +175,12 @@
     display: inline-block;
 }
 
-.signup__Dialog__signin__with__google__option > div>button> img {
-  object-fit: contain!important;
-  width: auto!important;
+.signup__Dialog__signin__with__google__option {
+  
   cursor: pointer!important;
-  margin-top: -9px!important;
-  padding-bottom: 5px!important;
+  margin-top: -2px!important;
+  padding-bottom: 5px;;
+ 
 }
 .signup__Dialog__alternative__or {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
