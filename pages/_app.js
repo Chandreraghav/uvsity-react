@@ -57,8 +57,7 @@ function MyApp({ Component, pageProps }) {
   useEffect(async () => {
     // GET IPDATA
     if (!getLocalStorageObject("uvsity-ipData")) {
-      await new IPService()
-        .getIPData()
+      await  IPService.getIPData()
         .then((response) => {
           setLocalStorageObject("uvsity-ipData", response.data);
         })
