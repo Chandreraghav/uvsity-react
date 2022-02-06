@@ -7,10 +7,13 @@ import { KEYS } from "../../async/queries/keys/unique-keys";
 import UserDataService from "../api/users/data/UserDataService";
 import { asyncSubscriptions } from "../../async/subscriptions";
 import PrivateRoute from "../../components/Routes/PrivateRoute";
+import { AuthService } from "../api/users/auth/AuthService";
 function Landing() {
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_TITLE}`,
   };
+
+  if(!AuthService.isUserLoggedIn()) return ""
 
   const getSummary = async () => (await UserDataService.getSummary()).data;
   const getProfilePercentageCompletion = async () =>
@@ -63,7 +66,7 @@ function Landing() {
   };
    
   return (
-    <Layout options={layoutObj}>
+    <Layout  options={layoutObj}>
       <Header data={getData.USER_PROFILE_SUMMARY}  />
       <Dashboard data={getData} />
       <Footer />

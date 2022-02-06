@@ -36,6 +36,7 @@
     "google-auth-library": "^7.11.0",
     "html-react-parser": "^1.4.5",
     "lodash": "^4.17.21",
+    "material-ui-popup-state": "^2.0.0",
     "next": "11.1.2",
     "react": "17.0.2",
     "react-bootstrap-icons": "^1.5.0",
