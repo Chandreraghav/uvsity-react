@@ -5,11 +5,20 @@ import { AuthService } from "../../pages/api/users/auth/AuthService";
 import { useQueryClient } from "react-query";
 import Layout from "../Main/Layout";
 import Splash from "../shared/Splash";
+import { actionTypes } from "../../context/reducer";
+import { useDataLayerContextValue } from "../../context/DataLayer";
 const PrivateRoute = (WrappedComponent, verifyToken) => {
   return (props) => {
     const Router = useRouter();
     const queryClient = useQueryClient();
+    const [{}, unauthorize] = useDataLayerContextValue();
     const [verified, setVerified] = useState(false);
+    const eraseContext = () => {
+      unauthorize({
+        type: actionTypes.SET_USER,
+        user: null,
+      });
+    };
     useEffect(async () => {
       const accessToken = AuthService.getAuthToken();
       // if no accessToken was found,then we erase context, invalidate queries and redirect to "/" page.
