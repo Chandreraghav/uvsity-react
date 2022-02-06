@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { AuthGuardService } from "../../auth-guard/service/AuthGuardService";
 import { AuthService } from "../../pages/api/users/auth/AuthService";
 import { useQueryClient } from "react-query";
+import Layout from "../Main/Layout";
+import Splash from "../shared/Splash";
 const PrivateRoute = (WrappedComponent, verifyToken) => {
   return (props) => {
     const Router = useRouter();
@@ -37,7 +39,11 @@ const PrivateRoute = (WrappedComponent, verifyToken) => {
     if (verified) {
       return <WrappedComponent {...props} />;
     } else {
-      return null;
+      return (
+        <Layout options={{ title: process.env.NEXT_PUBLIC_APP_TITLE }}>
+          <Splash />
+        </Layout>
+      );
     }
   };
 };
