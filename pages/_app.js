@@ -72,6 +72,7 @@ function MyApp({ Component, pageProps }) {
     let isSubscribed = true;
     if (isSubscribed)
       getSessionValidity(router).finally(() => {
+        // even if the session validity errors, we will load gapi client and once that is done, render the page to client
         AuthGuardService.loadGAPIClient().then(()=>{
            setLoading(false)
         })

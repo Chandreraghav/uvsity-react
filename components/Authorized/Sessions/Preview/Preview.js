@@ -32,6 +32,8 @@ function Preview({ data, authorized,userdata }) {
     return IMAGE_PATHS.NO_DATA.EVENT_POSTER;
   };
   const [eventPosterSrc, setEventPosterSrc] = useState(getEventPoster());
+  // THE NEEDFUL OR DEPENDENT DATA FOR EACH SESSION PREVIEW 
+  // ARE BEING CALLED VIA USE EFFECT AND NOT WITH REACT QUERY, WE WILL CHANGE THIS TO REACT QUERY AT A LATER POINT
   useEffect(() => {
     let isSubscribed = true;
     let controller = new AbortController();
