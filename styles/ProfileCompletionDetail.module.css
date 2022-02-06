@@ -33,11 +33,8 @@
 }
 .profile__completion__detail__suggestion__icon{
   cursor: pointer!important;
-align-items: center!important;
+   
 }
  
-.profile__completion__detail__suggestions{
-  display: flex !important;
-  flex-direction: column !important;
-}
+ 
  

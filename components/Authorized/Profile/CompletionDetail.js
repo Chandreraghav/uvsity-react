@@ -21,7 +21,8 @@ import {
 } from "../../../constants/constants";
 import DoubleArrowOutlinedIcon from "@mui/icons-material/DoubleArrowOutlined";
 import Spacer from "../../shared/Spacer";
-function CompletionDetail({data}) {
+import CompletionDetailShimmer from "./Shimmer/CompletionDetailShimmer";
+function CompletionDetail({ data }) {
   const [suggestionShowed, setSuggestionShown] = useState(false);
   const [completionTextObject, setCompletionTextObject] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
@@ -85,95 +86,105 @@ function CompletionDetail({data}) {
   return (
     <div>
       <Spacer count={2} />
-      <div
-        style={{ borderBottom: `5px solid ${getColor()}` }}
-        className={` uvsity__card`}
-      >
-        <div
-          className={
-            ProfileCompletionDetailStyle.profile__completion__detail__card
-          }
-        >
+
+       
+        {data?.USER_PROFILE_PERCENTAGE_COMPLETION.isLoading && 
+        (<CompletionDetailShimmer visible/>)
+        }
+
+        {data?.USER_PROFILE_PERCENTAGE_COMPLETION.isSuccess && (
           <div
-            className={
-              ProfileCompletionDetailStyle.profile__completion__detail__graph
-            }
-          >
-            <CompletionProgress
-              color={getRGBColor()}
-              percentage={
-                data?.USER_PROFILE_PERCENTAGE_COMPLETION?.data
-                  ?.percentageOfProfileAlreadyCompleted
+          style={{ borderBottom: `5px solid ${getColor()}` }}
+          className={` uvsity__card`}
+        >
+            <div
+              className={
+                ProfileCompletionDetailStyle.profile__completion__detail__card
               }
-            />
-          </div>
-
-          <div>
-            <Typography
-              className={`text-center ${ProfileCompletionDetailStyle.profile__completion__detail__header__text}`}
-              gutterBottom
-              variant="h5"
-              component="div"
             >
-              {getIcon()} {completionTextObject.headerText}
-            </Typography>
-            <div className=" flex">
-              <Typography
-                className={
-                  ProfileCompletionDetailStyle.profile__completion__detail__explanation__text
-                }
-                variant="body2"
-                color="text.secondary"
-              >
-                {completionTextObject.icon} {completionTextObject.guidanceText}
-              </Typography>
-            </div>
-
-            {completionTextObject.needsWork && (
               <div
-                className={` items-center
-                    ${ProfileCompletionDetailStyle.profile__completion__detail__suggestions}`}
+                className={
+                  ProfileCompletionDetailStyle.profile__completion__detail__graph
+                }
               >
-                <Tooltip title={TOOLTIPS.VIEW_SUGGESTIONS}>
-                  <SettingsSuggestOutlinedIcon
-                    onClick={(e) => toggleSuggestions()}
-                    className={`
-                    ${ProfileCompletionDetailStyle.profile__completion__detail__suggestion__icon}`}
-                  />
-                </Tooltip>
-                {suggestionShowed &&
-                  completionTextObject?.recommendedSteps.map((reco) => (
-                    <div
-                      className={
-                        ProfileCompletionDetailStyle.profile__completion__detail__guidance__text
-                      }
-                    >
-                      <DoubleArrowOutlinedIcon />
-                      &nbsp;{reco}
-                    </div>
-                  ))}
+                <CompletionProgress
+                  color={getRGBColor()}
+                  percentage={
+                    data?.USER_PROFILE_PERCENTAGE_COMPLETION?.data
+                      ?.percentageOfProfileAlreadyCompleted
+                  }
+                />
               </div>
-            )}
-          </div>
-          <div className=" items-baseline p-2">
-            <Spacer />
-            {COMPLETION_DETAIL_ACTION.map((action) => (
-              <Tooltip key={action.id} title={action.tooltip}>
-                {action.startIcon ? (
-                  <Button startIcon={action.icon} size={action.size}>
-                    {action.title}
-                  </Button>
-                ) : (
-                  <Button endIcon={action.icon} size={action.size}>
-                    {action.title}
-                  </Button>
+
+              <div>
+                <Typography
+                  className={`text-center ${ProfileCompletionDetailStyle.profile__completion__detail__header__text}`}
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                >
+                  {getIcon()} {completionTextObject.headerText}
+                </Typography>
+                <div className=" flex">
+                  <Typography
+                    className={
+                      ProfileCompletionDetailStyle.profile__completion__detail__explanation__text
+                    }
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    {completionTextObject.icon}{" "}
+                    {completionTextObject.guidanceText}
+                  </Typography>
+                </div>
+
+                {completionTextObject.needsWork && (
+                  <>
+                    <div className=" cursor-pointer px-2">
+                      <Tooltip title={TOOLTIPS.VIEW_SUGGESTIONS}>
+                        <SettingsSuggestOutlinedIcon
+                          onClick={(e) => toggleSuggestions()}
+                          className={`items-center`}
+                        />
+                      </Tooltip>
+                    </div>
+
+                    {suggestionShowed &&
+                      completionTextObject?.recommendedSteps.map((reco) => (
+                        <div
+                          className={
+                            ProfileCompletionDetailStyle.profile__completion__detail__guidance__text
+                          }
+                        >
+                          <DoubleArrowOutlinedIcon />
+                          &nbsp;{reco}
+                        </div>
+                      ))}
+                  </>
                 )}
-              </Tooltip>
-            ))}
+              </div>
+              <div className=" items-baseline p-2">
+                <Spacer />
+                {COMPLETION_DETAIL_ACTION.map((action) => (
+                  <Tooltip key={action.id} title={action.tooltip}>
+                    {action.startIcon ? (
+                      <Button startIcon={action.icon} size={action.size}>
+                        {action.title}
+                      </Button>
+                    ) : (
+                      <Button endIcon={action.icon} size={action.size}>
+                        {action.title}
+                      </Button>
+                    )}
+                  </Tooltip>
+                ))}
+              </div>
+            </div>
+            
           </div>
-        </div>
+        )}
       </div>
-    </div>
+     
   );
 }
 

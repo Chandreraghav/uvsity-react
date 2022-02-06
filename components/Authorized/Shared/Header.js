@@ -4,8 +4,10 @@ import HeaderOption from "./HeaderOption";
 import { HEADER_OPTIONS } from "../../../constants/userdata";
 import Search from "./Search";
 import Hamburger from "./FireFighter/Hamburger";
-function Header() {
- 
+import { formattedName } from "../../../utils/utility";
+import Shimmer from "./Shimmer/Shimmer";
+function Header(props) {
+  const userdata = props.data;
   return (
     <div className={HeaderStyle.header}>
       <div className={HeaderStyle.header__left}>
@@ -13,22 +15,36 @@ function Header() {
         <Search />
       </div>
 
-      <div  className={` hidden md:flex items-center`}>
-        {HEADER_OPTIONS.map((data) => (
-          <HeaderOption
-            key={data.id}
-            isAuthorizedProfile={data.hasAvatar}
-            hidden={data.hidden}
-            avatar={data.avatar}
-            title={data.title}
-            Icon={data.icon}
-            name={data.name}
-            tooltip={data.tooltip}
-          />
-        ))}
-        
-      </div>
-      <Hamburger color='gray'/>
+      {userdata.isLoading && (
+        <>
+          <div className={` hidden md:flex items-center`}>
+            <Shimmer visible />
+          </div>
+        </>
+      )}
+      {userdata.isSuccess && (
+        <>
+          <div className={` hidden md:flex items-center`}>
+            {HEADER_OPTIONS.map((data) => (
+              <HeaderOption
+                key={data.id}
+                isAuthorizedProfile={data.hasAvatar}
+                hidden={data.hidden}
+                avatar={userdata.data.profilePicName}
+                title={data.title}
+                Icon={data.icon}
+                name={formattedName(
+                  userdata.data.firstName,
+                  userdata.data.lastName
+                )}
+                tooltip={data.tooltip}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
+      <Hamburger color="gray" />
     </div>
   );
 }

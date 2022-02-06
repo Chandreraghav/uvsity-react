@@ -331,6 +331,9 @@ button.danger {
 .zoom-9 {
   zoom: 0.9;
 }
+.grayscale-filter{
+  filter: grayscale(50%);
+}
 
  
 

@@ -15,8 +15,11 @@ import { getWorkflowError } from "../../../../error-handler/handler";
 import { LOGOUT } from "../../../../constants/error-messages";
 import { RESPONSE_TYPES } from "../../../../constants/constants";
 import { toast } from "react-toastify";
+import { useQueryClient } from 'react-query'
 toast.configure();
 function AccountMenu({ onClose, isOpen, anchor }) {
+  // Get QueryClient from the context
+ const queryClient = useQueryClient()
   const [{}, unauthorize] = useDataLayerContextValue();
   const router = useRouter();
   const handleClose = () => {
@@ -27,7 +30,6 @@ function AccountMenu({ onClose, isOpen, anchor }) {
       type: actionTypes.SET_USER,
       user: null,
     });
-    AuthService.cancelAppLayerSubscriptions(true)
   };
   const handleMenuAction = (actionCode) => {
     if (!actionCode) {
@@ -43,6 +45,7 @@ function AccountMenu({ onClose, isOpen, anchor }) {
         // voluntarily logout
         SignOutService.signout()
           .then(() => {
+            queryClient.invalidateQueries()
             AuthService.logout();
             eraseContext();
             router.push(DEFAULT_ROUTE.DASHBOARD);

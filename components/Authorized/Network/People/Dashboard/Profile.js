@@ -186,31 +186,42 @@ function Profile({
 
   const acceptRequest = () => {
     setConnectionAcceptRequestInProgress(true);
-    ConnectionService.acceptConnectionRequest(
-      metaData.invitationAction.invitationRequestId
-    )
-      .then(() => {
-        setConnectionAcceptRequestSendError(false);
-        handleResponse(
-          TITLES.CONNECTED_PEOPLE.replace("#X#", firstName),
-          RESPONSE_TYPES.SUCCESS,
-          toast.POSITION.TOP_LEFT
-        );
-      })
-      .catch(() => {
-        setConnectionAcceptRequestSendError(true);
-        handleResponse(
-          getWorkflowError(
-            PEOPLE.NETWORK.CONNECTION_ACCEPT_ERROR + " " + firstName
-          ),
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.TOP_LEFT
-        );
-      })
-      .finally(() => {
-        setConnectionAcceptRequestInProgress(false);
-        setConnectionAcceptRequestSent(true);
-      });
+    if(metaData.invitationAction && metaData.invitationAction.invitationRequestId){
+      ConnectionService.acceptConnectionRequest(
+        metaData.invitationAction.invitationRequestId
+      )
+        .then(() => {
+          setConnectionAcceptRequestSendError(false);
+          handleResponse(
+            TITLES.CONNECTED_PEOPLE.replace("#X#", firstName),
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.TOP_LEFT
+          );
+        })
+        .catch(() => {
+          setConnectionAcceptRequestSendError(true);
+          handleResponse(
+            getWorkflowError(
+              PEOPLE.NETWORK.CONNECTION_ACCEPT_ERROR + " " + firstName
+            ),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.TOP_LEFT
+          );
+        })
+        .finally(() => {
+          setConnectionAcceptRequestInProgress(false);
+          setConnectionAcceptRequestSent(true);
+        });
+    }
+    else {
+      setConnectionAcceptRequestSendError(true);
+      handleResponse(
+        TITLES.CONNECTED_PEOPLE_ALREADY.replace("#X#", firstName),
+        RESPONSE_TYPES.INFO,
+        toast.POSITION.TOP_RIGHT
+      );
+    }
+   
   };
   
   if (

@@ -105,7 +105,7 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
                           />
                         </div>
                       </div>
-                      <div class="flex gap-2">
+                      <div className="flex gap-2">
                         {" "}
                         <Skeleton
                           animation={animation ? animation : "wave"}

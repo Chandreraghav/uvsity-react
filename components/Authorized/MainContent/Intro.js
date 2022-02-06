@@ -16,8 +16,11 @@ import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import { AUTHORIZED_ROUTES } from "../../../constants/routes";
 import { uuid } from "uuidv4";
+import Shimmer from "./Shimmer/Shimmer";
+import IntroShimmer from "./Shimmer/IntroShimmer";
 
-function Intro({data}) {
+function Intro(props) {
+  const userdata = props.data;
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
   const [introMoodColor, setIntroMoodColor] = useState(null);
@@ -73,16 +76,27 @@ function Intro({data}) {
       <div
         className={`flex flex-row items-center justify-between h-10 flex-1 overflow-auto ${introMoodColor}`}
       >
-        <p
-          className=" text-lg font-semibold  
-            leading-none xl:block dark:text-brand-grey-200"
-        >
-          👋 {GREETING.replace("<user>", data?.firstName)}
-        </p>
+        {userdata.isLoading && (
+          <div className="px-2">
+            <Shimmer visible />
+          </div>
+        )}
+        {userdata.isSuccess && (
+          <p
+            className=" text-lg font-semibold  
+              leading-none xl:block dark:text-brand-grey-200"
+          >
+            👋 {GREETING.replace("<user>", userdata.data?.firstName)}
+          </p>
+        )}
       </div>
 
       <Spacer />
-
+      {userdata.isLoading && (
+        <div className="px-2">
+          <IntroShimmer visible />
+        </div>
+      )}
       <header
         className={IntroStyles.intro__banner}
         style={{
@@ -90,6 +104,7 @@ function Intro({data}) {
           backgroundPosition: "center center",
           backgroundAttachment: "fixed",
           backgroundRepeat: "no-repeat",
+          display: userdata.isLoading ? "none" : "block",
         }}
       >
         <div className={IntroStyles.intro__contents}>

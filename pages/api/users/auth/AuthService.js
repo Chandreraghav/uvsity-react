@@ -7,8 +7,10 @@ import { LOGIN_SOURCE } from "../../../../constants/constants";
 import { ENDPOINTS } from "../../../../async/endpoints";
 import { v4 as uuidv4 } from "uuid";
 import { JWT } from "../../../../jwt/auth/JWT";
+import { parseBoolean } from "../../../../utils/utility";
 
 export class AuthService {
+  
   static getCurrentUser() {
     return getLocalStorageObject("uvsity-user");
   }
@@ -76,7 +78,6 @@ export class AuthService {
     setLocalStorageObject("uvsity-user", authData);
     setLocalStorageObject("uvsity-loggedIn", "true");
     if (source === LOGIN_SOURCE.GOOGLE) {
-      JWT.refreshGoogleJWT(authData);
       setLocalStorageObject("uvsity-loggedInSource", LOGIN_SOURCE.GOOGLE);
       setLocalStorageObject("uvsity-googleToken", authData.tokenId);
     } else {
@@ -87,7 +88,19 @@ export class AuthService {
 
   static isUserLoggedIn() {
     try {
-      return JSON.parse(getLocalStorageObject("uvsity-loggedIn"));
+      const user=JSON.parse(getLocalStorageObject("uvsity-user"))
+      if(user.data) return true;
+      return false
+    } catch (error) {
+      return false;
+    }
+  }
+  static isGoogleLoggedIn() {
+    try {
+      return (
+        JSON.parse(getLocalStorageObject("uvsity-loggedInSource")) ===
+        LOGIN_SOURCE.GOOGLE
+      );
     } catch (error) {
       return false;
     }
@@ -95,23 +108,46 @@ export class AuthService {
 
   static logout() {
     try {
+      if (this.isGoogleLoggedIn()) {
+        this.googleLogout();
+      }
       removeLocalStorageObject("uvsity-user");
       removeLocalStorageObject("uvsity-siteToken");
       removeLocalStorageObject("uvsity-googleToken");
       removeLocalStorageObject("uvsity-authToken");
       removeLocalStorageObject("uvsity-loggedIn");
       removeLocalStorageObject("uvsity-loggedInSource");
-      this.cancelAppLayerSubscriptions(true)
+      this.cancelAppLayerSubscriptions(true);
+     
+
       // we do not clear ip data on logout because of its global nature.
-    } catch (error) {}
+    } catch (error) {
+    }
   }
 
+ 
+
   static cancelAppLayerSubscriptions(cancelSessionPolling) {
-    if(cancelSessionPolling){
-      if (window.sessionValidityPoller != undefined &&
-        window.sessionValidityPoller != "undefined") {
+    if (cancelSessionPolling) {
+      if (
+        window.sessionValidityPoller != undefined &&
+        window.sessionValidityPoller != "undefined"
+      ) {
         window.clearInterval(window.sessionValidityPoller);
       }
+    }
+  }
+
+  static googleSignIn(googleUser) {
+    const id_token = googleUser.getAuthResponse().id_token;
+    setLocalStorageObject("uvsity-googleToken", id_token);
+  }
+
+  static googleLogout() {
+    var token = gapi.auth.getToken();
+    var auth2 = gapi.auth2.getAuthInstance();
+    if (token) {
+      auth2.signOut().then(function () {});
     }
   }
 }

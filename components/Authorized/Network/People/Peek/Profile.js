@@ -333,7 +333,7 @@ function PeekProfile(props) {
               {isInPendingState && (
                 <div className={`flex cursor-pointer  slow-transition`}>
                   <IconButton
-                    title={`${TITLES.CONNECTION_REQUEST_PENDING}${props.metaData.firstName}`}
+                    title={`${TITLES.CONNECTION_REQUEST_PENDING}${props.metaData.firstName || props.metaData.creator.firstName}`}
                     className=" cursor-pointer inline-flex "
                     fontSize="small"
                     sx={{ color: "#EF107D" }}

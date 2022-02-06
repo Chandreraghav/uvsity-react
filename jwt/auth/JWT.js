@@ -1,8 +1,12 @@
+import { AuthGuardService } from "../../auth-guard/service/AuthGuardService";
+import { LOGIN_SOURCE } from "../../constants/constants";
 import {
   setLocalStorageObject,
   getLocalStorageObject,
 } from "../../localStorage/local-storage";
+import LoginService from "../../pages/api/users/auth/LoginService";
 export class JWT {
+  static sessionExpiry = (3600 - 5 * 60) * 1000
   /**
    *
    * @returns Auth header pre login
@@ -21,8 +25,18 @@ export class JWT {
   static authHeader() {
     try {
       let user = JSON.parse(getLocalStorageObject("uvsity-user"));
+      
       if (user) {
-        return { Authorization: user.data };
+        if(user.data){
+          return { Authorization: user.data}
+        }
+        if(AuthGuardService.isGoogleLoggedIn()){
+          const token =JSON.parse(getLocalStorageObject("uvsity-googleToken"))
+          if(token){
+            return { Authorization:`Bearer ${token}`}
+          }
+        }
+         
       } else {
         return null;
       }
@@ -40,20 +54,24 @@ export class JWT {
     return null;
   }
 
-  static refreshGoogleJWT(res) {
+  /**
+   * @deprecated
+   */
+  static refreshGoogleJWT() {
     // Timing to renew access token
-    let refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
+   
+    let refreshTiming = JWT.sessionExpiry;
     const refreshToken = async () => {
-      const newAuthRes = await res.reloadAuthResponse();
-      refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
-      localStorage.setItem("uvsity-authToken", newAuthRes.id_token);
-      setLocalStorageObject("uvsity-authToken", newAuthRes.id_token);
-      // Setup the other timer after the first one
+      const newAuthRes =  await new LoginService().socialLogin(LOGIN_SOURCE.GOOGLE);
+      refreshTiming =  JWT.sessionExpiry;
+      setLocalStorageObject("uvsity-googleToken", newAuthRes.tokenId);
+      // Setup the other recurrent timer after the first one
       if (getLocalStorageObject("uvsity-user"))
         setTimeout(refreshToken, refreshTiming);
     };
 
     // Setup first refresh timer
     setTimeout(refreshToken, refreshTiming);
+  
   }
 }
