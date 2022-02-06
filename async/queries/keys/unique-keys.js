@@ -34,6 +34,10 @@ export const KEYS = {
       BY_ID:'user-by-id'
     }
   },
-  IP_DATA:'ip-data'
+  IP_DATA:'ip-data',
+  METADATA:{
+    STATIC:'static-metadata',
+    ROOT:'root-metadata'
+  }
 
 };

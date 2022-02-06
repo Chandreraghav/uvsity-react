@@ -38,6 +38,7 @@ function Header(props) {
                   userdata.data.lastName
                 )}
                 tooltip={data.tooltip}
+                redirectTo={data.redirectTo}
               />
             ))}
           </div>

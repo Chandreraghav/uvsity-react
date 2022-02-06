@@ -13,7 +13,7 @@ export const ENDPOINTS = {
     POLLER: {
       VALIDITY_CHECK: "/poll/sessionExpiryCheck",
     },
-    SCHEDULED_END_DATE:"/courses/scheduledEndDate"
+    SCHEDULED_END_DATE:"/courses/scheduledEndDate",
   },
 
   USER: {
@@ -34,6 +34,9 @@ export const ENDPOINTS = {
         ACCEPT_REQUEST: "/inbox/accept/invitationRequest/",
       },
       ATTENDEES: "/course/#X#/attendees",
+      SEARCH:{
+        ATTENDEES:'universalsearch/attendees/'
+      }
     },
     DETAILS: "/view/profile/",
     SESSION_BY_ID: "/courses/#X#",
@@ -42,6 +45,8 @@ export const ENDPOINTS = {
       STATIC: "/courses/staticmetadata",
     },
   },
+  
+
 };
 export const EXTERNAL_FULLY_QUALIFIED_ENDPOINTS = {
   IP_DATA: process.env.NEXT_PUBLIC_IP_INFO_ENDPOINT,

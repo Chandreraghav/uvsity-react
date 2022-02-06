@@ -94,7 +94,7 @@ function CreateSession(props) {
           <React.Fragment>
             {activeStep===0 && (<Basic data={props.data}/>)}
             {activeStep===1 && (<Schedule data={props.data}/>)}
-            {activeStep===2 && (<Participant/>)}
+            {activeStep===2 && (<Participant data={props.data}/>)}
             {activeStep===3 && (<Fee/>)}
             {activeStep===4 && (<Final/>)}
             
