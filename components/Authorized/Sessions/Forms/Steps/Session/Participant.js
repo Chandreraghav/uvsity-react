@@ -1,4 +1,4 @@
-import { Box, FormControl, Grid, TextField, Tooltip } from "@mui/material";
+import { Box, FormControl, FormHelperText, Grid, TextField, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import Profile from "../../../../Network/People/Listing/Search/Profile";
 import SearchService from "../../../../../../pages/api/people/network/Search/SearchService";
@@ -42,7 +42,7 @@ function Participant(props) {
     }, 200);
   };
   const handleSelect = (event) => {
-    setItemSelected(true)
+    setItemSelected(true);
     UserDataService.getUserById(event.entityId)
       .then((res) => {
         const index = selectedItems.findIndex(
@@ -60,32 +60,36 @@ function Participant(props) {
       .finally(() => {
         setSearchResults([]);
         setQuery("");
-        setItemSelected(false)
+        setItemSelected(false);
       });
   };
   const handleRemoveParticipant = () => {
     setSelectedItem(null);
     setSelectedItems([]);
     setQuery("");
-    setItemSelected(false)
+    setItemSelected(false);
   };
 
   return (
-    <div className={`p-2`}>
+    <div className={`p-4`}>
       <Box sx={{ width: "100%" }}>
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={6}>
+        <Grid
+          container
+          container
+          rowSpacing={1}
+          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        >
+          <Grid xs={6}>
             {/* Co Host Info */}
             {selectedItem === null && (
               <FormControl
-                fullWidth={true}
                 variant="standard"
-                sx={{ marginBottom: 1 }}
+                sx={{ marginBottom: 1, marginTop: 1, width: "100%" }}
               >
                 <TextField
                   onChange={changeHandler}
                   value={query}
-                  placeholder="Search for a co-host here"
+                  placeholder="You may look for a co-host here"
                   variant="standard"
                   label="Co-Host Name"
                   id="cohost"
@@ -94,7 +98,12 @@ function Participant(props) {
             )}
 
             {selectedItem && (
-              <div className={`py-2 flex gap-5 `}>
+              <div
+                className={`py-1 px-1 mt-3 flex gap-5 justify-center  border-0 bg-blue-300 shadow-sm bg-repeat-round rounded-lg  `}
+              >
+                <h3 className="mt-2 text-sm leading-tight font-semibold italic">
+                  Your co-host will be
+                </h3>
                 <SnapProfile
                   firstName={selectedItem.firstName}
                   lastName={selectedItem.lastName}
@@ -117,7 +126,11 @@ function Participant(props) {
             )}
 
             {searchResults.length > 0 && (
-              <div className={`${itemSelected?'control__disabled__opaque':''} flex flex-col gap-2 pb-2 shadow-xl overflow-y-auto  bg-transparent`}>
+              <div
+                className={`${
+                  itemSelected ? "control__disabled__opaque" : ""
+                } z-auto  flex flex-col gap-2 pb-2 shadow-xl overflow-y-auto  bg-transparent`}
+              >
                 {searchResults.map((searchResult) => (
                   <Profile
                     onSelect={handleSelect}
@@ -127,6 +140,31 @@ function Participant(props) {
                 ))}
               </div>
             )}
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl
+              variant="filled"
+              sx={{ marginBottom: 1, width: "100%" }}
+            >
+              <TextField
+                variant="standard"
+                label="Expected number of participants"
+                id="expected-number"
+                type="number"
+                required
+              />
+               <FormHelperText
+                    className="blue-text leading-tight -ml-1 font-semibold"
+                     
+                  >
+                    For 100+ participants, premium membership is required.
+                  </FormHelperText>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            How do you want your session to be:
           </Grid>
         </Grid>
       </Box>

@@ -757,6 +757,7 @@ function Schedule(props) {
                                 sx={{ marginBottom: 1, marginTop: 1 }}
                               >
                                 <TextField
+                                variant="standard"
                                   label="Occurences"
                                   onChange={handleOccurenceCountChange}
                                   value={occurenceCount}
