@@ -48,7 +48,7 @@ function AccountMenu({ onClose, isOpen, anchor }) {
             queryClient.invalidateQueries()
             AuthService.logout();
             eraseContext();
-            router.push(DEFAULT_ROUTE.DASHBOARD);
+            router.replace('/');
           })
           .catch((error) => {
             handleResponse(

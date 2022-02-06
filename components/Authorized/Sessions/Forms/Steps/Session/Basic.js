@@ -44,7 +44,7 @@ function Basic(props) {
                 value={""}
                 label="Category"
               >
-                {props.data?.static?.categories?.map((category) => (
+                {props?.data?.static?.categories?.map((category) => (
                   <MenuItem className=" block p-2" key={category.courseCategoryId} value={category.courseCategoryId}>
                     {category.courseCategoryName}
                   </MenuItem>
@@ -103,7 +103,7 @@ function Basic(props) {
               variant="standard"
               sx={{ marginBottom: 1 }}
             >
-              <TextField required label="Full Name" id="fullName" />
+              <TextField variant="standard" required label="Full Name" id="fullName" />
             </FormControl>
           </Grid>
           <Grid item lg={12} sm={12} md={12} xs={12}>
@@ -113,7 +113,7 @@ function Basic(props) {
               variant="standard"
               sx={{ marginBottom: 1 }}
             >
-              <TextField required label="Short Name" id="shortName" />
+              <TextField variant="standard" required label="Short Name" id="shortName" />
             </FormControl>
           </Grid>
 
@@ -174,6 +174,7 @@ function Basic(props) {
                 <TextField
                   onBlur={(e) => trackVideoPlayerUrlInput(e)}
                   label="Video Preview URL"
+                  variant="standard"
                   id="previewurl"
                 />
               </FormControl>

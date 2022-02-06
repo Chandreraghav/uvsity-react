@@ -335,6 +335,12 @@ button.danger {
   filter: grayscale(50%);
 }
 
+.list-hover:hover{
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  background-color:whitesmoke !important;
+}
+
  
 
 

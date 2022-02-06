@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { AuthGuardService } from "../../../auth-guard/service/AuthGuardService";
 import Header from "../../../components/Authorized/Shared/Header";
 import Layout from "../../../components/Main/Layout";
 import Footer from "../../../components/shared/Footer";
-import Splash from "../../../components/shared/Splash";
 import MetaDataService from "../../api/users/data/MetaDataService";
 import CreateSession from "../../../components/Authorized/Sessions/Forms/CreateSession";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
+import { useQuery } from "react-query";
+import { KEYS } from "../../../async/queries/keys/unique-keys";
+import UserDataService from "../../api/users/data/UserDataService";
+import PrivateRoute from "../../../components/Routes/PrivateRoute";
 function Create() {
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_NAME} | Create Session`,
@@ -19,59 +21,34 @@ function Create() {
       alias: "Create Session",
     },
   };
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [rootMetaData, setRootMetaData] = useState({});
-  const [staticMetaData, setStaticMetaData] = useState({});
-
-  useEffect(() => {
-    setLoggedIn(AuthGuardService.isUserLoggedIn());
-  }, []);
-  useEffect(async () => {
-    let isSubscribed = true;
-    let controller = new AbortController();
-    await getStaticMetaData(isSubscribed);
-    return () => {
-      controller?.abort();
-      isSubscribed = false;
-    };
-  }, []);
-
-  useEffect(async () => {
-    let isSubscribed = true;
-    let controller = new AbortController();
-    await getRootMetaData(isSubscribed);
-    return () => {
-      controller?.abort();
-      isSubscribed = false;
-    };
-  }, []);
-
-  const getRootMetaData = async (isSubscribed) => {
-    await MetaDataService.getRootData()
-      .then((_data) => (isSubscribed ? setRootMetaData(_data.data) : null))
-      .catch((err) => {});
+  const getRootMetaData = async () =>
+    (await MetaDataService.getRootData()).data;
+  const getStaticMetaData = async () =>
+    (await MetaDataService.getStaticData()).data;
+  const getSummary = async () => (await UserDataService.getSummary()).data;
+  const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary,{refetchOnWindowFocus: false,});
+  const STATIC_META_DATA = useQuery([KEYS.METADATA.STATIC], getStaticMetaData,{refetchOnWindowFocus: false,});
+  const ROOT_META_DATA = useQuery([KEYS.METADATA.ROOT], getRootMetaData,{refetchOnWindowFocus: false,});
+  const getData = {
+    USER_PROFILE_SUMMARY,
+    STATIC_META_DATA,
+    ROOT_META_DATA,
   };
-  const getStaticMetaData = async (isSubscribed) => {
-    await MetaDataService.getStaticData()
-      .then((_data) => (isSubscribed ? setStaticMetaData(_data.data) : null))
-      .catch((err) => {});
-  };
-  return loggedIn ? (
+
+  return(
     <Layout options={layoutObj}>
-      <Header isAuthorized={loggedIn} isShared={true} />
-      <CreateSession
-        data={{ 
-          static: staticMetaData, 
-          root: rootMetaData, 
-          workflow:workflowObj }}
-      />
-      <Footer isAuthorized={loggedIn} isShared={true} />
-    </Layout>
-  ) : (
-    <Layout options={{ title: "Loading..." }}>
-      <Splash />
-    </Layout>
-  );
+    <Header data={getData.USER_PROFILE_SUMMARY} />
+    <CreateSession
+      data={{
+        static: getData.STATIC_META_DATA.data,
+        root: getData.ROOT_META_DATA.data,
+        workflow: workflowObj,
+      }}
+    />
+    <Footer />
+  </Layout>
+  )
+
 }
 
-export default Create;
+export default PrivateRoute(Create)

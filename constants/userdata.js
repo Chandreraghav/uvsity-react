@@ -43,6 +43,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import { AUTHORIZED_ROUTES } from "./routes";
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -53,6 +54,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
+    redirectTo:AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD
   },
   {
     id: 2,
@@ -63,6 +65,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: true,
     name: null,
+    redirectTo:null
   },
 
   {
@@ -74,6 +77,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
+    redirectTo:null
   },
 
   {
@@ -85,6 +89,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: true,
     name: null,
+    redirectTo:null
   },
   {
     id: 9,
@@ -95,6 +100,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
+    redirectTo:null
   },
 
   {
@@ -106,6 +112,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
+    redirectTo:null
   },
 
   {
@@ -117,6 +124,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
+    redirectTo:null
   },
 
   {
@@ -128,6 +136,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
+    redirectTo:null,
   },
 
   {
@@ -140,6 +149,7 @@ export const HEADER_OPTIONS = [
       "https://lh3.googleusercontent.com/a-/AOh14Gj4zE9yHsoBriErUebkmDlq2CUfcu30Ql72DiOaAdA=s96-c",
     hidden: false,
     name: "Swaroop Chakraborty",
+    redirectTo:null
   },
 ];
 
