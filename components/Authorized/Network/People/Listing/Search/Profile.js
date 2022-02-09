@@ -20,7 +20,7 @@ function Profile(props) {
   return (
     <div 
       onClick={handleSelection}
-      className={`list-hover cursor-pointer flex gap-1`}
+      className={`list-hover cursor-pointer flex gap-1 px-1 rounded-md py-1`}
     >
       {/* AVATAR */}
       <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
@@ -42,7 +42,7 @@ function Profile(props) {
         {selected && (
           <>
             <div className="ml-auto py-1 mt-1">
-              <CircularProgress color="info" size={20} />
+              <CircularProgress color="success" size={20} />
             </div>
           </>
         )}

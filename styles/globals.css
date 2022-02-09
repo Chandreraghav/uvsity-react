@@ -338,7 +338,28 @@ button.danger {
 .list-hover:hover{
   transition-timing-function: ease-in;
   transition: all 0.8s;
-  background-color:whitesmoke !important;
+  scale: 2;
+  background-image: linear-gradient(to right, #558ee1, #000)!important;
+ 
+}
+.app__button{
+  outline: none;
+  right: 160px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  background: #5271ff;
+  font-weight: 500;
+}
+.app__button__block:hover {
+  text-decoration: underline !important;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  background: #000;
+  
+   
 }
 
  
