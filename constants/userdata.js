@@ -44,6 +44,8 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import { AUTHORIZED_ROUTES } from "./routes";
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import RsvpIcon from '@mui/icons-material/Rsvp';
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -637,3 +639,28 @@ export const SESSION_DOCUMENT = {
     element:'checkbox'
   },
 };
+
+export const PARTICIPANT_INVITATION_OPTIONS=[
+  {
+    id: 1,
+    icon: <NotificationsActiveIcon />,
+    hidden: false,
+    disabled: false,
+    size: "small",
+    checked:true,
+    name:'createCourse.notifyPastAttendees',
+    text:'Auto notify all participants from my all previous sessions',
+    value:0
+  },
+  {
+    id: 2,
+    icon: <RsvpIcon />,
+    hidden: false,
+    disabled: false,
+    size: "small",
+    checked:false,
+    name:'createCourse.notifyPastAttendees',
+    text:'I will invite manually from "My Session"',
+    value:1
+  },
+]

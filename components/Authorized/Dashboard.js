@@ -3,6 +3,7 @@ import Sidebar from "../shared/Sidebar";
 import Intro from "./MainContent/Intro";
 import CompactCard from "./Sessions/Preview/CompactCard";
 import { TITLES } from "../../constants/userdata";
+import Spacer from "../shared/Spacer";
 function Dashboard({data}) {
    
   return (
@@ -28,6 +29,7 @@ function Dashboard({data}) {
       <Sidebar data={data} type='right' />
          
       </div>
+      <Spacer count={6}/>
     </div>
   );
 }

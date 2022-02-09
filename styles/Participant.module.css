@@ -1,0 +1,7 @@
+.participant__search__results{
+    width: 50%;
+     background-image: linear-gradient(to right, #000, #558ee1);;
+    color: white;
+    z-index: 99;
+    
+}

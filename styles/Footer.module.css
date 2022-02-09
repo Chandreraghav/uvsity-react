@@ -8,6 +8,9 @@
   background-color: #111;
   text-align: center;
   margin-top:auto;
+  position: fixed;
+  height: min-content;
+  z-index: 99
   
 }
 

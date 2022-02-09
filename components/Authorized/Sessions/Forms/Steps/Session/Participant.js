@@ -1,4 +1,14 @@
-import { Box, FormControl, FormHelperText, Grid, TextField, Tooltip } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  Radio,
+  RadioGroup,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import React, { useState } from "react";
 import Profile from "../../../../Network/People/Listing/Search/Profile";
 import SearchService from "../../../../../../pages/api/people/network/Search/SearchService";
@@ -6,13 +16,21 @@ import SnapProfile from "../../../../Network/People/Listing/Snap/Profile";
 import UserDataService from "../../../../../../pages/api/users/data/UserDataService";
 import { useQuery } from "react-query";
 import { KEYS } from "../../../../../../async/queries/keys/unique-keys";
+import ParticipantStyles from "../../../../../../styles/Participant.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Switch from "@mui/material/Switch";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { PARTICIPANT_INVITATION_OPTIONS } from "../../../../../../constants/userdata";
+import Questions from "../../../../../shared/Questionairre/Questions";
 function Participant(props) {
   const [searchResults, setSearchResults] = useState([]);
   const [query, setQuery] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [itemSelected, setItemSelected] = useState(false);
+  const label = {
+    inputProps: { "aria-label": "Switch for session accessibility" },
+  };
   const getLoggedInInformation = async () =>
     (await UserDataService.getLoggedInInformation()).data;
   const USER_LOGIN_INFO = useQuery([KEYS.LOGIN.INFO], getLoggedInInformation, {
@@ -79,7 +97,8 @@ function Participant(props) {
           rowSpacing={1}
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
-          <Grid xs={6}>
+          {/* CO-HOST SEARCH AND FIX */}
+          <Grid item xs={12}>
             {/* Co Host Info */}
             {selectedItem === null && (
               <FormControl
@@ -127,9 +146,9 @@ function Participant(props) {
 
             {searchResults.length > 0 && (
               <div
-                className={`${
-                  itemSelected ? "control__disabled__opaque" : ""
-                } z-auto  flex flex-col gap-2 pb-2 shadow-xl overflow-y-auto  bg-transparent`}
+                className={`${itemSelected ? "control__disabled" : ""} ${
+                  ParticipantStyles.participant__search__results
+                } flex flex-col gap-2 pb-2 pt-2  px-2 shadow-xl absolute w-full overflow-y-auto`}
               >
                 {searchResults.map((searchResult) => (
                   <Profile
@@ -141,8 +160,8 @@ function Participant(props) {
               </div>
             )}
           </Grid>
-
-          <Grid item xs={6}>
+          {/* EXPECTED PARTICIPANTS */}
+          <Grid item xs={12}>
             <FormControl
               variant="filled"
               sx={{ marginBottom: 1, width: "100%" }}
@@ -153,18 +172,90 @@ function Participant(props) {
                 id="expected-number"
                 type="number"
                 required
+                inputProps={{
+                  maxlength: 3,
+                }}
               />
-               <FormHelperText
-                    className="blue-text leading-tight -ml-1 font-semibold"
-                     
-                  >
-                    For 100+ participants, premium membership is required.
-                  </FormHelperText>
+              <FormHelperText className="blue-text leading-tight -ml-1 font-semibold">
+                For 100+ participants, premium membership is required.
+              </FormHelperText>
             </FormControl>
           </Grid>
-
-          <Grid item xs={6}>
-            How do you want your session to be:
+          {/* SESSION VISIBILITY */}
+          <Grid item lg={6} xs={12}>
+            <div className=" flex-col">
+              <div className=" flex gap-1 text-gray-600 font-normal">
+                <div>Session visibility</div>
+                <Tooltip title="How do you want your session to be, public or private?">
+                  <div className=" cursor-pointer">
+                    <HelpOutlineIcon fontSize="small" />
+                  </div>
+                </Tooltip>
+              </div>
+              <FormControl
+                className="flex"
+                variant="filled"
+                sx={{ marginBottom: 1, width: "100%" }}
+              >
+                <div className="flex">
+                  <FormControlLabel
+                    className="text-xs text-gray-600"
+                    control={
+                      <Switch
+                        checked={true}
+                        inputProps={{ "aria-label": "controlled" }}
+                      />
+                    }
+                    label="Public"
+                  />
+                </div>
+              </FormControl>
+            </div>
+          </Grid>
+          {/* HOW TO INVITE PEOPLE IN SESSION */}
+          <Grid item lg={6} xs={12}>
+            <div className="flex-col">
+              <div className=" flex gap-1 text-gray-600 font-normal">
+                <div>Choice of invitation</div>
+                <div></div>
+                <Tooltip title="How do you want to invite your audience?">
+                  <div className=" cursor-pointer">
+                    <HelpOutlineIcon fontSize="small" />
+                  </div>
+                </Tooltip>
+              </div>
+              <FormControl>
+                <RadioGroup
+                  className="text-gray-600 text-xs font-normal"
+                  aria-labelledby="radio-buttons-invitation-choice"
+                  name="row-radio-buttons-invitation-choice-group"
+                >
+                  {PARTICIPANT_INVITATION_OPTIONS.filter(
+                    (option) => !option.disabled
+                  ).map((option) => (
+                    <div
+                      className="text-gray-700 leading-tight line-clamp-2 text-xs font-normal mb-2"
+                      key={option.id}
+                    >
+                      <FormControlLabel
+                        className="app__anchor__block"
+                        value={option.value}
+                        control={<Radio />}
+                        label={
+                          <>
+                            {option.text}&nbsp;{option.icon}
+                          </>
+                        }
+                      />
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            </div>
+          </Grid>
+          {/* Custom Questions */}
+          <Grid item xs={12}>
+             <Questions/>
           </Grid>
         </Grid>
       </Box>

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useRef } from "react";
 import CountUp from "react-countup";
 import CounterStyle from "../../styles/Counter.module.css";
 import VisibilitySensor from "react-visibility-sensor";
+import Spacer from "../shared/Spacer";
 import { LANDING_PAGE_STATS_DETAIL } from "../../constants/constants";
 function Stats() {
+  const nodeRef = useRef(null);
+
   return (
     <div id="aboutus" className={CounterStyle.root}>
       <div className="">
@@ -19,14 +22,23 @@ function Stats() {
         {LANDING_PAGE_STATS_DETAIL.map((stat, key) => (
           <div key={key} className="flex flex-col">
             <VisibilitySensor partialVisibility>
-              <CountUp suffix="+" delay={2} duration="3" end={stat.count} />
+              <CountUp
+                nodeRef={nodeRef}
+                suffix="+"
+                delay={2}
+                duration="3"
+                end={stat.count}
+              />
             </VisibilitySensor>
+
             <div className="text-xs md:text-sm lg:text-2xl ml-1 text-left">
-              {stat.icon}{stat.text}
+              {stat.icon}
+              {stat.text}
             </div>
           </div>
         ))}
       </div>
+      <Spacer count={2} />
     </div>
   );
 }

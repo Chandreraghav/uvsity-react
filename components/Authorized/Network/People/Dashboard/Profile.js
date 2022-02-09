@@ -199,10 +199,11 @@ function Profile({
     setConnectionAcceptRequestInProgress(true);
     if (
       metaData.invitationAction &&
-      metaData.invitationAction.invitationRequestId
+      (metaData.invitationRequestId ||   metaData.invitationAction.invitationRequestId)
     ) {
+      const requestId= metaData.invitationRequestId ||   metaData.invitationAction.invitationRequestId;
       ConnectionService.acceptConnectionRequest(
-        metaData.invitationAction.invitationRequestId
+        requestId
       )
         .then(() => {
           setConnectionAcceptRequestSendError(false);
@@ -227,6 +228,7 @@ function Profile({
           setConnectionAcceptRequestSent(true);
         });
     } else {
+      setConnectionAcceptRequestInProgress(false);
       setConnectionAcceptRequestSendError(true);
       handleResponse(
         TITLES.CONNECTED_PEOPLE_ALREADY.replace("#X#", firstName),
