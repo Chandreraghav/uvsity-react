@@ -7,8 +7,6 @@ import TrendingSessions from "../components/Landing/TrendingSessions";
 import Stats from "../components/Landing/Stats";
 import { AuthGuardService } from "../auth-guard/service/AuthGuardService";
 import { useEffect, useState } from "react";
-import { useDataLayerContextValue } from "../context/DataLayer";
-import { actionTypes } from "../context/reducer";
 
 const Home = () => {
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
@@ -21,21 +19,10 @@ const Home = () => {
   const handleSignInDialogClose = () => {
     setOpenSignInDialog(false);
   };
-  const [USER,unauthorize] = useDataLayerContextValue();
-  const eraseContext = () => {
-    console.log('Clearing user data')
-    unauthorize({
-      type: actionTypes.SET_USER,
-      user: null,
-    });
-  };
+  
   const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
     setLoggedIn(AuthGuardService.isUserLoggedIn());
-    if(!loggedIn && USER.user) {
-      // this will be invoked only when the user is auto logged out.
-      eraseContext()
-    }
   }, []);
   // PUBLIC ROUTE
   return (
