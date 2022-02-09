@@ -172,9 +172,10 @@ function Participant(props) {
                 id="expected-number"
                 type="number"
                 required
-                inputProps={{
-                  maxlength: 3,
-                }}
+                onInput = {(e) =>{
+                  e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,3)
+              }}
+                
               />
               <FormHelperText className="blue-text leading-tight -ml-1 font-semibold">
                 For 100+ participants, premium membership is required.
