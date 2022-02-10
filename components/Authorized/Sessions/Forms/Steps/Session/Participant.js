@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import React, { useState } from "react";
+import CoPresentIcon from "@mui/icons-material/CoPresent";
 import Profile from "../../../../Network/People/Listing/Search/Profile";
 import SearchService from "../../../../../../pages/api/people/network/Search/SearchService";
 import SnapProfile from "../../../../Network/People/Listing/Snap/Profile";
@@ -22,12 +23,15 @@ import Switch from "@mui/material/Switch";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { PARTICIPANT_INVITATION_OPTIONS } from "../../../../../../constants/userdata";
 import Questions from "../../../../../shared/Questionairre/Questions";
+import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre";
 function Participant(props) {
   const [searchResults, setSearchResults] = useState([]);
   const [query, setQuery] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [itemSelected, setItemSelected] = useState(false);
+  const [customQuestionsToParticipants, setCustomQuestionsToParticipants] =
+    useState(false);
   const label = {
     inputProps: { "aria-label": "Switch for session accessibility" },
   };
@@ -87,6 +91,13 @@ function Participant(props) {
     setQuery("");
     setItemSelected(false);
   };
+  const onSaveQuestions = (data) => {};
+  const onCancelQuestions = (data) => {
+    setCustomQuestionsToParticipants(false);
+  };
+  const handleQuestionClick=()=>{
+    setCustomQuestionsToParticipants(true);
+  }
 
   return (
     <div className={`p-4`}>
@@ -118,28 +129,33 @@ function Participant(props) {
 
             {selectedItem && (
               <div
-                className={`py-1 px-1 mt-3 flex gap-5 justify-center  border-0 bg-blue-300 shadow-sm bg-repeat-round rounded-lg  `}
+                className={`py-1 px-1 mt-3 flex flex-col place-items-center gap-2 justify-center  border-0 bg-blue-300 shadow-sm bg-repeat-round rounded-lg  `}
               >
-                <h3 className="mt-2 text-sm leading-tight font-semibold italic">
-                  Your co-host will be
-                </h3>
-                <SnapProfile
-                  firstName={selectedItem.firstName}
-                  lastName={selectedItem.lastName}
-                  avatar={selectedItem.profilepicName}
-                  userType={selectedItem.userType}
-                  instituition={selectedItem.eduIns}
-                  oid={selectedItem.userDetailsId}
-                  userdata={USER_LOGIN_INFO?.data}
-                />
-                <div>
-                  <Tooltip title="Remove co-host">
-                    <DeleteIcon
-                      onClick={handleRemoveParticipant}
-                      size="small"
-                      className="app__anchor__block cursor-pointer"
-                    />
-                  </Tooltip>
+                <div className="text-md flex gap-2">
+                  <CoPresentIcon />{" "}
+                  <span className="text-md leading-snug font-semibold">
+                    Your co-host will be
+                  </span>
+                </div>
+                <div className="flex">
+                  <SnapProfile
+                    firstName={selectedItem.firstName}
+                    lastName={selectedItem.lastName}
+                    avatar={selectedItem.profilepicName}
+                    userType={selectedItem.userType}
+                    instituition={selectedItem.eduIns}
+                    oid={selectedItem.userDetailsId}
+                    userdata={USER_LOGIN_INFO?.data}
+                  />
+                  <div className="ml-auto">
+                    <Tooltip title="Remove co-host">
+                      <DeleteIcon
+                        onClick={handleRemoveParticipant}
+                        size="small"
+                        className="app__anchor__block cursor-pointer"
+                      />
+                    </Tooltip>
+                  </div>
                 </div>
               </div>
             )}
@@ -150,7 +166,7 @@ function Participant(props) {
                   ParticipantStyles.participant__search__results
                 } flex flex-col gap-2 pb-2 pt-2  px-2 shadow-xl absolute w-full overflow-y-auto`}
               >
-                {searchResults.map((searchResult) => (
+                {searchResults?.map((searchResult) => (
                   <Profile
                     onSelect={handleSelect}
                     key={searchResult.entityId}
@@ -172,10 +188,11 @@ function Participant(props) {
                 id="expected-number"
                 type="number"
                 required
-                onInput = {(e) =>{
-                  e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,3)
-              }}
-                
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 3);
+                }}
               />
               <FormHelperText className="blue-text leading-tight -ml-1 font-semibold">
                 For 100+ participants, premium membership is required.
@@ -230,6 +247,7 @@ function Participant(props) {
                   className="text-gray-600 text-xs font-normal"
                   aria-labelledby="radio-buttons-invitation-choice"
                   name="row-radio-buttons-invitation-choice-group"
+                  value={0}
                 >
                   {PARTICIPANT_INVITATION_OPTIONS.filter(
                     (option) => !option.disabled
@@ -255,8 +273,24 @@ function Participant(props) {
             </div>
           </Grid>
           {/* Custom Questions */}
+
           <Grid item xs={12}>
-             <Questions/>
+            <button
+             onClick={handleQuestionClick}
+              title="Add custom questions"
+              className={`app__button app__button__block ${customQuestionsToParticipants?'control__disabled__opaque':''}`}
+            >
+              {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
+              Add Custom Questions
+            </button>
+            {customQuestionsToParticipants && (
+              <>
+                <Questions
+                  onSave={onSaveQuestions}
+                  onCancel={onCancelQuestions}
+                />
+              </>
+            )}
           </Grid>
         </Grid>
       </Box>
