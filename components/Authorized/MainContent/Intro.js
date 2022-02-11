@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import IntroStyles from "../../../styles/authorized.intro.module.css";
-import { AuthGuardService } from "../../../auth-guard/service/AuthGuardService";
 import {
   GREETING,
   INTRO_ACTIONS,
@@ -22,7 +21,7 @@ import IntroShimmer from "./Shimmer/IntroShimmer";
 function Intro(props) {
   const userdata = props.data;
   const router = useRouter();
-  const [loggedIn, setLoggedIn] = useState(false);
+   
   const [introMoodColor, setIntroMoodColor] = useState(null);
   const introObject = INTRO_TEXT_KEYWORDS[0];
   const [introHeader, setIntroHeader] = useState(
@@ -31,7 +30,7 @@ function Intro(props) {
     </>
   );
   useEffect(() => {
-    setLoggedIn(AuthGuardService.isUserLoggedIn());
+    
     if (GREETING) {
       if (GREETING.includes(TIME_OF_DAY_GREETING.MORNING)) {
         setIntroMoodColor("morning");
@@ -59,9 +58,7 @@ function Intro(props) {
       controller?.abort();
     };
   }, []);
-  if (!loggedIn) {
-    return "";
-  }
+  
 
   const invokeIntroAction = (code) => {
     if (code === WORKFLOW_CODES.USER.INTRO_PATHS.SESSION) {

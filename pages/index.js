@@ -5,8 +5,7 @@ import Feature from "../components/Landing/Feature";
 import Footer from "../components/shared/Footer";
 import TrendingSessions from "../components/Landing/TrendingSessions";
 import Stats from "../components/Landing/Stats";
-import { AuthGuardService } from "../auth-guard/service/AuthGuardService";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Home = () => {
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
@@ -20,14 +19,11 @@ const Home = () => {
     setOpenSignInDialog(false);
   };
   
-  const [loggedIn, setLoggedIn] = useState(false);
-  useEffect(() => {
-    setLoggedIn(AuthGuardService.isUserLoggedIn());
-  }, []);
+   
   // PUBLIC ROUTE
   return (
     <Layout options={layoutObj}>
-      <Header isAuthorized={loggedIn}
+      <Header
         setSignInDialogOpen={handleSignInDialogOpen}
       />
       <Hero

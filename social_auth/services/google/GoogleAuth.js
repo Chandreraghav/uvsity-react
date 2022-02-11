@@ -36,7 +36,7 @@ function GoogleAuth() {
   },[])
   
   const handleSignIn = (token) => {
-    if (!AuthService.isUserLoggedIn() && !AuthService.isGoogleLoggedIn()) {
+    if (!AuthService.isUserLoggedIn(true) && !AuthService.isGoogleLoggedIn()) {
       new LoginService()
         .socialLogin(LOGIN_SOURCE.GOOGLE)
         .then((response) => {
@@ -45,7 +45,7 @@ function GoogleAuth() {
             user: response, //bearer token response
           });
           AuthService.setAuthorization(LOGIN_SOURCE.GOOGLE, response);
-          AuthGuardService.isVerifiedLogin()
+          AuthGuardService.isVerifiedLogin(true)
             ? router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD)
             : handleResponse(
                 getWorkflowError(LOGIN_ERRORS.SOCIAL.GOOGLE.LOGIN_FAILED),
@@ -54,6 +54,7 @@ function GoogleAuth() {
               );
         })
         .catch(() => {
+
           handleResponse(
             LOGIN_ERRORS.SOCIAL.GOOGLE.LOGIN_FAILED,
             RESPONSE_TYPES.ERROR

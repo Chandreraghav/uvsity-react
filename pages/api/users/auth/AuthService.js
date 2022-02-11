@@ -8,9 +8,9 @@ import { ENDPOINTS } from "../../../../async/endpoints";
 import { v4 as uuidv4 } from "uuid";
 import { JWT } from "../../../../jwt/auth/JWT";
 import { parseBoolean } from "../../../../utils/utility";
+import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 
 export class AuthService {
-  
   static getCurrentUser() {
     return getLocalStorageObject("uvsity-user");
   }
@@ -86,12 +86,35 @@ export class AuthService {
     }
   }
 
-  static isUserLoggedIn() {
+  static  isUserLoggedIn(preAuthFlag) {
     try {
-      const user=JSON.parse(getLocalStorageObject("uvsity-user"))
-      if(user.data) return true;
-      return false
+      const user = JSON.parse(getLocalStorageObject("uvsity-user"));
+      if(preAuthFlag){
+        if(user && user.data) return true;
+        return false;
+      }
+      let auth = new Promise((resolve, reject) => {
+        if (user && user.data) {
+           AuthGuardService.pollSessionValidity()
+            .then((data) => {
+              if (data.status === 200) resolve(true);
+              else  resolve(false);
+            })
+            .catch(() => {
+              resolve(false);
+            });
+        }
+        else {
+          resolve(false);
+        }
+      });
+      auth.then((loggedIn) => {
+        if (loggedIn===true) return true;
+        AuthService.logout();
+        return false;
+      });
     } catch (error) {
+      AuthService.logout();
       return false;
     }
   }
@@ -118,14 +141,10 @@ export class AuthService {
       removeLocalStorageObject("uvsity-loggedIn");
       removeLocalStorageObject("uvsity-loggedInSource");
       this.cancelAppLayerSubscriptions(true);
-     
 
       // we do not clear ip data on logout because of its global nature.
-    } catch (error) {
-    }
+    } catch (error) {}
   }
-
- 
 
   static cancelAppLayerSubscriptions(cancelSessionPolling) {
     if (cancelSessionPolling) {

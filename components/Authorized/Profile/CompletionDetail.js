@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ProfileCompletionDetailStyle from "../../../styles/ProfileCompletionDetail.module.css";
-import { AuthGuardService } from "../../../auth-guard/service/AuthGuardService";
 import CompletionProgress from "./CompletionProgress";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -25,21 +24,17 @@ import CompletionDetailShimmer from "./Shimmer/CompletionDetailShimmer";
 function CompletionDetail({ data }) {
   const [suggestionShowed, setSuggestionShown] = useState(false);
   const [completionTextObject, setCompletionTextObject] = useState({});
-  const [loggedIn, setLoggedIn] = useState(false);
+  
   const toggleSuggestions = (e) => {
     setSuggestionShown(!suggestionShowed);
   };
-  useEffect(() => {
-    setLoggedIn(AuthGuardService.isUserLoggedIn());
-  }, []);
+  
   useEffect(() => {
     setCompletionTextObject(
       getProfileCompletionTexts(data?.USER_PROFILE_PERCENTAGE_COMPLETION?.data)
     );
   }, [data?.USER_PROFILE_PERCENTAGE_COMPLETION]);
-  if (!loggedIn) {
-    return "";
-  }
+   
   const getRGBColor = () => {
     if (completionTextObject.alertLevel === RESPONSE_TYPES.SUCCESS) {
       return RESPONSE_TYPES_COLOR.SUCCESS.rgb;

@@ -41,3 +41,19 @@ export const loginValidationSchema = Yup.object().shape({
     .matches(PASSWORD, REGISTRATION_ERRORS.PASSWORD_ERROR.POLICY)
     .required(REGISTRATION_ERRORS.REQUIRED_FIELDS.PASSWORD),
 });
+
+export const questionValidationSchema = Yup.object().shape({
+  description: Yup.string().required("Questionairre description is required"),
+  questions: Yup.array().of(
+    Yup.object().shape({
+      question: Yup.string().required("Question is required"),
+      answerType: Yup.string().required("Answer Type is required"),
+      maxLength: Yup.number().required("Answer maximum length is required"),
+      options: Yup.array().of(
+        Yup.object().shape({
+          option: Yup.string().required("Option is required"),
+        })
+      ),
+    })
+  ),
+});

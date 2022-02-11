@@ -19,15 +19,19 @@ const PrivateRoute = (WrappedComponent, verifyToken) => {
         user: null,
       });
     };
+    const logoff=() =>{
+      setVerified(false);
+      queryClient.removeQueries();
+      AuthService.logout();
+      eraseContext();
+      Router.replace("/");
+    }
+    
     useEffect(async () => {
       const accessToken = AuthService.getAuthToken();
       // if no accessToken was found,then we erase context, invalidate queries and redirect to "/" page.
       if (!accessToken) {
-        setVerified(false);
-        queryClient.removeQueries();
-        AuthService.logout();
-        eraseContext();
-        Router.replace("/");
+        logoff();
       } else {
         // we call the api that verifies the token.
         await AuthGuardService.pollSessionValidity().then((data) => {
@@ -36,18 +40,10 @@ const PrivateRoute = (WrappedComponent, verifyToken) => {
             setVerified(true);
           } else {
             // If the token was fraud/session is invalid we remove it from localStorage/erase context, invalidate queries, and then redirect to "/"
-            setVerified(false);
-            queryClient.removeQueries();
-            AuthService.logout();
-            eraseContext();
-            Router.replace("/");
+            logoff();
           }
         }).catch((err)=>{
-          setVerified(false);
-          queryClient.removeQueries();
-          AuthService.logout();
-          eraseContext();
-          Router.replace("/");
+          logoff();
         })
       }
     }, []);
@@ -65,3 +61,4 @@ const PrivateRoute = (WrappedComponent, verifyToken) => {
 };
 
 export default PrivateRoute;
+

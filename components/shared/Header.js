@@ -3,11 +3,16 @@ import HeaderStyle from "../../styles/Header.module.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PreAuthSignUpMessageBar from "./PreAuthSignUpMessageBar";
+import { AuthService } from "../../pages/api/users/auth/AuthService";
 toast.configure();
-function Nav({isAuthorized,setSignInDialogOpen}) {
+function Nav({ setSignInDialogOpen }) {
   const [show, handleShow] = useState(false);
   const [isPreAuthMessagePanelClosed, preAuthMessagePanelClosed] =
     useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    setLoggedIn(AuthService.isUserLoggedIn());
+  }, []);
   useEffect(() => {
     window.addEventListener("scroll", transitionNavBar);
     return () => window.removeEventListener("scroll", transitionNavBar);
@@ -19,35 +24,44 @@ function Nav({isAuthorized,setSignInDialogOpen}) {
       handleShow(false);
     }
   };
-  
+
   return (
     <div>
-      
-      {!isAuthorized && (<PreAuthSignUpMessageBar
-        isPreAuthMessagePanelClosed={preAuthMessagePanelClosed}
-      />)}
+      {!loggedIn && (
+        <PreAuthSignUpMessageBar
+          isPreAuthMessagePanelClosed={preAuthMessagePanelClosed}
+        />
+      )}
       <div
         className={`${HeaderStyle.nav} ${show && HeaderStyle.nav__black} ${
-          (isPreAuthMessagePanelClosed || isAuthorized) && HeaderStyle.nav__original
+          (isPreAuthMessagePanelClosed || loggedIn) &&
+          HeaderStyle.nav__original
         }`}
       >
         <div className={`flex`}>
           <img
             className={`${HeaderStyle.nav__logo} ${
-              (isPreAuthMessagePanelClosed || isAuthorized) && HeaderStyle.nav__logo__original
+              (isPreAuthMessagePanelClosed || loggedIn) &&
+              HeaderStyle.nav__logo__original
             }`}
             src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE}
             alt="uvsity-Logo"
           />
           <div className="ml-auto flex gap-4">
-          <a href="#aboutus">
-            <button className={` ${HeaderStyle.nav__button__sm}`}>About us</button>
-          </a>
-          {!isAuthorized && (<button onClick={(e) => setSignInDialogOpen()} className={` ${HeaderStyle.nav__button__sm}`}>Login</button>)}
-         
+            <a href="#aboutus">
+              <button className={` ${HeaderStyle.nav__button__sm}`}>
+                About us
+              </button>
+            </a>
+            {!loggedIn && (
+              <button
+                onClick={(e) => setSignInDialogOpen()}
+                className={` ${HeaderStyle.nav__button__sm}`}
+              >
+                Login
+              </button>
+            )}
           </div>
-          
-          
         </div>
       </div>
     </div>

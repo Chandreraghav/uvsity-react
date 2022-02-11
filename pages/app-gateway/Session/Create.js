@@ -36,7 +36,7 @@ function Create() {
   };
 
   return(
-    <Layout options={layoutObj}>
+    <Layout privateRoute={true} options={layoutObj}>
     <Header data={getData.USER_PROFILE_SUMMARY} />
     <CreateSession
       data={{
