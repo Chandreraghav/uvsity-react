@@ -16,11 +16,9 @@ import Stats from "../Authorized/Profile/Connection/Stats";
 
 
 function Sidebar({ data, type }) {
-  const [loggedIn, setLoggedIn] = useState(false);
+  
   const [isSticky, setSticky] = useState(false);
-  useEffect(() => {
-    setLoggedIn(AuthGuardService.isUserLoggedIn());
-  }, []);
+   
   useEffect(() => {
     window.addEventListener("scroll", () => {
       const scrollheightLimit = type === "left" ? 500 : 700;
@@ -37,9 +35,7 @@ function Sidebar({ data, type }) {
     };
   }, []);
 
-  if (!loggedIn) {
-    return "";
-  }
+  
   if (type === "left") {
     return (
       <>

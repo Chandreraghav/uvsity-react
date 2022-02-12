@@ -14,8 +14,17 @@ export const WORKFLOW_CODES = {
       REGISTER: "S_REG",
       SPONSOR: "S_SPO",
       VIEW: "S_VIE",
-      FEED:'S_FEE',
-      CREATE:'S_CRE'
+      FEED: "S_FEE",
+      CREATE: "S_CRE",
+    },
+    SPONSORSHIP: {
+      EDITS: {
+        FEATURES: {
+          SILVER: "SE_SIL",
+          GOLD: "SE_GLD",
+          PLATINUM: "SE_PLT",
+        },
+      },
     },
 
     CONNECTION_TYPES: {

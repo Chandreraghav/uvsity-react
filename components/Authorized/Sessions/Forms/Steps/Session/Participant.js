@@ -24,7 +24,9 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { PARTICIPANT_INVITATION_OPTIONS } from "../../../../../../constants/userdata";
 import Questions from "../../../../../shared/Questionairre/Questions";
 import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre";
+import QuestionairreService from "../../../../../../pages/api/session/QuestionairreService";
 function Participant(props) {
+  const [processing, setProcessing] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [query, setQuery] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
@@ -32,6 +34,9 @@ function Participant(props) {
   const [itemSelected, setItemSelected] = useState(false);
   const [customQuestionsToParticipants, setCustomQuestionsToParticipants] =
     useState(false);
+
+  const [questionairreIdentifier, setQuestionairreIdentifier] = useState(null);
+  const [questionairre, setQuestionairre] = useState(null);
   const label = {
     inputProps: { "aria-label": "Switch for session accessibility" },
   };
@@ -91,16 +96,32 @@ function Participant(props) {
     setQuery("");
     setItemSelected(false);
   };
-  const onSaveQuestions = (data) => {};
+  const onSaveQuestions = (data) => {
+    setQuestionairreIdentifier(data);
+    setCustomQuestionsToParticipants(false);
+  };
   const onCancelQuestions = (data) => {
     setCustomQuestionsToParticipants(false);
   };
-  const handleQuestionClick=()=>{
-    setCustomQuestionsToParticipants(true);
-  }
+  const handleQuestionClick = () => {
+    if (questionairreIdentifier && questionairreIdentifier > 0) {
+      setProcessing(true);
+      // call api to fetch the questions with identifier
+      QuestionairreService.getQuestionairre(questionairreIdentifier)
+        .then((res) => {
+          setCustomQuestionsToParticipants(true);
+          setQuestionairre(res.data);
+          setProcessing(false);
+        })
+        .catch((err) => {
+          setProcessing(false);
+          setCustomQuestionsToParticipants(false);
+        });
+    } else setCustomQuestionsToParticipants(true);
+  };
 
   return (
-    <div className={`p-4`}>
+    <div className={`p-4 ${processing ? "control__disabled__opaque" : ""}`}>
       <Box sx={{ width: "100%" }}>
         <Grid
           container
@@ -275,17 +296,50 @@ function Participant(props) {
           {/* Custom Questions */}
 
           <Grid item xs={12}>
-            <button
-             onClick={handleQuestionClick}
-              title="Add custom questions"
-              className={`app__button app__button__block ${customQuestionsToParticipants?'control__disabled__opaque':''}`}
-            >
-              {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
-              Add Custom Questions
-            </button>
+            {questionairreIdentifier == null || questionairreIdentifier == 0 ? (
+              <>
+                <button
+                  onClick={handleQuestionClick}
+                  title="Add custom questions"
+                  className={`app__button app__button__block ${
+                    customQuestionsToParticipants
+                      ? "control__disabled__opaque"
+                      : ""
+                  }`}
+                >
+                  {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
+                  Add Custom Questions
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={handleQuestionClick}
+                  title="Edit custom questions"
+                  className={`app__button app__button__block ${
+                    customQuestionsToParticipants
+                      ? "control__disabled__opaque"
+                      : ""
+                  }`}
+                >
+                  {CUSTOM_QUESTION_OPTS.icons.EditQuestion}
+                  Edit Custom Questions
+                </button>
+              </>
+            )}
             {customQuestionsToParticipants && (
               <>
                 <Questions
+                  mode={
+                    questionairreIdentifier && questionairreIdentifier > 0
+                      ? "edit"
+                      : "add"
+                  }
+                  data={
+                    questionairreIdentifier && questionairreIdentifier > 0
+                      ? questionairre
+                      : null
+                  }
                   onSave={onSaveQuestions}
                   onCancel={onCancelQuestions}
                 />

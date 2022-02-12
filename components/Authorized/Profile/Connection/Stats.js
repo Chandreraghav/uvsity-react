@@ -1,5 +1,5 @@
 import { Divider, Tooltip, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, {  } from "react";
 import {
   CONNECTIONS,
   IMAGE_PATHS,
@@ -10,18 +10,12 @@ import StatStyle from "../../../../styles/Stat.module.css";
 import { TITLES, TOOLTIPS } from "../../../../constants/userdata";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 import Spacer from "../../../shared/Spacer";
 import Shimmer from "../Shimmer/Shimmer";
 function Stats({ data }) {
   let tooltip, title, Icon, summary;
-  const [loggedIn, setLoggedIn] = useState(false);
-  useEffect(() => {
-    setLoggedIn(AuthGuardService.isUserLoggedIn());
-  });
-  if (!loggedIn) {
-    return "";
-  }
+   
+   
   summary = data?.USER_PROFILE_SUMMARY;
   title = TITLES.CONNECTIONS;
   Icon = SupervisorAccountIcon;

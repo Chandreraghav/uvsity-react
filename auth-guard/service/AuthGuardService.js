@@ -3,8 +3,8 @@ import SessionValidityService from "../../pages/api/users/session/SessionValidit
 
 export class AuthGuardService extends AuthService {
   
-  static isVerifiedLogin() {
-   return AuthService.isUserLoggedIn()
+  static isVerifiedLogin(justAuthFlag) {
+   return AuthService.isUserLoggedIn(justAuthFlag)
       ? true
       : false
   }

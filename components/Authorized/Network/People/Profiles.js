@@ -1,6 +1,5 @@
 import { Divider, Tooltip, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 import { TOOLTIPS } from "../../../../constants/userdata";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import Spacer from "../../../shared/Spacer";
@@ -21,7 +20,7 @@ function Profiles({
   data
 }) {
   const [bo, setBO] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(false);
+
   const getProfileCollection = () => {
     switch (workflowRoute) {
       case WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING:
@@ -34,9 +33,7 @@ function Profiles({
     }
   };
    
-  useEffect(() => {
-    setLoggedIn(AuthGuardService.isUserLoggedIn());
-  }, []);
+ 
 
   useEffect(() => {
     let controller = new AbortController();
@@ -66,9 +63,7 @@ function Profiles({
     };
   }, [data?.PROFILE_VISITS?.data, data?.SUGGESTED_FRIENDS?.data]);
 
-  if (!loggedIn) {
-    return "";
-  }
+  
   if (!dashboardPreview) {
     return (
       <h1>

@@ -14,6 +14,11 @@ export const ENDPOINTS = {
       VALIDITY_CHECK: "/poll/sessionExpiryCheck",
     },
     SCHEDULED_END_DATE:"/courses/scheduledEndDate",
+    QUESTIONAIRRE:{
+      CREATE:'questionnaire/create',
+      UPDATE:'questionnaire/update',
+      GET:'questionnaire/'
+    }
   },
 
   USER: {

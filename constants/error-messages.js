@@ -50,3 +50,10 @@ export const PEOPLE={
      CONNECTION_ACCEPT_ERROR: "There occured a problem accepting the connection request from"
   }
 }
+
+export const SESSION_ERROR={
+  QUESTIONAIRRE:{
+     CREATE: "There occured a problem creating the questionairre. Please try again.",
+     UPDATE: "There occured a problem updating the questionairre. Please try again."
+  }
+}
