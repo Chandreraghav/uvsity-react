@@ -38,14 +38,18 @@ import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import PreviewIcon from "@mui/icons-material/Preview";
-import ImageIcon from '@mui/icons-material/Image';
-import ArticleIcon from '@mui/icons-material/Article';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import FolderZipIcon from '@mui/icons-material/FolderZip';
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import ImageIcon from "@mui/icons-material/Image";
+import ArticleIcon from "@mui/icons-material/Article";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import FolderZipIcon from "@mui/icons-material/FolderZip";
+import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 import { AUTHORIZED_ROUTES } from "./routes";
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import RsvpIcon from '@mui/icons-material/Rsvp';
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import RsvpIcon from "@mui/icons-material/Rsvp";
+import StarIcon from "@mui/icons-material/Star";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+import EditIcon from "@mui/icons-material/Edit";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -56,7 +60,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
-    redirectTo:AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD
+    redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD,
   },
   {
     id: 2,
@@ -67,7 +71,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: true,
     name: null,
-    redirectTo:null
+    redirectTo: null,
   },
 
   {
@@ -79,7 +83,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
-    redirectTo:null
+    redirectTo: null,
   },
 
   {
@@ -91,7 +95,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: true,
     name: null,
-    redirectTo:null
+    redirectTo: null,
   },
   {
     id: 9,
@@ -102,7 +106,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
-    redirectTo:null
+    redirectTo: null,
   },
 
   {
@@ -114,7 +118,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
-    redirectTo:null
+    redirectTo: null,
   },
 
   {
@@ -126,7 +130,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
-    redirectTo:null
+    redirectTo: null,
   },
 
   {
@@ -138,7 +142,7 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
-    redirectTo:null,
+    redirectTo: null,
   },
 
   {
@@ -151,7 +155,7 @@ export const HEADER_OPTIONS = [
       "https://lh3.googleusercontent.com/a-/AOh14Gj4zE9yHsoBriErUebkmDlq2CUfcu30Ql72DiOaAdA=s96-c",
     hidden: false,
     name: "Swaroop Chakraborty",
-    redirectTo:null
+    redirectTo: null,
   },
 ];
 
@@ -443,35 +447,42 @@ export const getProfileCompletionTexts = (profileCompletionData) => {
     recommendedSteps: [],
   };
   if (!profileCompletionData?.isAboutYouCompleted) {
-    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.aboutYouPercent}% to your profile by updating about you.`
+    profileCompletionObject.recommendedSteps.push(
+      `Add ${profileCompletionData?.aboutYouPercent}% to your profile by updating about you.`
     );
   }
   if (!profileCompletionData?.isPastEducationAdded) {
-    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.pastEducationPercent}% to your profile by updating your past education details.`
+    profileCompletionObject.recommendedSteps.push(
+      `Add ${profileCompletionData?.pastEducationPercent}% to your profile by updating your past education details.`
     );
   }
   if (!profileCompletionData?.isPhotoAdded) {
-    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.photoAddedPercent}% to your profile by adding a new profile picture.`
+    profileCompletionObject.recommendedSteps.push(
+      `Add ${profileCompletionData?.photoAddedPercent}% to your profile by adding a new profile picture.`
     );
   }
 
   if (!profileCompletionData?.isProjResExpAdded) {
-    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.projResExpsPercent}% to your profile by updating your Project/Research/Work Experience.`
+    profileCompletionObject.recommendedSteps.push(
+      `Add ${profileCompletionData?.projResExpsPercent}% to your profile by updating your Project/Research/Work Experience.`
     );
   }
 
   if (!profileCompletionData?.isSkllsetAdded) {
-    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.skillSetPercent}% to your profile by updating your Specialties/Skills.`
+    profileCompletionObject.recommendedSteps.push(
+      `Add ${profileCompletionData?.skillSetPercent}% to your profile by updating your Specialties/Skills.`
     );
   }
 
   if (!profileCompletionData?.isFriendsPresent) {
-    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.friendPresentPercent}% to your profile by adding new connections.`
+    profileCompletionObject.recommendedSteps.push(
+      `Add ${profileCompletionData?.friendPresentPercent}% to your profile by adding new connections.`
     );
   }
 
   if (!profileCompletionData?.isRecommendationsPresentInInbox) {
-    profileCompletionObject.recommendedSteps.push(`Add ${profileCompletionData?.recommendationPercent}% to your profile by getting recommended from your connections.`
+    profileCompletionObject.recommendedSteps.push(
+      `Add ${profileCompletionData?.recommendationPercent}% to your profile by getting recommended from your connections.`
     );
   }
   if (profileCompletionData?.percentageOfProfileAlreadyCompleted == 100) {
@@ -594,63 +605,62 @@ export const ME = "(Me)";
 export const SESSION_POSTER = {
   id: "session-poster",
   title: "Poster",
-  description:
-    "Drag and drop a poster or click to select one",
+  description: "Drag and drop a poster or click to select one",
   preview: true,
   accept: "image/jpeg, image/png, image/jpg, image/gif",
   multiple: false,
   validation: {
     maxAllowedSize: 5,
     minAllowedDimension: "575x150",
-    width:575,
-    height:150,
-    allowedExtensions:['jpg','png','gif','jpeg'],
-    maxAllowedSizeInBytes:5242880
+    width: 575,
+    height: 150,
+    allowedExtensions: ["jpg", "png", "gif", "jpeg"],
+    maxAllowedSizeInBytes: 5242880,
   },
-  consent:null,
-  icon: <ImageIcon/>,
-  required:true
+  consent: null,
+  icon: <ImageIcon />,
+  required: true,
 };
 
 export const SESSION_DOCUMENT = {
   id: "session-document",
   title: "Document",
-  description:
-    "Drag and drop a doc or click to select one",
+  description: "Drag and drop a doc or click to select one",
   preview: true,
-  accept: "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, application/vnd.openxmlformats-officedocument.presentationml.presentation,text/xml,application/zip,application/x-7z-compressed,text/plain",
+  accept:
+    "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, application/vnd.openxmlformats-officedocument.presentationml.presentation,text/xml,application/zip,application/x-7z-compressed,text/plain",
   multiple: false,
   validation: {
     maxAllowedSize: 50,
-    allowedExtensions:['docx','doc','pdf','zip','txt'],
-    maxAllowedSizeInBytes:52428800
+    allowedExtensions: ["docx", "doc", "pdf", "zip", "txt"],
+    maxAllowedSizeInBytes: 52428800,
   },
-  icons:{
-    TXT:<TextSnippetIcon/>,
-    DOCX:<ArticleIcon/>,
-    DOC:<ArticleIcon/>,
-    PDF:<PictureAsPdfIcon/>,
-    ZIP:<FolderZipIcon/>
+  icons: {
+    TXT: <TextSnippetIcon />,
+    DOCX: <ArticleIcon />,
+    DOC: <ArticleIcon />,
+    PDF: <PictureAsPdfIcon />,
+    ZIP: <FolderZipIcon />,
   },
-  icon: <ArticleIcon/>,
-  required:false,
-  consent:{
-    text:`I agree that this document doesn't violate other's copyright or privacy rights.`,
-    element:'checkbox'
+  icon: <ArticleIcon />,
+  required: false,
+  consent: {
+    text: `I agree that this document doesn't violate other's copyright or privacy rights.`,
+    element: "checkbox",
   },
 };
 
-export const PARTICIPANT_INVITATION_OPTIONS=[
+export const PARTICIPANT_INVITATION_OPTIONS = [
   {
     id: 1,
     icon: <NotificationsActiveIcon />,
     hidden: false,
     disabled: false,
     size: "small",
-    checked:true,
-    name:'createCourse.notifyPastAttendees',
-    text:'Auto notify all participants from my all previous sessions',
-    value:0
+    checked: true,
+    name: "createCourse.notifyPastAttendees",
+    text: "Auto notify all participants from my all previous sessions",
+    value: 0,
   },
   {
     id: 2,
@@ -658,9 +668,158 @@ export const PARTICIPANT_INVITATION_OPTIONS=[
     hidden: false,
     disabled: false,
     size: "small",
-    checked:false,
-    name:'createCourse.notifyPastAttendees',
-    text:'I will invite manually from "My Session"',
-    value:1
+    checked: false,
+    name: "createCourse.notifyPastAttendees",
+    text: 'I will invite manually from "My Session"',
+    value: 1,
   },
-]
+];
+
+export const PARTICIPANT_QUESTIONAIRRES = {
+  CREATED: "Questionairre created for participants successfully",
+  UPDATED: "Questionairre updated successfully",
+};
+
+export const FEE = {
+  PROMO_CODES: {
+    text: 'You can add promo codes for this session under "Sessions -> My Sessions"',
+    icon: <StarIcon />,
+  },
+  HELP_TEXT: {
+    SET_FEE_TYPEWRITER: "You've set a fee of $#XX for this session.",
+    ICON: <PriceCheckIcon />,
+  },
+};
+
+export const SPONSORSHIP = {
+  ICONS: {
+    EDIT: <EditIcon />,
+  },
+  LEVELS: [
+    {
+      id: 1,
+      title: "Silver",
+      icon: "",
+      alias: "Silver",
+      workflow: {
+        code: WORKFLOW_CODES.USER.SPONSORSHIP.EDITS.FEATURES.SILVER,
+      },
+      defaults: {
+        price: {
+          text: 500,
+          display: "$500",
+        },
+        featured: {
+          text: `Example:
+          Company logo and link on this session
+          Announcement by session owner during the session`,
+          html: (
+            <>
+              <h3 className="text-bold font-semibold text-xl mb-1">
+                <u>F</u>eatures
+              </h3>
+              <p className="leading-loose text-sm text-gray-600">
+                <CheckCircleOutlineIcon /> Company logo and link on this session
+              </p>
+              <p className="leading-loose text-sm text-gray-600">
+                <CheckCircleOutlineIcon /> Announcement by session owner during
+                the session
+              </p>
+            </>
+          ),
+        },
+      },
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvr1_3DizGBjUT43njjHLIihWLjH8JgLgshQ&usqp=CAU",
+    },
+    {
+      id: 2,
+      title: "Gold",
+      icon: "",
+      alias: "Gold",
+      workflow: {
+        code: WORKFLOW_CODES.USER.SPONSORSHIP.EDITS.FEATURES.GOLD,
+      },
+      defaults: {
+        price: {
+          text: 1000,
+          display: "$1000",
+        },
+        featured: {
+          text: `Example:
+          Company logo and link on this session
+Announcement by session owner during the session
+2 min time during the session to showcase your company or product`,
+          html: (
+            <>
+              <h3 className="text-bold font-semibold text-xl mb-1">
+                <u>F</u>eatures
+              </h3>
+              <p className="leading-loose text-sm text-gray-600">
+                <CheckCircleOutlineIcon className=" text-yellow-700" /> Company
+                logo and link on this session
+              </p>
+              <p className="leading-loose text-sm text-gray-600">
+                <CheckCircleOutlineIcon className=" text-yellow-700" />{" "}
+                Announcement by session owner during the session
+              </p>
+              <p className="leading-loose text-sm text-gray-600">
+                <CheckCircleOutlineIcon className=" text-yellow-700" /> 2 min
+                time during the session to showcase your company or product
+              </p>
+            </>
+          ),
+        },
+      },
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXG2UQ2x9iS_Wr03vZBZHLzNDbWyxKbx0bTQ&usqp=CAU",
+    },
+    {
+      id: 3,
+      title: "Platinum",
+      icon: "",
+      defaults: {
+        price: {
+          text: 5000,
+          display: "$5000",
+        },
+        featured: {
+          text: `Example:
+          Company logo and link on this session
+Announcement by session owner during the session
+5 min time during the session to showcase your company or product
+Include company logo and link in social media as proud sponsor`,
+          html: (
+            <>
+              <h3 className="text-bold font-semibold text-xl mb-1">
+                <u>F</u>eatures
+              </h3>
+              <p className="leading-loose text-sm text-gray-600">
+                <CheckCircleOutlineIcon color="primary" /> Company logo and link
+                on this session
+              </p>
+              <p className="leading-loose text-sm text-gray-600">
+                <CheckCircleOutlineIcon color="primary" /> Announcement by
+                session owner during the session
+              </p>
+              <p className="leading-loose text-sm text-gray-600">
+                <CheckCircleOutlineIcon color="primary" /> 5 min time during the
+                session to showcase your company or product
+              </p>
+              <p className="leading-loose text-sm text-gray-600">
+                <CheckCircleOutlineIcon color="primary" /> Include company logo
+                and link in social media as proud sponsor
+              </p>
+            </>
+          ),
+        },
+      },
+      alias: "Platinum",
+      workflow: {
+        code: WORKFLOW_CODES.USER.SPONSORSHIP.EDITS.FEATURES.PLATINUM,
+      },
+      image:
+        "data:image/jpeg;base64,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",
+    },
+  ],
+};

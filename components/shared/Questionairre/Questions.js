@@ -10,14 +10,20 @@ import {
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CUSTOM_QUESTION_OPTS } from "../../../constants/questionairre";
 import Spacer from "../Spacer";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
 import { questionValidationSchema } from "../../../validation/services/auth/ValidationSchema";
-
+import QuestionairreService from "../../../pages/api/session/QuestionairreService";
+import { handleResponse } from "../../../toastr-response-handler/handler";
+import { getWorkflowError } from "../../../error-handler/handler";
+import { RESPONSE_TYPES } from "../../../constants/constants";
+import { toast } from "react-toastify";
+import { SESSION_ERROR } from "../../../constants/error-messages";
+import { PARTICIPANT_QUESTIONAIRRES } from "../../../constants/userdata";
+toast.configure();
 class Question {
   constructor(isRemovable) {
     this.number = 1;
@@ -36,6 +42,32 @@ class Question {
       maxlength: CUSTOM_QUESTION_OPTS.maxLength.default,
     };
   }
+  buildDataOptions = (options) => {
+    let optsArr = [];
+    options.map((option, index) => {
+      const o = new Option();
+      o.buildOptions(index > 1 ? true : false, option, index + 1, true);
+      optsArr.push(o);
+    });
+    return optsArr;
+  };
+  buildQuestions(isRemovable, data, editMode) {
+    this.number = data.number;
+    this.question = {
+      val: data.question,
+      required: true,
+      removable: isRemovable,
+      questionnaireType: data.questionnaireType,
+      maxRating: data.maxRating,
+      options: data.options ? this.buildDataOptions(data.options) : null,
+    };
+    this.answer = {
+      selectedTypeCode: Number(data.answerTypeCode),
+      required: true,
+      typeCodeOpts: CUSTOM_QUESTION_OPTS.answer_types,
+      maxlength: data.maxLength || CUSTOM_QUESTION_OPTS.maxLength.default,
+    };
+  }
 }
 class Option {
   constructor(isRemovable) {
@@ -46,13 +78,56 @@ class Option {
       removable: isRemovable,
     };
   }
+
+  buildOptions(isRemovable, data, index, editMode) {
+    this.optionNumber = index;
+    this.option = {
+      val: data,
+      required: true,
+      removable: isRemovable,
+    };
+  }
 }
-function Questions({ onCancel }) {
+function Questions({ data, mode, onSave, onCancel }) {
   // make first question visible by default;
-  const _question = new Question(false);
-  const initialArray = [_question];
-  const [questions, setQuestions] = useState(initialArray);
+  const [processing, setProcessing] = useState(false);
+  const [questions, setQuestions] = useState([]);
   const [questionaireDescription, setQuestionairreDescription] = useState("");
+
+  useEffect(() => {
+    if (data) {
+      reset();
+      let arr = [];
+      data.questions.map((question, index) => {
+        const q = new Question();
+        q.buildQuestions(index > 0 ? true : false, question, true);
+        arr.push(q);
+      });
+      arr?.questions?.map((question, index) => {
+        if (question.options) {
+          question.options = question.options
+            .filter((opt) => opt)
+            .map((a) => a.option);
+        } else {
+          question.options = null;
+        }
+      });
+      setQuestionairreDescription(data.description);
+      setQuestions(arr);
+      setTimeout(() => {
+        scrollDivToBottom("scrollable-question-div");
+        window.scrollTo(0, document.body.scrollHeight);
+      }, 150);
+    } else {
+      // new data
+      let _question;
+      let initialArray = [];
+      _question = new Question(false);
+      initialArray = [_question];
+      setQuestions(initialArray);
+    }
+  }, [data]);
+
   const handleAdd = () => {
     const question = new Question(true);
     question.number = questions.length + 1;
@@ -68,13 +143,35 @@ function Questions({ onCancel }) {
     if (index !== -1) {
       array.splice(index, 1);
       setQuestions(array);
+      reset();
     }
   };
   const setSelectedAnswerTypeCode = (index, value) => {
     var array = [...questions];
     if (index !== -1) {
-      array[index].question.options[index] = new Option(false);
-      array[index].question.options[index + 1] = new Option(false);
+      let i = 0;
+      if (mode === "add") {
+        while (i < 2) {
+          // an option must be atleast two option by default
+          array[index].question.options[i] = new Option(false);
+          i++;
+        }
+      } else {
+        // edit mode, where a new question is added and then changed on answer type.
+        if (
+          array[index].question.options === null ||
+          array[index].question.options.length === 0
+        ) {
+          i = 0;
+          if (array[index].question.options == null)
+            array[index].question.options = [];
+          while (i < 2) {
+            // an option must be atleast two option by default
+            array[index].question.options[i] = new Option(false);
+            i++;
+          }
+        }
+      }
       array[index].answer.selectedTypeCode = value;
     }
     setQuestions(array);
@@ -121,12 +218,14 @@ function Questions({ onCancel }) {
     var array = [...questions];
     array.length = 1;
     setQuestions(array);
+    reset();
   };
 
   const handleRemoveOption = (index, optIndex) => {
     var array = [...questions];
     array[index].question.options.splice(optIndex, 1);
     setQuestions(array);
+    reset();
   };
 
   const scrollDivToBottom = (div) => {
@@ -145,16 +244,23 @@ function Questions({ onCancel }) {
     }, 150);
   };
 
-  const formOptions = { resolver: yupResolver(questionValidationSchema) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
+  const formOptions = {
+    resolver: yupResolver(questionValidationSchema),
+    mode: "all",
+  };
+  const { register, handleSubmit, formState, watch, reset, clearErrors } =
+    useForm(formOptions);
   const { errors } = formState;
-
-  function onSubmit(data) {
-    data.questions.map((question, index) => {
+  const onSubmit = (_data) => {
+    setProcessing(true);
+    _data.questions.map((question, index) => {
       question.number = index + 1;
       question.answerTypeCode = Number(question.answerType);
+      question.hasOwnProperty("answerType"); // true
+      delete question["answerType"];
       question.maxRating = 0;
       question.optional = true;
+      if (question.answerTypeCode == 7) question.maxLength = 0;
       if (question.options) {
         question.options = question.options
           .filter((opt) => opt)
@@ -164,13 +270,71 @@ function Questions({ onCancel }) {
         question.options = null;
       }
     });
-    data.questionnaireType = 1;
+    _data.questionnaireType = 1;
 
     // now call API to create the questions.
-  }
+    if (mode === "add") {
+      QuestionairreService.createQuestionairre(_data)
+        .then((res) => {
+          setProcessing(false);
+          if (res.data.success) {
+            onSave(res.data.identifier);
+            handleResponse(
+              PARTICIPANT_QUESTIONAIRRES.CREATED,
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          } else {
+            handleResponse(
+              getWorkflowError(SESSION_ERROR.QUESTIONAIRRE.CREATE),
+              RESPONSE_TYPES.ERROR,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          }
+        })
+        .catch((err) => {
+          setProcessing(false);
+          handleResponse(
+            getWorkflowError(err.message),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
+    } else {
+      if (data.objId) {
+        _data.objId = data.objId;
+      }
+      QuestionairreService.updateQuestionairre(_data)
+        .then((res) => {
+          setProcessing(false);
+          if (res.data.success) {
+            onSave(data.objId);
+            handleResponse(
+              PARTICIPANT_QUESTIONAIRRES.UPDATED,
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          } else {
+            handleResponse(
+              getWorkflowError(SESSION_ERROR.QUESTIONAIRRE.UPDATE),
+              RESPONSE_TYPES.ERROR,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          }
+        })
+        .catch((err) => {
+          setProcessing(false);
+          handleResponse(
+            getWorkflowError(err.message),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
+    }
+  };
 
   return (
-    <div>
+    <div className={`${processing ? "control__disabled__opaque" : ""}`}>
       <Spacer />
       {/* INITIAL MANDATORY CONTROLS */}
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -182,16 +346,19 @@ function Questions({ onCancel }) {
           >
             <TextField
               name="description"
-              {...register("description")}
+              {...register(`description`, {
+                onChange: (event) => {
+                  setQuestionairreDescription(event.target.value);
+                },
+              })}
               helperText={errors.description?.message}
-              error={errors.description?.message}
-              variant="standard"
+              error={errors.description?.message ? true : false}
+              variant="filled"
               label="Questionairre Description"
               value={questionaireDescription}
-              onChange={(e) => setQuestionairreDescription(e.target.value)}
             />
           </FormControl>
-          {questions.length > 0 && (
+          {questions?.length > 0 && (
             <>
               <div className="flex ml-auto question-options gap-2 mt-4">
                 <div onClick={handleAdd}>
@@ -202,7 +369,7 @@ function Questions({ onCancel }) {
                     {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
                   </span>
                 </div>
-                {questions.length > 1 && (
+                {questions?.length > 1 && (
                   <div onClick={removeAll}>
                     <span
                       title="Remove all questions"
@@ -223,7 +390,7 @@ function Questions({ onCancel }) {
           <div className="flex flex-col">
             {/* QUESTIONS ARRAY */}
 
-            {questions.map((question, index) => (
+            {questions?.map((question, index) => (
               <Box key={index} sx={{ width: "100%" }}>
                 <Grid
                   container
@@ -249,7 +416,7 @@ function Questions({ onCancel }) {
                             </div>
                           </>
                         )}
-                        <div className="text-sm text-gray-600 mt-4">
+                        <div className="text-lg text-gray-600 mt-4">
                           Q#{index + 1}
                         </div>
                       </div>
@@ -259,7 +426,11 @@ function Questions({ onCancel }) {
                           helperText={
                             errors.questions?.[index]?.question?.message
                           }
-                          error={errors.questions?.[index]?.question?.message}
+                          error={
+                            errors.questions?.[index]?.question?.message
+                              ? true
+                              : false
+                          }
                           variant="standard"
                           label="Question"
                           name={`questions[${index}]question`}
@@ -331,12 +502,16 @@ function Questions({ onCancel }) {
                               onChange: (event) => {
                                 setAnswerMaxLength(index, event.target.value);
                               },
+                              maxLength: 3,
+                              minLength: 2,
                             })}
                             helperText={
                               errors.questions?.[index]?.maxLength?.message
                             }
                             error={
                               errors.questions?.[index]?.maxLength?.message
+                                ? true
+                                : false
                             }
                           />
                         </FormControl>
@@ -345,11 +520,11 @@ function Questions({ onCancel }) {
                   </Grid>
 
                   {isOptionalAnswer(question) &&
-                    question.question.options.length > 0 && (
+                    question?.question?.options?.length > 0 && (
                       <>
                         <Grid item xs={12}>
-                          <div className=" flex gap-1 text-sm text-gray-600 mt-4 font-normal">
-                            <div className="text-lg">
+                          <div className=" flex gap-1 text-gray-600 mt-4 font-normal">
+                            <div className="text-md">
                               <u>O</u>ptions
                             </div>
 
@@ -371,11 +546,14 @@ function Questions({ onCancel }) {
                     )}
 
                   {isOptionalAnswer(question) &&
-                    question.question.options.map((option, optIndex) => (
-                      <Grid item lg={4} xs={12}>
+                    question?.question?.options.map((option, optIndex) => (
+                      <Grid key={optIndex} item lg={4} xs={12}>
                         <div className="flex gap-3 -mt-3 ">
                           <div className="text-sm text-gray-600 mt-4">
-                            Opt#{index + 1}.{optIndex - index + 1}
+                            Opt#{index + 1}.
+                            {mode === "add"
+                              ? optIndex - index + 1
+                              : optIndex + 1}
                           </div>
                           <FormControl fullWidth variant="filled">
                             <TextField
@@ -402,6 +580,8 @@ function Questions({ onCancel }) {
                               error={
                                 errors.questions?.[index]?.options?.[optIndex]
                                   ?.option?.message
+                                  ? true
+                                  : false
                               }
                               variant="standard"
                               label="Option"
@@ -445,8 +625,12 @@ function Questions({ onCancel }) {
             </IconButton>
           </Tooltip>
           <Tooltip title={"Cancel"}>
-            <IconButton aria-label="save-questions-cancel" size="small">
-              <CancelIcon fontSize="small" onClick={() => onCancel("cancel")} />
+            <IconButton
+              onClick={() => onCancel("cancel")}
+              aria-label="save-questions-cancel"
+              size="small"
+            >
+              <CancelIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         </div>

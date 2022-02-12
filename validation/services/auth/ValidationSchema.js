@@ -47,13 +47,30 @@ export const questionValidationSchema = Yup.object().shape({
   questions: Yup.array().of(
     Yup.object().shape({
       question: Yup.string().required("Question is required"),
-      answerType: Yup.string().required("Answer Type is required"),
-      maxLength: Yup.number().required("Answer maximum length is required"),
-      options: Yup.array().of(
-        Yup.object().shape({
-          option: Yup.string().required("Option is required"),
-        })
-      ),
+      answerType: Yup.number().required("Answer Type is required"),
+      maxLength: Yup.number().when("answerType", {
+        is: 1,
+        then: Yup.number()
+          .required("Answer maximum length is required")
+          .positive("Entry should be greater than 0")
+          .integer("Input integer value")
+          .max(999, "An answer cannot be more than 999 words")
+          .min(50, "An answer cannot be less than 50 words"),
+      }),
+      options: Yup.array().when("answerType", {
+        is: (answerType) =>
+         // apply validation on fields which are either Checkbox, Drop down, multiselect or Radio
+           
+          answerType == 2 ||
+          answerType == 3 ||
+          answerType == 4 ||
+          answerType == 5,
+        then: Yup.array().of(
+          Yup.object().shape({
+            option: Yup.string().required("Option is required"),
+          })
+        ),
+      }),
     })
   ),
 });
