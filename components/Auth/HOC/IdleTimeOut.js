@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { useIdleTimer } from "react-idle-timer";
 //HOC
 const IdleTimeOut = (props) => {
   const handleOnIdle = (event) => {
     if (props.idleEmitter) {
       const idleObj = {
-        message: "user is idle",
+        message: "CLIENT:user is idle",
         event,
         lastActiveTime: getLastActiveTime(),
       };
@@ -18,10 +18,11 @@ const IdleTimeOut = (props) => {
   const handleOnAction = (event) => {
     if (props.activeEmitter) {
       const activeObj = {
-        message: "user is active and doing something",
+        message: "CLIENT:user is active and doing something",
         event,
         remainingTime: getRemainingTime(),
       };
+      console.info(activeObj);
       props.activeEmitter(activeObj);
     }
   };

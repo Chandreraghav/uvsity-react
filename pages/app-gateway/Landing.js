@@ -6,7 +6,8 @@ import { useQuery } from "react-query";
 import { KEYS } from "../../async/queries/keys/unique-keys";
 import UserDataService from "../api/users/data/UserDataService";
 import { asyncSubscriptions } from "../../async/subscriptions";
-import PrivateRoute from "../../components/Routes/PrivateRoute";
+import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
+
 function Landing() {
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_TITLE}`,
@@ -52,7 +53,7 @@ function Landing() {
           : false,
     }
   );
-
+  
   const getData = {
     USER_LOGIN_INFO,
     USER_PROFILE_SUMMARY,
