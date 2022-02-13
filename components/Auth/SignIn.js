@@ -30,6 +30,7 @@ import { useRouter } from "next/router";
 import { useDataLayerContextValue } from '../../context/DataLayer'
 import { actionTypes } from "../../context/reducer";
 import {AUTHORIZED_ROUTES} from "../../constants/routes";
+import Overlay from "../shared/Overlay";
 toast.configure();
 
 function SignIn({ dialogCloseRequest, isOpen }) {
@@ -80,7 +81,7 @@ function SignIn({ dialogCloseRequest, isOpen }) {
           user: res, //bearer token response
         });
         AuthService.setAuthorization(LOGIN_SOURCE.UVSITY, res)
-        AuthGuardService.isVerifiedLogin()?router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD):
+        AuthGuardService.isVerifiedLogin(true)?router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD):
         handleResponse(
           getWorkflowError(LOGIN_ERRORS.UVSITY.LOGIN_FAILED),
           RESPONSE_TYPES.ERROR,
@@ -89,6 +90,7 @@ function SignIn({ dialogCloseRequest, isOpen }) {
 
       })
       .catch((err) => {
+        
         handleResponse(
           getWorkflowError(err),
           RESPONSE_TYPES.ERROR,
@@ -268,11 +270,12 @@ function SignIn({ dialogCloseRequest, isOpen }) {
                 className={`${SignInStyle.signin__Dialog__submit__btn}`}
                 type="submit"
               >
-                <Loader
+                {/* <Loader
                   classes={`app__workflow__loader app__workflow__loader__sm`}
                   custom={true}
                   visible={signInButtonPressed}
-                />
+                /> */}
+                <Overlay message='Authenticating...' open={signInButtonPressed}/>
                 {!signInButtonPressed && <LoginIcon />} Sign In
               </button>
               <div className="flex flex-col">

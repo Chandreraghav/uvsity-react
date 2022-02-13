@@ -8,7 +8,8 @@ import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useQuery } from "react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import UserDataService from "../../api/users/data/UserDataService";
-import PrivateRoute from "../../../components/Routes/PrivateRoute";
+import PrivateRoute from "../../../components/Auth/HOC/Routes/PrivateRoute";
+
 function Create() {
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_NAME} | Create Session`,
@@ -36,7 +37,7 @@ function Create() {
   };
 
   return(
-    <Layout options={layoutObj}>
+    <Layout private options={layoutObj}>
     <Header data={getData.USER_PROFILE_SUMMARY} />
     <CreateSession
       data={{

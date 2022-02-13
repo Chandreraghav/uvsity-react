@@ -6,13 +6,13 @@ import { useQuery } from "react-query";
 import { KEYS } from "../../async/queries/keys/unique-keys";
 import UserDataService from "../api/users/data/UserDataService";
 import { asyncSubscriptions } from "../../async/subscriptions";
-import PrivateRoute from "../../components/Routes/PrivateRoute";
+import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
+
 function Landing() {
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_TITLE}`,
   };
 
-  
   const getSummary = async () => (await UserDataService.getSummary()).data;
   const getProfilePercentageCompletion = async () =>
     (await UserDataService.getProfilePercentageCompletion()).data;
@@ -53,7 +53,7 @@ function Landing() {
           : false,
     }
   );
-
+  
   const getData = {
     USER_LOGIN_INFO,
     USER_PROFILE_SUMMARY,
@@ -62,10 +62,10 @@ function Landing() {
     TOP_SESSIONS,
     SUGGESTED_FRIENDS,
   };
-   
+
   return (
-    <Layout lowZoom={true}  options={layoutObj}>
-      <Header data={getData.USER_PROFILE_SUMMARY}  />
+    <Layout private lowZoom={true} options={layoutObj}>
+      <Header data={getData.USER_PROFILE_SUMMARY} />
       <Dashboard data={getData} />
       <Footer />
     </Layout>

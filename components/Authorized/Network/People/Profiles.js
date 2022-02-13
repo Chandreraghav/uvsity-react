@@ -119,7 +119,7 @@ function Profiles({
         <Divider className="divider" />
         {bo?.isLoading && (<div className="px-1 text-base">
         <Spacer />
-          {[1,2,3,4,5].map((shim,index)=>(<><Shimmer key={index} visible/><Spacer /></>))}
+          {[1,2,3,4,5].map((shim,index)=>(<div key={index}><Shimmer  visible/><Spacer /></div>))}
         </div>)}
        
         {bo.length > 0 && (
@@ -142,7 +142,7 @@ function Profiles({
           </div>
         )  
             }
-          {bo.length ===0 && (bo?.isSuccess || bo?.isError || bo?.isIdle) && !bo?.isLoading && (<>
+          {bo.length ===0 && !bo?.isLoading && (<>
             <img
               className={"object-contain"}
               alt={

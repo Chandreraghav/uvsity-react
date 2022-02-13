@@ -45,10 +45,10 @@ function AccountMenu({ onClose, isOpen, anchor }) {
         // voluntarily logout
         SignOutService.signout()
           .then(() => {
-            queryClient.removeQueries()
             AuthService.logout();
             eraseContext();
             router.replace('/');
+            queryClient.removeQueries()
           })
           .catch((error) => {
             handleResponse(
