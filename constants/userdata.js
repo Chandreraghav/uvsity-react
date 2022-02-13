@@ -50,6 +50,7 @@ import StarIcon from "@mui/icons-material/Star";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -619,7 +620,7 @@ export const SESSION_POSTER = {
   },
   consent: null,
   icon: <ImageIcon />,
-  required: true,
+  required: false,
 };
 
 export const SESSION_DOCUMENT = {
@@ -694,6 +695,7 @@ export const FEE = {
 export const SPONSORSHIP = {
   ICONS: {
     EDIT: <EditIcon />,
+    CUSTOMIZE: <DashboardCustomizeIcon />,
   },
   LEVELS: [
     {
@@ -710,9 +712,9 @@ export const SPONSORSHIP = {
           display: "$500",
         },
         featured: {
-          text: `Example:
-          Company logo and link on this session
-          Announcement by session owner during the session`,
+          text: `<b>Example:</b>
+          <li style='list-style:none'>Company logo and link on this session</li>
+          <li style='list-style:none'>Announcement by session owner during the session</li>`,
           html: (
             <>
               <h3 className="text-bold font-semibold text-xl mb-1">
@@ -746,10 +748,11 @@ export const SPONSORSHIP = {
           display: "$1000",
         },
         featured: {
-          text: `Example:
-          Company logo and link on this session
-Announcement by session owner during the session
-2 min time during the session to showcase your company or product`,
+          text: `<b>Example:</b>
+          <li style='list-style:none'>Company logo and link on this session</li>
+          
+          <li style='list-style:none'>Announcement by session owner during the session</li>
+          <li style='list-style:none'>2 min time during the session to showcase your company or product</li>`,
           html: (
             <>
               <h3 className="text-bold font-semibold text-xl mb-1">
@@ -784,11 +787,11 @@ Announcement by session owner during the session
           display: "$5000",
         },
         featured: {
-          text: `Example:
-          Company logo and link on this session
-Announcement by session owner during the session
-5 min time during the session to showcase your company or product
-Include company logo and link in social media as proud sponsor`,
+          text: `<b>Example:</b>
+          <li style='list-style:none'>Company logo and link on this session</li>
+<li style='list-style:none'>Announcement by session owner during the session</li>
+<li style='list-style:none'>5 min time during the session to showcase your company or product</li>
+<li style='list-style:none'>Include company logo and link in social media as proud sponsor</li>`,
           html: (
             <>
               <h3 className="text-bold font-semibold text-xl mb-1">
