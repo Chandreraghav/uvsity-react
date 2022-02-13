@@ -7,6 +7,7 @@ import Layout from "../Main/Layout";
 import Splash from "../shared/Splash";
 import { actionTypes } from "../../context/reducer";
 import { useDataLayerContextValue } from "../../context/DataLayer";
+// HOC
 const PrivateRoute = (WrappedComponent, verifyToken) => {
   return (props) => {
     const Router = useRouter();

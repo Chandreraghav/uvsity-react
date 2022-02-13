@@ -270,6 +270,7 @@ button.danger {
   transition: all 0.8s;
   color: var(--blue);
 }
+ 
 .vertical-bar {
   border-right: 1px solid #e2e2e2;
   padding: 4px;

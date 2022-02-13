@@ -12,7 +12,6 @@ function Landing() {
     title: `${process.env.NEXT_PUBLIC_APP_TITLE}`,
   };
 
-  
   const getSummary = async () => (await UserDataService.getSummary()).data;
   const getProfilePercentageCompletion = async () =>
     (await UserDataService.getProfilePercentageCompletion()).data;
@@ -62,10 +61,10 @@ function Landing() {
     TOP_SESSIONS,
     SUGGESTED_FRIENDS,
   };
-   
+
   return (
-    <Layout lowZoom={true}  options={layoutObj}>
-      <Header data={getData.USER_PROFILE_SUMMARY}  />
+    <Layout private lowZoom={true} options={layoutObj}>
+      <Header data={getData.USER_PROFILE_SUMMARY} />
       <Dashboard data={getData} />
       <Footer />
     </Layout>
