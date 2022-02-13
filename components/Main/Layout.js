@@ -7,7 +7,7 @@ const Layout = (props) => {
     desc: props?.options?.desc,
     poster: props?.options?.poster,
   };
-  const [loggedIn, setLoggedIn] = useState(props.privateRoute);
+  const [loggedIn, setLoggedIn] = useState(props.lowZoom);
   useEffect(() => {
     if(!loggedIn)
     setLoggedIn(AuthService.isUserLoggedIn());

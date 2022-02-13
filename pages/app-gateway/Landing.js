@@ -64,7 +64,7 @@ function Landing() {
   };
    
   return (
-    <Layout privateRoute={true}  options={layoutObj}>
+    <Layout lowZoom={true}  options={layoutObj}>
       <Header data={getData.USER_PROFILE_SUMMARY}  />
       <Dashboard data={getData} />
       <Footer />

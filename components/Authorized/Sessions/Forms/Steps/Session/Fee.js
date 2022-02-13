@@ -3,8 +3,10 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  IconButton,
   Switch,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import React, { useState } from "react";
@@ -15,11 +17,19 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import parse from "html-react-parser";
+import QuillEditor from "../../../../../Thirdparty/Editor/QuillEditor";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 function Fee() {
   const [freeSession, setSessionFree] = useState(true);
   const [sponsorShipReqd, setSponsorShipReqd] = useState(false);
   const [sessionFee, setSessionFee] = useState(null);
+  const [_editSponsorshipLevel, setEditSponsorshipLevel] = useState(false);
+  const [sponsorshipLevelOnEdit, setSponsorshipLevelOnEdit] = useState({});
+  const editSponsorshipLevel = (level) => {
+    setSponsorshipLevelOnEdit(level);
+    setEditSponsorshipLevel(true);
+  };
   return (
     <div className={`p-4`}>
       <Box sx={{ width: "100%" }}>
@@ -32,11 +42,13 @@ function Fee() {
           <Grid item xs={12}>
             <div className="flex gap-4 justify-center">
               <div className=" leading-loose lg:text-3xl text-xl md:text-3xl text-gray-700">
-                Would you hold your session for free ?
+                <Typography gutterBottom variant="h4" component="div">
+                  Hold session for free?
+                </Typography>
               </div>
               <FormControl variant="filled">
                 <FormControlLabel
-                  className=" text-gray-600 py-2"
+                  className=" text-gray-600"
                   control={
                     <Switch
                       size="medium"
@@ -101,11 +113,13 @@ function Fee() {
           <Grid item xs={12}>
             <div className="flex gap-4 justify-center">
               <div className=" leading-loose lg:text-3xl text-xl md:text-3xl text-gray-700">
-                Are you looking for sponsors ?
+                <Typography gutterBottom variant="h5" component="div">
+                  Looking for sponsors?
+                </Typography>
               </div>
               <FormControl variant="filled">
                 <FormControlLabel
-                  className=" text-gray-600 py-2"
+                  className=" text-gray-600"
                   control={
                     <Switch
                       size="medium"
@@ -122,18 +136,60 @@ function Fee() {
                 />
               </FormControl>
             </div>
+            {sponsorShipReqd && (
+              <>
+                <div className="items-center justify-center py-2">
+                  <Typography
+                    color="text.secondary"
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                  >
+                    {!_editSponsorshipLevel && (
+                      <>
+                        {SPONSORSHIP.ICONS.CUSTOMIZE} Customize your sponsorship
+                        offerings to your audience. Click on the{" "}
+                        {SPONSORSHIP.ICONS.EDIT} Edit icon to make any changes.
+                      </>
+                    )}
+
+                    {_editSponsorshipLevel && (
+                      <>
+                        {SPONSORSHIP.ICONS.CUSTOMIZE} Customize your sponsorship
+                        offerings on the{" "}
+                        <strong
+                          className={`${
+                            sponsorshipLevelOnEdit.alias === "Gold"
+                              ? "text-yellow-600"
+                              : sponsorshipLevelOnEdit.alias === "Platinum"
+                              ? " text-blue-600"
+                              : ""
+                          }`}
+                        >
+                          {sponsorshipLevelOnEdit.alias}
+                        </strong>{" "}
+                        plan
+                      </>
+                    )}
+                  </Typography>
+                </div>
+              </>
+            )}
           </Grid>
 
-          {sponsorShipReqd && (
+          {sponsorShipReqd && !_editSponsorshipLevel && (
             <>
               {SPONSORSHIP.LEVELS.map((level) => (
-                <Grid key={level.id} item lg={4} xs={12} sm={12} md={4}>
-                  <Card className="" sx={{ maxWidth: 345 }}>
+                <Grid key={level.id} item lg={4} xs={12} sm={6} md={4}>
+                  <Card className="shadow-xl" sx={{ maxWidth: 345 }}>
                     <CardMedia
                       component="img"
                       alt={level.alias}
-                      height="140"
+                      height={100}
                       image={level.image}
+                      style={{
+                        height: "40px",
+                      }}
                     />
                     <CardContent>
                       <div className="flex">
@@ -142,7 +198,7 @@ function Fee() {
                         </Typography>
                         <div className="ml-auto">
                           <Typography gutterBottom variant="h6" component="div">
-                            {level.defaults.price.display}
+                            ${level.defaults.price.text}
                           </Typography>
                         </div>
                       </div>
@@ -150,11 +206,70 @@ function Fee() {
                       <div>{level.defaults.featured.html}</div>
                     </CardContent>
                     <CardActions>
-                      <Button size="small">{SPONSORSHIP.ICONS.EDIT}Edit</Button>
+                      <Button
+                        onClick={() => editSponsorshipLevel(level)}
+                        size="small"
+                      >
+                        {SPONSORSHIP.ICONS.EDIT}Edit
+                      </Button>
                     </CardActions>
                   </Card>
                 </Grid>
               ))}
+            </>
+          )}
+          {_editSponsorshipLevel && sponsorShipReqd && (
+            <>
+              <Grid item xs={12} className="-mt-2">
+                <FormControl className="mb-2" variant="standard" fullWidth>
+                  <Box
+                    fullWidth
+                    sx={{ display: "flex", alignItems: "flex-end" }}
+                  >
+                    <AttachMoneyIcon
+                      sx={{ color: "action.active", mr: 1, my: 1.5 }}
+                    />
+                    <TextField
+                      id="sponsorship-fee"
+                      label="Sponsorship fee"
+                      variant="outlined"
+                      fullWidth
+                      required
+                      type="number"
+                      value={sponsorshipLevelOnEdit.defaults.price.text}
+                      placeholder="Enter sponsorship fee"
+                    />
+                  </Box>
+                </FormControl>
+
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  <QuillEditor data={sponsorshipLevelOnEdit.defaults.featured.text} />
+                </FormControl>
+
+                <div className="save-sponsorship-action-buttons border-dotted border-2">
+                  <Tooltip title={"Save sponsorship"}>
+                    <IconButton
+                      type="submit"
+                      aria-label="save-sponsorship-done"
+                      size="small"
+                    >
+                      <CheckCircleIcon color="primary" fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={"Cancel"}>
+                    <IconButton 
+                      aria-label="save-sponsorship-cancel"
+                      size="small"
+                    >
+                      <CancelIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+              </Grid>
             </>
           )}
         </Grid>
