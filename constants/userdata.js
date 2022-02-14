@@ -679,6 +679,7 @@ export const PARTICIPANT_INVITATION_OPTIONS = [
 export const PARTICIPANT_QUESTIONAIRRES = {
   CREATED: "Questionairre created for participants successfully",
   UPDATED: "Questionairre updated successfully",
+  DELETED: "Questionairre deleted successfully"
 };
 
 export const FEE = {

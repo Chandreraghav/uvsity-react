@@ -18,4 +18,9 @@ export default class QuestionairreService {
   static async getQuestionairre(id){
     return await asyncInstance.get(ENDPOINTS.SESSION.QUESTIONAIRRE.GET+id, {data:null});
   }
+  static async removeQuestionairre(id){
+    return await asyncInstance.get(ENDPOINTS.SESSION.QUESTIONAIRRE.DELETE+id, {data:null});
+  }
+
+  
 }

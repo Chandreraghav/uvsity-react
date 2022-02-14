@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, {  } from "react";
 import CommonMetaInfo from "../shared/CommonMetaInfo";
 import RootChain from "../Auth/HOC/RootChain";
-import { AuthService } from "../../pages/api/users/auth/AuthService";
 const Layout = (props) => {
   const options = {
     title: props?.options?.title,
     desc: props?.options?.desc,
     poster: props?.options?.poster,
   };
-  const [loggedIn, setLoggedIn] = useState(props.lowZoom);
-  useEffect(() => {
-    if (!loggedIn) setLoggedIn(AuthService.isUserLoggedIn());
-  }, []);
+ 
   return props?.private ? (
     <>
       <RootChain>
-        <div className={`${loggedIn ? "app__body" : ""} app`}>
+        <div className={`${props.lowZoom ? "app__body" : ""} app`}>
           <CommonMetaInfo options={options} />
           <div>{props.children}</div>
         </div>
@@ -23,7 +19,7 @@ const Layout = (props) => {
     </>
   ) : (
     <>
-      <div className={`${loggedIn ? "app__body" : ""} app`}>
+      <div className={`app`}>
         <CommonMetaInfo options={options} />
         <div>{props.children}</div>
       </div>

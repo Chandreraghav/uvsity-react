@@ -1,6 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 export const CUSTOM_QUESTION_OPTS = {
   answer_types: [
     {
@@ -47,6 +48,7 @@ export const CUSTOM_QUESTION_OPTS = {
   icons: {
     AddQuestion: <AddIcon fontSize="small"/>,
     RemoveQuestion: <RemoveIcon/>,
-    EditQuestion:<EditIcon fontSize="small"/>
+    EditQuestion:<EditIcon fontSize="small"/>,
+    DeleteQuestion: <DeleteIcon fontSize="small"/>
   },
 };

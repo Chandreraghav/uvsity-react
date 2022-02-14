@@ -8,18 +8,15 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import React, { useState } from "react";
 import { FEE, SPONSORSHIP } from "../../../../../../constants/userdata";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import QuillEditor from "../../../../../Thirdparty/Editor/QuillEditor";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import Plans from "../../../../Sponsorships/Plans";
 function Fee() {
   const [freeSession, setSessionFree] = useState(true);
   const [sponsorShipReqd, setSponsorShipReqd] = useState(false);
@@ -29,7 +26,11 @@ function Fee() {
   const editSponsorshipLevel = (level) => {
     setSponsorshipLevelOnEdit(level);
     setEditSponsorshipLevel(true);
-  };
+  }; 
+  const handleCancel =()=>{
+    setSponsorshipLevelOnEdit({})
+    setEditSponsorshipLevel(false)
+  }
   return (
     <div className={`p-4`}>
       <Box sx={{ width: "100%" }}>
@@ -43,7 +44,7 @@ function Fee() {
             <div className="flex gap-4 justify-center">
               <div className=" leading-loose lg:text-3xl text-xl md:text-3xl text-gray-700">
                 <Typography gutterBottom variant="h4" component="div">
-                  Hold session for free?
+                  Free session
                 </Typography>
               </div>
               <FormControl variant="filled">
@@ -138,7 +139,7 @@ function Fee() {
             </div>
             {sponsorShipReqd && (
               <>
-                <div className="items-center justify-center py-2">
+                <div className="items-center justify-center py-2 flex">
                   <Typography
                     color="text.secondary"
                     gutterBottom
@@ -172,7 +173,9 @@ function Fee() {
                       </>
                     )}
                   </Typography>
-                </div>
+                  {_editSponsorshipLevel && (<><div className="ml-auto cursor-pointer app__anchor__block" onClick={handleCancel}><ArrowBackIcon/></div>
+               </>)}
+                 </div>
               </>
             )}
           </Grid>
@@ -180,41 +183,8 @@ function Fee() {
           {sponsorShipReqd && !_editSponsorshipLevel && (
             <>
               {SPONSORSHIP.LEVELS.map((level) => (
-                <Grid key={level.id} item lg={4} xs={12} sm={6} md={4}>
-                  <Card className="shadow-xl" sx={{ maxWidth: 345 }}>
-                    <CardMedia
-                      component="img"
-                      alt={level.alias}
-                      height={100}
-                      image={level.image}
-                      style={{
-                        height: "40px",
-                      }}
-                    />
-                    <CardContent>
-                      <div className="flex">
-                        <Typography gutterBottom variant="h5" component="div">
-                          {level.alias}
-                        </Typography>
-                        <div className="ml-auto">
-                          <Typography gutterBottom variant="h6" component="div">
-                            ${level.defaults.price.text}
-                          </Typography>
-                        </div>
-                      </div>
-
-                      <div>{level.defaults.featured.html}</div>
-                    </CardContent>
-                    <CardActions>
-                      <Button
-                        onClick={() => editSponsorshipLevel(level)}
-                        size="small"
-                      >
-                        {SPONSORSHIP.ICONS.EDIT}Edit
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
+                <Plans editSponsorshipdata={()=>editSponsorshipLevel(level)} key ={level.id} data={level}/>
+                  
               ))}
             </>
           )}
@@ -261,7 +231,7 @@ function Fee() {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title={"Cancel"}>
-                    <IconButton 
+                    <IconButton  onClick={handleCancel}
                       aria-label="save-sponsorship-cancel"
                       size="small"
                     >

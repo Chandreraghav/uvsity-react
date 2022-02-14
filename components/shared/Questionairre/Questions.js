@@ -1,17 +1,20 @@
 import {
   Box,
   FormControl,
+  FormControlLabel,
   Grid,
   IconButton,
   MenuItem,
   Select,
   TextField,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import React, { useEffect, useState } from "react";
 import { CUSTOM_QUESTION_OPTS } from "../../../constants/questionairre";
+import Switch from "@mui/material/Switch";
 import Spacer from "../Spacer";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -33,6 +36,7 @@ class Question {
       removable: isRemovable,
       questionnaireType: 1,
       maxRating: 0,
+      optional:true,
       options: [],
     };
     this.answer = {
@@ -56,6 +60,7 @@ class Question {
     this.question = {
       val: data.question,
       required: true,
+      optional:data.optional,
       removable: isRemovable,
       questionnaireType: data.questionnaireType,
       maxRating: data.maxRating,
@@ -256,21 +261,20 @@ function Questions({ data, mode, onSave, onCancel }) {
     _data.questions.map((question, index) => {
       question.number = index + 1;
       question.answerTypeCode = Number(question.answerType);
-      question.hasOwnProperty("answerType"); // true
+      question.hasOwnProperty("answerType");
       delete question["answerType"];
-      question.maxRating = 0;
-      question.optional = true;
-      if (question.answerTypeCode == 7) question.maxLength = 0;
+      question.maxRating = 0; // static field.
+      if (question.answerTypeCode == 7) question.maxLength = 0; // for date time code maxlength would be zero
       if (question.options) {
         question.options = question.options
           .filter((opt) => opt)
           .map((a) => a.option);
-        question.maxLength = 0;
+        question.maxLength = 0; // for questions with options maxlength is set to 0
       } else {
         question.options = null;
       }
     });
-    _data.questionnaireType = 1;
+    _data.questionnaireType = 1; // static field
 
     // now call API to create the questions.
     if (mode === "add") {
@@ -332,6 +336,14 @@ function Questions({ data, mode, onSave, onCancel }) {
         });
     }
   };
+  const handleOptionalChoiceChange =(index)=>{
+    var array = [...questions];
+    if (index !== -1) {
+      array[index].question.optional= !array[index].question.optional;
+    }
+    setQuestions(array);
+  }
+  console.log(errors)
 
   return (
     <div className={`${processing ? "control__disabled__opaque" : ""}`}>
@@ -478,6 +490,32 @@ function Questions({ data, mode, onSave, onCancel }) {
                           ))}
                         </Select>
                       </FormControl>
+
+                      <FormControl
+                className="flex"
+                variant="filled"
+                sx={{ marginBottom: 1, width: "100%" }}
+              >
+                <div className="flex">
+                  <FormControlLabel
+                    className="text-xs text-gray-600"
+                    control={
+                      <Switch
+                        size="small"
+                        checked={question.question.optional}
+                        inputProps={{ "aria-label": "controlled" }}
+                        name={`questions[${index}]optional`}
+                        {...register(`questions.${index}.optional`, {
+                          onChange: (event) => {
+                            handleOptionalChoiceChange(index);
+                          },
+                        })}
+                      />
+                    }
+                    label={<><Typography color="text.secondary" variant="body2">Optional</Typography></>}
+                  />
+                </div>
+              </FormControl>
                     </div>
                   </Grid>
                   <Grid item lg={3} xs={12}>

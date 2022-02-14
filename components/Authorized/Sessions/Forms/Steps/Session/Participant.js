@@ -21,10 +21,19 @@ import ParticipantStyles from "../../../../../../styles/Participant.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Switch from "@mui/material/Switch";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { PARTICIPANT_INVITATION_OPTIONS } from "../../../../../../constants/userdata";
+import {
+  PARTICIPANT_INVITATION_OPTIONS,
+  PARTICIPANT_QUESTIONAIRRES,
+} from "../../../../../../constants/userdata";
 import Questions from "../../../../../shared/Questionairre/Questions";
 import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre";
 import QuestionairreService from "../../../../../../pages/api/session/QuestionairreService";
+import ConfirmDialog from "../../../../../shared/modals/ConfirmDialog";
+import { handleResponse } from "../../../../../../toastr-response-handler/handler";
+import { RESPONSE_TYPES } from "../../../../../../constants/constants";
+import { toast } from "react-toastify";
+import { SESSION_ERROR } from "../../../../../../constants/error-messages";
+toast.configure();
 function Participant(props) {
   const [processing, setProcessing] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -37,6 +46,10 @@ function Participant(props) {
 
   const [questionairreIdentifier, setQuestionairreIdentifier] = useState(null);
   const [questionairre, setQuestionairre] = useState(null);
+  const [
+    showDeleteQuestionairreConfirmDialog,
+    setShowDeleteQuestionairreConfirmDialog,
+  ] = useState(false);
   const label = {
     inputProps: { "aria-label": "Switch for session accessibility" },
   };
@@ -112,12 +125,74 @@ function Participant(props) {
           setCustomQuestionsToParticipants(true);
           setQuestionairre(res.data);
           setProcessing(false);
+          setTimeout(() => {
+            scrollDivToBottom("custom-question-box");
+            window.scrollTo(0, document.body.scrollHeight);
+          }, 150);
         })
         .catch((err) => {
           setProcessing(false);
           setCustomQuestionsToParticipants(false);
         });
-    } else setCustomQuestionsToParticipants(true);
+    } else {
+      setCustomQuestionsToParticipants(true);
+      setTimeout(() => {
+        scrollDivToBottom("custom-question-box");
+        window.scrollTo(0, document.body.scrollHeight);
+      }, 150);
+    }
+  };
+  const handleDeleteQuestionairreClick = () => {
+    // throw dialog
+    setShowDeleteQuestionairreConfirmDialog(true);
+  };
+  const handleConfirmDialogRequest = (requestInd) => {
+    if (requestInd.confirm) {
+      // delete
+      setProcessing(true);
+      // call api to delete the questionairre with identifier
+      QuestionairreService.removeQuestionairre(questionairreIdentifier)
+        .then((res) => {
+          if (res.data.success) {
+            setCustomQuestionsToParticipants(false);
+            setQuestionairre(null);
+            setProcessing(false);
+            setQuestionairreIdentifier(null);
+            handleResponse(
+              PARTICIPANT_QUESTIONAIRRES.DELETED,
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          } else {
+            handleResponse(
+              getWorkflowError(SESSION_ERROR.QUESTIONAIRRE.DELETE),
+              RESPONSE_TYPES.ERROR,
+              toast.POSITION.BOTTOM_CENTER
+            );
+            setProcessing(false);
+          }
+        })
+        .catch((err) => {
+          handleResponse(
+            getWorkflowError(SESSION_ERROR.QUESTIONAIRRE.DELETE),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+          setProcessing(false);
+        })
+        .finally(() => {
+          setShowDeleteQuestionairreConfirmDialog(false);
+        });
+
+      return;
+    }
+    if (requestInd.close) {
+      setShowDeleteQuestionairreConfirmDialog(false);
+    }
+  };
+  const scrollDivToBottom = (div) => {
+    var objDiv = document.getElementById(div);
+    objDiv.scrollTop = objDiv.scrollHeight;
   };
 
   return (
@@ -150,12 +225,12 @@ function Participant(props) {
 
             {selectedItem && (
               <div
-                className={`py-1 px-1 mt-3 flex flex-col place-items-center gap-2 justify-center  border-0 bg-blue-300 shadow-sm bg-repeat-round rounded-lg  `}
+                className={`py-1 px-1 mt-3 flex flex-col   gap-2    border-0   shadow-sm bg-repeat-round rounded-lg  `}
               >
                 <div className="text-md flex gap-2">
                   <CoPresentIcon />{" "}
                   <span className="text-md leading-snug font-semibold">
-                    Your co-host will be
+                    Your co-host
                   </span>
                 </div>
                 <div className="flex">
@@ -296,39 +371,60 @@ function Participant(props) {
           {/* Custom Questions */}
 
           <Grid item xs={12}>
-            {questionairreIdentifier == null || questionairreIdentifier == 0 ? (
-              <>
-                <button
-                  onClick={handleQuestionClick}
-                  title="Add custom questions"
-                  className={`app__button app__button__block ${
-                    customQuestionsToParticipants
-                      ? "control__disabled__opaque"
-                      : ""
-                  }`}
-                >
-                  {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
-                  Add Custom Questions
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={handleQuestionClick}
-                  title="Edit custom questions"
-                  className={`app__button app__button__block ${
-                    customQuestionsToParticipants
-                      ? "control__disabled__opaque"
-                      : ""
-                  }`}
-                >
-                  {CUSTOM_QUESTION_OPTS.icons.EditQuestion}
-                  Edit Custom Questions
-                </button>
-              </>
-            )}
+            <div className="flex gap-1">
+              {questionairreIdentifier == null ||
+              questionairreIdentifier == 0 ? (
+                <>
+                  <button
+                    onClick={handleQuestionClick}
+                    title="Add custom questions"
+                    className={`app__button app__button__block ${
+                      customQuestionsToParticipants
+                        ? "control__disabled__opaque"
+                        : ""
+                    }`}
+                  >
+                    {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
+                    Add Questionairre
+                  </button>
+                </>
+              ) : (
+                <div className="flex gap-1">
+                  <button
+                    onClick={handleQuestionClick}
+                    title="Edit custom questions"
+                    className={`app__button app__button__block ${
+                      customQuestionsToParticipants
+                        ? "control__disabled__opaque"
+                        : ""
+                    }`}
+                  >
+                    {CUSTOM_QUESTION_OPTS.icons.EditQuestion}
+                    Edit Questionairre
+                  </button>
+                  {questionairre && (
+                    <>
+                      {" "}
+                      <button
+                        onClick={handleDeleteQuestionairreClick}
+                        title="Remove custom questions"
+                        className={`app__button app__button__block  
+                  `}
+                      >
+                        {CUSTOM_QUESTION_OPTS.icons.DeleteQuestion}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+              <Tooltip title="Pre Questionairre for your attendees before registration">
+                <div className=" cursor-pointer">
+                  <HelpOutlineIcon fontSize="small" />
+                </div>
+              </Tooltip>
+            </div>
             {customQuestionsToParticipants && (
-              <>
+              <div id="custom-question-box">
                 <Questions
                   mode={
                     questionairreIdentifier && questionairreIdentifier > 0
@@ -343,11 +439,18 @@ function Participant(props) {
                   onSave={onSaveQuestions}
                   onCancel={onCancelQuestions}
                 />
-              </>
+              </div>
             )}
           </Grid>
         </Grid>
       </Box>
+      <ConfirmDialog
+        theme="dark"
+        isOpen={showDeleteQuestionairreConfirmDialog}
+        confirmMessage="Delete Questionnaire?"
+        dialogCloseRequest={handleConfirmDialogRequest}
+        title="Confirmation"
+      />
     </div>
   );
 }
