@@ -54,6 +54,7 @@ export const PEOPLE={
 export const SESSION_ERROR={
   QUESTIONAIRRE:{
      CREATE: "There occured a problem creating the questionairre. Please try again.",
-     UPDATE: "There occured a problem updating the questionairre. Please try again."
+     UPDATE: "There occured a problem updating the questionairre. Please try again.",
+     DELETE: "There occured a problem deleting the questionairre."
   }
 }

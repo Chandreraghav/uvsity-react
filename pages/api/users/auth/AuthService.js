@@ -86,30 +86,27 @@ export class AuthService {
     }
   }
 
-  static  isUserLoggedIn(preAuthFlag) {
+  static isUserLoggedIn(preAuthFlag) {
     try {
       const user = JSON.parse(getLocalStorageObject("uvsity-user"));
-      if(preAuthFlag){
-        if(user && user.data) return true;
+      if (preAuthFlag) {
+        if (user && user.data) return true;
         return false;
       }
+      if (!user || !user.data) return false;
+      // if user data is found verify the truthyness from server.
       let auth = new Promise((resolve, reject) => {
-        if (user && user.data) {
-           AuthGuardService.pollSessionValidity()
-            .then((data) => {
-              if (data.status === 200) resolve(true);
-              else  resolve(false);
-            })
-            .catch(() => {
-              resolve(false);
-            });
-        }
-        else {
-          resolve(false);
-        }
+        AuthGuardService.pollSessionValidity()
+          .then((data) => {
+            if (data.status === 200) resolve(true);
+            else resolve(false);
+          })
+          .catch(() => {
+            resolve(false);
+          });
       });
       auth.then((loggedIn) => {
-        if (loggedIn===true) return true;
+        if (loggedIn === true) return true;
         AuthService.logout();
         return false;
       });

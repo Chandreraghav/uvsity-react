@@ -98,7 +98,7 @@ function CreateSession(props) {
             {activeStep===3 && (<Fee/>)}
             {activeStep===4 && (<Final/>)}
             
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 ,pb:6 }}>
               <Button
                 color="inherit"
                 disabled={activeStep === 0}

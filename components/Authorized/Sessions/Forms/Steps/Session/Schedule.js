@@ -441,7 +441,7 @@ function Schedule(props) {
     >
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item sm={4} lg={6} md={6} xs={12}>
+          <Grid item sm={12} lg={6} md={6} xs={12}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <StaticDatePicker
                 orientation="landscape"
@@ -472,10 +472,13 @@ function Schedule(props) {
                 <PublicIcon/>
                 <div>{timezone}</div>
                 </div>
+{repeatChecked && (<><img alt='user-session-schedule-illustration' src="/static/images/schedule-session.jpg" className=" hidden lg:block w-full h-64 -mt-2 shadow-sm border-0 object-contain"/>
+</>)}
+                
             </div>
           </Grid>
 
-          <Grid item sm={4} lg={6} md={6} xs={12}>
+          <Grid item sm={12} lg={6} md={6} xs={12}>
             <div className="flex flex-col">
               <FormControl
                 fullWidth={true}
@@ -736,7 +739,7 @@ function Schedule(props) {
                         className={`flex flex-col mt-2 ml-1 ${ScheduleModuleCSS.schedule__endsOnWrapper}`}
                       >
                         <FormControl>
-                          <FormLabel className="text-sm text-gray-700">
+                          <FormLabel className="text-sm ml-2 text-gray-700">
                             {parse(HTMLUnderlineByCharacterIndex("Ends", 0))}
                           </FormLabel>
                           <RadioGroup

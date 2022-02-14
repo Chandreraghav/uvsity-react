@@ -17,7 +17,8 @@ export const ENDPOINTS = {
     QUESTIONAIRRE:{
       CREATE:'questionnaire/create',
       UPDATE:'questionnaire/update',
-      GET:'questionnaire/'
+      GET:'questionnaire/',
+      DELETE:'questionnaire/delete/'
     }
   },
 
