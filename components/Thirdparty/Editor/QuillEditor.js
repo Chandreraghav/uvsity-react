@@ -6,7 +6,12 @@ function QuillEditor(props) {
     ssr: false,
     loading: () => <p>Loading ...</p>,
   });
-
+  const handleDataChange = (e) => {
+    if (props.getDataOnChange) {
+      console.log(e)
+      props.getDataOnChange(e);
+    }
+  };
   const modules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],
@@ -45,13 +50,14 @@ function QuillEditor(props) {
     "link",
     "image",
     "video",
-    "paragraph"
+    "paragraph",
   ];
   return (
     // You are ready now to use Quill, using onChange, value , placeholder props
     <div>
       <QuillNoSSRWrapper
         value={props.data ? props.data : ""}
+        onChange={(e) => handleDataChange(e)}
         className=" h-48  mb-24 xl:mb-12 lg:mb-12 md:mb-12"
         modules={modules}
         formats={formats}

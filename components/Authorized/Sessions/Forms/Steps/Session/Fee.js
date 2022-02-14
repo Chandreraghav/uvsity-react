@@ -8,7 +8,8 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import React, { useState } from "react";
 import { FEE, SPONSORSHIP } from "../../../../../../constants/userdata";
@@ -21,16 +22,27 @@ function Fee() {
   const [freeSession, setSessionFree] = useState(true);
   const [sponsorShipReqd, setSponsorShipReqd] = useState(false);
   const [sessionFee, setSessionFee] = useState(null);
+  const [sposnsorshipFee, setSponsorshipFee] = useState(null);
   const [_editSponsorshipLevel, setEditSponsorshipLevel] = useState(false);
   const [sponsorshipLevelOnEdit, setSponsorshipLevelOnEdit] = useState({});
+  const [editorData, setEditorData] = useState(null);
   const editSponsorshipLevel = (level) => {
     setSponsorshipLevelOnEdit(level);
     setEditSponsorshipLevel(true);
-  }; 
-  const handleCancel =()=>{
-    setSponsorshipLevelOnEdit({})
-    setEditSponsorshipLevel(false)
-  }
+  };
+  const handleCancel = () => {
+    setSponsorshipLevelOnEdit({});
+    setEditSponsorshipLevel(false);
+    setEditorData(null);
+    setSponsorshipFee(null);
+  };
+  const handleSaveSponsorshipOffering = () => {
+    console.log({ data: editorData, sponsorshipFee: sposnsorshipFee });
+    setEditSponsorshipLevel(false);
+  };
+  const handleEditorDataOnChange = (data) => {
+    setEditorData(data);
+  };
   return (
     <div className={`p-4`}>
       <Box sx={{ width: "100%" }}>
@@ -173,9 +185,17 @@ function Fee() {
                       </>
                     )}
                   </Typography>
-                  {_editSponsorshipLevel && (<><div className="ml-auto cursor-pointer app__anchor__block" onClick={handleCancel}><ArrowBackIcon/></div>
-               </>)}
-                 </div>
+                  {_editSponsorshipLevel && (
+                    <>
+                      <div
+                        className="ml-auto cursor-pointer app__anchor__block"
+                        onClick={handleCancel}
+                      >
+                        <ArrowBackIcon />
+                      </div>
+                    </>
+                  )}
+                </div>
               </>
             )}
           </Grid>
@@ -183,8 +203,11 @@ function Fee() {
           {sponsorShipReqd && !_editSponsorshipLevel && (
             <>
               {SPONSORSHIP.LEVELS.map((level) => (
-                <Plans editSponsorshipdata={()=>editSponsorshipLevel(level)} key ={level.id} data={level}/>
-                  
+                <Plans
+                  editSponsorshipdata={() => editSponsorshipLevel(level)}
+                  key={level.id}
+                  data={level}
+                />
               ))}
             </>
           )}
@@ -203,6 +226,7 @@ function Fee() {
                       id="sponsorship-fee"
                       label="Sponsorship fee"
                       variant="outlined"
+                      onChange={(e) => setSponsorshipFee(e.target.value)}
                       fullWidth
                       required
                       type="number"
@@ -217,13 +241,29 @@ function Fee() {
                   variant="standard"
                   sx={{ marginBottom: 1 }}
                 >
-                  <QuillEditor data={sponsorshipLevelOnEdit.defaults.featured.text} />
+                  <div className="flex gap-1 py-2">
+                    <label
+                      className=" text-gray-600 font-normal"
+                      id="session-summary"
+                    >
+                      Pre-customized offering Template
+                    </label>
+                    <Tooltip title="This is a pre-customized sponsorship offering example template for you. You are free to tailor it according your sponsosrship needs.">
+                      <div className=" cursor-pointer">
+                        <HelpOutlineIcon fontSize="small" />
+                      </div>
+                    </Tooltip>
+                  </div>
+                  <QuillEditor
+                    getDataOnChange={handleEditorDataOnChange}
+                    data={sponsorshipLevelOnEdit.defaults.featured.text}
+                  />
                 </FormControl>
 
                 <div className="save-sponsorship-action-buttons border-dotted border-2">
                   <Tooltip title={"Save sponsorship"}>
                     <IconButton
-                      type="submit"
+                      onClick={handleSaveSponsorshipOffering}
                       aria-label="save-sponsorship-done"
                       size="small"
                     >
@@ -231,7 +271,8 @@ function Fee() {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title={"Cancel"}>
-                    <IconButton  onClick={handleCancel}
+                    <IconButton
+                      onClick={handleCancel}
                       aria-label="save-sponsorship-cancel"
                       size="small"
                     >
