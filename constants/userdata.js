@@ -51,6 +51,7 @@ import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -679,7 +680,7 @@ export const PARTICIPANT_INVITATION_OPTIONS = [
 export const PARTICIPANT_QUESTIONAIRRES = {
   CREATED: "Questionairre created for participants successfully",
   UPDATED: "Questionairre updated successfully",
-  DELETED: "Questionairre deleted successfully"
+  DELETED: "Questionairre deleted successfully",
 };
 
 export const FEE = {
@@ -697,6 +698,7 @@ export const SPONSORSHIP = {
   ICONS: {
     EDIT: <EditIcon />,
     CUSTOMIZE: <DashboardCustomizeIcon />,
+    RESET:<RestoreFromTrashIcon/>
   },
   LEVELS: [
     {
@@ -732,8 +734,19 @@ export const SPONSORSHIP = {
           ),
         },
       },
+      current: {
+        price: {
+          text: null,
+          display: "",
+        },
+        featured: {
+          text: ``,
+          html: null,
+        },
+      },
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvr1_3DizGBjUT43njjHLIihWLjH8JgLgshQ&usqp=CAU",
+      dirty: false,
     },
     {
       id: 2,
@@ -775,8 +788,19 @@ export const SPONSORSHIP = {
           ),
         },
       },
+      current: {
+        price: {
+          text: null,
+          display: "",
+        },
+        featured: {
+          text: ``,
+          html: null,
+        },
+      },
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXG2UQ2x9iS_Wr03vZBZHLzNDbWyxKbx0bTQ&usqp=CAU",
+      dirty: false,
     },
     {
       id: 3,
@@ -818,12 +842,28 @@ export const SPONSORSHIP = {
           ),
         },
       },
+      current: {
+        price: {
+          text: null,
+          display: "",
+        },
+        featured: {
+          text: ``,
+          html: null,
+        },
+      },
       alias: "Platinum",
       workflow: {
         code: WORKFLOW_CODES.USER.SPONSORSHIP.EDITS.FEATURES.PLATINUM,
       },
       image:
         "data:image/jpeg;base64,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",
+      dirty: false,
     },
   ],
+  MESSAGES: {
+    ERRORS: {
+      EDITS: "Failed to modify sponsorhsip offerings. Please try again.",
+    },
+  },
 };
