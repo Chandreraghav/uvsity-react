@@ -865,5 +865,8 @@ export const SPONSORSHIP = {
     ERRORS: {
       EDITS: "Failed to modify sponsorhsip offerings. Please try again.",
     },
+    INFO:{
+      SET_FEE_TYPEWRITER: "Great going, you've set an offer of $#XX from the sponsor.",
+    }
   },
 };
