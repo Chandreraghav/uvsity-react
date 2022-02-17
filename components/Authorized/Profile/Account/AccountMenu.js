@@ -15,15 +15,46 @@ import { getWorkflowError } from "../../../../error-handler/handler";
 import { LOGOUT } from "../../../../constants/error-messages";
 import { RESPONSE_TYPES } from "../../../../constants/constants";
 import { toast } from "react-toastify";
-import { useQueryClient } from 'react-query'
+import { useQueryClient } from "react-query";
+import ConfirmDialog from "../../../shared/modals/ConfirmDialog";
 toast.configure();
 function AccountMenu({ onClose, isOpen, anchor }) {
   // Get QueryClient from the context
- const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const [{}, unauthorize] = useDataLayerContextValue();
+  const [logoutRequested, setLogoutRequested] = React.useState(false);
   const router = useRouter();
   const handleClose = () => {
     onClose(null, true);
+  };
+  const handleConfirmDialogRequest = (requestInd) => {
+    if (requestInd.confirm) {
+      logoff();
+    }
+    else {
+      setLogoutRequested(false)
+    }
+  };
+  const logoff = () => {
+    handleResponse(
+      LOGOUT.INFO.IN_PROGRESS,
+      RESPONSE_TYPES.INFO,
+      toast.POSITION.TOP_CENTER
+    );
+    SignOutService.signout()
+      .then(() => {
+        AuthService.logout();
+        eraseContext();
+        router.replace("/");
+        queryClient.removeQueries();
+      })
+      .catch((error) => {
+        handleResponse(
+          getWorkflowError(LOGOUT.ERRORS.LOGOUT_FAILED),
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.TOP_CENTER
+        );
+      });
   };
   const eraseContext = () => {
     unauthorize({
@@ -37,26 +68,7 @@ function AccountMenu({ onClose, isOpen, anchor }) {
     }
     switch (actionCode) {
       case WORKFLOW_CODES.USER.ACCOUNT_SETTINGS.EXIT:
-        handleResponse(
-          LOGOUT.INFO.IN_PROGRESS,
-          RESPONSE_TYPES.INFO,
-          toast.POSITION.TOP_CENTER
-        );
-        // voluntarily logout
-        SignOutService.signout()
-          .then(() => {
-            AuthService.logout();
-            eraseContext();
-            router.replace('/');
-            queryClient.removeQueries()
-          })
-          .catch((error) => {
-            handleResponse(
-              getWorkflowError(LOGOUT.ERRORS.LOGOUT_FAILED),
-              RESPONSE_TYPES.ERROR,
-              toast.POSITION.TOP_CENTER
-            );
-          });
+        setLogoutRequested(true);
 
         return;
       case WORKFLOW_CODES.USER.ACCOUNT_SETTINGS.UPGRADE:
@@ -119,6 +131,13 @@ function AccountMenu({ onClose, isOpen, anchor }) {
           </MenuItem>
         ))}
       </Menu>
+      <ConfirmDialog
+        theme="dark"
+        isOpen={logoutRequested}
+        confirmMessage="Do you want to log out?"
+        dialogCloseRequest={handleConfirmDialogRequest}
+        title="Confirmation"
+      />
     </div>
   );
 }

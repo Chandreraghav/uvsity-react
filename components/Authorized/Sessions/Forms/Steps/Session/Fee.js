@@ -18,6 +18,11 @@ import QuillEditor from "../../../../../Thirdparty/Editor/QuillEditor";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Plans from "../../../../Sponsorships/Plans";
+import { toast } from "react-toastify";
+import { handleResponse } from "../../../../../../toastr-response-handler/handler";
+import { RESPONSE_TYPES } from "../../../../../../constants/constants";
+import parse from "html-react-parser";
+toast.configure();
 function Fee() {
   const [freeSession, setSessionFree] = useState(true);
   const [sponsorShipReqd, setSponsorShipReqd] = useState(false);
@@ -28,7 +33,31 @@ function Fee() {
   const [editorData, setEditorData] = useState(null);
   const editSponsorshipLevel = (level) => {
     setSponsorshipLevelOnEdit(level);
+    setSponsorshipFee(level.current.price.text?level.current.price.text:level.defaults.price.text);
     setEditSponsorshipLevel(true);
+  };
+
+  const resetSponsorshipLevel = (level) => {
+    let obj = {
+      price: {
+        text: null,
+        display: ``,
+      },
+      featured: {
+        text: ``,
+        html: null,
+      },
+    };
+    const edits = level;
+    edits.current = obj;
+    edits.dirty = false;
+    const editIdx = SPONSORSHIP.LEVELS.findIndex(
+      (level) => level.id === edits.id
+    );
+    if (editIdx !== -1) {
+      SPONSORSHIP.LEVELS[editIdx] = edits;
+      handleCancel();
+    }
   };
   const handleCancel = () => {
     setSponsorshipLevelOnEdit({});
@@ -37,11 +66,56 @@ function Fee() {
     setSponsorshipFee(null);
   };
   const handleSaveSponsorshipOffering = () => {
-    console.log({ data: editorData, sponsorshipFee: sposnsorshipFee });
-    setEditSponsorshipLevel(false);
+    let obj=null;
+    if (!editorData) {
+      // back to default;
+      obj = {
+        price: {
+          text: sposnsorshipFee?Number(sposnsorshipFee):null,
+          display: `$${sposnsorshipFee?sposnsorshipFee:''}`,
+        },
+        featured: {
+          text: ``,
+          html: null,
+        },
+      };
+    } else {
+      obj = {
+        price: {
+          text: Number(sposnsorshipFee),
+          display: `$${sposnsorshipFee}`,
+        },
+        featured: {
+          text: editorData,
+          html: <>{parse(editorData)}</>,
+        },
+      };
+    }
+   
+    const edits=sponsorshipLevelOnEdit
+    edits.current=obj;
+    edits.dirty=true;
+     
+    const editIdx = SPONSORSHIP.LEVELS.findIndex(
+      (level) => level.id === edits.id
+    );
+    if (editIdx !== -1) {
+      SPONSORSHIP.LEVELS[editIdx] = edits;
+    handleCancel()
+    }
+    else {
+      handleResponse(
+        SPONSORSHIP.MESSAGES.ERRORS.EDITS,
+        RESPONSE_TYPES.ERROR,
+        toast.POSITION.BOTTOM_CENTER
+      );
+    }
   };
+  
+ 
   const handleEditorDataOnChange = (data) => {
-    setEditorData(data);
+     const _data =data.length;
+     setEditorData(data);
   };
   return (
     <div className={`p-4`}>
@@ -204,9 +278,10 @@ function Fee() {
             <>
               {SPONSORSHIP.LEVELS.map((level) => (
                 <Plans
-                  editSponsorshipdata={() => editSponsorshipLevel(level)}
+                  editSponsorshipdata={()=>editSponsorshipLevel(level)}
                   key={level.id}
                   data={level}
+                  onResetSponsorShip={()=>resetSponsorshipLevel(level)}
                 />
               ))}
             </>
@@ -230,7 +305,7 @@ function Fee() {
                       fullWidth
                       required
                       type="number"
-                      value={sponsorshipLevelOnEdit.defaults.price.text}
+                      value={sposnsorshipFee}
                       placeholder="Enter sponsorship fee"
                     />
                   </Box>
@@ -256,7 +331,7 @@ function Fee() {
                   </div>
                   <QuillEditor
                     getDataOnChange={handleEditorDataOnChange}
-                    data={sponsorshipLevelOnEdit.defaults.featured.text}
+                    data={sponsorshipLevelOnEdit?.current?.featured?.text?sponsorshipLevelOnEdit.current.featured.text:sponsorshipLevelOnEdit.defaults.featured.text}
                   />
                 </FormControl>
 

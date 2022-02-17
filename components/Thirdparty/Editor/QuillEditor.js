@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 
 function QuillEditor(props) {
@@ -6,12 +6,21 @@ function QuillEditor(props) {
     ssr: false,
     loading: () => <p>Loading ...</p>,
   });
-  const handleDataChange = (e) => {
-    if (props.getDataOnChange) {
-      console.log(e)
-      props.getDataOnChange(e);
+  const editor = useRef();
+
+  const [editorText, setEditorText] = useState(props.data ? props.data : "");
+  const handleDataChange = (html, delta, source) => {
+    setEditorText(html);
+    if (source === "user" && props.getDataOnChange) {
+      props.getDataOnChange(html);
     }
   };
+  useEffect(() => {
+    if (props.getDataOnChange) {
+      props.getDataOnChange(editorText);
+    }
+  }, []);
+
   const modules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],
@@ -31,6 +40,7 @@ function QuillEditor(props) {
       matchVisual: false,
     },
   };
+
   /*
    * Quill editor formats
    * See https://quilljs.com/docs/formats/
@@ -56,8 +66,8 @@ function QuillEditor(props) {
     // You are ready now to use Quill, using onChange, value , placeholder props
     <div>
       <QuillNoSSRWrapper
-        value={props.data ? props.data : ""}
-        onChange={(e) => handleDataChange(e)}
+        value={editorText}
+        onChange={handleDataChange}
         className=" h-48  mb-24 xl:mb-12 lg:mb-12 md:mb-12"
         modules={modules}
         formats={formats}
