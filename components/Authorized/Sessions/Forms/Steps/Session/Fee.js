@@ -33,7 +33,11 @@ function Fee() {
   const [editorData, setEditorData] = useState(null);
   const editSponsorshipLevel = (level) => {
     setSponsorshipLevelOnEdit(level);
-    setSponsorshipFee(level.current.price.text?level.current.price.text:level.defaults.price.text);
+    setSponsorshipFee(
+      level.current.price.text
+        ? level.current.price.text
+        : level.defaults.price.text
+    );
     setEditSponsorshipLevel(true);
   };
 
@@ -66,13 +70,13 @@ function Fee() {
     setSponsorshipFee(null);
   };
   const handleSaveSponsorshipOffering = () => {
-    let obj=null;
+    let obj = null;
     if (!editorData) {
       // back to default;
       obj = {
         price: {
-          text: sposnsorshipFee?Number(sposnsorshipFee):null,
-          display: `$${sposnsorshipFee?sposnsorshipFee:''}`,
+          text: sposnsorshipFee ? Number(sposnsorshipFee) : null,
+          display: `$${sposnsorshipFee ? sposnsorshipFee : ""}`,
         },
         featured: {
           text: ``,
@@ -91,19 +95,18 @@ function Fee() {
         },
       };
     }
-   
-    const edits=sponsorshipLevelOnEdit
-    edits.current=obj;
-    edits.dirty=true;
-     
+
+    const edits = sponsorshipLevelOnEdit;
+    edits.current = obj;
+    edits.dirty = true;
+
     const editIdx = SPONSORSHIP.LEVELS.findIndex(
       (level) => level.id === edits.id
     );
     if (editIdx !== -1) {
       SPONSORSHIP.LEVELS[editIdx] = edits;
-    handleCancel()
-    }
-    else {
+      handleCancel();
+    } else {
       handleResponse(
         SPONSORSHIP.MESSAGES.ERRORS.EDITS,
         RESPONSE_TYPES.ERROR,
@@ -111,11 +114,10 @@ function Fee() {
       );
     }
   };
-  
- 
+
   const handleEditorDataOnChange = (data) => {
-     const _data =data.length;
-     setEditorData(data);
+    const _data = data.length;
+    setEditorData(data);
   };
   return (
     <div className={`p-4`}>
@@ -278,10 +280,10 @@ function Fee() {
             <>
               {SPONSORSHIP.LEVELS.map((level) => (
                 <Plans
-                  editSponsorshipdata={()=>editSponsorshipLevel(level)}
+                  editSponsorshipdata={() => editSponsorshipLevel(level)}
                   key={level.id}
                   data={level}
-                  onResetSponsorShip={()=>resetSponsorshipLevel(level)}
+                  onResetSponsorShip={() => resetSponsorshipLevel(level)}
                 />
               ))}
             </>
@@ -308,7 +310,24 @@ function Fee() {
                       value={sposnsorshipFee}
                       placeholder="Enter sponsorship fee"
                     />
+
+                   
                   </Box>
+                  {sposnsorshipFee &&
+                      !isNaN(sposnsorshipFee) &&
+                      sposnsorshipFee > 0 && (
+                        <>
+                          <div className="text-green-600 lg:text-md text-xs md:text-sm leading-tight font-semibold flex gap-2 px-3 py-1">
+                            <div>{FEE.HELP_TEXT.ICON}</div>
+                            <div>
+                              {SPONSORSHIP.MESSAGES.INFO.SET_FEE_TYPEWRITER.replace(
+                                "#XX",
+                                sposnsorshipFee
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
                 </FormControl>
 
                 <FormControl
@@ -331,7 +350,11 @@ function Fee() {
                   </div>
                   <QuillEditor
                     getDataOnChange={handleEditorDataOnChange}
-                    data={sponsorshipLevelOnEdit?.current?.featured?.text?sponsorshipLevelOnEdit.current.featured.text:sponsorshipLevelOnEdit.defaults.featured.text}
+                    data={
+                      sponsorshipLevelOnEdit?.current?.featured?.text
+                        ? sponsorshipLevelOnEdit.current.featured.text
+                        : sponsorshipLevelOnEdit.defaults.featured.text
+                    }
                   />
                 </FormControl>
 
