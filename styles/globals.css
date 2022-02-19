@@ -365,7 +365,9 @@ button.danger {
 .zoom-80{
   zoom:0.8
 }
-
+.ck-editor__editable_inline {
+  min-height: 200px;
+}
  
 
 

@@ -16,6 +16,7 @@ import Spacer from "../../../../../shared/Spacer";
 import QuillEditor from "../../../../../Thirdparty/Editor/QuillEditor";
 import ReactPlayer from "react-player";
 import { isValidURL } from "../../../../../../utils/utility";
+import CEditor from "../../../../../Thirdparty/Editor/CKEditor";
 
 function Basic(props) {
   const [videoPreviewURL, setVideoPreviewURL] = useState("");
@@ -136,7 +137,7 @@ function Basic(props) {
                 <small className="text-blue-800 text-bold">*</small>
               </div>
 
-              <QuillEditor />
+              <CEditor/>
             </FormControl>
           </Grid>
 
