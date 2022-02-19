@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import { handleResponse } from "../../../../../../toastr-response-handler/handler";
 import { RESPONSE_TYPES } from "../../../../../../constants/constants";
 import parse from "html-react-parser";
+import CEditor from "../../../../../Thirdparty/Editor/CKEditor";
 toast.configure();
 function Fee() {
   const [freeSession, setSessionFree] = useState(true);
@@ -348,14 +349,14 @@ function Fee() {
                       </div>
                     </Tooltip>
                   </div>
-                  <QuillEditor
-                    getDataOnChange={handleEditorDataOnChange}
-                    data={
+                 
+                  <CEditor
+                  getDataOnChange={handleEditorDataOnChange}
+                  data={
                       sponsorshipLevelOnEdit?.current?.featured?.text
                         ? sponsorshipLevelOnEdit.current.featured.text
                         : sponsorshipLevelOnEdit.defaults.featured.text
-                    }
-                  />
+                    }/>
                 </FormControl>
 
                 <div className="save-sponsorship-action-buttons border-dotted border-2">
