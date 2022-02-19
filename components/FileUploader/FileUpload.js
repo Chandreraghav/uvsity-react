@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { Divider, Tooltip } from "@mui/material";
 import Spacer from "../shared/Spacer";
@@ -6,15 +6,15 @@ import FileUploadStyle from "../../styles/FileUpload.module.css";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Checkbox from "@mui/material/Checkbox";
 import { getFileExtension } from "../../utils/utility";
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 function FileUpload(props) {
   const label = { inputProps: { "aria-label": "Checkbox" } };
   const [files, setFiles] = useState([]);
   const [errors, setErrors] = useState([]);
+  const [consentDisabled, setConsentDisabled] = useState(true);
   const FILE_TOO_LARGE = "file-too-large";
   const FILE_INVALID_EXT = "file-invalid-type";
   const FILE_DIMENSION_ERROR = "FILE_DIMENSION_ERROR";
-
   const img = {
     marginTop: 10,
     margin: "auto",
@@ -23,14 +23,14 @@ function FileUpload(props) {
     width: 300,
     height: "min-content",
     paddingBottom: 4,
-
     "object-fit": "contain",
   };
+
   const { getRootProps, getInputProps } = useDropzone({
-    accept: props.data.accept,
+    accept: props?.data?.accept,
     isDragActive: true,
     minSize: 0,
-    maxSize: props.data.validation.maxAllowedSizeInBytes,
+    maxSize: props?.data?.validation?.maxAllowedSizeInBytes,
     onDrop: (acceptedFiles, rejectedFiles) => {
       if (acceptedFiles) {
         acceptedFiles.map((file) => {
@@ -53,6 +53,8 @@ function FileUpload(props) {
               URL.revokeObjectURL(objectUrl);
             };
             img.src = objectUrl;
+          } else {
+            setConsentDisabled(false);
           }
         });
         setFiles(
@@ -63,6 +65,7 @@ function FileUpload(props) {
             })
           )
         );
+
         setErrors([]);
       }
       if (rejectedFiles) {
@@ -81,8 +84,22 @@ function FileUpload(props) {
         });
       }
     },
-    multiple: props.data.multiple,
+    multiple: props?.data?.multiple,
   });
+  useEffect(() => {
+    setConsentDisabled(props?.data?.consent?.hasConsent);
+  }, []);
+  useEffect(() => {
+    if (props?.receptorData) {
+      props.receptorData(files);
+    }
+  }, [files]);
+  const handleConsentChange = (e) => {
+    if (props.consent) {
+      props.data.consent.hasConsent = !props.data.consent.hasConsent;
+      props.consent(props.data.consent.hasConsent);
+    }
+  };
 
   const getIconPerFileExtension = (ext) => {
     switch (ext) {
@@ -99,19 +116,21 @@ function FileUpload(props) {
         break;
     }
   };
-  const removeDocument=(event)=>{
+  const removeDocument = (event) => {
     event.preventDefault();
-    setErrors([])
-    setFiles([])
-
-  }
+    setErrors([]);
+    setFiles([]);
+    props.data.binary = null;
+    setConsentDisabled(true);
+    props.data.consent.hasConsent = false;
+  };
 
   return (
     <div className={`${FileUploadStyle.fileupload__container}`}>
       {props.data && props.data.title && (
         <div
           className={`cursor-pointer`}
-          id={props.data.id}
+          id={props?.data?.id}
           {...getRootProps({ className: "dropzone" })}
         >
           <input {...getInputProps()} />
@@ -124,14 +143,9 @@ function FileUpload(props) {
                 <small className="text-blue-800 text-bold">*</small>
               )}
             </div>
-            
           </div>
 
-       
           <div className="flex flex-col cursor-pointer">
-
-          
-
             <small className={`text-xs leading-tight text-gray-600`}>
               {props.data.description}
             </small>
@@ -139,31 +153,53 @@ function FileUpload(props) {
         </div>
       )}
 
-
-
       <Spacer className="xl:block lg:block md:block sm:hidden hidden" />
       <Divider className="xl:block lg:block md:block sm:hidden hidden" />
 
-      {props.data.id === "session-document" && files && files.length > 0 && (
-              <div className="flex  gap-2 mt-1  ">
-                 {files.map((file) => (
-                  <div key={file.name} className=" flex gap-1 text-sm font-bold">
-                    {getIconPerFileExtension(file.extension)} 
-                  <Tooltip title={file.name}><span className="line-clamp-1">{file.name}</span></Tooltip>  
-                  </div>
-                ))}
-                <div onClick={(event)=>removeDocument(event)} 
-                className="cursor-pointer font-semibold app__anchor__block 
-                 text-sm sm:text-md  text-black-700">
-                   <RemoveCircleIcon/>
-                 </div>
-               
+      {props?.data?.id === "session-document" &&
+        files &&
+        files.length > 0 &&
+        !props.data.binary && (
+          <div className="flex  gap-2 mt-1  ">
+            {files.map((file) => (
+              <div key={file.name} className=" flex gap-1 text-sm font-bold">
+                {getIconPerFileExtension(file.extension)}
+                <Tooltip title={file.name}>
+                  <span className="line-clamp-1">{file.name}</span>
+                </Tooltip>
               </div>
-            )}
+            ))}
+
+            <div
+              title="Remove document"
+              onClick={(event) => removeDocument(event)}
+              className="cursor-pointer font-semibold app__anchor__block 
+                 text-sm sm:text-md  text-black-700"
+            >
+              <RemoveCircleIcon />
+            </div>
+          </div>
+        )}
+      {props?.data?.id === "session-document" && props.data.binary && (
+        <div className="flex  gap-2 mt-1  text-sm font-bold">
+          {getIconPerFileExtension(props.data.binary.extension)}
+          <Tooltip title={props.data.binary.name}>
+            <span className="ellipsis">{props.data.binary.name}</span>
+          </Tooltip>
+          <div
+            title="Remove document"
+            onClick={(event) => removeDocument(event)}
+            className="cursor-pointer font-semibold app__anchor__block 
+                 text-sm sm:text-md  text-black-700 ml-auto"
+          >
+            <RemoveCircleIcon />
+          </div>
+        </div>
+      )}
 
       <Spacer className="xl:block lg:block md:block sm:hidden hidden" />
       <div className=" xl:flex lg:flex md:flex sm:hidden hidden flex flex-col">
-        {props.data.validation.maxAllowedSize && (
+        {props.data?.validation?.maxAllowedSize && (
           <small
             className={`${
               errors && errors.code === FILE_TOO_LARGE
@@ -176,14 +212,14 @@ function FileUpload(props) {
           </small>
         )}
 
-        {props.data.validation.minAllowedDimension && (
+        {props?.data?.validation?.minAllowedDimension && (
           <small className={`text-xs leading-tight text-gray-500`}>
             <ArrowForwardIosIcon sx={{ fontSize: 10 }} /> Minimum poster
-            dimension: {props.data.validation.minAllowedDimension}
+            dimension: {props?.data?.validation?.minAllowedDimension}
           </small>
         )}
 
-        {props.data.validation.allowedExtensions && (
+        {props?.data?.validation?.allowedExtensions && (
           <small
             className={` ${
               errors && errors.code === FILE_INVALID_EXT
@@ -192,25 +228,35 @@ function FileUpload(props) {
             } text-xs leading-tight`}
           >
             <ArrowForwardIosIcon sx={{ fontSize: 10 }} /> Allowed extensions:{" "}
-            {props.data.validation.allowedExtensions.toString()}
+            {props?.data?.validation?.allowedExtensions.toString()}
           </small>
         )}
       </div>
-      {props.data.id === "session-poster" &&
+      {props?.data?.id === "session-poster" &&
         files &&
+        !props?.data?.imageURL &&
         files.map((file) => (
           <img key={file.name} src={file.preview} style={img} />
         ))}
 
-      {props.data.consent && (
+      {props?.data?.id === "session-poster" && props?.data?.imageURL && (
+        <img className="mt-2" src={props.data.imageURL} style={img} />
+      )}
+
+      {props?.data?.consent && (
         <>
           <Spacer />
           <div className="flex gap-1">
-            <Checkbox {...label} />
+            <Checkbox
+              disabled={files.length == 0 && !props.data.binary}
+              checked={props.data.consent.hasConsent}
+              onChange={handleConsentChange}
+              {...label}
+            />
             <small
               className={`text-xs leading-tight text-gray-500 font-semibold`}
             >
-              {props.data.consent.text}
+              {props?.data?.consent?.text}
             </small>
           </div>
         </>
