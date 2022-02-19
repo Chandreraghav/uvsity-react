@@ -96,6 +96,36 @@ function TimeOutDialog({
       type: actionTypes.SET_USER,
       user: null,
     });
+
+    unauthorize({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
+      basic: null,
+    });
+
+    unauthorize({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
+      fees: null,
+    });
+
+    unauthorize({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
+      participant: null,
+    });
+
+    unauthorize({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
+      schedule: null,
+    });
+
+    unauthorize({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
+      selected_past_session: null,
+    });
+
+    unauthorize({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,
+      sponsor: null,
+    });
   };
   return (
     <>

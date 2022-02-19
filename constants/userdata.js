@@ -622,6 +622,8 @@ export const SESSION_POSTER = {
   consent: null,
   icon: <ImageIcon />,
   required: false,
+  imageURL:null,
+  binary:null
 };
 
 export const SESSION_DOCUMENT = {
@@ -630,7 +632,7 @@ export const SESSION_DOCUMENT = {
   description: "Drag and drop a doc or click to select one",
   preview: true,
   accept:
-    "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, application/vnd.openxmlformats-officedocument.presentationml.presentation,text/xml,application/zip,application/x-7z-compressed,text/plain",
+    "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, application/vnd.openxmlformats-officedocument.presentationml.presentation,text/xml,application/zip, application/x-zip-compressed, multipart/x-zip,application/zip,application/x-7z-compressed,text/plain",
   multiple: false,
   validation: {
     maxAllowedSize: 50,
@@ -649,7 +651,9 @@ export const SESSION_DOCUMENT = {
   consent: {
     text: `I agree that this document doesn't violate other's copyright or privacy rights.`,
     element: "checkbox",
+    hasConsent:false
   },
+  binary:null
 };
 
 export const PARTICIPANT_INVITATION_OPTIONS = [
@@ -869,4 +873,49 @@ export const SPONSORSHIP = {
       SET_FEE_TYPEWRITER: "Great going, you've set an offer of $#XX from the sponsor.",
     }
   },
+};
+
+export const BASIC = {
+  ICONS: {
+    EDIT: <EditIcon />,
+    CUSTOMIZE: <DashboardCustomizeIcon />,
+    RESET:<RestoreFromTrashIcon/>
+  },
+  
+  MESSAGES: {
+    ERRORS: {
+      EDITS: {
+        SESSION_CHANGE: 'Failed to select a past session, please try again or choose from a new category to create one.'
+      },
+    },
+    INFO:{
+       }
+  },
+  SESSION:{
+    DTO:{
+      BASIC:{
+        categoryId: 0,
+        pastSessionId:0,
+        name:'',
+        shortName:'',
+        summary:{
+          html:'',
+          plain:''
+        },
+        binary:{
+          images:{
+            poster:'',
+            data:null
+          },
+          documents:{
+            consent:false,
+            document:'',
+            data:null
+          }
+        },
+        url:''  
+      },
+    }
+  }
+
 };

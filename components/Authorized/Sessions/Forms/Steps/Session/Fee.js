@@ -14,7 +14,6 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import React, { useState } from "react";
 import { FEE, SPONSORSHIP } from "../../../../../../constants/userdata";
 import Typography from "@mui/material/Typography";
-import QuillEditor from "../../../../../Thirdparty/Editor/QuillEditor";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Plans from "../../../../Sponsorships/Plans";
@@ -76,8 +75,15 @@ function Fee() {
       // back to default;
       obj = {
         price: {
-          text: sposnsorshipFee ? Number(sposnsorshipFee) : null,
-          display: `$${sposnsorshipFee ? sposnsorshipFee : ""}`,
+          text:
+            sposnsorshipFee && sposnsorshipFee > 0
+              ? Number(sposnsorshipFee)
+              : null,
+          display: `$${
+            sposnsorshipFee && Number(sposnsorshipFee) > 0
+              ? sposnsorshipFee
+              : ""
+          }`,
         },
         featured: {
           text: ``,
@@ -99,7 +105,11 @@ function Fee() {
 
     const edits = sponsorshipLevelOnEdit;
     edits.current = obj;
-    edits.dirty = true;
+    edits.dirty =
+      editorData ||
+      Number(sposnsorshipFee) !== Number(edits.defaults.price.text)
+        ? true
+        : false;
 
     const editIdx = SPONSORSHIP.LEVELS.findIndex(
       (level) => level.id === edits.id
@@ -311,24 +321,22 @@ function Fee() {
                       value={sposnsorshipFee}
                       placeholder="Enter sponsorship fee"
                     />
-
-                   
                   </Box>
                   {sposnsorshipFee &&
-                      !isNaN(sposnsorshipFee) &&
-                      sposnsorshipFee > 0 && (
-                        <>
-                          <div className="text-green-600 lg:text-md text-xs md:text-sm leading-tight font-semibold flex gap-2 px-3 py-1">
-                            <div>{FEE.HELP_TEXT.ICON}</div>
-                            <div>
-                              {SPONSORSHIP.MESSAGES.INFO.SET_FEE_TYPEWRITER.replace(
-                                "#XX",
-                                sposnsorshipFee
-                              )}
-                            </div>
+                    !isNaN(sposnsorshipFee) &&
+                    sposnsorshipFee > 0 && (
+                      <>
+                        <div className="text-green-600 lg:text-md text-xs md:text-sm leading-tight font-semibold flex gap-2 px-3 py-1">
+                          <div>{FEE.HELP_TEXT.ICON}</div>
+                          <div>
+                            {SPONSORSHIP.MESSAGES.INFO.SET_FEE_TYPEWRITER.replace(
+                              "#XX",
+                              sposnsorshipFee
+                            )}
                           </div>
-                        </>
-                      )}
+                        </div>
+                      </>
+                    )}
                 </FormControl>
 
                 <FormControl
@@ -349,14 +357,15 @@ function Fee() {
                       </div>
                     </Tooltip>
                   </div>
-                 
+
                   <CEditor
-                  getDataOnChange={handleEditorDataOnChange}
-                  data={
+                    getDataOnChange={handleEditorDataOnChange}
+                    data={
                       sponsorshipLevelOnEdit?.current?.featured?.text
                         ? sponsorshipLevelOnEdit.current.featured.text
                         : sponsorshipLevelOnEdit.defaults.featured.text
-                    }/>
+                    }
+                  />
                 </FormControl>
 
                 <div className="save-sponsorship-action-buttons border-dotted border-2">
