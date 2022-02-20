@@ -10,8 +10,41 @@ import Schedule from "./Steps/Session/Schedule";
 import Participant from "./Steps/Session/Participant";
 import Fee from "./Steps/Session/Fee"
 import Final from "./Steps/Session/Final"
-const steps = ['Basics', 'Schedule', 'Participants', 'Fees','Complete'];
+//const steps = ['Basics', 'Schedule', 'Participants', 'Fees','Complete'];
 
+const steps = [
+  {
+    id: 1,
+    title: "Basics",
+    validationError: false,
+    currentFrame: true,
+  },
+  {
+    id: 2,
+    title: "Schedule",
+    validationError: false,
+    currentFrame: false,
+  },
+  {
+    id: 3,
+    title: "Participants",
+    validationError: false,
+    currentFrame: false,
+  },
+   
+  {
+    id: 4,
+    title: "Fees",
+    validationError: false,
+    currentFrame: false,
+  },
+  {
+    id: 5,
+    title: "Complete",
+    validationError: false,
+    currentFrame: false,
+  },
+];
 function CreateSession(props) {
    
   const [activeStep, setActiveStep] = React.useState(0);
@@ -57,6 +90,9 @@ function CreateSession(props) {
     setCompleted(newCompleted);
     handleNext();
   };
+  const handleActivityMonitor=(obj)=>{
+console.log(obj,activeStep)
+  }
 
   const handleReset = () => {
     setActiveStep(0);
@@ -72,9 +108,9 @@ function CreateSession(props) {
       <Box sx={{ width: '100%' }} className="py-4">
       <Stepper alternativeLabel nonLinear activeStep={activeStep}>
         {steps.map((label, index) => (
-          <Step key={label} completed={completed[index]}>
+          <Step key={label.id} completed={completed[index]}>
             <StepButton color="inherit" onClick={handleStep(index)}>
-              {label}
+              {label.title}
             </StepButton>
           </Step>
         ))}
@@ -92,7 +128,7 @@ function CreateSession(props) {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            {activeStep===0 && (<Basic data={props.data}/>)}
+            {activeStep===0 && (<Basic onActivity={handleActivityMonitor} data={props.data}/>)}
             {activeStep===1 && (<Schedule data={props.data}/>)}
             {activeStep===2 && (<Participant data={props.data}/>)}
             {activeStep===3 && (<Fee/>)}

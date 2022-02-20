@@ -23,7 +23,7 @@ function FileUpload(props) {
     width: 300,
     height: "min-content",
     paddingBottom: 4,
-    "object-fit": "contain",
+    objectFit: "contain",
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -94,6 +94,14 @@ function FileUpload(props) {
       props.receptorData(files);
     }
   }, [files]);
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      if (props?.receptorData) {
+        props.receptorData({ error: true, errors, id: props?.data?.id });
+      }
+    }
+  }, [errors]);
   const handleConsentChange = (e) => {
     if (props.consent) {
       props.data.consent.hasConsent = !props.data.consent.hasConsent;
