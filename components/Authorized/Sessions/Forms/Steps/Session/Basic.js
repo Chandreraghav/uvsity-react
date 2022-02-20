@@ -280,17 +280,19 @@ function Basic(props) {
     } else {
       if (errors.summary) delete errors.summary;
     }
-    if (validationError) {
-      errors.mediaValidationError = "There are errors with uploaded media";
-    } else {
-      if (errors.mediaValidationError) delete errors.mediaValidationError;
-    }
     if (!categoryId || !fullName || !shortName) {
       errors.genericValidationError = "There are generic validation errors";
     } else {
       if (errors.genericValidationError) delete errors.genericValidationError;
     }
-    if (data?.basic.binary.documents.data && !documentConsent) {
+    
+    if (validationError) {
+      errors.mediaValidationError = "There are errors with uploaded media";
+    } else {
+      if (errors.mediaValidationError) delete errors.mediaValidationError;
+    }
+   
+    if (data?.basic?.binary?.documents?.data && !documentConsent) {
       errors.documentConsentError =
         "Document uploaded violates copyright or privacy rights";
     } else {
@@ -312,7 +314,9 @@ function Basic(props) {
     posterData,
     documentData,
     documentConsent,
+    validationError
   ]);
+  console.log(posterData,documentData);
    
  
 

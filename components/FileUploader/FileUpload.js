@@ -221,7 +221,13 @@ function FileUpload(props) {
         )}
 
         {props?.data?.validation?.minAllowedDimension && (
-          <small className={`text-xs leading-tight text-gray-500`}>
+          <small
+            className={`${
+              errors && errors.code === FILE_DIMENSION_ERROR
+                ? "text-red-500"
+                : "text-gray-500"
+            } text-xs leading-tight `}
+          >
             <ArrowForwardIosIcon sx={{ fontSize: 10 }} /> Minimum poster
             dimension: {props?.data?.validation?.minAllowedDimension}
           </small>
@@ -247,9 +253,11 @@ function FileUpload(props) {
           <img key={file.name} src={file.preview} style={img} />
         ))}
 
-      {props?.data?.id === "session-poster" && props?.data?.imageURL && (
-        <img className="mt-2" src={props.data.imageURL} style={img} />
-      )}
+      {props?.data?.id === "session-poster" &&
+        props?.data?.imageURL &&
+        errors.length == 0 && (
+          <img className="mt-2" src={props.data.imageURL} style={img} />
+        )}
 
       {props?.data?.consent && (
         <>
