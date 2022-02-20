@@ -875,7 +875,7 @@ export const SPONSORSHIP = {
   },
 };
 
-export const BASIC = {
+export const APP = {
   ICONS: {
     EDIT: <EditIcon />,
     CUSTOMIZE: <DashboardCustomizeIcon />,
@@ -913,7 +913,8 @@ export const BASIC = {
             data:null
           }
         },
-        url:''  
+        url:'' ,
+        validationError:false, 
       },
     }
   }

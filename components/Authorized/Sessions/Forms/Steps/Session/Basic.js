@@ -9,10 +9,9 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import FileUpload from "../../../../../FileUploader/FileUpload";
 import {
-  BASIC,
+  APP as APP,
   SESSION_DOCUMENT,
   SESSION_POSTER,
-  SPONSORSHIP,
 } from "../../../../../../constants/userdata";
 import Spacer from "../../../../../shared/Spacer";
 import ReactPlayer from "react-player";
@@ -25,6 +24,9 @@ import { RESPONSE_TYPES } from "../../../../../../constants/constants";
 import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
 import { actionTypes } from "../../../../../../context/reducer";
 import { useEffect } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { SESSION } from "../../../../../../validation/services/auth/ValidationSchema";
 toast.configure();
 function Basic(props) {
   const [videoPreviewURL, setVideoPreviewURL] = useState("");
@@ -37,28 +39,29 @@ function Basic(props) {
   const [documentData, setDocumentData] = useState(null);
   const [documentConsent, setDocumentConsent] = useState(false);
   const [data, dispatch] = useDataLayerContextValue();
+  const [validationError, setMediaValidationError] = useState(false);
   const trackVideoPlayerUrlInput = (e) => {
     setVideoPreviewURL(e.target.value);
-    BASIC.SESSION.DTO.BASIC.url = e.target.value;
+    APP.SESSION.DTO.BASIC.url = e.target.value;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-      basic: BASIC.SESSION.DTO.BASIC,
+      basic: APP.SESSION.DTO.BASIC,
     });
   };
   const handleSessionCategory = (e) => {
     setCategoryId(e.target.value);
-    BASIC.SESSION.DTO.BASIC.categoryId = e.target.value;
+    APP.SESSION.DTO.BASIC.categoryId = e.target.value;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-      basic: BASIC.SESSION.DTO.BASIC,
+      basic: APP.SESSION.DTO.BASIC,
     });
   };
   const handleConsentChange = (consentInd) => {
     setDocumentConsent(consentInd);
-    BASIC.SESSION.DTO.BASIC.binary.documents.consent = consentInd;
+    APP.SESSION.DTO.BASIC.binary.documents.consent = consentInd;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-      basic: BASIC.SESSION.DTO.BASIC,
+      basic: APP.SESSION.DTO.BASIC,
     });
   };
   const handlePastSessionChange = (e) => {
@@ -71,25 +74,26 @@ function Basic(props) {
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
               selected_past_session: res.data,
             });
-            BASIC.SESSION.DTO.BASIC.pastSessionId = res.data.courseId;
+            APP.SESSION.DTO.BASIC.pastSessionId = res.data.courseId;
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
-              basic: BASIC.SESSION.DTO.BASIC,
+              basic: APP.SESSION.DTO.BASIC,
             });
             setPastSessionId(res.data.courseId);
+            reset();
           } else {
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
               selected_past_session: null,
             });
-            BASIC.SESSION.DTO.BASIC.pastSessionId = 0;
+            APP.SESSION.DTO.BASIC.pastSessionId = 0;
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
-              basic: BASIC.SESSION.DTO.BASIC,
+              basic: APP.SESSION.DTO.BASIC,
             });
             setPastSessionId(0);
             handleResponse(
-              BASIC.MESSAGES.ERRORS.EDITS.SESSION_CHANGE,
+              APP.MESSAGES.ERRORS.EDITS.SESSION_CHANGE,
               RESPONSE_TYPES.ERROR,
               toast.POSITION.TOP_CENTER
             );
@@ -100,14 +104,14 @@ function Basic(props) {
             type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
             selected_past_session: null,
           });
-          BASIC.SESSION.DTO.BASIC.pastSessionId = 0;
+          APP.SESSION.DTO.BASIC.pastSessionId = 0;
           dispatch({
             type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
-            basic: BASIC.SESSION.DTO.BASIC,
+            basic: APP.SESSION.DTO.BASIC,
           });
           setPastSessionId(0);
           handleResponse(
-            BASIC.MESSAGES.ERRORS.EDITS.SESSION_CHANGE,
+            APP.MESSAGES.ERRORS.EDITS.SESSION_CHANGE,
             RESPONSE_TYPES.ERROR,
             toast.POSITION.TOP_CENTER
           );
@@ -117,10 +121,10 @@ function Basic(props) {
         type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
         selected_past_session: null,
       });
-      BASIC.SESSION.DTO.BASIC.pastSessionId = 0;
+      APP.SESSION.DTO.BASIC.pastSessionId = 0;
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
-        basic: BASIC.SESSION.DTO.BASIC,
+        basic: APP.SESSION.DTO.BASIC,
       });
       setPastSessionId(0);
     }
@@ -129,28 +133,28 @@ function Basic(props) {
     const pastSession = data.selected_past_session;
     if (pastSession) {
       if (pastSession.categories[0]) {
-        BASIC.SESSION.DTO.BASIC.categoryId =
+        APP.SESSION.DTO.BASIC.categoryId =
           pastSession?.categories[0]?.courseCategoryId;
-        BASIC.SESSION.DTO.BASIC.name = pastSession?.courseFullName;
-        BASIC.SESSION.DTO.BASIC.shortName = pastSession?.courseShortName;
-        BASIC.SESSION.DTO.BASIC.summary.html = pastSession?.courseSummary;
-        BASIC.SESSION.DTO.BASIC.url = pastSession?.url;
-        BASIC.SESSION.DTO.BASIC.binary.images.poster = pastSession?.imageURL;
+        APP.SESSION.DTO.BASIC.name = pastSession?.courseFullName;
+        APP.SESSION.DTO.BASIC.shortName = pastSession?.courseShortName;
+        APP.SESSION.DTO.BASIC.summary.html = pastSession?.courseSummary;
+        APP.SESSION.DTO.BASIC.url = pastSession?.url;
+        APP.SESSION.DTO.BASIC.binary.images.poster = pastSession?.imageURL;
         if (pastSession?.imageURL) {
-          BASIC.SESSION.DTO.BASIC.binary.images.data = SESSION_POSTER;
+          APP.SESSION.DTO.BASIC.binary.images.data = SESSION_POSTER;
         }
         dispatch({
           type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-          basic: BASIC.SESSION.DTO.BASIC,
+          basic: APP.SESSION.DTO.BASIC,
         });
-        setCategoryId(BASIC.SESSION.DTO.BASIC.categoryId);
-        setFullName(BASIC.SESSION.DTO.BASIC.name);
-        setShortName(BASIC.SESSION.DTO.BASIC.shortName);
-        setSummary(BASIC.SESSION.DTO.BASIC.summary.html);
-        setVideoPreviewURL(BASIC.SESSION.DTO.BASIC.url);
+        setCategoryId(APP.SESSION.DTO.BASIC.categoryId);
+        setFullName(APP.SESSION.DTO.BASIC.name);
+        setShortName(APP.SESSION.DTO.BASIC.shortName);
+        setSummary(APP.SESSION.DTO.BASIC.summary.html);
+        setVideoPreviewURL(APP.SESSION.DTO.BASIC.url);
         const _posterData = posterData;
         if (_posterData) {
-          _posterData.imageURL = BASIC.SESSION.DTO.BASIC.binary.images.poster;
+          _posterData.imageURL = APP.SESSION.DTO.BASIC.binary.images.poster;
           if (_posterData.imageURL) setPosterData(_posterData);
         }
       }
@@ -158,52 +162,81 @@ function Basic(props) {
   }, [data.selected_past_session]);
   const handlefullNameChange = (e) => {
     setFullName(e.target.value);
-    BASIC.SESSION.DTO.BASIC.name = e.target.value;
+    APP.SESSION.DTO.BASIC.name = e.target.value;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-      basic: BASIC.SESSION.DTO.BASIC,
+      basic: APP.SESSION.DTO.BASIC,
     });
   };
   const handleShortNameChange = (e) => {
     setShortName(e.target.value);
-    BASIC.SESSION.DTO.BASIC.shortName = e.target.value;
+    APP.SESSION.DTO.BASIC.shortName = e.target.value;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-      basic: BASIC.SESSION.DTO.BASIC,
+      basic: APP.SESSION.DTO.BASIC,
     });
   };
   const handleEditorDataOnChange = (data) => {
     setSummary(data);
-    BASIC.SESSION.DTO.BASIC.summary.html = data;
+    APP.SESSION.DTO.BASIC.summary.html = data;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-      basic: BASIC.SESSION.DTO.BASIC,
+      basic: APP.SESSION.DTO.BASIC,
     });
   };
   const handleFileOnChange = (blob) => {
+    if (blob.error) {
+      APP.SESSION.DTO.BASIC.validationError = true;
+      dispatch({
+        type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
+        basic: APP.SESSION.DTO.BASIC,
+      });
+      setMediaValidationError(APP.SESSION.DTO.BASIC.validationError);
+      if (blob.id === "session-document") {
+        SESSION_DOCUMENT.binary = null;
+        APP.SESSION.DTO.BASIC.binary.documents.document = null;
+        APP.SESSION.DTO.BASIC.binary.documents.data = null;
+        dispatch({
+          type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
+          basic: APP.SESSION.DTO.BASIC,
+        });
+        setPosterData(APP.SESSION.DTO.BASIC.binary.documents.data);
+
+      } else if (blob.id === "session-poster") {
+        SESSION_POSTER.binary = null;
+        APP.SESSION.DTO.BASIC.binary.images.poster = null;
+        APP.SESSION.DTO.BASIC.binary.images.data = null;
+        dispatch({
+          type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
+          basic: APP.SESSION.DTO.BASIC,
+        });
+        setPosterData(APP.SESSION.DTO.BASIC.binary.images.data);
+      }
+      return;
+    }
     if (blob.length === 0) return;
     if (blob[0]?.type.indexOf("image") !== -1) {
       SESSION_POSTER.binary = blob[0];
       SESSION_POSTER.imageURL = blob[0].preview;
       // if image blob
       // preview
-      BASIC.SESSION.DTO.BASIC.binary.images.poster = SESSION_POSTER.imageURL;
-      BASIC.SESSION.DTO.BASIC.binary.images.data = SESSION_POSTER;
+      APP.SESSION.DTO.BASIC.binary.images.poster = SESSION_POSTER.imageURL;
+      APP.SESSION.DTO.BASIC.binary.images.data = SESSION_POSTER;
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-        basic: BASIC.SESSION.DTO.BASIC,
+        basic: APP.SESSION.DTO.BASIC,
       });
-      setPosterData(BASIC.SESSION.DTO.BASIC.binary.images.data);
+      setPosterData(APP.SESSION.DTO.BASIC.binary.images.data);
     } else {
       // document
       SESSION_DOCUMENT.binary = blob[0];
       // if DOC blob
-      BASIC.SESSION.DTO.BASIC.binary.documents.data = SESSION_DOCUMENT;
+      APP.SESSION.DTO.BASIC.binary.documents.data = SESSION_DOCUMENT;
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-        basic: BASIC.SESSION.DTO.BASIC,
+        basic: APP.SESSION.DTO.BASIC,
       });
-      setDocumentData(BASIC.SESSION.DTO.BASIC.binary.documents.data);
+      setDocumentData(APP.SESSION.DTO.BASIC.binary.documents.data);
     }
   };
   useEffect(() => {
@@ -229,210 +262,306 @@ function Basic(props) {
       setDocumentData(SESSION_DOCUMENT);
     }
   }, []);
+
+  const formOptions = {
+    resolver: yupResolver(SESSION.CREATE.STEPS.BASIC),
+    mode: "all",
+  };
+  const { register, handleSubmit, formState, watch, reset, clearErrors } =
+    useForm(formOptions);
+  const { errors } = formState;
+  const watcher=watch(["category", "fullName", "shortName", "previewurl"]);
+
+ 
+
+  useEffect(() => {
+    if (!summary) {
+      errors.summary = "Summary is required";
+    } else {
+      if (errors.summary) delete errors.summary;
+    }
+    if (validationError) {
+      errors.mediaValidationError = "There are errors with uploaded media";
+    } else {
+      if (errors.mediaValidationError) delete errors.mediaValidationError;
+    }
+    if (!categoryId || !fullName || !shortName) {
+      errors.genericValidationError = "There are generic validation errors";
+    } else {
+      if (errors.genericValidationError) delete errors.genericValidationError;
+    }
+    if (data?.basic.binary.documents.data && !documentConsent) {
+      errors.documentConsentError =
+        "Document uploaded violates copyright or privacy rights";
+    } else {
+      if (errors.documentConsentError) delete errors.documentConsentError;
+    }
+    if (props.onActivity) {
+      props.onActivity({
+        step: 0,
+        errors: errors,
+        data: APP.SESSION.DTO.BASIC,
+      });
+    }
+  }, [
+    videoPreviewURL,
+    categoryId,
+    fullName,
+    shortName,
+    summary,
+    posterData,
+    documentData,
+    documentConsent,
+  ]);
+   
+ 
+
   return (
     <div className={`p-2`}>
-      <Box sx={{ width: "100%" }}>
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={6}>
-            {/* Category */}
-            <FormControl
-              fullWidth={true}
-              variant="standard"
-              sx={{ marginBottom: 1 }}
-            >
-              <InputLabel id="select-category-label">
-                Choose a category
-              </InputLabel>
-              <Select
-                onChange={handleSessionCategory}
-                labelId="select-category-label"
-                id="select-category"
-                value={categoryId}
-                label="Category"
-              >
-                {props?.data?.static?.categories?.map((category) => (
-                  <MenuItem
-                    className=" block p-2"
-                    key={category.courseCategoryId}
-                    value={category.courseCategoryId}
-                  >
-                    {category.courseCategoryName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={0.4}>
-            <FormControl
-              fullWidth={true}
-              variant="standard"
-              sx={{ marginBottom: 1 }}
-            >
-              <blockquote className=" text-xs lg:text-lg md:text-xs font-medium italic leading-loose text-gray-800 lowercase border-r-2 mt-3 -ml-2 items-center">
-                OR&nbsp;
-              </blockquote>
-            </FormControl>
-          </Grid>
-          {props?.data?.root?.expiredCourses &&
-            Object.values(props?.data?.root?.expiredCourses).length > 0 && (
-              <Grid item xs={5.6}>
-                {/* Choose from */}
-                <FormControl
-                  fullWidth={true}
-                  variant="standard"
-                  sx={{ marginBottom: 1 }}
-                >
-                  <InputLabel id="select-expired-session-label">
-                    Choose from past sessions
-                  </InputLabel>
-                  <Select
-                    onChange={handlePastSessionChange}
-                    labelId="select-expired-session-label"
-                    id="select-expired-session"
-                    value={pastSessionId}
-                    label="Choose from past sessions"
-                  >
-                    <MenuItem
-                      className="text-sm block p-2 text-gray-600"
-                      value={0}
-                    ></MenuItem>
-                    {props?.data?.root?.expiredCourses &&
-                      Object.values(props?.data?.root?.expiredCourses).map(
-                        (session) => (
-                          <MenuItem
-                            className=" block p-2"
-                            key={session.courseId}
-                            value={session.courseId}
-                          >
-                            {session.courseFullName}
-                          </MenuItem>
-                        )
-                      )}
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
-          <Grid item xs={12}>
-            <Spacer />
-          </Grid>
-          <Grid item lg={12} sm={12} md={12} xs={12}>
-            {/* Full name */}
-            <FormControl
-              fullWidth={true}
-              variant="standard"
-              sx={{ marginBottom: 1 }}
-            >
-              <TextField
-                variant="standard"
-                value={fullName}
-                onChange={handlefullNameChange}
-                required
-                label="Full Name"
-                id="fullName"
-              />
-            </FormControl>
-          </Grid>
-          <Grid item lg={12} sm={12} md={12} xs={12}>
-            {/* Short name */}
-            <FormControl
-              fullWidth={true}
-              variant="standard"
-              sx={{ marginBottom: 1 }}
-            >
-              <TextField
-                value={shortName}
-                onChange={handleShortNameChange}
-                variant="standard"
-                required
-                label="Short Name"
-                id="shortName"
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12}>
-            {/* Summary */}
-            {/* You are ready now to use CEDITOR, using onChange, value , placeholder props */}
-
-            <FormControl
-              fullWidth={true}
-              variant="standard"
-              sx={{ marginBottom: 1 }}
-            >
-              <div className="flex gap-1">
-                <label
-                  className=" text-gray-600 font-normal"
-                  id="session-summary"
-                >
-                  Summary
-                </label>
-                <small className="text-blue-800 text-bold">*</small>
-              </div>
-
-              <CEditor
-                data={summary}
-                getDataOnChange={handleEditorDataOnChange}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item sm={6} lg={3} md={3} xs={12}>
-            {/* Poster Upload */}
-            <FormControl
-              fullWidth={true}
-              variant="standard"
-              sx={{ marginBottom: 1 }}
-            >
-              <FileUpload data={posterData} receptorData={handleFileOnChange} />
-            </FormControl>
-          </Grid>
-
-          <Grid item sm={6} lg={3} md={3} xs={12}>
-            {/* Document Upload */}
-            <FormControl
-              fullWidth={true}
-              variant="standard"
-              sx={{ marginBottom: 1 }}
-            >
-              {" "}
-              <FileUpload
-                data={documentData}
-                receptorData={handleFileOnChange}
-                consent={handleConsentChange}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid className="mt-1" item sm={12} lg={6} md={6} xs={12}>
-            <div className="flex flex-col">
+      <form name="basic-form">
+        <Box sx={{ width: "100%" }}>
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
+            <Grid item xs={6}>
+              {/* Category */}
               <FormControl
                 fullWidth={true}
                 variant="standard"
                 sx={{ marginBottom: 1 }}
               >
-                {/* Video URL */}
+                <InputLabel id="select-category-label">
+                  Choose a category
+                </InputLabel>
+                <Select
+                  name="category"
+                  {...register(`category`, {
+                    onChange: (event) => {
+                      handleSessionCategory(event);
+                    },
+                  })}
+                  helperText={errors.category?.message}
+                  error={errors.category?.message ? true : false}
+                  required
+                  labelId="select-category-label"
+                  id="select-category"
+                  value={categoryId}
+                  required
+                  label="Category"
+                >
+                  {props?.data?.static?.categories?.map((category) => (
+                    <MenuItem
+                      className=" block p-2"
+                      key={category.courseCategoryId}
+                      value={category.courseCategoryId}
+                    >
+                      {category.courseCategoryName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={0.4}>
+              <FormControl
+                fullWidth={true}
+                variant="standard"
+                sx={{ marginBottom: 1 }}
+              >
+                <blockquote className=" text-xs lg:text-lg md:text-xs font-medium italic leading-loose text-gray-800 lowercase border-r-2 mt-3 -ml-2 items-center">
+                  OR&nbsp;
+                </blockquote>
+              </FormControl>
+            </Grid>
+            {props?.data?.root?.expiredCourses &&
+              Object.values(props?.data?.root?.expiredCourses).length > 0 && (
+                <Grid item xs={5.6}>
+                  {/* Choose from */}
+                  <FormControl
+                    fullWidth={true}
+                    variant="standard"
+                    sx={{ marginBottom: 1 }}
+                  >
+                    <InputLabel id="select-expired-session-label">
+                      Choose from past sessions
+                    </InputLabel>
+                    <Select
+                      onChange={handlePastSessionChange}
+                      labelId="select-expired-session-label"
+                      id="select-expired-session"
+                      value={pastSessionId}
+                      label="Choose from past sessions"
+                    >
+                      <MenuItem
+                        className="text-sm block p-2 text-gray-600"
+                        value={0}
+                      ></MenuItem>
+                      {props?.data?.root?.expiredCourses &&
+                        Object.values(props?.data?.root?.expiredCourses).map(
+                          (session) => (
+                            <MenuItem
+                              className=" block p-2"
+                              key={session.courseId}
+                              value={session.courseId}
+                            >
+                              {session.courseFullName}
+                            </MenuItem>
+                          )
+                        )}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+            <Grid item xs={12}>
+              <Spacer />
+            </Grid>
+            <Grid item lg={12} sm={12} md={12} xs={12}>
+              {/* Full name */}
+              <FormControl
+                fullWidth={true}
+                variant="standard"
+                sx={{ marginBottom: 1 }}
+              >
                 <TextField
-                  onChange={trackVideoPlayerUrlInput}
-                  value={videoPreviewURL}
-                  label="Video Preview URL"
                   variant="standard"
-                  id="previewurl"
+                  value={fullName}
+                  name="fullName"
+                  {...register(`fullName`, {
+                    onChange: (event) => {
+                      handlefullNameChange(event);
+                    },
+                  })}
+                  helperText={errors.fullName?.message}
+                  error={errors.fullName?.message ? true : false}
+                  required
+                  label="Full Name"
+                  id="fullName"
                 />
               </FormControl>
-              {isValidURL(videoPreviewURL) && (
-                <ReactPlayer
-                  controls
-                  loop={true}
-                  muted
-                  width="400px"
-                  height="200px"
-                  url={videoPreviewURL}
+            </Grid>
+            <Grid item lg={12} sm={12} md={12} xs={12}>
+              {/* Short name */}
+              <FormControl
+                fullWidth={true}
+                variant="standard"
+                sx={{ marginBottom: 1 }}
+              >
+                <TextField
+                  value={shortName}
+                  name="shortName"
+                  {...register(`shortName`, {
+                    onChange: (event) => {
+                      handleShortNameChange(event);
+                    },
+                  })}
+                  helperText={errors.shortName?.message}
+                  error={errors.shortName?.message ? true : false}
+                  variant="standard"
+                  required
+                  label="Short Name"
+                  id="shortName"
                 />
-              )}
-            </div>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
+              {/* Summary */}
+              {/* You are ready now to use CEDITOR, using onChange, value , placeholder props */}
+
+              <FormControl
+                fullWidth={true}
+                variant="standard"
+                sx={{ marginBottom: 1 }}
+              >
+                <div className="flex gap-1">
+                  <label
+                    className=" text-gray-600 font-normal"
+                    id="session-summary"
+                  >
+                    Summary
+                  </label>
+                  <small className="text-blue-800 text-bold">*</small>
+                </div>
+                {/* //required */}
+                <CEditor
+                  data={summary}
+                  getDataOnChange={handleEditorDataOnChange}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid item sm={6} lg={3} md={3} xs={12}>
+              {/* Poster Upload */}
+              <FormControl
+                fullWidth={true}
+                variant="standard"
+                sx={{ marginBottom: 1 }}
+              >
+                <FileUpload
+                
+                  data={posterData}
+                  receptorData={handleFileOnChange}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid item sm={6} lg={3} md={3} xs={12}>
+              {/* Document Upload */}
+              <FormControl
+                fullWidth={true}
+                variant="standard"
+                sx={{ marginBottom: 1 }}
+              >
+                {" "}
+                <FileUpload
+                 
+                  data={documentData}
+                  receptorData={handleFileOnChange}
+                  consent={handleConsentChange}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid className="mt-1" item sm={12} lg={6} md={6} xs={12}>
+              <div className="flex flex-col">
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  {/* Video URL */}
+                  <TextField
+                    name="previewurl"
+                    {...register(`previewurl`, {
+                      onChange: (event) => {
+                        trackVideoPlayerUrlInput(event);
+                      },
+                    })}
+                    helperText={errors.previewurl?.message}
+                    error={errors.previewurl?.message ? true : false}
+                    value={videoPreviewURL}
+                    label="Video Preview URL"
+                    variant="standard"
+                    id="previewurl"
+                  />
+                </FormControl>
+                {isValidURL(videoPreviewURL) &&
+                  !errors?.previewurl?.message && (
+                    <ReactPlayer
+                      controls
+                      loop={true}
+                      muted
+                      width="400px"
+                      height="200px"
+                      url={videoPreviewURL}
+                    />
+                  )}
+              </div>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </form>
     </div>
   );
 }

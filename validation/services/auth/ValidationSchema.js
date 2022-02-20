@@ -59,8 +59,8 @@ export const questionValidationSchema = Yup.object().shape({
       }),
       options: Yup.array().when("answerType", {
         is: (answerType) =>
-         // apply validation on fields which are either Checkbox, Drop down, multiselect or Radio
-           
+          // apply validation on fields which are either Checkbox, Drop down, multiselect or Radio
+
           answerType == 2 ||
           answerType == 3 ||
           answerType == 4 ||
@@ -74,3 +74,21 @@ export const questionValidationSchema = Yup.object().shape({
     })
   ),
 });
+
+export const SESSION = {
+  CREATE: {
+    STEPS: {
+      BASIC: Yup.object().shape({
+        category: Yup.number()
+        .typeError('you must specify a number')
+        .positive("Category is required").required('Category is required'),
+        fullName: Yup.string().required("Name is required"),
+        shortName: Yup.string().required("Short name is required"),
+        previewurl: Yup.string().notRequired().matches(
+          /((https?):\/\/)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+          "Valid URL is required"
+        ),
+      }),
+    },
+  },
+};
