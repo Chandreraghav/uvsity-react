@@ -76,13 +76,14 @@ function MyApp({ Component, pageProps }) {
     let controller = new AbortController();
     let isSubscribed = true;
     if (isSubscribed)
+    setLoading(false);
       // we will load gapi client and once that is done, render the page to client
       AuthGuardService.loadGAPIClient().then(() => {
         setLoading(false);
       });
 
     return () => {
-      controller?.abort();
+     controller?.abort();
       isSubscribed = false;
     };
   }, []);

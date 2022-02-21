@@ -14,7 +14,7 @@ import Spacer from "../../shared/Spacer";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import { AUTHORIZED_ROUTES } from "../../../constants/routes";
-import { uuid } from "uuidv4";
+import { v4 as uuidv4 } from "uuid";
 import Shimmer from "./Shimmer/Shimmer";
 import IntroShimmer from "./Shimmer/IntroShimmer";
 
@@ -44,7 +44,7 @@ function Intro(props) {
   useEffect(() => {
     let controller = new AbortController();
     if (INTRO_TEXT_KEYWORDS) {
-      setInterval(() => {
+    window.introTextSwapperInterval= setInterval(() => {
         let object = getRandomArrayElement(INTRO_TEXT_KEYWORDS);
         setIntroHeader(
           <>
@@ -64,7 +64,7 @@ function Intro(props) {
     if (code === WORKFLOW_CODES.USER.INTRO_PATHS.SESSION) {
       router.push({
         pathname: AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
-        query: { token: uuid() },
+        query: { token: uuidv4() },
       });
     }
   };

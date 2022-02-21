@@ -5,13 +5,13 @@
   "scripts": {
     "dev": "env-cmd -f .env.staging next dev",
     "prod": "env-cmd -f .env.production next dev",
+    "build:local": "env-cmd -f .env.staging next build",
     "build:staging": "env-cmd -f .env.staging next build && next export",
     "build:production": "env-cmd -f .env.production next build"
   },
   "dependencies": {
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
-    "@ckeditor/ckeditor5-build-classic": "^32.0.0",
     "@ckeditor/ckeditor5-react": "^4.0.0",
     "@date-io/date-fns": "1.x",
     "@emotion/react": "^11.4.1",
@@ -27,9 +27,11 @@
     "@tailwindcss/line-clamp": "^0.2.1",
     "@tiptap/react": "^2.0.0-beta.104",
     "@tiptap/starter-kit": "^2.0.0-beta.168",
+    "@zeit/next-css": "^1.0.1",
     "axios": "^0.21.4",
     "bootstrap": "^5.1.1",
     "chalk": "^4.1.2",
+    "ckeditor5-build-classic-nextjs": "^29.5.13",
     "d3-ease": "^3.0.1",
     "date-fns": "^2.28.0",
     "env-cmd": "^10.1.0",
@@ -39,7 +41,8 @@
     "html-react-parser": "^1.4.5",
     "lodash": "^4.17.21",
     "material-ui-popup-state": "^2.0.0",
-    "next": "11.1.2",
+    "next": "^12.1.0",
+    "next-images": "^1.8.4",
     "react": "17.0.2",
     "react-bootstrap-icons": "^1.5.0",
     "react-circular-progressbar": "^2.0.4",
@@ -70,6 +73,7 @@
     "sass": "^1.42.1",
     "save": "^2.4.0",
     "uuidv4": "^6.2.12",
+    "webpack": "^5.69.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {
@@ -77,7 +81,8 @@
     "autoprefixer": "^10.3.6",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
-    "postcss": "^8.3.8",
+    "postcss": "^8.4.6",
+    "raw-loader": "^4.0.2",
     "tailwindcss": "^2.2.16"
   }
 }

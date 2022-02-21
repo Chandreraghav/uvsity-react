@@ -84,7 +84,7 @@ export const SESSION = {
         .positive("Category is required").required('Category is required'),
         fullName: Yup.string().required("Name is required"),
         shortName: Yup.string().required("Short name is required"),
-        previewurl: Yup.string().notRequired().matches(
+        previewurl: Yup.string().nullable().matches(
           /((https?):\/\/)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
           "Valid URL is required"
         ),
