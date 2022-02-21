@@ -152,6 +152,18 @@ export class AuthService {
         window.clearInterval(window.sessionValidityPoller);
       }
     }
+    if (
+      window.introTextSwapperInterval != undefined &&
+      window.introTextSwapperInterval != "undefined"
+    ) {
+      window.clearInterval(window.introTextSwapperInterval);
+    }
+    if (
+      window.bannerSwapperInterval != undefined &&
+      window.bannerSwapperInterval != "undefined"
+    ) {
+      window.clearInterval(window.bannerSwapperInterval);
+    }
   }
 
   static googleSignIn(googleUser) {

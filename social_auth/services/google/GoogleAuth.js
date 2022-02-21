@@ -43,8 +43,8 @@ function GoogleAuth() {
             user: response, //bearer token response
           });
           AuthService.setAuthorization(LOGIN_SOURCE.GOOGLE, response);
-          setShowOverlay(false)
           if(AuthGuardService.isVerifiedLogin(true)){
+            setShowOverlay(false)
             router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD)
           }
           else {

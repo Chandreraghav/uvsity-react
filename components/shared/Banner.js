@@ -29,7 +29,7 @@ function Banner({ bannerObject,signedInDialogOpened,setSignedInDialogClosed }) {
   useEffect(() => {
     let controller = new AbortController();
     if (bannerObject) {
-      setInterval(() => {
+   window.bannerSwapperInterval= setInterval(() => {
         let object = getRandomArrayElement(bannerObject)
         setBannerHeader(<>{object?.icon} {object?.phrase}</>);
       }, 60000);

@@ -916,6 +916,8 @@ export const APP = {
         url:'' ,
         validationError:false, 
       },
+      user:null,
+      requestPath:null,
     }
   }
 

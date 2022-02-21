@@ -3,7 +3,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -26,15 +25,21 @@ import { actionTypes } from "../../../../../../context/reducer";
 import { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 import { SESSION } from "../../../../../../validation/services/auth/ValidationSchema";
+import { AuthService } from "../../../../../../pages/api/users/auth/AuthService";
+import { FormHelperText } from "@mui/material";
+
 toast.configure();
 function Basic(props) {
+  const Router = useRouter();
   const [videoPreviewURL, setVideoPreviewURL] = useState("");
   const [pastSessionId, setPastSessionId] = useState(0);
   const [categoryId, setCategoryId] = useState(0);
   const [fullName, setFullName] = useState("");
   const [shortName, setShortName] = useState("");
   const [summary, setSummary] = useState("");
+  const [summaryError, setSummaryError] = useState(false);
   const [posterData, setPosterData] = useState(null);
   const [documentData, setDocumentData] = useState(null);
   const [documentConsent, setDocumentConsent] = useState(false);
@@ -201,7 +206,6 @@ function Basic(props) {
           basic: APP.SESSION.DTO.BASIC,
         });
         setPosterData(APP.SESSION.DTO.BASIC.binary.documents.data);
-
       } else if (blob.id === "session-poster") {
         SESSION_POSTER.binary = null;
         APP.SESSION.DTO.BASIC.binary.images.poster = null;
@@ -239,6 +243,9 @@ function Basic(props) {
       setDocumentData(APP.SESSION.DTO.BASIC.binary.documents.data);
     }
   };
+  const handleOnSummaryError = (indicator) => {
+    setSummaryError(indicator);
+  };
   useEffect(() => {
     if (data.basic) {
       // fetch data from context on load of form step.
@@ -261,6 +268,9 @@ function Basic(props) {
       setPosterData(SESSION_POSTER);
       setDocumentData(SESSION_DOCUMENT);
     }
+    APP.SESSION.DTO.requestPath = Router.asPath;
+    APP.SESSION.DTO.user = AuthService.getCurrentUser();
+    console.log(APP.SESSION.DTO);
   }, []);
 
   const formOptions = {
@@ -270,33 +280,20 @@ function Basic(props) {
   const { register, handleSubmit, formState, watch, reset, clearErrors } =
     useForm(formOptions);
   const { errors } = formState;
-  const watcher=watch(["category", "fullName", "shortName", "previewurl"]);
-
- 
+  const watcher = watch(["category", "fullName", "shortName", "previewurl"]);
 
   useEffect(() => {
-    if (!summary) {
-      errors.summary = "Summary is required";
+    const uncaughtErrors =
+      !categoryId ||
+      !fullName ||
+      !shortName ||
+      !summary ||
+      validationError ||
+      (data?.basic?.binary?.documents?.data && !documentConsent);
+    if (uncaughtErrors) {
+      errors.uncaughtError = "There are generic validation errors";
     } else {
-      if (errors.summary) delete errors.summary;
-    }
-    if (!categoryId || !fullName || !shortName) {
-      errors.genericValidationError = "There are generic validation errors";
-    } else {
-      if (errors.genericValidationError) delete errors.genericValidationError;
-    }
-    
-    if (validationError) {
-      errors.mediaValidationError = "There are errors with uploaded media";
-    } else {
-      if (errors.mediaValidationError) delete errors.mediaValidationError;
-    }
-   
-    if (data?.basic?.binary?.documents?.data && !documentConsent) {
-      errors.documentConsentError =
-        "Document uploaded violates copyright or privacy rights";
-    } else {
-      if (errors.documentConsentError) delete errors.documentConsentError;
+      if (errors.uncaughtError) delete errors.uncaughtError;
     }
     if (props.onActivity) {
       props.onActivity({
@@ -314,11 +311,8 @@ function Basic(props) {
     posterData,
     documentData,
     documentConsent,
-    validationError
+    validationError,
   ]);
-  console.log(posterData,documentData);
-   
- 
 
   return (
     <div className={`p-2`}>
@@ -337,7 +331,16 @@ function Basic(props) {
                 sx={{ marginBottom: 1 }}
               >
                 <InputLabel id="select-category-label">
-                  Choose a category
+                  Choose a category{" "}
+                  <h3
+                    className={`${
+                      errors.category?.message
+                        ? "text-red-600"
+                        : "text-blue-800"
+                    } text-xl font-bold inline-flex`}
+                  >
+                    *
+                  </h3>
                 </InputLabel>
                 <Select
                   name="category"
@@ -346,7 +349,6 @@ function Basic(props) {
                       handleSessionCategory(event);
                     },
                   })}
-                  helperText={errors.category?.message}
                   error={errors.category?.message ? true : false}
                   required
                   labelId="select-category-label"
@@ -365,6 +367,13 @@ function Basic(props) {
                     </MenuItem>
                   ))}
                 </Select>
+                {errors?.category?.message && (
+                  <>
+                    <FormHelperText className=" text-red-600">
+                      {errors.category?.message}
+                    </FormHelperText>
+                  </>
+                )}
               </FormControl>
             </Grid>
             <Grid item xs={0.4}>
@@ -480,16 +489,33 @@ function Basic(props) {
               >
                 <div className="flex gap-1">
                   <label
-                    className=" text-gray-600 font-normal"
+                 className= {`${
+                    summaryError
+                      ? "text-red-600  font-normal"
+                      : "text-gray-600 font-normal"
+                  }  inline-flex`}
+                    
                     id="session-summary"
                   >
                     Summary
                   </label>
-                  <small className="text-blue-800 text-bold">*</small>
+
+                  <span
+                    className={`${
+                      summaryError
+                        ? "text-red-600"
+                        : "text-blue-800"
+                    }  inline-flex`}
+                  >
+                    *
+                  </span>
                 </div>
-                {/* //required */}
+
                 <CEditor
+                  required
+                  errorText="Summary is required"
                   data={summary}
+                  onError={handleOnSummaryError}
                   getDataOnChange={handleEditorDataOnChange}
                 />
               </FormControl>
@@ -503,7 +529,6 @@ function Basic(props) {
                 sx={{ marginBottom: 1 }}
               >
                 <FileUpload
-                
                   data={posterData}
                   receptorData={handleFileOnChange}
                 />
@@ -519,7 +544,6 @@ function Basic(props) {
               >
                 {" "}
                 <FileUpload
-                 
                   data={documentData}
                   receptorData={handleFileOnChange}
                   consent={handleConsentChange}
