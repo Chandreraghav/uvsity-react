@@ -13,7 +13,7 @@ function CEditor(props) {
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor, // v3+
-      ClassicEditor: require("ckeditor5-build-classic-nextjs"),
+      ClassicEditor: require("ckeditor5-custom-build"),
     };
     setLoaded(true);
   }, []); // run on mounting
@@ -22,7 +22,7 @@ function CEditor(props) {
     return (
       <>
         
-        <div className=" border-red-600">
+        
           <CKEditor
             data={props.data || ""}
             onReady={(editor) => {
@@ -87,8 +87,6 @@ function CEditor(props) {
               
             }}
           />
-        </div>
-
         {props.required && error && (
           <FormHelperText className=" text-red-600">
             {props?.errorText ? props.errorText : "Field is required"}

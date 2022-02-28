@@ -31,7 +31,7 @@
     "axios": "^0.21.4",
     "bootstrap": "^5.1.1",
     "chalk": "^4.1.2",
-    "ckeditor5-build-classic-nextjs": "^29.5.13",
+    "ckeditor5-custom-build": "file:./ckeditor5",
     "d3-ease": "^3.0.1",
     "date-fns": "^2.28.0",
     "env-cmd": "^10.1.0",
