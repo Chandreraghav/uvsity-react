@@ -872,46 +872,46 @@ export const APP = {
   ICONS: {
     EDIT: <EditIcon />,
     CUSTOMIZE: <DashboardCustomizeIcon />,
-    RESET:<RestoreFromTrashIcon/>
+    RESET: <RestoreFromTrashIcon />,
   },
-  
+
   MESSAGES: {
     ERRORS: {
       EDITS: {
-        SESSION_CHANGE: 'Failed to select a past session, please try again or choose from a new category to create one.'
+        SESSION_CHANGE:
+          "Failed to select a past session, please try again or choose from a new category to create one.",
       },
     },
-    INFO:{
-       }
+    INFO: {},
   },
-  SESSION:{
-    DTO:{
-      BASIC:{
+  SESSION: {
+    DTO: {
+      BASIC: {
         categoryId: 0,
-        pastSessionId:0,
-        name:'',
-        shortName:'',
-        summary:{
-          html:'',
-          plain:''
+        pastSessionId: 0,
+        name: "",
+        shortName: "",
+        summary: {
+          html: "",
+          plain: "",
         },
-        binary:{
-          images:{
-            poster:'',
-            data:null
+        binary: {
+          images: {
+            poster: "",
+            data: null,
           },
-          documents:{
-            consent:false,
-            document:'',
-            data:null
-          }
+          documents: {
+            consent: false,
+            document: "",
+            data: null,
+          },
         },
-        url:'' ,
-        validationError:false, 
+        url: "",
+        validationError: false,
+        dirty: false,
       },
-      user:null,
-      requestPath:null,
-    }
-  }
-
+      user: null,
+      requestPath: null,
+    },
+  },
 };

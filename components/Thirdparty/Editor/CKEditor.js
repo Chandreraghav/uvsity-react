@@ -4,7 +4,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { JWT } from "../../../jwt/auth/JWT";
  
 function CEditor(props) {
-  console.log(props.data)
   let editorRef = useRef();
   const { CKEditor, ClassicEditor } = editorRef.current || {}; // if it don't find any document then it will be an empty object
 

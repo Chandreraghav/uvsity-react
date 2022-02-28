@@ -2,6 +2,7 @@ import * as Yup from "yup";
 import { REGISTRATION_ERRORS } from "../../../constants/error-messages";
 import { PASSWORD } from "../../../constants/regex";
 import { MIN_LENGTH_PASSWORD } from "../../../constants/constants";
+import { isValidURL } from "../../../utils/utility";
 export const registrationValidationSchema = Yup.object().shape({
   firstname: Yup.string().required(
     REGISTRATION_ERRORS.REQUIRED_FIELDS.FIRSTNAME
@@ -84,10 +85,12 @@ export const SESSION = {
         .positive("Category is required").required('Category is required'),
         fullName: Yup.string().required("Name is required"),
         shortName: Yup.string().required("Short name is required"),
-        previewurl: Yup.string().nullable().matches(
-          /((https?):\/\/)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-          "Valid URL is required"
-        ),
+        previewurl: Yup.string().notRequired().test('preview_url', 'Invalid URL', function(value) {
+          if (value && value.trim()!=='') {
+            return isValidURL(value)
+          }
+          return true;
+        })
       }),
     },
   },

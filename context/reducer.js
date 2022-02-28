@@ -12,6 +12,12 @@ export const initialState = {
       },
     },
   },
+  selected_past_session: null,
+  basic: null,
+  schedule: null,
+  participant: null,
+  fees: null,
+  sponsor: null,
 };
 export const actionTypes = {
   SET_USER: "SET_USER",
