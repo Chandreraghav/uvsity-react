@@ -256,7 +256,6 @@ function Basic(props) {
     setSummaryError(indicator);
   };
   useEffect(() => {
-    console.log(data)
     if (data.basic) {     
       // fetch data from context on load of form step.
       setCategoryId(data?.basic?.categoryId);
