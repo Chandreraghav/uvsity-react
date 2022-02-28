@@ -20,7 +20,7 @@ import Plans from "../../../../Sponsorships/Plans";
 import { toast } from "react-toastify";
 import { handleResponse } from "../../../../../../toastr-response-handler/handler";
 import { RESPONSE_TYPES } from "../../../../../../constants/constants";
-import parse from "html-react-parser";
+import ReactMarkdown from 'react-markdown'
 import CEditor from "../../../../../Thirdparty/Editor/CKEditor";
 toast.configure();
 function Fee() {
@@ -98,7 +98,7 @@ function Fee() {
         },
         featured: {
           text: editorData,
-          html: <>{parse(editorData)}</>,
+          html: <ReactMarkdown>{editorData}</ReactMarkdown>,
         },
       };
     }
@@ -361,9 +361,10 @@ function Fee() {
                   <CEditor
                     getDataOnChange={handleEditorDataOnChange}
                     data={
+                       
                       sponsorshipLevelOnEdit?.current?.featured?.text
-                        ? sponsorshipLevelOnEdit.current.featured.text
-                        : sponsorshipLevelOnEdit.defaults.featured.text
+                        ? sponsorshipLevelOnEdit.current?.featured.text
+                        : sponsorshipLevelOnEdit.defaults?.featured.text
                     }
                   />
                 </FormControl>

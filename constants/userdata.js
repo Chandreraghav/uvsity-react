@@ -719,9 +719,8 @@ export const SPONSORSHIP = {
           display: "$500",
         },
         featured: {
-          text: `<b>Example:</b>
-          <li style='list-style:none'>Company logo and link on this session</li>
-          <li style='list-style:none'>Announcement by session owner during the session</li>`,
+          text: `<p><span style="color:hsl(0, 0%, 0%);"><strong>Example:</strong></span></p>
+          <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li></ul>`,
           html: (
             <>
               <h3 className="text-bold font-semibold text-xl mb-1">
@@ -766,11 +765,8 @@ export const SPONSORSHIP = {
           display: "$1000",
         },
         featured: {
-          text: `<b>Example:</b>
-          <li style='list-style:none'>Company logo and link on this session</li>
-          
-          <li style='list-style:none'>Announcement by session owner during the session</li>
-          <li style='list-style:none'>2 min time during the session to showcase your company or product</li>`,
+          text: `<p><span style="color:hsl(0, 0%, 0%);"><strong>Example:</strong></span></p>
+          <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li><li><span style="color:hsl(0, 0%, 0%);">2 min time during the session to showcase your company or product</span></li></ul>`,
           html: (
             <>
               <h3 className="text-bold font-semibold text-xl mb-1">
@@ -816,11 +812,8 @@ export const SPONSORSHIP = {
           display: "$5000",
         },
         featured: {
-          text: `<b>Example:</b>
-          <li style='list-style:none'>Company logo and link on this session</li>
-<li style='list-style:none'>Announcement by session owner during the session</li>
-<li style='list-style:none'>5 min time during the session to showcase your company or product</li>
-<li style='list-style:none'>Include company logo and link in social media as proud sponsor</li>`,
+          text: `<p><span style="color:hsl(0, 0%, 0%);"><strong>Example:</strong></span></p>
+          <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li><li><span style="color:hsl(0, 0%, 0%);">5 min time during the session to showcase your company or product</span></li><li><span style="color:hsl(0, 0%, 0%);">Include company logo and link in social media as proud sponsor</span></li></ul>`,        
           html: (
             <>
               <h3 className="text-bold font-semibold text-xl mb-1">
@@ -879,46 +872,46 @@ export const APP = {
   ICONS: {
     EDIT: <EditIcon />,
     CUSTOMIZE: <DashboardCustomizeIcon />,
-    RESET:<RestoreFromTrashIcon/>
+    RESET: <RestoreFromTrashIcon />,
   },
-  
+
   MESSAGES: {
     ERRORS: {
       EDITS: {
-        SESSION_CHANGE: 'Failed to select a past session, please try again or choose from a new category to create one.'
+        SESSION_CHANGE:
+          "Failed to select a past session, please try again or choose from a new category to create one.",
       },
     },
-    INFO:{
-       }
+    INFO: {},
   },
-  SESSION:{
-    DTO:{
-      BASIC:{
+  SESSION: {
+    DTO: {
+      BASIC: {
         categoryId: 0,
-        pastSessionId:0,
-        name:'',
-        shortName:'',
-        summary:{
-          html:'',
-          plain:''
+        pastSessionId: 0,
+        name: "",
+        shortName: "",
+        summary: {
+          html: "",
+          plain: "",
         },
-        binary:{
-          images:{
-            poster:'',
-            data:null
+        binary: {
+          images: {
+            poster: "",
+            data: null,
           },
-          documents:{
-            consent:false,
-            document:'',
-            data:null
-          }
+          documents: {
+            consent: false,
+            document: "",
+            data: null,
+          },
         },
-        url:'' ,
-        validationError:false, 
+        url: "",
+        validationError: false,
+        dirty: false,
       },
-      user:null,
-      requestPath:null,
-    }
-  }
-
+      user: null,
+      requestPath: null,
+    },
+  },
 };

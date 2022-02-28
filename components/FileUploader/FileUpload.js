@@ -20,7 +20,7 @@ function FileUpload(props) {
     margin: "auto",
     display: "block",
     overflow: "hidden",
-    width: 300,
+    maxWidth: 250,
     height: "min-content",
     paddingBottom: 4,
     objectFit: "contain",

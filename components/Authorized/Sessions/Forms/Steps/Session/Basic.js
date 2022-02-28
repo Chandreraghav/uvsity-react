@@ -44,10 +44,11 @@ function Basic(props) {
   const [documentData, setDocumentData] = useState(null);
   const [documentConsent, setDocumentConsent] = useState(false);
   const [data, dispatch] = useDataLayerContextValue();
-  const [validationError, setMediaValidationError] = useState(false);
+  const [mediaValidationError, setMediaValidationError] = useState(false);
   const trackVideoPlayerUrlInput = (e) => {
     setVideoPreviewURL(e.target.value);
     APP.SESSION.DTO.BASIC.url = e.target.value;
+    APP.SESSION.DTO.BASIC.dirty=true
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -56,6 +57,7 @@ function Basic(props) {
   const handleSessionCategory = (e) => {
     setCategoryId(e.target.value);
     APP.SESSION.DTO.BASIC.categoryId = e.target.value;
+    APP.SESSION.DTO.BASIC.dirty=true
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -64,6 +66,7 @@ function Basic(props) {
   const handleConsentChange = (consentInd) => {
     setDocumentConsent(consentInd);
     APP.SESSION.DTO.BASIC.binary.documents.consent = consentInd;
+    APP.SESSION.DTO.BASIC.dirty=true
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -71,6 +74,7 @@ function Basic(props) {
   };
   const handlePastSessionChange = (e) => {
     setPastSessionId(e.target.value);
+    APP.SESSION.DTO.BASIC.dirty=true
     if (e.target.value > 0) {
       UserDataService.getSessionDetailPerCourse(e.target.value)
         .then((res) => {
@@ -146,6 +150,7 @@ function Basic(props) {
         APP.SESSION.DTO.BASIC.url = pastSession?.url;
         APP.SESSION.DTO.BASIC.binary.images.poster = pastSession?.imageURL;
         if (pastSession?.imageURL) {
+          SESSION_POSTER.binary=pastSession?.imageURL
           APP.SESSION.DTO.BASIC.binary.images.data = SESSION_POSTER;
         }
         dispatch({
@@ -167,6 +172,7 @@ function Basic(props) {
   }, [data.selected_past_session]);
   const handlefullNameChange = (e) => {
     setFullName(e.target.value);
+    APP.SESSION.DTO.BASIC.dirty=true
     APP.SESSION.DTO.BASIC.name = e.target.value;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
@@ -175,6 +181,7 @@ function Basic(props) {
   };
   const handleShortNameChange = (e) => {
     setShortName(e.target.value);
+    APP.SESSION.DTO.BASIC.dirty=true
     APP.SESSION.DTO.BASIC.shortName = e.target.value;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
@@ -183,6 +190,7 @@ function Basic(props) {
   };
   const handleEditorDataOnChange = (data) => {
     setSummary(data);
+    APP.SESSION.DTO.BASIC.dirty=true
     APP.SESSION.DTO.BASIC.summary.html = data;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
@@ -190,6 +198,7 @@ function Basic(props) {
     });
   };
   const handleFileOnChange = (blob) => {
+    APP.SESSION.DTO.BASIC.dirty=true
     if (blob.error) {
       APP.SESSION.DTO.BASIC.validationError = true;
       dispatch({
@@ -247,7 +256,7 @@ function Basic(props) {
     setSummaryError(indicator);
   };
   useEffect(() => {
-    if (data.basic) {
+    if (data.basic) {     
       // fetch data from context on load of form step.
       setCategoryId(data?.basic?.categoryId);
       setPastSessionId(data?.basic?.pastSessionId);
@@ -270,7 +279,6 @@ function Basic(props) {
     }
     APP.SESSION.DTO.requestPath = Router.asPath;
     APP.SESSION.DTO.user = AuthService.getCurrentUser();
-    console.log(APP.SESSION.DTO);
   }, []);
 
   const formOptions = {
@@ -288,20 +296,30 @@ function Basic(props) {
       !fullName ||
       !shortName ||
       !summary ||
-      validationError ||
+      mediaValidationError ||
       (data?.basic?.binary?.documents?.data && !documentConsent);
     if (uncaughtErrors) {
+      APP.SESSION.DTO.BASIC.validationError = true
       errors.uncaughtError = "There are generic validation errors";
     } else {
       if (errors.uncaughtError) delete errors.uncaughtError;
+      APP.SESSION.DTO.BASIC.validationError = false
     }
-    if (props.onActivity) {
-      props.onActivity({
-        step: 0,
-        errors: errors,
-        data: APP.SESSION.DTO.BASIC,
-      });
-    }
+     if(errors.previewurl){
+      APP.SESSION.DTO.BASIC.validationError = true
+     } else APP.SESSION.DTO.BASIC.validationError = false
+    
+     setTimeout(()=>{
+      if (props.onActivity) {
+        props.onActivity({
+          id:1,
+          step: 0,
+          errors: errors,
+          data: APP.SESSION.DTO.BASIC,
+        });
+      }
+     },500)
+    
   }, [
     videoPreviewURL,
     categoryId,
@@ -311,7 +329,7 @@ function Basic(props) {
     posterData,
     documentData,
     documentConsent,
-    validationError,
+    mediaValidationError,
   ]);
 
   return (
@@ -448,7 +466,7 @@ function Basic(props) {
                   helperText={errors.fullName?.message}
                   error={errors.fullName?.message ? true : false}
                   required
-                  label="Full Name"
+                  label="Title"
                   id="fullName"
                 />
               </FormControl>
@@ -472,7 +490,7 @@ function Basic(props) {
                   error={errors.shortName?.message ? true : false}
                   variant="standard"
                   required
-                  label="Short Name"
+                  label="Short title"
                   id="shortName"
                 />
               </FormControl>

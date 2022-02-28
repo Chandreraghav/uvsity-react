@@ -1,15 +1,17 @@
 import React from "react";
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepButton from '@mui/material/StepButton';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import Box from "@mui/material/Box";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepButton from "@mui/material/StepButton";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import Basic from "./Steps/Session/Basic";
 import Schedule from "./Steps/Session/Schedule";
 import Participant from "./Steps/Session/Participant";
-import Fee from "./Steps/Session/Fee"
-import Final from "./Steps/Session/Final"
+import Fee from "./Steps/Session/Fee";
+import Final from "./Steps/Session/Final";
+import { useDataLayerContextValue } from "../../../../context/DataLayer";
+import { StepLabel } from "@mui/material";
 //const steps = ['Basics', 'Schedule', 'Participants', 'Fees','Complete'];
 
 const steps = [
@@ -17,41 +19,39 @@ const steps = [
     id: 1,
     title: "Basics",
     validationError: false,
-    currentFrame: true,
   },
   {
     id: 2,
     title: "Schedule",
     validationError: false,
-    currentFrame: false,
   },
   {
     id: 3,
     title: "Participants",
     validationError: false,
-    currentFrame: false,
   },
-   
+
   {
     id: 4,
     title: "Fees",
     validationError: false,
-    currentFrame: false,
   },
   {
     id: 5,
     title: "Complete",
     validationError: false,
-    currentFrame: false,
   },
 ];
 function CreateSession(props) {
-   
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
-
+const [formdata, dispatch] = useDataLayerContextValue();
   const totalSteps = () => {
     return steps.length;
+  };
+
+  const isStepFailed = (step) => {
+    return step.validationError
   };
 
   const completedSteps = () => {
@@ -90,9 +90,21 @@ function CreateSession(props) {
     setCompleted(newCompleted);
     handleNext();
   };
-  const handleActivityMonitor=(obj)=>{
-console.log(obj,activeStep)
-  }
+  const handleActivityMonitor = (obj) => {
+    if (obj.data.validationError) {
+      setCompleted({});
+      steps.map((step) => {
+        if (step.id === obj.id) {
+          step.validationError = true;
+        }
+      });
+    }
+    if (!obj.data.validationError) {
+      const newCompleted = completed;
+      newCompleted[activeStep] = true;
+      setCompleted(newCompleted);
+    }
+  };
 
   const handleReset = () => {
     setActiveStep(0);
@@ -100,72 +112,82 @@ console.log(obj,activeStep)
   };
 
   return (
-     
     <div className="px-4 py-2 bg-white">
-     <Typography variant="h6" component="div">
-          {props.data.workflow.workflow.alias}
-        </Typography>
-      <Box sx={{ width: '100%' }} className="py-4">
-      <Stepper alternativeLabel nonLinear activeStep={activeStep}>
-        {steps.map((label, index) => (
-          <Step key={label.id} completed={completed[index]}>
-            <StepButton color="inherit" onClick={handleStep(index)}>
-              {label.title}
-            </StepButton>
-          </Step>
-        ))}
-      </Stepper>
-      <div>
-        {allStepsCompleted() ? (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            {activeStep===0 && (<Basic onActivity={handleActivityMonitor} data={props.data}/>)}
-            {activeStep===1 && (<Schedule data={props.data}/>)}
-            {activeStep===2 && (<Participant data={props.data}/>)}
-            {activeStep===3 && (<Fee/>)}
-            {activeStep===4 && (<Final/>)}
-            
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 ,pb:6 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleNext} sx={{ mr: 1 }}>
-                Next
-              </Button>
-              {activeStep !== steps.length &&
-                (completed[activeStep] ? (
-                  <Typography variant="caption" sx={{ display: 'inline-block' }}>
-                    Step {activeStep + 1} already completed
-                  </Typography>
-                ) : (
-                  <Button onClick={handleComplete}>
-                    {completedSteps() === totalSteps() - 1
-                      ? 'Finish'
-                      : 'Complete Step'}
-                  </Button>
-                ))}
-            </Box>
-          </React.Fragment>
-        )}
-      </div>
-    </Box>
+      <Typography variant="h6" component="div">
+        {props.data.workflow.workflow.alias}
+      </Typography>
+      <Box sx={{ width: "100%" }} className="py-4">
+        <Stepper alternativeLabel  nonLinear activeStep={activeStep}>
+          {steps.map((label, index) => {
+            const labelProps = {};
+            if (isStepFailed(label)) {
+              labelProps.optional = (
+                <Typography variant="caption" color="error">
+                  Alert message
+                </Typography>
+              );
+  
+              labelProps.error = true;
+            }
+            return (
+              <Step  key={label.id} completed={completed[index]}>
+              <StepButton color="inherit" onClick={handleStep(index)}>
+                <StepLabel {...labelProps}>{label.title}</StepLabel>
+              </StepButton>
+            </Step>
+            )
+          })}
+        </Stepper>
+        <div>
+          {allStepsCompleted() ? (
+            <React.Fragment>
+              <Typography sx={{ mt: 2, mb: 1 }}>
+                All steps completed - you&apos;re finished
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Box sx={{ flex: "1 1 auto" }} />
+                <Button onClick={handleReset}>Reset</Button>
+              </Box>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              {activeStep === 0 && (
+                <Basic onActivity={handleActivityMonitor} data={props.data} />
+              )}
+              {activeStep === 1 && (
+                <Schedule
+                  onActivity={handleActivityMonitor}
+                  data={props.data}
+                />
+              )}
+              {activeStep === 2 && (
+                <Participant
+                  onActivity={handleActivityMonitor}
+                  data={props.data}
+                />
+              )}
+              {activeStep === 3 && <Fee onActivity={handleActivityMonitor} />}
+              {activeStep === 4 && <Final onActivity={handleActivityMonitor} />}
+
+              <Box sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}>
+                <Button
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  Back
+                </Button>
+                <Box sx={{ flex: "1 1 auto" }} />
+                <Button onClick={handleNext} sx={{ mr: 1 }}>
+                  Next
+                </Button>
+              </Box>
+            </React.Fragment>
+          )}
+        </div>
+      </Box>
     </div>
-    
   );
 }
 
