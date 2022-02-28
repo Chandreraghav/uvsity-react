@@ -2500,11 +2500,6 @@ chrome-trace-event@^1.0.2:
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.3.tgz#1015eced4741e15d06664a957dbbf50d041e26ac"
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
 
-ckeditor5-build-classic-nextjs@^29.5.13:
-  version "29.5.13"
-  resolved "https://registry.yarnpkg.com/ckeditor5-build-classic-nextjs/-/ckeditor5-build-classic-nextjs-29.5.13.tgz#dff49a275028c9a4b5e1e547fa09b23e95983367"
-  integrity sha512-wJPgQuIyldtvCGflmmZ3Ry6rD8pcnNR1gomQd4+/4zRtvI7rVZLGRejaEl819im1wspVfQ3pHwYwiH7RZTUeyA==
-
 "ckeditor5-custom-build@file:./ckeditor5":
   version "0.0.1"
 
