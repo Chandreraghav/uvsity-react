@@ -361,9 +361,10 @@ function Fee() {
                   <CEditor
                     getDataOnChange={handleEditorDataOnChange}
                     data={
+                       
                       sponsorshipLevelOnEdit?.current?.featured?.text
-                        ? sponsorshipLevelOnEdit.current.featured.text
-                        : sponsorshipLevelOnEdit.defaults.featured.text
+                        ? sponsorshipLevelOnEdit.current?.featured.text
+                        : sponsorshipLevelOnEdit.defaults?.featured.text
                     }
                   />
                 </FormControl>
