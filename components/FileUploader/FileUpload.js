@@ -65,6 +65,7 @@ function FileUpload(props) {
             })
           )
         );
+        
 
         setErrors([]);
       }
@@ -82,6 +83,7 @@ function FileUpload(props) {
             }
           });
         });
+        
       }
     },
     multiple: props?.data?.multiple,
@@ -131,6 +133,9 @@ function FileUpload(props) {
     props.data.binary = null;
     setConsentDisabled(true);
     props.data.consent.hasConsent = false;
+    if(props.consent)
+    props.consent(props.data.consent.hasConsent);
+    props.receptorData(null)
   };
 
   return (

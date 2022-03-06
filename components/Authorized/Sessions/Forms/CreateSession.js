@@ -12,6 +12,7 @@ import Fee from "./Steps/Session/Fee";
 import Final from "./Steps/Session/Final";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import { StepLabel } from "@mui/material";
+import _ from "lodash";
 //const steps = ['Basics', 'Schedule', 'Participants', 'Fees','Complete'];
 
 const steps = [
@@ -45,13 +46,15 @@ const steps = [
 function CreateSession(props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
-const [formdata, dispatch] = useDataLayerContextValue();
+  const [formdata, dispatch] = useDataLayerContextValue();
   const totalSteps = () => {
     return steps.length;
   };
 
   const isStepFailed = (step) => {
-    return step.validationError
+    setTimeout(() => {
+      return step.validationError;
+    }, 100);
   };
 
   const completedSteps = () => {
@@ -91,18 +94,26 @@ const [formdata, dispatch] = useDataLayerContextValue();
     handleNext();
   };
   const handleActivityMonitor = (obj) => {
-    if (obj.data.validationError) {
-      setCompleted({});
-      steps.map((step) => {
-        if (step.id === obj.id) {
-          step.validationError = true;
+    if (!_.isEmpty(obj.errors) && obj.data.dirty) {
+      console.log("step failed");
+      //if errors exist and is dirty
+      const idx = steps.findIndex((step) => step.id === obj.id);
+      if (idx !== -1) {
+        steps[idx].validationError = true;
+        setCompleted({});
+      }
+    } else {
+      // no errors
+      if (_.isEmpty(obj.errors) && obj.data.dirty) {
+        console.log("step passed");
+        const idx = steps.findIndex((step) => step.id === obj.id);
+        if (idx !== -1) {
+          steps[idx].validationError = false;
+          const newCompleted = completed;
+          newCompleted[activeStep] = true;
+          setCompleted(newCompleted);
         }
-      });
-    }
-    if (!obj.data.validationError) {
-      const newCompleted = completed;
-      newCompleted[activeStep] = true;
-      setCompleted(newCompleted);
+      }
     }
   };
 
@@ -117,26 +128,16 @@ const [formdata, dispatch] = useDataLayerContextValue();
         {props.data.workflow.workflow.alias}
       </Typography>
       <Box sx={{ width: "100%" }} className="py-4">
-        <Stepper alternativeLabel  nonLinear activeStep={activeStep}>
-          {steps.map((label, index) => {
-            const labelProps = {};
-            if (isStepFailed(label)) {
-              labelProps.optional = (
-                <Typography variant="caption" color="error">
-                  Alert message
-                </Typography>
-              );
-  
-              labelProps.error = true;
-            }
-            return (
-              <Step  key={label.id} completed={completed[index]}>
+        <Stepper alternativeLabel   activeStep={activeStep}>
+          {steps.map((label, index) => (
+            <Step key={label.id} completed={completed[index]}>
               <StepButton color="inherit" onClick={handleStep(index)}>
-                <StepLabel {...labelProps}>{label.title}</StepLabel>
+                <StepLabel error={label.validationError}>
+                  {label.title}
+                </StepLabel>
               </StepButton>
             </Step>
-            )
-          })}
+          ))}
         </Stepper>
         <div>
           {allStepsCompleted() ? (
