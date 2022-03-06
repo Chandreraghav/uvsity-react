@@ -45,6 +45,7 @@ function Basic(props) {
   const [documentConsent, setDocumentConsent] = useState(false);
   const [data, dispatch] = useDataLayerContextValue();
   const [mediaValidationError, setMediaValidationError] = useState(false);
+  const [formErrors, setFormErrors] = useState({})
   const trackVideoPlayerUrlInput = (e) => {
     setVideoPreviewURL(e.target.value);
     APP.SESSION.DTO.BASIC.url = e.target.value;
@@ -192,14 +193,14 @@ function Basic(props) {
     setSummary(data);
     APP.SESSION.DTO.BASIC.dirty=true
     APP.SESSION.DTO.BASIC.summary.html = data;
-    dispatch({
+    dispatch({ 
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
     });
   };
+  
   const handleFileOnChange = (blob) => {
-    APP.SESSION.DTO.BASIC.dirty=true
-    if (blob.error) {
+    if (blob && blob.error) {
       APP.SESSION.DTO.BASIC.validationError = true;
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
@@ -227,8 +228,9 @@ function Basic(props) {
       }
       return;
     }
-    if (blob.length === 0) return;
-    if (blob[0]?.type.indexOf("image") !== -1) {
+    if (blob && blob.length === 0) return;
+    if (blob && blob[0]?.type.indexOf("image") !== -1) {
+      APP.SESSION.DTO.BASIC.dirty=true
       SESSION_POSTER.binary = blob[0];
       SESSION_POSTER.imageURL = blob[0].preview;
       // if image blob
@@ -242,7 +244,8 @@ function Basic(props) {
       setPosterData(APP.SESSION.DTO.BASIC.binary.images.data);
     } else {
       // document
-      SESSION_DOCUMENT.binary = blob[0];
+      APP.SESSION.DTO.BASIC.dirty=true
+      SESSION_DOCUMENT.binary = blob? blob[0] : null;
       // if DOC blob
       APP.SESSION.DTO.BASIC.binary.documents.data = SESSION_DOCUMENT;
       dispatch({
@@ -250,12 +253,14 @@ function Basic(props) {
         basic: APP.SESSION.DTO.BASIC,
       });
       setDocumentData(APP.SESSION.DTO.BASIC.binary.documents.data);
+      
     }
   };
   const handleOnSummaryError = (indicator) => {
     setSummaryError(indicator);
   };
   useEffect(() => {
+     
     if (data.basic) {     
       // fetch data from context on load of form step.
       setCategoryId(data?.basic?.categoryId);
@@ -291,13 +296,14 @@ function Basic(props) {
   const watcher = watch(["category", "fullName", "shortName", "previewurl"]);
 
   useEffect(() => {
+    console.log('Ayan')
     const uncaughtErrors =
       !categoryId ||
       !fullName ||
       !shortName ||
       !summary ||
       mediaValidationError ||
-      (data?.basic?.binary?.documents?.data && !documentConsent);
+      (documentData.binary && !documentConsent);
     if (uncaughtErrors) {
       APP.SESSION.DTO.BASIC.validationError = true
       errors.uncaughtError = "There are generic validation errors";
@@ -308,7 +314,6 @@ function Basic(props) {
      if(errors.previewurl){
       APP.SESSION.DTO.BASIC.validationError = true
      } else APP.SESSION.DTO.BASIC.validationError = false
-    
      setTimeout(()=>{
       if (props.onActivity) {
         props.onActivity({
@@ -318,16 +323,15 @@ function Basic(props) {
           data: APP.SESSION.DTO.BASIC,
         });
       }
-     },500)
-    
+     },0)
   }, [
     videoPreviewURL,
     categoryId,
     fullName,
     shortName,
     summary,
-    posterData,
-    documentData,
+    posterData?.binary ?posterData.binary:posterData,
+    documentData?.binary ?documentData.binary:documentData,
     documentConsent,
     mediaValidationError,
   ]);
@@ -368,7 +372,6 @@ function Basic(props) {
                     },
                   })}
                   error={errors.category?.message ? true : false}
-                  required
                   labelId="select-category-label"
                   id="select-category"
                   value={categoryId}
