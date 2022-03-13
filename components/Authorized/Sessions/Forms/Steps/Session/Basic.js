@@ -356,7 +356,7 @@ function Basic(props) {
   const { errors } = formState;
 
   return (
-    <div className={`p-2`}>
+    <div className={`p-3`}>
       <form name="basic-form">
         <Box sx={{ width: "100%" }}>
           <Grid

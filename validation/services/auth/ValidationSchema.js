@@ -93,6 +93,11 @@ export const SESSION = {
           return true;
         })
       }),
+      PARTICIPANT:Yup.object().shape({
+        expectedNumber: Yup.number()
+        .typeError('you must specify a number').min(1,'Number of participant should be atleast 1').max(100,'Number of participant cannot be more than 100')
+        .positive("Number of participant should be atleast 1").required('Number of participant should be atleast 1'),
+      }),
     },
   },
 };
