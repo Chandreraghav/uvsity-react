@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
+import DoneIcon from "@mui/icons-material/Done";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepButton from "@mui/material/StepButton";
@@ -13,48 +15,126 @@ import Final from "./Steps/Session/Final";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import { StepLabel } from "@mui/material";
 import _ from "lodash";
-//const steps = ['Basics', 'Schedule', 'Participants', 'Fees','Complete'];
+import AutoGraphOutlinedIcon from "@mui/icons-material/AutoGraphOutlined";
+import ScheduleIcon from "@mui/icons-material/Schedule";
+import GppMaybeIcon from "@mui/icons-material/GppMaybe";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import BeenhereIcon from "@mui/icons-material/Beenhere";
+import { isEmptyObject, isValidURL } from "../../../../utils/utility";
+import { styled } from "@mui/material/styles";
+import StepConnector, {
+  stepConnectorClasses,
+} from "@mui/material/StepConnector";
 
-const steps = [
-  {
-    id: 1,
-    title: "Basics",
-    validationError: false,
-  },
-  {
-    id: 2,
-    title: "Schedule",
-    validationError: false,
-  },
-  {
-    id: 3,
-    title: "Participants",
-    validationError: false,
-  },
-
-  {
-    id: 4,
-    title: "Fees",
-    validationError: false,
-  },
-  {
-    id: 5,
-    title: "Complete",
-    validationError: false,
-  },
-];
 function CreateSession(props) {
+  const checkInteractiveErrors = false;
+  const scheduleFormListener=()=>{
+    if (activeStep === 1) {
+      const isDirty = formdata?.basic?.dirty;
+      console.log("No errors", steps[activeStep].title);
+      setTimeout(() => {
+        handleComplete();
+      }, 100);
+    }
+  }
+  const basicFormListener = () => {
+    if (activeStep === 0) {
+      const isDirty = formdata?.basic?.dirty;
+      if (checkInteractiveErrors) {
+        const hasInteractiveErrors = !isEmptyObject(formdata?.basic?.errors);
+        if (hasInteractiveErrors && isDirty) {
+          console.log("Contains errors-interactive", steps[activeStep].title);
+          setTimeout(() => {
+            handleInCompleteStep();
+          }, 100);
+          return;
+        }
+      }
+      // if form is just loaded without user interactive errors but the form contains internal validation errors..
+      const categoryId = formdata?.basic?.categoryId
+        ? formdata.basic.categoryId
+        : null;
+      const sessionTitle = formdata?.basic?.name
+        ? formdata.basic.name.trim()
+        : null;
+      const sessionShortName = formdata?.basic?.shortName
+        ? formdata.basic.shortName.trim()
+        : null;
+      const summary = formdata?.basic?.summary?.html
+        ? formdata?.basic?.summary?.html
+        : null;
+      const hasImageErrors = formdata?.basic?.binary.images.error;
+      const documentCopyrightConsent =
+        formdata?.basic?.binary.documents.consent;
+      const hasDocumentData = !isEmptyObject(
+        formdata?.basic?.binary.documents.data
+      );
+      const hasDocumentDataWithoutConsent =
+        hasDocumentData && documentCopyrightConsent === false;
+      const hasDocumentErrors =
+        formdata?.basic?.binary.documents.error ||
+        hasDocumentDataWithoutConsent;
+      const sessionReferenceURL = formdata?.basic?.url
+        ? formdata?.basic.url.trim()
+        : null;
+      const hasReferenceURLError =
+        sessionReferenceURL && !isValidURL(sessionReferenceURL);
+      const hasMediaErrors =
+        hasImageErrors || hasDocumentErrors || hasReferenceURLError;
+      const isRequiredFieldsEmpty =
+        !categoryId || !sessionTitle || !sessionShortName || !summary;
+      if (isDirty) {
+        if (isRequiredFieldsEmpty || hasMediaErrors) {
+          console.log("Contains errors", steps[activeStep].title);
+          handleInCompleteStep();
+        } else {
+          console.log("No errors", steps[activeStep].title);
+          setTimeout(() => {
+            handleComplete();
+          }, 100);
+        }
+      }
+    }
+  };
+  const [steps, setSteps] = useState([
+    {
+      id: 1,
+      title: "Basics",
+      validationError: undefined,
+      complete:false,
+    },
+    {
+      id: 2,
+      title: "Schedule",
+      validationError: undefined,
+      complete:false,
+    },
+    {
+      id: 3,
+      title: "Participants",
+      validationError: undefined,
+      complete:false,
+    },
+
+    {
+      id: 4,
+      title: "Fees",
+      validationError: undefined,
+      complete:false,
+    },
+    {
+      id: 5,
+      title: "Complete",
+      validationError: undefined,
+      complete:false,
+    },
+  ]);
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
   const [formdata, dispatch] = useDataLayerContextValue();
   const totalSteps = () => {
     return steps.length;
-  };
-
-  const isStepFailed = (step) => {
-    setTimeout(() => {
-      return step.validationError;
-    }, 100);
   };
 
   const completedSteps = () => {
@@ -68,6 +148,10 @@ function CreateSession(props) {
   const allStepsCompleted = () => {
     return completedSteps() === totalSteps();
   };
+
+  const allStepsCompletedBeforeFinalStep=()=>{
+    return completedSteps() === totalSteps()-1;
+  }
 
   const handleNext = () => {
     const newActiveStep =
@@ -83,43 +167,188 @@ function CreateSession(props) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleStep = (step) => () => {
-    setActiveStep(step);
-  };
-
-  const handleComplete = () => {
-    const newCompleted = completed;
-    newCompleted[activeStep] = true;
-    setCompleted(newCompleted);
-    handleNext();
-  };
-  const handleActivityMonitor = (obj) => {
-    if (!_.isEmpty(obj.errors) && obj.data.dirty) {
-      console.log("step failed");
-      //if errors exist and is dirty
-      const idx = steps.findIndex((step) => step.id === obj.id);
-      if (idx !== -1) {
-        steps[idx].validationError = true;
-        setCompleted({});
-      }
+  const handleStep = (index,label) => () => {
+    if (allStepsCompletedBeforeFinalStep()) {
+      setActiveStep(index);
     } else {
-      // no errors
-      if (_.isEmpty(obj.errors) && obj.data.dirty) {
-        console.log("step passed");
-        const idx = steps.findIndex((step) => step.id === obj.id);
-        if (idx !== -1) {
-          steps[idx].validationError = false;
-          const newCompleted = completed;
-          newCompleted[activeStep] = true;
-          setCompleted(newCompleted);
-        }
+      const step_id = [1, 2, 3, 4];
+      if (step_id.includes(label.id)) {
+        setActiveStep(index);
       }
     }
   };
 
+  const handleInCompleteStep = () => {
+    setStepValidationErrorFlag(true);
+    setStepComplete(false)
+    setCompleted({});
+  };
+  const handleComplete = () => {
+    try {
+      const newCompleted = {};
+      newCompleted[activeStep] = true;
+      setStepComplete(true)
+      setStepValidationErrorFlag(false);
+      setCompleted(newCompleted);
+    } catch (error) {}
+  };
+  const setStepComplete=(ind)=>{
+       const _steps = steps;
+      _steps[activeStep].complete = ind;
+      setSteps(_steps);
+  }
+  const setStepValidationErrorFlag = (hasValidationErrors) => {
+    const _steps = steps;
+    _steps[activeStep].validationError = hasValidationErrors;
+    setSteps(_steps);
+  };
+  useEffect(() => {
+    basicFormListener();
+    scheduleFormListener();
+  }, [formdata]);
+
   const handleReset = () => {
     setActiveStep(0);
     setCompleted({});
+  };
+
+  const QontoConnector = styled(StepConnector)(({ theme }) => ({
+    [`&.${stepConnectorClasses.alternativeLabel}`]: {
+      top: 25,
+      left: "calc(-50% + 16px)",
+      right: "calc(50% + 16px)",
+    },
+    [`&.${stepConnectorClasses.active}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        borderColor: "#eaeaf0",
+      },
+    },
+    [`&.${stepConnectorClasses.completed}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        borderColor: "#5CB85C",
+      },
+    },
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor:
+        theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
+      borderTopWidth: 3,
+      borderRadius: 1,
+    },
+  }));
+
+  const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
+    backgroundColor:
+      theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
+    zIndex: 1,
+    color: "#fff",
+    width: 50,
+    height: 50,
+    display: "flex",
+    borderRadius: "50%",
+    justifyContent: "center",
+    alignItems: "center",
+    ...(ownerState.active && {
+      backgroundImage:
+        " linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(20,23,150,1) 0%, rgba(25,118,210,1) 0%, rgba(25,118,210,1) 100%, rgba(40,179,32,1) 100%)",
+      boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+    }),
+
+    ...(ownerState.error && {
+      backgroundImage:
+        "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(25,118,210,1) 0%, rgba(40,179,32,1) 0%, rgba(25,118,210,1) 0%, rgba(223,30,67,1) 0%)",
+      boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+    }),
+    ...(ownerState.completed && {
+      backgroundImage:
+        "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(68,194,40,1) 0%, rgba(69,150,20,1) 82%, rgba(40,179,32,1) 100%, rgba(0,212,255,1) 100%)",
+    }),
+  }));
+
+  function ColorlibStepIcon(props) {
+    const { active, completed, className, error } = props;
+
+    const icons = {
+      1: !error
+        ? completed
+          ? getCompletedIcon(<ListAltIcon />)
+          : getOnLoadStepperIcon(<ListAltIcon />, 1)
+        : getErrorIcon(<ListAltIcon />),
+      2: !error
+        ? completed
+          ? getCompletedIcon(<ScheduleIcon />)
+          : getOnLoadStepperIcon(<ScheduleIcon />, 2)
+        : getErrorIcon(<ScheduleIcon />),
+      3: !error
+        ? completed
+          ? getCompletedIcon(<GroupAddIcon />)
+          : getOnLoadStepperIcon(<GroupAddIcon />, 3)
+        : getErrorIcon(<GroupAddIcon />),
+      4: !error
+        ? completed
+          ? getCompletedIcon(<AutoGraphOutlinedIcon />)
+          : getOnLoadStepperIcon(<AutoGraphOutlinedIcon />, 4)
+        : getErrorIcon(<AutoGraphOutlinedIcon />),
+      5: !error
+        ? completed
+          ? getCompletedIcon(<BeenhereIcon />)
+          : getOnLoadStepperIcon(<BeenhereIcon />, 5)
+        : getErrorIcon(<BeenhereIcon />),
+    };
+
+    return (
+      <ColorlibStepIconRoot
+        ownerState={{ completed, active, error }}
+        className={className}
+      >
+        {icons[String(props.icon)]}
+      </ColorlibStepIconRoot>
+    );
+  }
+
+  const getCompletedIcon = (Icon) => {
+    return (
+      <div className="flex flex-col justify-center items-center">
+        {Icon}
+        <DoneIcon fontSize="small" />
+      </div>
+    );
+  };
+
+  const getOnLoadStepperIcon = (Icon, index) => {
+    return (
+      <>
+        <div className="flex flex-col">
+          {Icon}
+          <div>{index}</div>
+        </div>
+      </>
+    );
+  };
+  const getErrorIcon = (Icon) => {
+    return (
+      <div className="flex flex-col justify-center items-center">
+        {Icon}
+        <GppMaybeIcon fontSize="small" />
+      </div>
+    );
+  };
+
+  ColorlibStepIcon.propTypes = {
+    /**
+     * Whether this step is active.
+     * @default false
+     */
+    active: PropTypes.bool,
+    className: PropTypes.string,
+    /**
+     * Mark the step as completed. Is passed to child components.
+     * @default false
+     */
+    completed: PropTypes.bool,
+    /**
+     * The label displayed in the step icon.
+     */
+    icon: PropTypes.node,
   };
 
   return (
@@ -128,12 +357,34 @@ function CreateSession(props) {
         {props.data.workflow.workflow.alias}
       </Typography>
       <Box sx={{ width: "100%" }} className="py-4">
-        <Stepper alternativeLabel   activeStep={activeStep}>
+        <Stepper
+           
+          alternativeLabel
+          activeStep={activeStep}
+          nonLinear
+          connector={<QontoConnector />}
+        >
           {steps.map((label, index) => (
-            <Step key={label.id} completed={completed[index]}>
-              <StepButton color="inherit" onClick={handleStep(index)}>
-                <StepLabel error={label.validationError}>
-                  {label.title}
+            <Step key={label.id} completed={label.complete}>
+              <StepButton color="inherit" onClick={handleStep(index,label)}>
+                <StepLabel
+                  StepIconComponent={ColorlibStepIcon}
+                  error={label.validationError}
+                >
+                  <div
+                    className={` flex justify-center items-start mx-auto  gap-1 ${
+                      label.complete ? "font-semibold" : "font-normal"
+                    }`}
+                  >
+                    <div>{label.title}</div>
+                  </div>
+                  {label.validationError && 1 === 2 && (
+                    <div>
+                      <label className=" text-center justify-center items-center text-xs text-red-600">
+                        Contains errors.
+                      </label>
+                    </div>
+                  )}
                 </StepLabel>
               </StepButton>
             </Step>
@@ -152,23 +403,11 @@ function CreateSession(props) {
             </React.Fragment>
           ) : (
             <React.Fragment>
-              {activeStep === 0 && (
-                <Basic onActivity={handleActivityMonitor} data={props.data} />
-              )}
-              {activeStep === 1 && (
-                <Schedule
-                  onActivity={handleActivityMonitor}
-                  data={props.data}
-                />
-              )}
-              {activeStep === 2 && (
-                <Participant
-                  onActivity={handleActivityMonitor}
-                  data={props.data}
-                />
-              )}
-              {activeStep === 3 && <Fee onActivity={handleActivityMonitor} />}
-              {activeStep === 4 && <Final onActivity={handleActivityMonitor} />}
+              {activeStep === 0 && <Basic data={props.data} />}
+              {activeStep === 1 && <Schedule data={props.data} />}
+              {activeStep === 2 && <Participant data={props.data} />}
+              {activeStep === 3 && <Fee />}
+              {activeStep === 4 && <Final />}
 
               <Box sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}>
                 <Button
@@ -180,7 +419,7 @@ function CreateSession(props) {
                   Back
                 </Button>
                 <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleNext} sx={{ mr: 1 }}>
+                <Button disabled={!steps[activeStep].complete} onClick={handleNext} sx={{ mr: 1 }}>
                   Next
                 </Button>
               </Box>

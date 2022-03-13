@@ -1,17 +1,5 @@
 export const initialState = {
   user: null,
-  session: {
-    create: {
-      workflow: {
-        selected_past_session: null,
-        basic: null,
-        schedule: null,
-        participant: null,
-        fees: null,
-        sponsor: null,
-      },
-    },
-  },
   selected_past_session: null,
   basic: null,
   schedule: null,

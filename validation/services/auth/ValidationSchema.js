@@ -83,10 +83,9 @@ export const SESSION = {
         category: Yup.number()
         .typeError('you must specify a number')
         .positive("Category is required").required('Category is required'),
-       
-        fullName: Yup.string().trim('Title is required')
-        .strict(true).required("Title is required"),
-        shortName: Yup.string().trim('Short name is required').strict(true).required("Short name is required"),
+        fullName: Yup.string()
+        .required("Title is required"),
+        shortName: Yup.string().required("Short name is required"),
         previewurl: Yup.string().notRequired().test('preview_url', 'Invalid URL', function(value) {
           if (value && value.trim()!=='') {
             return isValidURL(value)
