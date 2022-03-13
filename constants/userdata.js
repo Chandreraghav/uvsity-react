@@ -881,6 +881,7 @@ export const APP = {
         SESSION_CHANGE:
           "Failed to select a past session, please try again or choose from a new category to create one.",
       },
+      FINAL_STEP_VISIT_DENIED:'Hey <user>, looks like you have not completed the other steps correctly. Revisit the steps again and try completing again.'    
     },
     INFO: {},
   },

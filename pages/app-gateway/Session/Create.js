@@ -44,6 +44,7 @@ function Create() {
         static: getData.STATIC_META_DATA.data,
         root: getData.ROOT_META_DATA.data,
         workflow: workflowObj,
+        user:getData.USER_PROFILE_SUMMARY
       }}
     />
     <Footer />
