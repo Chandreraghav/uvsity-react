@@ -941,3 +941,7 @@ export const APP = {
     },
   },
 };
+export const AUTH_TOKENS={
+  SESSION_MONITOR:'SESSION_MONITOR',
+  IDLE_MONITOR:'IDLE_MONITOR'
+}

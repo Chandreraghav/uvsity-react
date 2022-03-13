@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { AUTH_TOKENS } from "../../../constants/userdata";
 import TimeOutDialog from "../../shared/modals/TimeOutDialog";
 import IdleTimeOut from "./IdleTimeOut";
 import SessionTimeOut from "./SessionTimeOut";
@@ -34,7 +35,7 @@ function RootChain(props) {
             title={`Your session has expired!`}
             name="Session Time out-Dialog"
             theme="dark"
-            type="SESSION_MONITOR"
+            type={AUTH_TOKENS.SESSION_MONITOR}
             graceTime={5}
           />
         </>
@@ -51,7 +52,7 @@ function RootChain(props) {
               title={`You have been idle!`}
               name="Idle Time out-Dialog"
               theme="dark"
-              type="IDLE_MONITOR"
+              type={AUTH_TOKENS.IDLE_MONITOR}
             />
           </>
         )}
