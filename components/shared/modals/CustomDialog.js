@@ -17,7 +17,6 @@ import {
   localTZDate,
 } from "../../../utils/utility";
 import { PLACEHOLDERS, TITLES, TOOLTIPS } from "../../../constants/userdata";
-import { useDataLayerContextValue } from "../../../context/DataLayer";
 
 toast.configure();
 
