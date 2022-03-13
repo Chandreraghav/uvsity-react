@@ -93,7 +93,7 @@ function FileUpload(props) {
   }, []);
   useEffect(() => {
     if (props?.receptorData) {
-      props.receptorData(files);
+      props.receptorData({files,id: props?.data?.id});
     }
   }, [files]);
 
@@ -275,7 +275,7 @@ function FileUpload(props) {
               {...label}
             />
             <small
-              className={`text-xs leading-tight text-gray-500 font-semibold`}
+              className={`text-xs ${(files.length > 0 && props.data.binary && !props.data.consent.hasConsent )? 'text-red-300 font-bold':'text-gray-500 font-semibold'} leading-tight  `}
             >
               {props?.data?.consent?.text}
             </small>

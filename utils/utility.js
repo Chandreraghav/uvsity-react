@@ -170,7 +170,7 @@ export const HTMLUnderlineByCharacterIndex = (str, pos) => {
 
 export const getDateAfter = (days, date) => {
   if (!days) return new Date();
-  var result = !date ?new Date(): new Date(date);
+  var result = !date ? new Date() : new Date(date);
   result.setDate(result.getDate() + parseInt(days));
   return result;
 };
@@ -211,27 +211,47 @@ const roundTimeBy = (time, roundByMins) => {
   return timeToReturn;
 };
 export const getDifferenceOfTimeWithCurrentTimeInMinutes = (time) => {
-  if(!time) return 0;
+  if (!time) return 0;
   return Math.ceil((time.getTime() - new Date().getTime()) / 1000 / 60);
 };
 export const isToday = (someDate) => {
-  const today = new Date()
-  return someDate.getDate() == today.getDate() &&
+  const today = new Date();
+  return (
+    someDate.getDate() == today.getDate() &&
     someDate.getMonth() == today.getMonth() &&
     someDate.getFullYear() == today.getFullYear()
-}
+  );
+};
 
-export const getFileExtension=(fileName,separator,limit)=>{
-  if(!separator) separator ='.';
-  return fileName.split(separator).pop()
-}
+export const getFileExtension = (fileName, separator, limit) => {
+  if (!separator) separator = ".";
+  return fileName.split(separator).pop();
+};
 
-export const parseBoolean=(string)=>{
-  switch(string.toLowerCase().trim()){
-      case "true": case "yes": case "1": return true;
-      case "false": case "no": case "0": case null: return false;
-      default: return Boolean(string);
+export const parseBoolean = (string) => {
+  switch (string.toLowerCase().trim()) {
+    case "true":
+    case "yes":
+    case "1":
+      return true;
+    case "false":
+    case "no":
+    case "0":
+    case null:
+      return false;
+    default:
+      return Boolean(string);
   }
-}
+};
 
-
+export const isEmptyObject = (obj) => {
+  try {
+    if(!obj || obj===undefined){
+      return true;
+    }
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+  } catch (error) {
+    console.log(error)
+  }
+  return true;
+};

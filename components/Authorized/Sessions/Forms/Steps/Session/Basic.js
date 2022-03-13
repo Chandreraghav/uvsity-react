@@ -44,12 +44,26 @@ function Basic(props) {
   const [documentData, setDocumentData] = useState(null);
   const [documentConsent, setDocumentConsent] = useState(false);
   const [data, dispatch] = useDataLayerContextValue();
-  const [mediaValidationError, setMediaValidationError] = useState(false);
-  const [formErrors, setFormErrors] = useState({})
+  const setDirty = () => {
+    APP.SESSION.DTO.BASIC.dirty = true;
+    
+  };
+
+  const debounce = (func, delay) => {
+    let debounceTimer;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
+
   const trackVideoPlayerUrlInput = (e) => {
     setVideoPreviewURL(e.target.value);
     APP.SESSION.DTO.BASIC.url = e.target.value;
-    APP.SESSION.DTO.BASIC.dirty=true
+    setDirty();
+    updateErrors()
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -58,7 +72,8 @@ function Basic(props) {
   const handleSessionCategory = (e) => {
     setCategoryId(e.target.value);
     APP.SESSION.DTO.BASIC.categoryId = e.target.value;
-    APP.SESSION.DTO.BASIC.dirty=true
+    setDirty();
+    updateErrors()
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -67,7 +82,8 @@ function Basic(props) {
   const handleConsentChange = (consentInd) => {
     setDocumentConsent(consentInd);
     APP.SESSION.DTO.BASIC.binary.documents.consent = consentInd;
-    APP.SESSION.DTO.BASIC.dirty=true
+    setDirty();
+    updateErrors()
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -75,7 +91,7 @@ function Basic(props) {
   };
   const handlePastSessionChange = (e) => {
     setPastSessionId(e.target.value);
-    APP.SESSION.DTO.BASIC.dirty=true
+    setDirty();
     if (e.target.value > 0) {
       UserDataService.getSessionDetailPerCourse(e.target.value)
         .then((res) => {
@@ -85,18 +101,21 @@ function Basic(props) {
               selected_past_session: res.data,
             });
             APP.SESSION.DTO.BASIC.pastSessionId = res.data.courseId;
+            reset();
+            updateErrors()
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
               basic: APP.SESSION.DTO.BASIC,
             });
             setPastSessionId(res.data.courseId);
-            reset();
+            
           } else {
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
               selected_past_session: null,
             });
             APP.SESSION.DTO.BASIC.pastSessionId = 0;
+            updateErrors()
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
               basic: APP.SESSION.DTO.BASIC,
@@ -109,12 +128,13 @@ function Basic(props) {
             );
           }
         })
-        .catch((err) => {
+        .catch(() => {
           dispatch({
             type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
             selected_past_session: null,
           });
           APP.SESSION.DTO.BASIC.pastSessionId = 0;
+          updateErrors()
           dispatch({
             type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
             basic: APP.SESSION.DTO.BASIC,
@@ -132,6 +152,7 @@ function Basic(props) {
         selected_past_session: null,
       });
       APP.SESSION.DTO.BASIC.pastSessionId = 0;
+      updateErrors()
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
         basic: APP.SESSION.DTO.BASIC,
@@ -151,9 +172,10 @@ function Basic(props) {
         APP.SESSION.DTO.BASIC.url = pastSession?.url;
         APP.SESSION.DTO.BASIC.binary.images.poster = pastSession?.imageURL;
         if (pastSession?.imageURL) {
-          SESSION_POSTER.binary=pastSession?.imageURL
+          SESSION_POSTER.binary = pastSession?.imageURL;
           APP.SESSION.DTO.BASIC.binary.images.data = SESSION_POSTER;
         }
+
         dispatch({
           type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
           basic: APP.SESSION.DTO.BASIC,
@@ -173,7 +195,8 @@ function Basic(props) {
   }, [data.selected_past_session]);
   const handlefullNameChange = (e) => {
     setFullName(e.target.value);
-    APP.SESSION.DTO.BASIC.dirty=true
+    setDirty();
+    updateErrors()
     APP.SESSION.DTO.BASIC.name = e.target.value;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
@@ -182,8 +205,9 @@ function Basic(props) {
   };
   const handleShortNameChange = (e) => {
     setShortName(e.target.value);
-    APP.SESSION.DTO.BASIC.dirty=true
     APP.SESSION.DTO.BASIC.shortName = e.target.value;
+    setDirty();
+    updateErrors()
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -191,35 +215,51 @@ function Basic(props) {
   };
   const handleEditorDataOnChange = (data) => {
     setSummary(data);
-    APP.SESSION.DTO.BASIC.dirty=true
+    setDirty();
+    updateErrors()
     APP.SESSION.DTO.BASIC.summary.html = data;
-    dispatch({ 
+    dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
     });
   };
-  
-  const handleFileOnChange = (blob) => {
-    if (blob && blob.error) {
-      APP.SESSION.DTO.BASIC.validationError = true;
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-        basic: APP.SESSION.DTO.BASIC,
-      });
-      setMediaValidationError(APP.SESSION.DTO.BASIC.validationError);
-      if (blob.id === "session-document") {
-        SESSION_DOCUMENT.binary = null;
-        APP.SESSION.DTO.BASIC.binary.documents.document = null;
-        APP.SESSION.DTO.BASIC.binary.documents.data = null;
+
+  const handleFileOnChange = (_blob) => {
+    const blob = _blob?.files;
+    const id = _blob?.id;
+    if (blob && (blob.length === 0 || blob.error)) {
+      if (blob.length === 0) {
+        if (id === "session-document") {
+          APP.SESSION.DTO.BASIC.binary.documents.document = null;
+          APP.SESSION.DTO.BASIC.binary.documents.data = null;
+        } else if (id === "session-poster") {
+          APP.SESSION.DTO.BASIC.binary.images.poster = null;
+          APP.SESSION.DTO.BASIC.binary.images.data = null;
+        }
+        updateErrors()
         dispatch({
           type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
           basic: APP.SESSION.DTO.BASIC,
         });
-        setPosterData(APP.SESSION.DTO.BASIC.binary.documents.data);
-      } else if (blob.id === "session-poster") {
+        return;
+      }
+      if (blob.id === "session-document" && blob?.error) {
+        SESSION_DOCUMENT.binary = null;
+        APP.SESSION.DTO.BASIC.binary.documents.error = true;
+        APP.SESSION.DTO.BASIC.binary.documents.document = null;
+        APP.SESSION.DTO.BASIC.binary.documents.data = null;
+        updateErrors()
+        dispatch({
+          type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
+          basic: APP.SESSION.DTO.BASIC,
+        });
+        setDocumentData(APP.SESSION.DTO.BASIC.binary.documents.data);
+      } else if (blob.id === "session-poster" && blob?.error) {
         SESSION_POSTER.binary = null;
+        APP.SESSION.DTO.BASIC.binary.images.error = true;
         APP.SESSION.DTO.BASIC.binary.images.poster = null;
         APP.SESSION.DTO.BASIC.binary.images.data = null;
+        updateErrors()
         dispatch({
           type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
           basic: APP.SESSION.DTO.BASIC,
@@ -228,40 +268,43 @@ function Basic(props) {
       }
       return;
     }
-    if (blob && blob.length === 0) return;
     if (blob && blob[0]?.type.indexOf("image") !== -1) {
-      APP.SESSION.DTO.BASIC.dirty=true
+      setDirty();
       SESSION_POSTER.binary = blob[0];
       SESSION_POSTER.imageURL = blob[0].preview;
       // if image blob
       // preview
       APP.SESSION.DTO.BASIC.binary.images.poster = SESSION_POSTER.imageURL;
       APP.SESSION.DTO.BASIC.binary.images.data = SESSION_POSTER;
+      APP.SESSION.DTO.BASIC.binary.images.error = false;
+      updateErrors()
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
         basic: APP.SESSION.DTO.BASIC,
       });
+
       setPosterData(APP.SESSION.DTO.BASIC.binary.images.data);
     } else {
       // document
-      APP.SESSION.DTO.BASIC.dirty=true
-      SESSION_DOCUMENT.binary = blob? blob[0] : null;
+      setDirty();
+      SESSION_DOCUMENT.binary = blob ? blob[0] : null;
       // if DOC blob
       APP.SESSION.DTO.BASIC.binary.documents.data = SESSION_DOCUMENT;
+      APP.SESSION.DTO.BASIC.binary.documents.error = false;
+      updateErrors()
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
         basic: APP.SESSION.DTO.BASIC,
       });
+
       setDocumentData(APP.SESSION.DTO.BASIC.binary.documents.data);
-      
     }
   };
   const handleOnSummaryError = (indicator) => {
     setSummaryError(indicator);
   };
   useEffect(() => {
-     
-    if (data.basic) {     
+    if (data.basic) {
       // fetch data from context on load of form step.
       setCategoryId(data?.basic?.categoryId);
       setPastSessionId(data?.basic?.pastSessionId);
@@ -290,51 +333,11 @@ function Basic(props) {
     resolver: yupResolver(SESSION.CREATE.STEPS.BASIC),
     mode: "all",
   };
-  const { register, handleSubmit, formState, watch, reset, clearErrors } =
-    useForm(formOptions);
+  const updateErrors = () => {
+    APP.SESSION.DTO.BASIC.errors = errors;
+  };
+  const { register, formState, watch, reset } = useForm(formOptions);
   const { errors } = formState;
-  const watcher = watch(["category", "fullName", "shortName", "previewurl"]);
-
-  useEffect(() => {
-    console.log('Ayan')
-    const uncaughtErrors =
-      !categoryId ||
-      !fullName ||
-      !shortName ||
-      !summary ||
-      mediaValidationError ||
-      (documentData.binary && !documentConsent);
-    if (uncaughtErrors) {
-      APP.SESSION.DTO.BASIC.validationError = true
-      errors.uncaughtError = "There are generic validation errors";
-    } else {
-      if (errors.uncaughtError) delete errors.uncaughtError;
-      APP.SESSION.DTO.BASIC.validationError = false
-    }
-     if(errors.previewurl){
-      APP.SESSION.DTO.BASIC.validationError = true
-     } else APP.SESSION.DTO.BASIC.validationError = false
-     setTimeout(()=>{
-      if (props.onActivity) {
-        props.onActivity({
-          id:1,
-          step: 0,
-          errors: errors,
-          data: APP.SESSION.DTO.BASIC,
-        });
-      }
-     },0)
-  }, [
-    videoPreviewURL,
-    categoryId,
-    fullName,
-    shortName,
-    summary,
-    posterData?.binary ?posterData.binary:posterData,
-    documentData?.binary ?documentData.binary:documentData,
-    documentConsent,
-    mediaValidationError,
-  ]);
 
   return (
     <div className={`p-2`}>
@@ -368,7 +371,7 @@ function Basic(props) {
                   name="category"
                   {...register(`category`, {
                     onChange: (event) => {
-                      handleSessionCategory(event);
+                      debounce(handleSessionCategory(event), 500);
                     },
                   })}
                   error={errors.category?.message ? true : false}
@@ -463,7 +466,7 @@ function Basic(props) {
                   name="fullName"
                   {...register(`fullName`, {
                     onChange: (event) => {
-                      handlefullNameChange(event);
+                      debounce(handlefullNameChange(event), 500);
                     },
                   })}
                   helperText={errors.fullName?.message}
@@ -486,7 +489,7 @@ function Basic(props) {
                   name="shortName"
                   {...register(`shortName`, {
                     onChange: (event) => {
-                      handleShortNameChange(event);
+                      debounce(handleShortNameChange(event), 500);
                     },
                   })}
                   helperText={errors.shortName?.message}
@@ -510,12 +513,11 @@ function Basic(props) {
               >
                 <div className="flex gap-1">
                   <label
-                 className= {`${
-                    summaryError
-                      ? "text-red-600  font-normal"
-                      : "text-gray-600 font-normal"
-                  }  inline-flex`}
-                    
+                    className={`${
+                      summaryError
+                        ? "text-red-600  font-normal"
+                        : "text-gray-600 font-normal"
+                    }  inline-flex`}
                     id="session-summary"
                   >
                     Summary
@@ -523,9 +525,7 @@ function Basic(props) {
 
                   <span
                     className={`${
-                      summaryError
-                        ? "text-red-600"
-                        : "text-blue-800"
+                      summaryError ? "text-red-600" : "text-blue-800"
                     }  inline-flex`}
                   >
                     *
@@ -584,7 +584,7 @@ function Basic(props) {
                     name="previewurl"
                     {...register(`previewurl`, {
                       onChange: (event) => {
-                        trackVideoPlayerUrlInput(event);
+                        debounce(trackVideoPlayerUrlInput(event), 500);
                       },
                     })}
                     helperText={errors.previewurl?.message}
