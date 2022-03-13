@@ -4,14 +4,8 @@ import RemoveDoneIcon from "@mui/icons-material/RemoveDone";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
-import { AuthService } from "../../../pages/api/users/auth/AuthService";
-import { actionTypes } from "../../../context/reducer";
-import { handleResponse } from "../../../toastr-response-handler/handler";
-import { getWorkflowError } from "../../../error-handler/handler";
-import { LOGOUT } from "../../../constants/error-messages";
-import { RESPONSE_TYPES } from "../../../constants/constants";
 import { toast } from "react-toastify";
-import SignOutService from "../../../pages/api/users/auth/SignOutService";
+import { SignOffUser } from "../../Auth/SignOut";
 toast.configure();
 
 function SessionTimeOutDialog({
@@ -44,66 +38,10 @@ function SessionTimeOutDialog({
       if (window.sessionExpired) clearTimeout(window.sessionExpired);
     }
     if (logoffind) {
-      _logoff();
+      SignOffUser(queryClient, Router, unauthorize);
     }
   };
-  const _logoff = () => {
-    handleResponse(
-      LOGOUT.INFO.IN_PROGRESS,
-      RESPONSE_TYPES.INFO,
-      toast.POSITION.TOP_CENTER
-    );
-    SignOutService.signout()
-      .then(() => {
-        AuthService.logout();
-        eraseContext();
-        Router.replace("/");
-        queryClient.removeQueries();
-      })
-      .catch((error) => {
-        handleResponse(
-          getWorkflowError(LOGOUT.ERRORS.LOGOUT_FAILED),
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.TOP_CENTER
-        );
-      });
-  };
-  const eraseContext = () => {
-    unauthorize({
-      type: actionTypes.SET_USER,
-      user: null,
-    });
 
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-      basic: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
-      fees: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
-      participant: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
-      selected_past_session: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,
-      sponsor: null,
-    });
-  };
   return (
     <>
       <Dialog

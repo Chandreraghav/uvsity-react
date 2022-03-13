@@ -6,13 +6,9 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { AuthService } from "../../../pages/api/users/auth/AuthService";
-import { actionTypes } from "../../../context/reducer";
-import { handleResponse } from "../../../toastr-response-handler/handler";
-import { getWorkflowError } from "../../../error-handler/handler";
-import { LOGOUT } from "../../../constants/error-messages";
-import { RESPONSE_TYPES } from "../../../constants/constants";
 import { toast } from "react-toastify";
-import SignOutService from "../../../pages/api/users/auth/SignOutService";
+import { AUTH_TOKENS } from "../../../constants/userdata";
+import { eraseContext, SignOffUser } from "../../Auth/SignOut";
 toast.configure();
 
 function TimeOutDialog({
@@ -41,16 +37,16 @@ function TimeOutDialog({
     }
   };
   const clearIntervals = () => {
-    if (type === "IDLE_MONITOR") {
+    if (type === AUTH_TOKENS.IDLE_MONITOR) {
       if (window.idleTimeOut) clearTimeout(window.idleTimeOut);
-    } else if (type === "SESSION_MONITOR") {
+    } else if (type === AUTH_TOKENS.SESSION_MONITOR) {
       if (window.sessionExpired) clearTimeout(window.sessionExpired);
     } else {
     }
   };
   useEffect(() => {
     timeLeft = gracePeriod;
-    if (type === "IDLE_MONITOR") {
+    if (type === AUTH_TOKENS.IDLE_MONITOR) {
       window.idleTimeOut = setInterval(() => {
         setGracePeriod(timeLeft--);
         // If the count down is finished, log off
@@ -58,7 +54,7 @@ function TimeOutDialog({
           handleClose(true);
         }
       }, 1000);
-    } else if (type === "SESSION_MONITOR") {
+    } else if (type === AUTH_TOKENS.SESSION_MONITOR) {
       window.sessionExpired = setInterval(() => {
         setGracePeriod(timeLeft--);
         // If the count down is finished, log off
@@ -71,72 +67,28 @@ function TimeOutDialog({
   }, []);
 
   const _logoff = () => {
-    handleResponse(
-      LOGOUT.INFO.IN_PROGRESS,
-      RESPONSE_TYPES.INFO,
-      toast.POSITION.TOP_CENTER
-    );
-    SignOutService.signout()
-      .then(() => {
-        AuthService.logout();
-        eraseContext();
-        Router.replace("/");
-        queryClient.removeQueries();
-      })
-      .catch((error) => {
-        handleResponse(
-          getWorkflowError(LOGOUT.ERRORS.LOGOUT_FAILED),
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.TOP_CENTER
-        );
-      });
+    if (type === AUTH_TOKENS.SESSION_MONITOR) {
+      AuthService.logout();
+      eraseContext(unauthorize);
+      Router.replace("/");
+      queryClient.removeQueries();
+      return;
+    }
+    SignOffUser(queryClient, Router, unauthorize);
   };
-  const eraseContext = () => {
-    unauthorize({
-      type: actionTypes.SET_USER,
-      user: null,
-    });
 
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-      basic: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
-      fees: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
-      participant: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
-      selected_past_session: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,
-      sponsor: null,
-    });
-  };
   return (
     <>
       <Dialog
         open={isOpen}
         aria-labelledby="responsive-dialog-title"
-        onClose={() => handleClose(type === "IDLE_MONITOR" ? false : true)}
+        onClose={() =>
+          handleClose(type === AUTH_TOKENS.IDLE_MONITOR ? false : true)
+        }
         disableEscapeKeyDown
         disableBackdropClick
         onBackdropClick={() =>
-          handleClose(type === "IDLE_MONITOR" ? false : true)
+          handleClose(type === AUTH_TOKENS.IDLE_MONITOR ? false : true)
         }
       >
         <div className={`${theme ? "dark-dialog" : ""}`}>
@@ -148,7 +100,7 @@ function TimeOutDialog({
                 <>
                   {icon ? (
                     icon
-                  ) : type === "IDLE_MONITOR" ? (
+                  ) : type === AUTH_TOKENS.IDLE_MONITOR ? (
                     <DoNotDisturbOffIcon />
                   ) : (
                     <RemoveDoneIcon />
@@ -159,12 +111,12 @@ function TimeOutDialog({
             </div>
           </div>
           <div className="flex flex-col px-4 mb-2 -mt-3 text-gray-600">
-            {type === "IDLE_MONITOR" && (
+            {type === AUTH_TOKENS.IDLE_MONITOR && (
               <>
                 You will get timed out in {gracePeriod} seconds. Want to stay?
               </>
             )}
-            {type === "SESSION_MONITOR" && (
+            {type === AUTH_TOKENS.SESSION_MONITOR && (
               <>
                 {" "}
                 Your session has expired, you will be logged out in{" "}
@@ -174,7 +126,7 @@ function TimeOutDialog({
           </div>
         </div>
         <DialogActions className={`${theme ? "dark-dialog" : ""}`}>
-          {type === "IDLE_MONITOR" && (
+          {type === AUTH_TOKENS.IDLE_MONITOR && (
             <>
               <Button onClick={() => handleClose(false)} autoFocus>
                 Stay
@@ -182,7 +134,7 @@ function TimeOutDialog({
               <Button onClick={() => handleClose(true)}>Sign out</Button>
             </>
           )}
-          {type === "SESSION_MONITOR" && (
+          {type === AUTH_TOKENS.SESSION_MONITOR && (
             <>
               {" "}
               <Button onClick={() => handleClose(true)} autoFocus>
