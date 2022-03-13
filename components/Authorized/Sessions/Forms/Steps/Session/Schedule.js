@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -54,7 +54,6 @@ import { APP } from "../../../../../../constants/userdata";
 import { useRouter } from "next/router";
 import { AuthService } from "../../../../../../pages/api/users/auth/AuthService";
 import { actionTypes } from "../../../../../../context/reducer";
-import moment from "moment";
 toast.configure();
 function Schedule(props) {
   const useStyles = makeStyles((theme) => ({
@@ -582,7 +581,7 @@ function Schedule(props) {
   useEffect(() => {
     if (data.schedule) {
       // fetch data from context on load of form step.
-      setSelectedStartDate(data?.schedule?.startDate);
+      setSelectedStartDate(data?.schedule?.startDate?data?.schedule?.startDate:new Date());
       setEndsOnDateError(false)
       setStartTime(
         data?.schedule?.startTime
@@ -665,7 +664,7 @@ function Schedule(props) {
   }, []);
   return (
     <div
-      className={`p-2 ${processInProgress ? "control__disabled__opaque" : ""}`}
+      className={`p-3 ${processInProgress ? "control__disabled__opaque" : ""}`}
     >
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -674,7 +673,7 @@ function Schedule(props) {
               <StaticDatePicker
                 orientation="landscape"
                 disablePast
-                label="Start Date"
+                label={<><label className={!selectedStartDate instanceof Date?'text-red-400':''}>Start Date</label></>}
                 autoOk
                 openTo="day"
                 value={selectedStartDate}

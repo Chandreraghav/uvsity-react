@@ -34,9 +34,51 @@ import { handleResponse } from "../../../../toastr-response-handler/handler";
 toast.configure();
 function CreateSession(props) {
   const checkInteractiveErrors = false;
+  const participantFormListener = () => {
+    if (activeStep === 2) {
+      const isDirty = formdata?.participant?.dirty;
+      if (checkInteractiveErrors) {
+        const hasInteractiveErrors = !isEmptyObject(
+          formdata?.participant?.errors
+        );
+        if (hasInteractiveErrors && isDirty) {
+          console.log("Contains errors-interactive", steps[activeStep].title);
+          setTimeout(() => {
+            handleInCompleteStep();
+          }, 100);
+          return;
+        }
+      }
+
+      if (isDirty) {
+        const numberOfParticipants =
+          parseInt(formdata?.participant?.numberOfParticipants) || 0;
+        if (
+          numberOfParticipants <= 0 ||
+          numberOfParticipants > 100 ||
+          isNaN(numberOfParticipants)
+        ) {
+          console.log("Contains errors", steps[activeStep].title);
+          setTimeout(() => {
+            handleInCompleteStep();
+          }, 50);
+          return;
+        }
+        console.log("No errors", steps[activeStep].title);
+        setTimeout(() => {
+          handleComplete();
+        }, 100);
+      }
+    }
+  };
   const scheduleFormListener = () => {
     if (activeStep === 1) {
       const isDirty = formdata?.basic?.dirty;
+      if (!formdata?.schedule?.startDate instanceof Date) {
+        console.log("Contains errors", steps[activeStep].title);
+        handleInCompleteStep();
+        return;
+      }
       console.log("No errors", steps[activeStep].title);
       setTimeout(() => {
         handleComplete();
@@ -217,6 +259,7 @@ function CreateSession(props) {
   useEffect(() => {
     basicFormListener();
     scheduleFormListener();
+    participantFormListener();
   }, [formdata]);
 
   const handleReset = () => {
@@ -392,9 +435,14 @@ function CreateSession(props) {
                       label.complete ? "font-semibold" : "font-normal"
                     }`}
                   >
-                    <div className={ `  ${index===activeStep?'italic':'normal'}`}>{label.title}</div>
+                    <div
+                      className={`  ${
+                        index === activeStep ? "italic" : "normal"
+                      }`}
+                    >
+                      {label.title}
+                    </div>
                   </div>
-                  
                 </StepLabel>
               </StepButton>
             </Step>
@@ -416,8 +464,8 @@ function CreateSession(props) {
               {activeStep === 0 && <Basic data={props.data} />}
               {activeStep === 1 && <Schedule data={props.data} />}
               {activeStep === 2 && <Participant data={props.data} />}
-              {activeStep === 3 && <Fee />}
-              {activeStep === 4 && <Final />}
+              {activeStep === 3 && <Fee data={props.data} />}
+              {activeStep === 4 && <Final data={props.data} />}
 
               <Box sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}>
                 <Button
