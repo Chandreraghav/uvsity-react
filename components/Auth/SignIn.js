@@ -270,11 +270,7 @@ function SignIn({ dialogCloseRequest, isOpen }) {
                 className={`${SignInStyle.signin__Dialog__submit__btn}`}
                 type="submit"
               >
-                {/* <Loader
-                  classes={`app__workflow__loader app__workflow__loader__sm`}
-                  custom={true}
-                  visible={signInButtonPressed}
-                /> */}
+               
                 <Overlay message='Authenticating...' open={signInButtonPressed}/>
                 {!signInButtonPressed && <LoginIcon />} Sign In
               </button>

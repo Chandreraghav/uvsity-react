@@ -13,6 +13,7 @@ import {
   SESSION_POSTER,
 } from "../../../../../../constants/userdata";
 import Spacer from "../../../../../shared/Spacer";
+import Overlay from "../../../../../shared/Overlay";
 import ReactPlayer from "react-player";
 import { isValidURL } from "../../../../../../utils/utility";
 import CEditor from "../../../../../Thirdparty/Editor/CKEditor";
@@ -28,13 +29,18 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { SESSION } from "../../../../../../validation/services/auth/ValidationSchema";
 import { AuthService } from "../../../../../../pages/api/users/auth/AuthService";
-import { FormHelperText } from "@mui/material";
+import { Button, FormHelperText, Typography } from "@mui/material";
+import WatchLaterIcon from "@mui/icons-material/WatchLater";
+import PastSessionDialog from "../../../Modals/PastSessionDialog";
 
 toast.configure();
 function Basic(props) {
   const Router = useRouter();
+  const [processing, setProcessing]=useState(false)
   const [videoPreviewURL, setVideoPreviewURL] = useState("");
   const [pastSessionId, setPastSessionId] = useState(0);
+  const [pastSessionDialogOpen, setPastSessionDialogOpen] = useState(false);
+  const [choosenFromPastSession, setChoosenFromPastSession] = useState(false)
   const [categoryId, setCategoryId] = useState(0);
   const [fullName, setFullName] = useState("");
   const [shortName, setShortName] = useState("");
@@ -46,7 +52,6 @@ function Basic(props) {
   const [data, dispatch] = useDataLayerContextValue();
   const setDirty = () => {
     APP.SESSION.DTO.BASIC.dirty = true;
-    
   };
 
   const debounce = (func, delay) => {
@@ -59,11 +64,14 @@ function Basic(props) {
     };
   };
 
+  const handlePastSessionDialogClose =()=>{
+    setPastSessionDialogOpen(false)
+  }
   const trackVideoPlayerUrlInput = (e) => {
     setVideoPreviewURL(e.target.value);
     APP.SESSION.DTO.BASIC.url = e.target.value;
     setDirty();
-    updateErrors()
+    updateErrors();
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -73,7 +81,7 @@ function Basic(props) {
     setCategoryId(e.target.value);
     APP.SESSION.DTO.BASIC.categoryId = e.target.value;
     setDirty();
-    updateErrors()
+    updateErrors();
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -83,18 +91,21 @@ function Basic(props) {
     setDocumentConsent(consentInd);
     APP.SESSION.DTO.BASIC.binary.documents.consent = consentInd;
     setDirty();
-    updateErrors()
+    updateErrors();
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
     });
   };
   const handlePastSessionChange = (e) => {
-    setPastSessionId(e.target.value);
+    const val=e?.target?.value || e
+    setPastSessionId(val);
     setDirty();
-    if (e.target.value > 0) {
-      UserDataService.getSessionDetailPerCourse(e.target.value)
+    if (val > 0) {
+      setProcessing(true)
+      UserDataService.getSessionDetailPerCourse(val)
         .then((res) => {
+          setChoosenFromPastSession(true)
           if (res.data) {
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
@@ -102,20 +113,19 @@ function Basic(props) {
             });
             APP.SESSION.DTO.BASIC.pastSessionId = res.data.courseId;
             reset();
-            updateErrors()
+            updateErrors();
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
               basic: APP.SESSION.DTO.BASIC,
             });
             setPastSessionId(res.data.courseId);
-            
           } else {
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
               selected_past_session: null,
             });
             APP.SESSION.DTO.BASIC.pastSessionId = 0;
-            updateErrors()
+            updateErrors();
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
               basic: APP.SESSION.DTO.BASIC,
@@ -127,6 +137,7 @@ function Basic(props) {
               toast.POSITION.TOP_CENTER
             );
           }
+          setProcessing(false)
         })
         .catch(() => {
           dispatch({
@@ -134,7 +145,7 @@ function Basic(props) {
             selected_past_session: null,
           });
           APP.SESSION.DTO.BASIC.pastSessionId = 0;
-          updateErrors()
+          updateErrors();
           dispatch({
             type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
             basic: APP.SESSION.DTO.BASIC,
@@ -152,7 +163,7 @@ function Basic(props) {
         selected_past_session: null,
       });
       APP.SESSION.DTO.BASIC.pastSessionId = 0;
-      updateErrors()
+      updateErrors();
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
         basic: APP.SESSION.DTO.BASIC,
@@ -196,7 +207,7 @@ function Basic(props) {
   const handlefullNameChange = (e) => {
     setFullName(e.target.value);
     setDirty();
-    updateErrors()
+    updateErrors();
     APP.SESSION.DTO.BASIC.name = e.target.value;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
@@ -207,7 +218,7 @@ function Basic(props) {
     setShortName(e.target.value);
     APP.SESSION.DTO.BASIC.shortName = e.target.value;
     setDirty();
-    updateErrors()
+    updateErrors();
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
       basic: APP.SESSION.DTO.BASIC,
@@ -216,7 +227,7 @@ function Basic(props) {
   const handleEditorDataOnChange = (data) => {
     setSummary(data);
     setDirty();
-    updateErrors()
+    updateErrors();
     APP.SESSION.DTO.BASIC.summary.html = data;
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
@@ -236,7 +247,7 @@ function Basic(props) {
           APP.SESSION.DTO.BASIC.binary.images.poster = null;
           APP.SESSION.DTO.BASIC.binary.images.data = null;
         }
-        updateErrors()
+        updateErrors();
         dispatch({
           type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
           basic: APP.SESSION.DTO.BASIC,
@@ -248,7 +259,7 @@ function Basic(props) {
         APP.SESSION.DTO.BASIC.binary.documents.error = true;
         APP.SESSION.DTO.BASIC.binary.documents.document = null;
         APP.SESSION.DTO.BASIC.binary.documents.data = null;
-        updateErrors()
+        updateErrors();
         dispatch({
           type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
           basic: APP.SESSION.DTO.BASIC,
@@ -259,7 +270,7 @@ function Basic(props) {
         APP.SESSION.DTO.BASIC.binary.images.error = true;
         APP.SESSION.DTO.BASIC.binary.images.poster = null;
         APP.SESSION.DTO.BASIC.binary.images.data = null;
-        updateErrors()
+        updateErrors();
         dispatch({
           type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
           basic: APP.SESSION.DTO.BASIC,
@@ -277,7 +288,7 @@ function Basic(props) {
       APP.SESSION.DTO.BASIC.binary.images.poster = SESSION_POSTER.imageURL;
       APP.SESSION.DTO.BASIC.binary.images.data = SESSION_POSTER;
       APP.SESSION.DTO.BASIC.binary.images.error = false;
-      updateErrors()
+      updateErrors();
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
         basic: APP.SESSION.DTO.BASIC,
@@ -291,7 +302,7 @@ function Basic(props) {
       // if DOC blob
       APP.SESSION.DTO.BASIC.binary.documents.data = SESSION_DOCUMENT;
       APP.SESSION.DTO.BASIC.binary.documents.error = false;
-      updateErrors()
+      updateErrors();
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
         basic: APP.SESSION.DTO.BASIC,
@@ -303,9 +314,13 @@ function Basic(props) {
   const handleOnSummaryError = (indicator) => {
     setSummaryError(indicator);
   };
+  const handlePastSessionDialogOpenRequest=()=>{
+    setPastSessionDialogOpen(true)
+  }
   useEffect(() => {
     if (data.basic) {
       // fetch data from context on load of form step.
+      setChoosenFromPastSession(false)
       setCategoryId(data?.basic?.categoryId);
       setPastSessionId(data?.basic?.pastSessionId);
       setFullName(data?.basic?.name);
@@ -329,6 +344,7 @@ function Basic(props) {
     APP.SESSION.DTO.user = AuthService.getCurrentUser();
   }, []);
 
+
   const formOptions = {
     resolver: yupResolver(SESSION.CREATE.STEPS.BASIC),
     mode: "all",
@@ -348,7 +364,7 @@ function Basic(props) {
             rowSpacing={1}
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           >
-            <Grid item xs={6}>
+            <Grid item lg={7} md={7} sm={12} xs={12}>
               {/* Category */}
               <FormControl
                 fullWidth={true}
@@ -400,54 +416,33 @@ function Basic(props) {
                 )}
               </FormControl>
             </Grid>
-            <Grid item xs={0.4}>
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                <blockquote className=" text-xs lg:text-lg md:text-xs font-medium italic leading-loose text-gray-800 lowercase border-r-2 mt-3 -ml-2 items-center">
+            <Grid item lg={0.4} md={0.4} sm={12} xs={12}>
+              <FormControl fullWidth={true} variant="standard">
+                <Typography
+                  variant="h6"
+                  className=" text-lg  items-center justify-center font-medium italic leading-loose text-gray-800 lowercase lg:border-r-2 lg:mt-3 lg:-ml-2"
+                >
                   OR&nbsp;
-                </blockquote>
+                </Typography>
               </FormControl>
             </Grid>
             {props?.data?.root?.expiredCourses &&
               Object.values(props?.data?.root?.expiredCourses).length > 0 && (
-                <Grid item xs={5.6}>
+                <Grid item lg={4.6} md={4.6} sm={12} xs={12}>
                   {/* Choose from */}
-                  <FormControl
-                    fullWidth={true}
-                    variant="standard"
-                    sx={{ marginBottom: 1 }}
+                  <Button
+                    className={"lg:mt-2"}
+                    onClick={handlePastSessionDialogOpenRequest}
+                    startIcon={<WatchLaterIcon />}
+                    variant="contained"
+                     
+                    color={choosenFromPastSession?'success':'primary'}
                   >
-                    <InputLabel id="select-expired-session-label">
-                      Choose from past sessions
-                    </InputLabel>
-                    <Select
-                      onChange={handlePastSessionChange}
-                      labelId="select-expired-session-label"
-                      id="select-expired-session"
-                      value={pastSessionId}
-                      label="Choose from past sessions"
-                    >
-                      <MenuItem
-                        className="text-sm block p-2 text-gray-600"
-                        value={0}
-                      ></MenuItem>
-                      {props?.data?.root?.expiredCourses &&
-                        Object.values(props?.data?.root?.expiredCourses).map(
-                          (session) => (
-                            <MenuItem
-                              className=" block p-2"
-                              key={session.courseId}
-                              value={session.courseId}
-                            >
-                              {session.courseFullName}
-                            </MenuItem>
-                          )
-                        )}
-                    </Select>
-                  </FormControl>
+                    {choosenFromPastSession?<>Choose from past sessions again</>:<>Choose from past sessions</>}
+                    
+                  </Button>
+
+  
                 </Grid>
               )}
             <Grid item xs={12}>
@@ -611,6 +606,8 @@ function Basic(props) {
           </Grid>
         </Box>
       </form>
+      <Overlay  message='Processing...' open={processing}/>
+      <PastSessionDialog selectedSession={pastSessionId} getSelectedSession={handlePastSessionChange} data={props?.data?.root?.expiredCourses} isOpen={pastSessionDialogOpen} dialogCloseRequest={handlePastSessionDialogClose} />
     </div>
   );
 }
