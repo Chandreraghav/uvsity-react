@@ -5,8 +5,8 @@ import { AuthService } from "../../../../pages/api/users/auth/AuthService";
 import { useQueryClient } from "react-query";
 import Layout from "../../../Main/Layout";
 import Splash from "../../../shared/Splash";
-import { actionTypes } from "../../../../context/reducer";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
+import { eraseContext } from "../../SignOut";
 // HOC
 const PrivateRoute = (WrappedComponent, verifyToken) => {
   return (props) => {
@@ -14,46 +14,11 @@ const PrivateRoute = (WrappedComponent, verifyToken) => {
     const queryClient = useQueryClient();
     const [{}, unauthorize] = useDataLayerContextValue();
     const [verified, setVerified] = useState(false);
-    const eraseContext = () => {
-      unauthorize({
-        type: actionTypes.SET_USER,
-        user: null,
-      });
 
-      unauthorize({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-        basic: null,
-      });
-
-      unauthorize({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
-        fees: null,
-      });
-
-      unauthorize({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
-        participant: null,
-      });
-
-      unauthorize({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-        schedule: null,
-      });
-
-      unauthorize({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
-        selected_past_session: null,
-      });
-
-      unauthorize({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,
-        sponsor: null,
-      });
-    };
     const logoff = () => {
       setVerified(false);
       AuthService.logout();
-      eraseContext();
+      eraseContext(unauthorize);
       Router.replace("/");
       queryClient.removeQueries();
     };

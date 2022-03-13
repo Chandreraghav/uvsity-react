@@ -6,14 +6,9 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { AuthService } from "../../../pages/api/users/auth/AuthService";
-import { actionTypes } from "../../../context/reducer";
-import { handleResponse } from "../../../toastr-response-handler/handler";
-import { getWorkflowError } from "../../../error-handler/handler";
-import { LOGOUT } from "../../../constants/error-messages";
-import { RESPONSE_TYPES } from "../../../constants/constants";
 import { toast } from "react-toastify";
-import SignOutService from "../../../pages/api/users/auth/SignOutService";
 import { AUTH_TOKENS } from "../../../constants/userdata";
+import { eraseContext, SignOffUser } from "../../Auth/SignOut";
 toast.configure();
 
 function TimeOutDialog({
@@ -74,37 +69,14 @@ function TimeOutDialog({
   const _logoff = () => {
     if (type === AUTH_TOKENS.SESSION_MONITOR) {
       AuthService.logout();
-      eraseContext();
+      eraseContext(unauthorize);
       Router.replace("/");
       queryClient.removeQueries();
       return;
     }
-    handleResponse(
-      LOGOUT.INFO.IN_PROGRESS,
-      RESPONSE_TYPES.INFO,
-      toast.POSITION.TOP_CENTER
-    );
-    SignOutService.signout()
-      .then(() => {
-        AuthService.logout();
-        eraseContext();
-        Router.replace("/");
-        queryClient.removeQueries();
-      })
-      .catch((error) => {
-        handleResponse(
-          getWorkflowError(LOGOUT.ERRORS.LOGOUT_FAILED),
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.TOP_CENTER
-        );
-      });
+    SignOffUser(queryClient, Router, unauthorize);
   };
-  const eraseContext = () => {
-    unauthorize({
-      type: actionTypes.SET_USER,
-      user: null,
-    });
-  };
+
   return (
     <>
       <Dialog

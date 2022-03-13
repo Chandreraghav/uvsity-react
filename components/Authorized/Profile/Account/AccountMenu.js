@@ -4,19 +4,12 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { ACCOUNT_SETTINGS } from "../../../../constants/userdata";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
-import { AuthService } from "../../../../pages/api/users/auth/AuthService";
 import { useRouter } from "next/router";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
-import { actionTypes } from "../../../../context/reducer";
-import { DEFAULT_ROUTE } from "../../../../constants/routes";
-import SignOutService from "../../../../pages/api/users/auth/SignOutService";
-import { handleResponse } from "../../../../toastr-response-handler/handler";
-import { getWorkflowError } from "../../../../error-handler/handler";
-import { LOGOUT } from "../../../../constants/error-messages";
-import { RESPONSE_TYPES } from "../../../../constants/constants";
 import { toast } from "react-toastify";
 import { useQueryClient } from "react-query";
 import ConfirmDialog from "../../../shared/modals/ConfirmDialog";
+import { SignOffUser } from "../../../Auth/SignOut";
 toast.configure();
 function AccountMenu({ onClose, isOpen, anchor }) {
   // Get QueryClient from the context
@@ -30,68 +23,14 @@ function AccountMenu({ onClose, isOpen, anchor }) {
   const handleConfirmDialogRequest = (requestInd) => {
     if (requestInd.confirm) {
       logoff();
-    }
-    else {
-      setLogoutRequested(false)
+    } else {
+      setLogoutRequested(false);
     }
   };
   const logoff = () => {
-    handleResponse(
-      LOGOUT.INFO.IN_PROGRESS,
-      RESPONSE_TYPES.INFO,
-      toast.POSITION.TOP_CENTER
-    );
-    SignOutService.signout()
-      .then(() => {
-        AuthService.logout();
-        eraseContext();
-        router.replace("/");
-        queryClient.removeQueries();
-      })
-      .catch((error) => {
-        handleResponse(
-          getWorkflowError(LOGOUT.ERRORS.LOGOUT_FAILED),
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.TOP_CENTER
-        );
-      });
+    SignOffUser(queryClient, router, unauthorize);
   };
-  const eraseContext = () => {
-    unauthorize({
-      type: actionTypes.SET_USER,
-      user: null,
-    });
 
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-      basic: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
-      fees: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
-      participant: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SELECTED_PAST_SESSION,
-      selected_past_session: null,
-    });
-
-    unauthorize({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,
-      sponsor: null,
-    });
-  };
   const handleMenuAction = (actionCode) => {
     if (!actionCode) {
       return;
