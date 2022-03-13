@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 import Box from "@mui/material/Box";
 import DoneIcon from "@mui/icons-material/Done";
 import Stepper from "@mui/material/Stepper";
@@ -26,10 +27,14 @@ import { styled } from "@mui/material/styles";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
+import { RESPONSE_TYPES } from "../../../../constants/constants";
+import { APP } from "../../../../constants/userdata";
+import { handleResponse } from "../../../../toastr-response-handler/handler";
 
+toast.configure();
 function CreateSession(props) {
   const checkInteractiveErrors = false;
-  const scheduleFormListener=()=>{
+  const scheduleFormListener = () => {
     if (activeStep === 1) {
       const isDirty = formdata?.basic?.dirty;
       console.log("No errors", steps[activeStep].title);
@@ -37,7 +42,7 @@ function CreateSession(props) {
         handleComplete();
       }, 100);
     }
-  }
+  };
   const basicFormListener = () => {
     if (activeStep === 0) {
       const isDirty = formdata?.basic?.dirty;
@@ -102,32 +107,32 @@ function CreateSession(props) {
       id: 1,
       title: "Basics",
       validationError: undefined,
-      complete:false,
+      complete: false,
     },
     {
       id: 2,
       title: "Schedule",
       validationError: undefined,
-      complete:false,
+      complete: false,
     },
     {
       id: 3,
       title: "Participants",
       validationError: undefined,
-      complete:false,
+      complete: false,
     },
 
     {
       id: 4,
       title: "Fees",
       validationError: undefined,
-      complete:false,
+      complete: false,
     },
     {
       id: 5,
       title: "Complete",
       validationError: undefined,
-      complete:false,
+      complete: false,
     },
   ]);
   const [activeStep, setActiveStep] = React.useState(0);
@@ -149,9 +154,9 @@ function CreateSession(props) {
     return completedSteps() === totalSteps();
   };
 
-  const allStepsCompletedBeforeFinalStep=()=>{
-    return completedSteps() === totalSteps()-1;
-  }
+  const allStepsCompletedBeforeFinalStep = () => {
+    return completedSteps() === totalSteps() - 1;
+  };
 
   const handleNext = () => {
     const newActiveStep =
@@ -167,36 +172,43 @@ function CreateSession(props) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleStep = (index,label) => () => {
+  const handleStep = (index, label) => () => {
     if (allStepsCompletedBeforeFinalStep()) {
       setActiveStep(index);
     } else {
       const step_id = [1, 2, 3, 4];
       if (step_id.includes(label.id)) {
         setActiveStep(index);
+      } else {
+        const _user = props.data.user.data.firstName;
+        const err = APP.MESSAGES.ERRORS.FINAL_STEP_VISIT_DENIED.replace(
+          "<user>",
+          _user
+        );
+        handleResponse(err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
       }
     }
   };
 
   const handleInCompleteStep = () => {
     setStepValidationErrorFlag(true);
-    setStepComplete(false)
+    setStepComplete(false);
     setCompleted({});
   };
   const handleComplete = () => {
     try {
       const newCompleted = {};
       newCompleted[activeStep] = true;
-      setStepComplete(true)
+      setStepComplete(true);
       setStepValidationErrorFlag(false);
       setCompleted(newCompleted);
     } catch (error) {}
   };
-  const setStepComplete=(ind)=>{
-       const _steps = steps;
-      _steps[activeStep].complete = ind;
-      setSteps(_steps);
-  }
+  const setStepComplete = (ind) => {
+    const _steps = steps;
+    _steps[activeStep].complete = ind;
+    setSteps(_steps);
+  };
   const setStepValidationErrorFlag = (hasValidationErrors) => {
     const _steps = steps;
     _steps[activeStep].validationError = hasValidationErrors;
@@ -225,7 +237,12 @@ function CreateSession(props) {
     },
     [`&.${stepConnectorClasses.completed}`]: {
       [`& .${stepConnectorClasses.line}`]: {
-        borderColor: "#5CB85C",
+        borderColor: "#B8B8B8",
+      },
+    },
+    [`&.${stepConnectorClasses.error}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        borderColor: "#111",
       },
     },
     [`& .${stepConnectorClasses.line}`]: {
@@ -358,7 +375,6 @@ function CreateSession(props) {
       </Typography>
       <Box sx={{ width: "100%" }} className="py-4">
         <Stepper
-           
           alternativeLabel
           activeStep={activeStep}
           nonLinear
@@ -366,7 +382,7 @@ function CreateSession(props) {
         >
           {steps.map((label, index) => (
             <Step key={label.id} completed={label.complete}>
-              <StepButton color="inherit" onClick={handleStep(index,label)}>
+              <StepButton color="inherit" onClick={handleStep(index, label)}>
                 <StepLabel
                   StepIconComponent={ColorlibStepIcon}
                   error={label.validationError}
@@ -376,15 +392,9 @@ function CreateSession(props) {
                       label.complete ? "font-semibold" : "font-normal"
                     }`}
                   >
-                    <div>{label.title}</div>
+                    <div className={ `  ${index===activeStep?'italic':'normal'}`}>{label.title}</div>
                   </div>
-                  {label.validationError && 1 === 2 && (
-                    <div>
-                      <label className=" text-center justify-center items-center text-xs text-red-600">
-                        Contains errors.
-                      </label>
-                    </div>
-                  )}
+                  
                 </StepLabel>
               </StepButton>
             </Step>
@@ -419,7 +429,11 @@ function CreateSession(props) {
                   Back
                 </Button>
                 <Box sx={{ flex: "1 1 auto" }} />
-                <Button disabled={!steps[activeStep].complete} onClick={handleNext} sx={{ mr: 1 }}>
+                <Button
+                  disabled={!steps[activeStep].complete}
+                  onClick={handleNext}
+                  sx={{ mr: 1 }}
+                >
                   Next
                 </Button>
               </Box>

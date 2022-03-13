@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment } from "react";
-
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -652,9 +651,16 @@ function Schedule(props) {
           new Array(repeatByDaysOfWeek.length).fill(true)
         );
       }
-      console.log(data);
+      
+    }
+    else {
+      setDirty();
       APP.SESSION.DTO.requestPath = Router.asPath;
       APP.SESSION.DTO.user = AuthService.getCurrentUser();
+      dispatch({
+        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
+        schedule: APP.SESSION.DTO.SCHEDULE,
+      });
     }
   }, []);
   return (
