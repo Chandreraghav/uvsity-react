@@ -81,22 +81,52 @@ export const SESSION = {
     STEPS: {
       BASIC: Yup.object().shape({
         category: Yup.number()
-        .typeError('you must specify a number')
-        .positive("Category is required").required('Category is required'),
-        fullName: Yup.string()
-        .required("Title is required"),
+          .typeError("you must specify a number")
+          .positive("Category is required")
+          .required("Category is required"),
+        fullName: Yup.string().required("Title is required"),
         shortName: Yup.string().required("Short name is required"),
-        previewurl: Yup.string().notRequired().test('preview_url', 'Invalid URL', function(value) {
-          if (value && value.trim()!=='') {
-            return isValidURL(value)
-          }
-          return true;
-        })
+        previewurl: Yup.string()
+          .notRequired()
+          .test("preview_url", "Invalid URL", function (value) {
+            if (value && value.trim() !== "") {
+              return isValidURL(value);
+            }
+            return true;
+          }),
       }),
-      PARTICIPANT:Yup.object().shape({
+      PARTICIPANT: Yup.object().shape({
         expectedNumber: Yup.number()
-        .typeError('you must specify a number').min(1,'Number of participant should be atleast 1').max(100,'Number of participant cannot be more than 100')
-        .positive("Number of participant should be atleast 1").required('Number of participant should be atleast 1'),
+          .typeError("you must specify a number")
+          .min(1, "Number of participant should be atleast 1")
+          .max(100, "Number of participant cannot be more than 100")
+          .positive("Number of participant should be atleast 1")
+          .required("Number of participant should be atleast 1"),
+      }),
+      FEE: Yup.object().shape({
+        freeSessionOrPaid: Yup.boolean(),
+        sponsorshipReqd: Yup.boolean(),
+        fees: Yup.number()
+          .nullable()
+          .typeError("you must specify a numeric amount")
+          .min(1, "Amount must be atleast 1")
+          .positive("Amount must be atleast 1")
+          .when("freeSessionOrPaid", {
+            is: true,
+            then: Yup.number()
+              .required("Amount is required"),
+          }),
+
+        sponsorshipFee: Yup.number()
+        .nullable()
+        .typeError("you must specify a numeric amount")
+        .min(1, "Amount must be atleast 1")
+        .positive("Amount must be atleast 1")
+        .when("sponsorshipReqd", {
+          is: true,
+          then: Yup.number()
+            .required("Amount is required"),
+        }),
       }),
     },
   },

@@ -51,7 +51,7 @@ import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
-import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
+import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -622,8 +622,8 @@ export const SESSION_POSTER = {
   consent: null,
   icon: <ImageIcon />,
   required: false,
-  imageURL:null,
-  binary:null
+  imageURL: null,
+  binary: null,
 };
 
 export const SESSION_DOCUMENT = {
@@ -651,9 +651,9 @@ export const SESSION_DOCUMENT = {
   consent: {
     text: `I agree that this document doesn't violate other's copyright or privacy rights.`,
     element: "checkbox",
-    hasConsent:false
+    hasConsent: false,
   },
-  binary:null
+  binary: null,
 };
 
 export const PARTICIPANT_INVITATION_OPTIONS = [
@@ -702,7 +702,7 @@ export const SPONSORSHIP = {
   ICONS: {
     EDIT: <EditIcon />,
     CUSTOMIZE: <DashboardCustomizeIcon />,
-    RESET:<RestoreFromTrashIcon/>
+    RESET: <RestoreFromTrashIcon />,
   },
   LEVELS: [
     {
@@ -813,7 +813,7 @@ export const SPONSORSHIP = {
         },
         featured: {
           text: `<p><span style="color:hsl(0, 0%, 0%);"><strong>Example:</strong></span></p>
-          <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li><li><span style="color:hsl(0, 0%, 0%);">5 min time during the session to showcase your company or product</span></li><li><span style="color:hsl(0, 0%, 0%);">Include company logo and link in social media as proud sponsor</span></li></ul>`,        
+          <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li><li><span style="color:hsl(0, 0%, 0%);">5 min time during the session to showcase your company or product</span></li><li><span style="color:hsl(0, 0%, 0%);">Include company logo and link in social media as proud sponsor</span></li></ul>`,
           html: (
             <>
               <h3 className="text-bold font-semibold text-xl mb-1">
@@ -862,9 +862,10 @@ export const SPONSORSHIP = {
     ERRORS: {
       EDITS: "Failed to modify sponsorhsip offerings. Please try again.",
     },
-    INFO:{
-      SET_FEE_TYPEWRITER: "Great going, you've set an offer of $#XX from the sponsor.",
-    }
+    INFO: {
+      SET_FEE_TYPEWRITER:
+        "Great going, you've set an offer of $#XX from the sponsor.",
+    },
   },
 };
 
@@ -881,7 +882,8 @@ export const APP = {
         SESSION_CHANGE:
           "Failed to select a past session, please try again or choose from a new category to create one.",
       },
-      FINAL_STEP_VISIT_DENIED:'Hey <user>, looks like you have not completed the other steps correctly. Revisit the steps again and try completing again.'    
+      FINAL_STEP_VISIT_DENIED:
+        "Hey <user>, looks like you have not completed the other steps correctly. Revisit the steps and try completing again.",
     },
     INFO: {},
   },
@@ -900,50 +902,65 @@ export const APP = {
           images: {
             poster: "",
             data: null,
-            error:false,
+            error: false,
           },
           documents: {
             consent: false,
             document: "",
             data: null,
-            error:false,
+            error: false,
           },
         },
         url: "",
         validationError: false,
-        errors:{},
+        errors: {},
         dirty: false,
       },
       SCHEDULE: {
-        startDate:null,
-        startTime:null,
-        endDate:null,
-        timezone:null,
-        duration:null,
-        repeats:false,
-        repeatScheduleFixed:false,
-        repeatSchedule:null,
-        repeatScheduleSummary:null,
-        repeatEndsOnDate:null,
-        repeatEndsAfter:null,
-        repeatByDaysOfWeek:null,
-        repeatByDaysOfWeekChecked:null,
-        repeatObject:null,
-        repeatValue:null,
-        repeatEvery:null,
-        occurenceCount:null,
+        startDate: null,
+        startTime: null,
+        endDate: null,
+        timezone: null,
+        duration: null,
+        repeats: false,
+        repeatScheduleFixed: false,
+        repeatSchedule: null,
+        repeatScheduleSummary: null,
+        repeatEndsOnDate: null,
+        repeatEndsAfter: null,
+        repeatByDaysOfWeek: null,
+        repeatByDaysOfWeekChecked: null,
+        repeatObject: null,
+        repeatValue: null,
+        repeatEvery: null,
+        occurenceCount: null,
         validationError: false,
-        errors:{},
+        errors: {},
         dirty: false,
       },
-      PARTICIPANTS:{
-        cohost:null,
-        numberOfParticipants:null,
-        visibility:null,
+      PARTICIPANTS: {
+        cohost: null,
+        numberOfParticipants: null,
+        visibility: null,
         choiceOfInvitation: null,
-        questions:null,
+        questions: null,
         validationError: false,
-        errors:{},
+        errors: {},
+        dirty: false,
+      },
+      FEE: {
+        paidInd: false,
+        amount: null,
+        validationError: false,
+        errors: {},
+        dirty: false,
+      },
+      SPONSOR: {
+        sponsorShipInd: false,
+        amount: null,
+        plans:[],
+        validationError: false,
+        errors: {},
         dirty: false,
       },
       user: null,
@@ -951,7 +968,7 @@ export const APP = {
     },
   },
 };
-export const AUTH_TOKENS={
-  SESSION_MONITOR:'SESSION_MONITOR',
-  IDLE_MONITOR:'IDLE_MONITOR'
-}
+export const AUTH_TOKENS = {
+  SESSION_MONITOR: "SESSION_MONITOR",
+  IDLE_MONITOR: "IDLE_MONITOR",
+};
