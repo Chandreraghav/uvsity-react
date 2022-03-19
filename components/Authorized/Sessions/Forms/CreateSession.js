@@ -71,6 +71,28 @@ function CreateSession(props) {
       }
     }
   };
+  const feeSponsorShipFormListener=()=>{
+    if (activeStep === 3) {
+      const isDirty = formdata?.fees?.dirty || formdata?.sponsor?.dirty;
+      if (isDirty) {
+        const fees =
+          Number(formdata?.fees?.amount) || 0;
+        if (
+          fees <= 0 && formdata?.fees?.paidInd
+        ) {
+          console.log("Contains errors", steps[activeStep].title);
+          setTimeout(() => {
+            handleInCompleteStep();
+          }, 50);
+          return;
+        }
+        console.log("No errors", steps[activeStep].title);
+        setTimeout(() => {
+          handleComplete();
+        }, 100);
+      }
+    }
+  }
   const scheduleFormListener = () => {
     if (activeStep === 1) {
       const isDirty = formdata?.basic?.dirty;
@@ -185,7 +207,7 @@ function CreateSession(props) {
   };
 
   const completedSteps = () => {
-    return Object.keys(completed).length;
+    return Object.keys(completed).length ;
   };
 
   const isLastStep = () => {
@@ -197,7 +219,8 @@ function CreateSession(props) {
   };
 
   const allStepsCompletedBeforeFinalStep = () => {
-    return completedSteps() === totalSteps() - 1;
+    const completedSteps = steps.filter(step=>step.complete).length
+    return completedSteps === totalSteps() - 1;
   };
 
   const handleNext = () => {
@@ -215,6 +238,7 @@ function CreateSession(props) {
   };
 
   const handleStep = (index, label) => () => {
+    
     if (allStepsCompletedBeforeFinalStep()) {
       setActiveStep(index);
     } else {
@@ -260,6 +284,7 @@ function CreateSession(props) {
     basicFormListener();
     scheduleFormListener();
     participantFormListener();
+    feeSponsorShipFormListener()
   }, [formdata]);
 
   const handleReset = () => {
