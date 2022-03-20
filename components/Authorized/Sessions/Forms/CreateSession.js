@@ -22,7 +22,14 @@ import GppMaybeIcon from "@mui/icons-material/GppMaybe";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import BeenhereIcon from "@mui/icons-material/Beenhere";
-import { formatDate, formattedName, getReadableFormattedDate, getTimezone, isEmptyObject, isValidURL } from "../../../../utils/utility";
+import {
+  formatDate,
+  formattedName,
+  getReadableFormattedDate,
+  getTimezone,
+  isEmptyObject,
+  isValidURL,
+} from "../../../../utils/utility";
 import { styled } from "@mui/material/styles";
 import StepConnector, {
   stepConnectorClasses,
@@ -237,33 +244,50 @@ function CreateSession(props) {
   const handleStep = (index, label) => () => {
     if (allStepsCompletedBeforeFinalStep()) {
       setActiveStep(index);
-     console.log(formdata)
+      console.log(formdata);
       // payload creation for sending to api.
-      const plans=formdata?.sponsor?.plans
-      plans.map((plan)=>{
-        plan.sponsorshipLevel=plan.alias
-        plan.benefits=plan.current.featured.text?plan.current.featured.text:plan.defaults.featured.text
-        plan.amount =plan.current.price.text?plan.current.price.text:plan.defaults.price.text
-        plan.show=true
-      })
+      const plans = formdata?.sponsor?.plans;
+      plans.map((plan) => {
+        plan.sponsorshipLevel = plan.alias;
+        plan.benefits = plan.current.featured.text
+          ? plan.current.featured.text
+          : plan.defaults.featured.text;
+        plan.amount = plan.current.price.text
+          ? plan.current.price.text
+          : plan.defaults.price.text;
+        plan.show = true;
+      });
       const payload = {
         startDateStr: formatDate(formdata?.schedule?.startDate),
-        timeZone: formdata?.schedule?.timezone?formdata?.schedule?.timezone:getTimezone() ,
+        timeZone: formdata?.schedule?.timezone
+          ? formdata?.schedule?.timezone
+          : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
         courseToSave: {
           expectedAttendees: formdata?.participant.numberOfParticipants,
           isNewCourse: true,
-          notifyPastAttendees: formdata?.participant.choiceOfInvitation===null || formdata?.participant.choiceOfInvitation==='0'?true:false,
-          cohostUser: {
-            userName: formattedName(formdata?.participant?.cohost?.firstName,formdata?.participant?.cohost?.lastName),
-            imageURL: formdata?.participant?.cohost?.profilepicName,
-            userBaseType: formdata?.participant?.cohost?.userType,
-            educationalInstitution: formdata?.participant?.cohost?.eduIns,
-            campus: formdata?.participant?.cohost?.campus
-          },
+          notifyPastAttendees:
+            formdata?.participant.choiceOfInvitation === null ||
+            formdata?.participant.choiceOfInvitation === "0"
+              ? true
+              : false,
+          cohostUser: formdata?.participant?.cohost
+            ? {
+                userName: formattedName(
+                  formdata?.participant?.cohost?.firstName,
+                  formdata?.participant?.cohost?.lastName
+                ),
+                imageURL: formdata?.participant?.cohost?.profilepicName,
+                userBaseType: formdata?.participant?.cohost?.userType,
+                educationalInstitution: formdata?.participant?.cohost?.eduIns,
+                campus: formdata?.participant?.cohost?.campus,
+              }
+            : {},
           registrationQuestionnaireId: formdata?.participant?.questions,
           sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
           sponsorshipLevels: plans,
-          timeZone: formdata?.schedule?.timezone?formdata?.schedule?.timezone:getTimezone() ,
+          timeZone: formdata?.schedule?.timezone
+            ? formdata?.schedule?.timezone
+            : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
           startTime: {
             hour: "21",
             minute: "30",
@@ -285,43 +309,100 @@ function CreateSession(props) {
               courseCategoryId: formdata?.basic?.categoryId,
             },
           ],
+
           currentSchedule: {
-            repeateEveryCount: formdata?.schedule?.repeatEvery?formdata?.schedule?.repeatEvery.toString():'0',
-            monthlyRepeatTypeStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.monthlyRepeatTypeStr,
-            endOfMeetingTypeStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.endOfMeetingTypeStr,
-            csoccurence: "",
-            repeateEveryCounttemp: "",
-            csstartDate: "",
-            endOfMeetingTypeInputStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.endOfMeetingTypeStr,
-            monthlyRepeatTypeInputStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.monthlyRepeatTypeStr,
-            repeattype: formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
-            repeatTypeStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
-            selectedDaysOfWeektempStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.selectedDaysOfWeekStr,
-            repeatcheckbox: formdata?.schedule.repeats?formdata?.schedule.repeats:'',
+            repeateEveryCount: formdata?.schedule?.repeatEvery
+              ? Number(formdata?.schedule?.repeatEvery)
+              : 0,
+            monthlyRepeatTypeStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.monthlyRepeatTypeStr,
+            endOfMeetingTypeStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.endOfMeetingTypeStr,
+            csoccurence: formdata?.schedule?.occurenceCount.toString(),
+            repeateEveryCounttemp: formdata?.schedule?.repeatEvery
+              ? formdata?.schedule?.repeatEvery.toString()
+              : "0",
+            csstartDate: formdata?.schedule.startDate
+              ? getReadableFormattedDate(formdata?.schedule.startDate)
+              : null,
+            endOfMeetingTypeInputStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.endOfMeetingTypeStr,
+            monthlyRepeatTypeInputStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.monthlyRepeatTypeStr,
+            repeattype:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.repeatTypeStr,
+            repeatTypeStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.repeatTypeStr,
+            selectedDaysOfWeektempStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.selectedDaysOfWeekStr,
+            repeatcheckbox: formdata?.schedule.repeats
+              ? formdata?.schedule.repeats
+              : "",
+            isScheduleValid:
+              formdata?.schedule?.repeatScheduleFixed !== undefined &&
+              formdata?.schedule?.repeatScheduleFixed !== null
+                ? formdata?.schedule?.repeatScheduleFixed
+                : false,
+            occurence: formdata?.schedule?.occurenceCount.toString(),
+            startDate: formdata?.schedule.startDate
+              ? getReadableFormattedDate(formdata?.schedule.startDate)
+              : null,
+            endDate: formdata?.schedule?.endDate
+              ? formatDate(formdata?.schedule.endDate)
+              : null,
           },
-          StartDate: "2022-03-20T06:18:20.271Z",
+          EndDate: formdata?.schedule?.endDate
+            ? formdata?.schedule?.endDate.toISOString()
+            : new Date().toISOString(),
+          StartDate: formdata?.schedule?.startDate
+            ? formdata?.schedule?.startDate.toISOString()
+            : new Date().toISOString(),
           courseSummary: formdata?.basic?.summary?.html,
-          courseType: formdata?.participant?.visibility==null || formdata?.participant?.visibility?'Public':'Private' ,
+          courseType:
+            formdata?.participant?.visibility == null ||
+            formdata?.participant?.visibility
+              ? "Public"
+              : "Private",
           courseFullName: formdata?.basic?.name,
           courseShortName: formdata?.basic?.shortName,
+          docCheckbox:
+            formdata?.basic?.binary?.documents?.consent !== undefined &&
+            formdata?.basic?.binary?.documents?.consent !== null
+              ? formdata?.basic?.binary?.documents?.consent
+              : false,
+          isEndDateCalculatedFromSchedule: formdata?.schedule?.repeats
+            ? true
+            : false,
           url: formdata?.basic?.url,
-          EndDate: formatDate(formdata?.schedule?.endDate),
           cost: Number(formdata?.fees.amount),
-          fee: formdata?.fees?.paidInd?'Paid':'Free',
+          fee: formdata?.fees?.paidInd ? "Paid" : "Free",
           sessionCoHostData: {
-            sessionCoHostId: formdata?.participant?.cohost?.userDetailsId
+            sessionCoHostId: formdata?.participant?.cohost
+              ? formdata?.participant?.cohost?.userDetailsId
+              : null,
           },
-          tc: true,
+          tc: false,
           courseStartDateStr: formatDate(formdata?.schedule?.startDate),
-          displayStartDateOnly: getReadableFormattedDate(formdata?.schedule?.startDate),
-          displayStopDateOnly:  getReadableFormattedDate(formdata?.schedule?.endDate),
+          displayStartDateOnly: getReadableFormattedDate(
+            formdata?.schedule?.startDate
+          ),
+          displayStopDateOnly: getReadableFormattedDate(
+            formdata?.schedule?.endDate
+          ),
           displayStartDate: formatDate(formdata?.schedule?.startDate),
           displayStopDate: formatDate(formdata?.schedule?.endDate),
           courseEndDateStr: formatDate(formdata?.schedule?.endDate),
           courseStatus: "Submitted",
         },
       };
-      console.log(payload)
+      console.log(payload);
     } else {
       const step_id = [1, 2, 3, 4];
       if (step_id.includes(label.id)) {
