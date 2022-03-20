@@ -325,13 +325,15 @@ function Fee() {
         ? data?.sponsor?.plans
         : SPONSORSHIP.LEVELS;
     } else {
-      setDirty();
+      setDirty('session-fee');
+      APP.SESSION.DTO.FEE.paidInd=true
       APP.SESSION.DTO.requestPath = Router.asPath;
       APP.SESSION.DTO.user = AuthService.getCurrentUser();
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
         fees: APP.SESSION.DTO.FEE,
       });
+      setDirty()
       APP.SESSION.DTO.SPONSOR.plans = SPONSORSHIP.LEVELS;
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,

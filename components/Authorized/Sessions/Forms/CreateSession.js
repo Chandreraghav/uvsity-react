@@ -22,7 +22,7 @@ import GppMaybeIcon from "@mui/icons-material/GppMaybe";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import BeenhereIcon from "@mui/icons-material/Beenhere";
-import { isEmptyObject, isValidURL } from "../../../../utils/utility";
+import { formatDate, formattedName, getReadableFormattedDate, getTimezone, isEmptyObject, isValidURL } from "../../../../utils/utility";
 import { styled } from "@mui/material/styles";
 import StepConnector, {
   stepConnectorClasses,
@@ -71,15 +71,12 @@ function CreateSession(props) {
       }
     }
   };
-  const feeSponsorShipFormListener=()=>{
+  const feeSponsorShipFormListener = () => {
     if (activeStep === 3) {
       const isDirty = formdata?.fees?.dirty || formdata?.sponsor?.dirty;
       if (isDirty) {
-        const fees =
-          Number(formdata?.fees?.amount) || 0;
-        if (
-          fees <= 0 && formdata?.fees?.paidInd
-        ) {
+        const fees = Number(formdata?.fees?.amount) || 0;
+        if (fees <= 0 && formdata?.fees?.paidInd) {
           console.log("Contains errors", steps[activeStep].title);
           setTimeout(() => {
             handleInCompleteStep();
@@ -92,7 +89,7 @@ function CreateSession(props) {
         }, 100);
       }
     }
-  }
+  };
   const scheduleFormListener = () => {
     if (activeStep === 1) {
       const isDirty = formdata?.basic?.dirty;
@@ -207,7 +204,7 @@ function CreateSession(props) {
   };
 
   const completedSteps = () => {
-    return Object.keys(completed).length ;
+    return Object.keys(completed).length;
   };
 
   const isLastStep = () => {
@@ -219,7 +216,7 @@ function CreateSession(props) {
   };
 
   const allStepsCompletedBeforeFinalStep = () => {
-    const completedSteps = steps.filter(step=>step.complete).length
+    const completedSteps = steps.filter((step) => step.complete).length;
     return completedSteps === totalSteps() - 1;
   };
 
@@ -238,9 +235,93 @@ function CreateSession(props) {
   };
 
   const handleStep = (index, label) => () => {
-    
     if (allStepsCompletedBeforeFinalStep()) {
       setActiveStep(index);
+     console.log(formdata)
+      // payload creation for sending to api.
+      const plans=formdata?.sponsor?.plans
+      plans.map((plan)=>{
+        plan.sponsorshipLevel=plan.alias
+        plan.benefits=plan.current.featured.text?plan.current.featured.text:plan.defaults.featured.text
+        plan.amount =plan.current.price.text?plan.current.price.text:plan.defaults.price.text
+        plan.show=true
+      })
+      const payload = {
+        startDateStr: formatDate(formdata?.schedule?.startDate),
+        timeZone: formdata?.schedule?.timezone?formdata?.schedule?.timezone:getTimezone() ,
+        courseToSave: {
+          expectedAttendees: formdata?.participant.numberOfParticipants,
+          isNewCourse: true,
+          notifyPastAttendees: formdata?.participant.choiceOfInvitation===null || formdata?.participant.choiceOfInvitation==='0'?true:false,
+          cohostUser: {
+            userName: formattedName(formdata?.participant?.cohost?.firstName,formdata?.participant?.cohost?.lastName),
+            imageURL: formdata?.participant?.cohost?.profilepicName,
+            userBaseType: formdata?.participant?.cohost?.userType,
+            educationalInstitution: formdata?.participant?.cohost?.eduIns,
+            campus: formdata?.participant?.cohost?.campus
+          },
+          registrationQuestionnaireId: formdata?.participant?.questions,
+          sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
+          sponsorshipLevels: plans,
+          timeZone: formdata?.schedule?.timezone?formdata?.schedule?.timezone:getTimezone() ,
+          startTime: {
+            hour: "21",
+            minute: "30",
+            hourMinuteSeparator: ":",
+            timeId: 333,
+          },
+          endTime: {
+            hour: "22",
+            minute: "00",
+            hourMinuteSeparator: ":",
+            timeId: "291",
+          },
+
+          user: {},
+          categories: [
+            {
+              courseCategoryName: "",
+              categoryFullText: "",
+              courseCategoryId: formdata?.basic?.categoryId,
+            },
+          ],
+          currentSchedule: {
+            repeateEveryCount: formdata?.schedule?.repeatEvery?formdata?.schedule?.repeatEvery.toString():'0',
+            monthlyRepeatTypeStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.monthlyRepeatTypeStr,
+            endOfMeetingTypeStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.endOfMeetingTypeStr,
+            csoccurence: "",
+            repeateEveryCounttemp: "",
+            csstartDate: "",
+            endOfMeetingTypeInputStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.endOfMeetingTypeStr,
+            monthlyRepeatTypeInputStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.monthlyRepeatTypeStr,
+            repeattype: formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
+            repeatTypeStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
+            selectedDaysOfWeektempStr: formdata?.schedule?.repeatSchedule?.currentSchedule?.selectedDaysOfWeekStr,
+            repeatcheckbox: formdata?.schedule.repeats?formdata?.schedule.repeats:'',
+          },
+          StartDate: "2022-03-20T06:18:20.271Z",
+          courseSummary: formdata?.basic?.summary?.html,
+          courseType: formdata?.participant?.visibility==null || formdata?.participant?.visibility?'Public':'Private' ,
+          courseFullName: formdata?.basic?.name,
+          courseShortName: formdata?.basic?.shortName,
+          url: formdata?.basic?.url,
+          EndDate: formatDate(formdata?.schedule?.endDate),
+          cost: Number(formdata?.fees.amount),
+          fee: formdata?.fees?.paidInd?'Paid':'Free',
+          sessionCoHostData: {
+            sessionCoHostId: formdata?.participant?.cohost?.userDetailsId
+          },
+          tc: true,
+          courseStartDateStr: formatDate(formdata?.schedule?.startDate),
+          displayStartDateOnly: getReadableFormattedDate(formdata?.schedule?.startDate),
+          displayStopDateOnly:  getReadableFormattedDate(formdata?.schedule?.endDate),
+          displayStartDate: formatDate(formdata?.schedule?.startDate),
+          displayStopDate: formatDate(formdata?.schedule?.endDate),
+          courseEndDateStr: formatDate(formdata?.schedule?.endDate),
+          courseStatus: "Submitted",
+        },
+      };
+      console.log(payload)
     } else {
       const step_id = [1, 2, 3, 4];
       if (step_id.includes(label.id)) {
@@ -284,7 +365,7 @@ function CreateSession(props) {
     basicFormListener();
     scheduleFormListener();
     participantFormListener();
-    feeSponsorShipFormListener()
+    feeSponsorShipFormListener();
   }, [formdata]);
 
   const handleReset = () => {
@@ -508,6 +589,13 @@ function CreateSession(props) {
                   sx={{ mr: 1 }}
                 >
                   Next
+                </Button>
+
+                <Button
+                  disabled={!allStepsCompletedBeforeFinalStep()}
+                  sx={{ mr: 1 }}
+                >
+                  Submit
                 </Button>
               </Box>
             </React.Fragment>

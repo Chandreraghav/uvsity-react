@@ -653,6 +653,14 @@ function Schedule(props) {
       
     }
     else {
+      const start = new Date()
+      APP.SESSION.DTO.SCHEDULE.startDate = start
+      setSelectedStartDate(start);
+      APP.SESSION.DTO.SCHEDULE.timezone = getTimezone();
+      setTimeZone(
+        getTimezone()
+      );
+     
       setDirty();
       APP.SESSION.DTO.requestPath = Router.asPath;
       APP.SESSION.DTO.user = AuthService.getCurrentUser();
