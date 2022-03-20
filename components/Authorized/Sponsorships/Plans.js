@@ -13,15 +13,21 @@ import { SPONSORSHIP } from "../../../constants/userdata";
 
 function Plans(props) {
   const editSponsorshipdata = (data) => {
+    if (props.showOnlyHeader) {
+      return;
+    }
     if (props.editSponsorshipdata) {
       props.editSponsorshipdata(data);
     }
   };
-  const resetSponsorShip=(data)=>{
+  const resetSponsorShip = (data) => {
+    if (props.showOnlyHeader) {
+      return;
+    }
     if (props.onResetSponsorShip) {
       props.onResetSponsorShip(data);
     }
-  }
+  };
   return (
     <Grid item lg={4} xs={12} sm={6} md={4}>
       <Card className="shadow-xl" sx={{ maxWidth: 345 }}>
@@ -39,6 +45,7 @@ function Plans(props) {
             <Typography gutterBottom variant="h5" component="div">
               {props.data.alias}
             </Typography>
+
             <div className="ml-auto">
               <Typography gutterBottom variant="h6" component="div">
                 $
@@ -48,22 +55,40 @@ function Plans(props) {
               </Typography>
             </div>
           </div>
-
-          <div>
-            {props?.data?.current?.featured?.html
-              ? props.data.current.featured.html
-              : props.data.defaults.featured.html}
-          </div>
+          {!props.showOnlyHeader && (
+            <div>
+              {props?.data?.current?.featured?.html
+                ? props.data.current.featured.html
+                : props.data.defaults.featured.html}
+            </div>
+          )}
+          {props.showOnlyHeader && (
+            <Tooltip title="Browse features of this plan">
+              <Typography
+                variant="div"
+                className=" app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-blue-600"
+              >
+                Features
+              </Typography>
+            </Tooltip>
+          )}
         </CardContent>
+
         <CardActions>
           <Button onClick={() => editSponsorshipdata(props.data)} size="small">
             {SPONSORSHIP.ICONS.EDIT}Edit
           </Button>
 
           {props.data.dirty && (
-            <div class='ml-auto'>
-              <Tooltip title="Reset to default offering"><Button onClick={() => resetSponsorShip(props.data)} size="small">{SPONSORSHIP.ICONS.RESET}</Button></Tooltip>
-           
+            <div class="ml-auto">
+              <Tooltip title="Reset to default offering">
+                <Button
+                  onClick={() => resetSponsorShip(props.data)}
+                  size="small"
+                >
+                  {SPONSORSHIP.ICONS.RESET}
+                </Button>
+              </Tooltip>
             </div>
           )}
         </CardActions>

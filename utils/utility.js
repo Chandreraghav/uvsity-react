@@ -255,3 +255,28 @@ export const isEmptyObject = (obj) => {
   }
   return true;
 };
+export const  padTo2Digits=(num)=> {
+  return num.toString().padStart(2, '0');
+}
+export const formatDate=(date) =>{
+  return (
+    [
+      padTo2Digits(date.getMonth() + 1),
+      padTo2Digits(date.getDate()),
+      date.getFullYear(),
+    ].join('/') +
+    ' ' +
+    [
+      padTo2Digits(date.getHours()),
+      padTo2Digits(date.getMinutes()),
+      padTo2Digits(date.getSeconds()),
+    ].join(':')
+  );
+}
+export const getReadableFormattedDate=(date)=>{
+  let year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+  
+    return month + '/' + day + '/' + year;
+}
