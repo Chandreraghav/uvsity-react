@@ -920,6 +920,7 @@ export const APP = {
         startDate: null,
         startTime: null,
         endDate: null,
+        endTime: null,
         timezone: null,
         duration: null,
         repeats: false,

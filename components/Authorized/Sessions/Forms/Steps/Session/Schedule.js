@@ -71,10 +71,12 @@ function Schedule(props) {
   const [schedule, setSchedule] = useState(SCHEDULE);
   const [duration, setDuration] = useState(DEFAULTS.TIME_ID); // 291 is the default time id for duration
   const [startTime, setStartTime] = useState(
-    getTimeAfter(props.data?.static.times, 1)
+    getTimeAfter(props.data?.static.times, 1, true)
   );
+  const [endTime, setEndTime] = useState(null);
   const [errorInStartTime, setErrorInStartTime] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = React.useState(new Date());
+  const [calculatedEndDate, setEndDate] = useState(null);
   const [repeatObject, setRepeatObject] = useState(null);
   const [repeatChecked, setRepeatChecked] = useState(false);
   const [repeatDisabled, setRepeatDisabled] = useState(true);
@@ -83,7 +85,7 @@ function Schedule(props) {
   const [occurenceCount, setOccurenceCount] = useState(0);
   const [repeatByDaysOfWeek, setRepeatByDaysOfWeek] = useState([]);
   const [checkedRepeatByDaysOfWeekState, setCheckedRepeatByDaysOfWeekState] =
-    useState(new Array(repeatByDaysOfWeek.length).fill(true));
+    useState(new Array(repeatByDaysOfWeek?.length).fill(true));
   const [startMinDate, setStartMinDate] = useState(new Date());
   const [endsOnAfterValue, setEndsOnAfterValue] = React.useState("Occurence");
   const [endsOnDate, setEndsOnDate] = React.useState(new Date());
@@ -96,8 +98,53 @@ function Schedule(props) {
     canRepeatBeEnabled();
   }, [props.data?.static.times]);
   useEffect(() => {
-    setEndsOnDate(getDateAfter(occurenceCount, selectedStartDate));
-  }, [selectedStartDate]);
+    calculateEndDate(true);
+  }, [selectedStartDate, duration, startTime, scheduleFixatedObject]);
+  const calculateEndDate = (triggerDispatch) => {
+    const _startTimeCollection = props.data?.static.times.filter(
+      (time) => time.timeId === startTime.timeId
+    );
+    const _durationCollection = props.data?.static.times.filter(
+      (time) => time.timeId === duration
+    );
+
+    const _startTime = new Date(selectedStartDate);
+
+    _startTime.setHours(parseInt(_startTimeCollection[0].hour));
+    _startTime.setMinutes(parseInt(_startTimeCollection[0].minute));
+
+    const _endTime = new Date(selectedStartDate);
+
+    _endTime.setHours(_startTime.getHours());
+    _endTime.setMinutes(
+      _startTime.getMinutes() +
+        Number(_durationCollection[0].durationDisplay) * 60
+    );
+    const endDate = {
+      hour:
+        _endTime.getHours() < 10
+          ? "0" + _endTime.getHours().toString()
+          : _endTime.getHours().toString(),
+      minute:
+        _endTime.getMinutes() < 10
+          ? "0" + _endTime.getMinutes().toString()
+          : _endTime.getMinutes().toString(),
+    };
+    setEndDate(_endTime);
+    const endTimeIdObject = props.data?.static.times.filter(
+      (time) => time.hour === endDate.hour && time.minute === endDate.minute
+    );
+    setEndTime(endTimeIdObject[0]);
+    APP.SESSION.DTO.SCHEDULE.endDate = _endTime;
+    APP.SESSION.DTO.SCHEDULE.endTime = endTimeIdObject[0];
+    setDirty();
+    if (triggerDispatch) {
+      dispatch({
+        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
+        schedule: APP.SESSION.DTO.SCHEDULE,
+      });
+    }
+  };
   const handleTimezoneChange = (event) => {
     setTimeZone(event.target.value);
     APP.SESSION.DTO.SCHEDULE.timezone = event.target.value;
@@ -159,12 +206,7 @@ function Schedule(props) {
     const occurences = repeatObject.endAfter.occurences;
     setOccurenceCount(occurences);
     APP.SESSION.DTO.SCHEDULE.occurenceCount = occurences;
-    const endDate = getDateAfter(
-      repeatObject.endAfter.occurences,
-      selectedStartDate
-    );
-    setEndsOnDate(endDate);
-    APP.SESSION.DTO.SCHEDULE.endDate = endDate;
+
     setRepeatObject(repeatObject);
     APP.SESSION.DTO.SCHEDULE.repeatObject = repeatObject;
     setRepeatValue(event.target.value);
@@ -190,8 +232,10 @@ function Schedule(props) {
       setEndsOnDate(getOnDate);
       APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = getOnDate;
     }
+
     setEndsOnAfterValue(event.target.value);
     APP.SESSION.DTO.SCHEDULE.repeatEndsAfter = event.target.value;
+
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
       schedule: APP.SESSION.DTO.SCHEDULE,
@@ -207,9 +251,16 @@ function Schedule(props) {
   const setDirty = () => {
     APP.SESSION.DTO.SCHEDULE.dirty = true;
   };
+
   const handleStartDateChange = (event) => {
-    setSelectedStartDate(event);
-    APP.SESSION.DTO.SCHEDULE.startDate = event;
+    const startDate = event;
+    startDate.setHours(parseInt(startTime.hour));
+    startDate.setMinutes(parseInt(startTime.minute));
+    startDate.setSeconds(0);
+
+    setSelectedStartDate(startDate);
+
+    APP.SESSION.DTO.SCHEDULE.startDate = startDate;
     setDirty();
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
@@ -217,7 +268,7 @@ function Schedule(props) {
     });
     if (isToday(event)) {
       const p = props.data?.static.times.filter(
-        (obj) => obj.timeId === startTime
+        (obj) => obj.timeId === startTime.timeid
       );
       const selectedDate = event;
       const selectedHour = parseInt(p[0].hour);
@@ -255,7 +306,7 @@ function Schedule(props) {
   const handleScheduleFixation = () => {
     setProcessInProgress(true);
     const _startTimeCollection = props.data?.static.times.filter(
-      (time) => time.timeId === startTime
+      (time) => time.timeId === startTime.timeId
     );
     const _durationCollection = props.data?.static.times.filter(
       (time) => time.timeId === duration
@@ -475,7 +526,7 @@ function Schedule(props) {
     const selectedMinute = parseInt(p[0].minute);
     selectedDate.setMinutes(selectedMinute);
     if (getDifferenceOfTimeWithCurrentTimeInMinutes(selectedDate) < 60) {
-      const startTime = getTimeAfter(props.data?.static.times, 2);
+      const startTime = getTimeAfter(props.data?.static.times, 2, true);
       setStartTime(startTime);
       APP.SESSION.DTO.SCHEDULE.startTime = startTime;
       setDirty();
@@ -487,8 +538,8 @@ function Schedule(props) {
       return;
     }
     setErrorInStartTime(false);
-    setStartTime(event.target.value);
-    APP.SESSION.DTO.SCHEDULE.startTime = event.target.value;
+    setStartTime(p[0]);
+    APP.SESSION.DTO.SCHEDULE.startTime = p[0];
     setDirty();
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
@@ -503,8 +554,8 @@ function Schedule(props) {
       setRepeatDisabled(true);
     }
   };
-  const handleEndsOnChange = (event) => { 
-    setEndsOnDate(event); 
+  const handleEndsOnChange = (event) => {
+    setEndsOnDate(event);
     APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = event;
     setDirty();
     dispatch({
@@ -519,41 +570,7 @@ function Schedule(props) {
   };
 
   const getEndTime = () => {
-    const _startTimeCollection = props.data?.static.times.filter(
-      (time) => time.timeId === startTime
-    );
-    const _durationCollection = props.data?.static.times.filter(
-      (time) => time.timeId === duration
-    );
-
-    const _startTime = new Date(selectedStartDate);
-
-    _startTime.setHours(parseInt(_startTimeCollection[0].hour));
-    _startTime.setMinutes(parseInt(_startTimeCollection[0].minute));
-
-    const _endTime = new Date(selectedStartDate);
-
-    _endTime.setHours(_startTime.getHours());
-    _endTime.setMinutes(
-      _startTime.getMinutes() +
-        Number(_durationCollection[0].durationDisplay) * 60
-    );
-
-    const _endMonth = _endTime.getMonth() + 1;
-    const endDate = {
-      day: _endTime.getDate(),
-      month: _endMonth,
-      year: _endTime,
-      hour: _endTime.getHours(),
-      minute:
-        _endTime.getMinutes() < 10
-          ? "0" + _endTime.getMinutes().toString()
-          : _endTime.getMinutes().toString(),
-      second: "00",
-      dateSeparator: "/",
-      hourMinuteSeparator: ":",
-    };
-    return formatTime(endDate);
+    return formatTime(endTime);
   };
 
   const handleScheduleCancelation = () => {
@@ -580,61 +597,95 @@ function Schedule(props) {
 
   useEffect(() => {
     if (data.schedule) {
+      const starttime = data?.schedule?.startTime
+        ? data?.schedule?.startTime
+        : getTimeAfter(props.data?.static.times, 1, true);
+      setStartTime(starttime);
+      APP.SESSION.DTO.SCHEDULE.startTime = starttime;
       // fetch data from context on load of form step.
-      setSelectedStartDate(data?.schedule?.startDate?data?.schedule?.startDate:new Date());
-      setEndsOnDateError(false)
-      setStartTime(
-        data?.schedule?.startTime
-          ? data?.schedule?.startTime
-          : getTimeAfter(props.data?.static.times, 1)
-      );
-      setDuration(
-        data?.schedule?.duration ? data?.schedule?.duration : DEFAULTS.TIME_ID
-      );
-      setEndsOnDate(
-        data?.schedule?.endDate ? data?.schedule?.endDate : new Date()
-      );
-      setTimeZone(
-        data?.schedule?.timezone ? data?.schedule?.timezone : getTimezone()
-      );
+    const startDate = data?.schedule?.startDate
+    ? data?.schedule?.startDate
+    : new Date();
+    startDate.setHours(parseInt(data?.schedule?.startTime?.hour));
+    startDate.setMinutes(parseInt(data?.schedule?.startTime?.minute));
+    startDate.setSeconds(0);
+    setSelectedStartDate(startDate);
+      APP.SESSION.DTO.SCHEDULE.startDate = startDate;
+
+      setEndsOnDateError(false);
+      
+     
+      const duration = data?.schedule?.duration
+        ? data?.schedule?.duration
+        : DEFAULTS.TIME_ID;
+      setDuration(duration);
+      APP.SESSION.DTO.SCHEDULE.duration = duration;
+      calculateEndDate();
+      const timezone = data?.schedule?.timezone
+        ? data?.schedule?.timezone
+        : getTimezone();
+      setTimeZone(timezone);
+      APP.SESSION.DTO.SCHEDULE.timezone = timezone;
       if (data?.schedule?.repeats) {
-        setEndsOnAfterValue(
-          data?.schedule?.repeatEndsAfter
-            ? data?.schedule?.repeatEndsAfter
-            : "Occurence"
-        );
+        const endsOnAfter = data?.schedule?.repeatEndsAfter
+          ? data?.schedule?.repeatEndsAfter
+          : "Occurence";
+        setEndsOnAfterValue(endsOnAfter);
+        APP.SESSION.DTO.SCHEDULE.repeatEndsAfter = endsOnAfter;
+
+        if (endsOnAfter === "OnDate") {
+          const getOnDate = getDateAfter(occurenceCount, selectedStartDate);
+          setEndsOnDate(getOnDate);
+          APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = getOnDate;
+        }
+
         setRepeatChecked(true);
-        setRepeatEvery(
-          data?.schedule?.repeatEvery ? data?.schedule?.repeatEvery : 0
-        );
-        setRepeatObject(
-          data?.schedule?.repeatObject ? data?.schedule?.repeatObject : null
-        );
-        setRepeatValue(
-          data?.schedule?.repeatValue ? data?.schedule?.repeatValue : ""
-        );
-        setScheduleFixed(data?.schedule?.repeatScheduleFixed);
-        setScheduleSummary(
-          data?.schedule?.repeatScheduleSummary
-            ? data?.schedule?.repeatScheduleSummary
-            : null
-        );
-        setOccurenceCount(
-          data?.schedule?.occurenceCount ? data?.schedule?.occurenceCount : 0
-        );
-        setScheduleFixatedObject(
-          data?.schedule?.repeatSchedule ? data?.schedule?.repeatSchedule : {}
-        );
-        setRepeatByDaysOfWeek(
-          data?.schedule?.repeatByDaysOfWeek
-            ? data?.schedule?.repeatByDaysOfWeek
-            : []
-        );
-        setCheckedRepeatByDaysOfWeekState(
-          data?.schedule?.repeatByDaysOfWeekChecked
-            ? data?.schedule?.repeatByDaysOfWeekChecked
-            : new Array(repeatByDaysOfWeek.length).fill(true)
-        );
+        APP.SESSION.DTO.SCHEDULE.repeats = true;
+        const repeatEvery = data?.schedule?.repeatEvery
+          ? data?.schedule?.repeatEvery
+          : 0;
+        setRepeatEvery(repeatEvery);
+        APP.SESSION.DTO.SCHEDULE.repeatEvery = repeatEvery;
+        const repeatObject = data?.schedule?.repeatObject
+          ? data?.schedule?.repeatObject
+          : null;
+
+        setRepeatObject(repeatObject);
+        APP.SESSION.DTO.SCHEDULE.repeatObject = repeatObject;
+        const repeatValue = data?.schedule?.repeatValue
+          ? data?.schedule?.repeatValue
+          : "";
+        setRepeatValue(repeatValue);
+        APP.SESSION.DTO.SCHEDULE.repeatValue = repeatValue;
+        const scheduleFixed = data?.schedule?.repeatScheduleFixed;
+        setScheduleFixed(scheduleFixed);
+        APP.SESSION.DTO.SCHEDULE.repeatScheduleFixed = scheduleFixed;
+        const scheduleSummary = data?.schedule?.repeatScheduleSummary
+          ? data?.schedule?.repeatScheduleSummary
+          : null;
+        setScheduleSummary(scheduleSummary);
+
+        APP.SESSION.DTO.SCHEDULE.repeatScheduleSummary = scheduleSummary;
+        const occurenceCount = data?.schedule?.occurenceCount
+          ? data?.schedule?.occurenceCount
+          : 0;
+        setOccurenceCount(occurenceCount);
+        APP.SESSION.DTO.SCHEDULE.occurenceCount = occurenceCount;
+        const fixatedObject = data?.schedule?.repeatSchedule
+          ? data?.schedule?.repeatSchedule
+          : {};
+        setScheduleFixatedObject(fixatedObject);
+        APP.SESSION.DTO.SCHEDULE.repeatSchedule = fixatedObject;
+        const weeklyRepeatObject = data?.schedule?.repeatByDaysOfWeek
+          ? data?.schedule?.repeatByDaysOfWeek
+          : [];
+        setRepeatByDaysOfWeek();
+        APP.SESSION.DTO.SCHEDULE.repeatByDaysOfWeek = weeklyRepeatObject;
+        const weeklyRepeatsOn = data?.schedule?.repeatByDaysOfWeekChecked
+          ? data?.schedule?.repeatByDaysOfWeekChecked
+          : new Array(repeatByDaysOfWeek.length).fill(true);
+        setCheckedRepeatByDaysOfWeekState(weeklyRepeatsOn);
+        APP.SESSION.DTO.SCHEDULE.repeatByDaysOfWeekChecked = weeklyRepeatsOn;
       } else {
         setEndsOnAfterValue("Occurence");
         setRepeatChecked(false);
@@ -650,17 +701,32 @@ function Schedule(props) {
           new Array(repeatByDaysOfWeek.length).fill(true)
         );
       }
-      
-    }
-    else {
-      const start = new Date()
-      APP.SESSION.DTO.SCHEDULE.startDate = start
-      setSelectedStartDate(start);
+
+      setDirty();
+      dispatch({
+        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
+        schedule: APP.SESSION.DTO.SCHEDULE,
+      });
+    } else {
+      const starttime = data?.schedule?.startTime
+        ? data?.schedule?.startTime
+        : getTimeAfter(props.data?.static.times, 1, true);
+      setStartTime(starttime);
+      APP.SESSION.DTO.SCHEDULE.startTime = starttime;
+      // fetch data from context on load of form step.
+    const startDate = data?.schedule?.startDate
+    ? data?.schedule?.startDate
+    : new Date();
+    startDate.setHours(parseInt(data?.schedule?.startTime?.hour));
+    startDate.setMinutes(parseInt(data?.schedule?.startTime?.minute));
+    startDate.setSeconds(0);
+    setSelectedStartDate(startDate);
+      APP.SESSION.DTO.SCHEDULE.startDate = startDate;
+
+      setDuration(DEFAULTS.TIME_ID);
+      APP.SESSION.DTO.SCHEDULE.duration = duration;
       APP.SESSION.DTO.SCHEDULE.timezone = getTimezone();
-      setTimeZone(
-        getTimezone()
-      );
-     
+      setTimeZone(getTimezone());
       setDirty();
       APP.SESSION.DTO.requestPath = Router.asPath;
       APP.SESSION.DTO.user = AuthService.getCurrentUser();
@@ -681,7 +747,17 @@ function Schedule(props) {
               <StaticDatePicker
                 orientation="landscape"
                 disablePast
-                label={<><label className={!selectedStartDate instanceof Date?'text-red-400':''}>Start Date</label></>}
+                label={
+                  <>
+                    <label
+                      className={
+                        !selectedStartDate instanceof Date ? "text-red-400" : ""
+                      }
+                    >
+                      Start Date
+                    </label>
+                  </>
+                }
                 autoOk
                 openTo="day"
                 value={selectedStartDate}
@@ -696,7 +772,10 @@ function Schedule(props) {
                 <Typography gutterBottom component="div">
                   Your session will start from{" "}
                   <strong>
-                    {selectedStartDate?.toDateString()} {getTimeByID(startTime)}
+                    {selectedStartDate?.toDateString()}{" "}
+                    {getTimeByID(
+                      startTime?.timeId ? startTime?.timeId : DEFAULTS.TIME_ID
+                    )}
                   </strong>{" "}
                   and will end at <strong>{getEndTime()}</strong>
                 </Typography>
@@ -768,7 +847,7 @@ function Schedule(props) {
                 <Select
                   labelId="select-time-label"
                   id="select-time"
-                  value={startTime}
+                  value={startTime.timeId}
                   onChange={handleStartTime}
                   label="Start time"
                 >
@@ -1036,26 +1115,21 @@ function Schedule(props) {
                                       value={endsOnDate}
                                     />
                                   )}
-                                  
                                   minDate={startMinDate}
                                   disablePast
                                   onChange={handleEndsOnChange}
                                   value={endsOnDate}
                                   disabled={endsOnAfterValue !== "OnDate"}
-                                 
                                   autoFill
                                   label={
                                     <>
                                       <label>Ends on</label>
                                     </>
                                   }
-                                  onError={()=>
-                                    setEndsOnDateError(true)
-                                  }
-                                  onAccept={()=>{
-                                    setEndsOnDateError(false)
+                                  onError={() => setEndsOnDateError(true)}
+                                  onAccept={() => {
+                                    setEndsOnDateError(false);
                                   }}
-                                 
                                 />
                               </LocalizationProvider>
                             </div>
@@ -1070,7 +1144,10 @@ function Schedule(props) {
                             size="small"
                             disabled={endsOnDateError}
                           >
-                            <CheckCircleIcon color={endsOnDateError?'default':'primary'} fontSize="small" />
+                            <CheckCircleIcon
+                              color={endsOnDateError ? "default" : "primary"}
+                              fontSize="small"
+                            />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title={"Cancel"}>

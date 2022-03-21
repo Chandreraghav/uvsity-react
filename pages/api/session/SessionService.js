@@ -5,4 +5,13 @@ export default class SessionService {
   static async getPopularSessions() {
     return await asyncInstance.get(ENDPOINTS.TOP_COURSES);
   }
+
+  static async isSessionCreationAllowed(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.SESSION_IS_ALLOWED,
+      payload
+    );
+  }
+
+
 }
