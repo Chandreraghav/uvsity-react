@@ -46,6 +46,7 @@ export const ENDPOINTS = {
     },
     DETAILS: "/view/profile/",
     SESSION_BY_ID: "/courses/#X#",
+    SESSION_IS_ALLOWED:'/courses/allowed/',
     METADATA: {
       ROOT: "/courses/metadata",
       STATIC: "/courses/staticmetadata",

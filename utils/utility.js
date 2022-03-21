@@ -154,10 +154,10 @@ export const isValidURL = (URL) => {
   return regex.test(URL);
 };
 export const formatTime = (time) => {
-  let hours = time.hour;
+  let hours = time?.hour;
   var AmOrPm = hours >= 12 ? "PM" : "AM";
   hours = hours % 12 || 12;
-  var minutes = time.minute;
+  var minutes = time?.minute;
   return hours + ":" + minutes + " " + AmOrPm;
 };
 
@@ -169,13 +169,14 @@ export const HTMLUnderlineByCharacterIndex = (str, pos) => {
 };
 
 export const getDateAfter = (days, date) => {
-  if (!days) return new Date();
+  if (!days) {
+    return new Date();}
   var result = !date ? new Date() : new Date(date);
   result.setDate(result.getDate() + parseInt(days));
   return result;
 };
 
-export const getTimeAfter = (time, hourUnits) => {
+export const getTimeAfter = (time, hourUnits,objectReturnInd) => {
   var dt = new Date();
   dt.setHours(dt.getHours() + hourUnits);
 
@@ -187,8 +188,9 @@ export const getTimeAfter = (time, hourUnits) => {
   const differenceOfRoundedTimeWithCurrentTimeInMins =
     getDifferenceOfTimeWithCurrentTimeInMinutes(s);
   if (differenceOfRoundedTimeWithCurrentTimeInMins < 60) {
-    return getTimeAfter(time, 2);
+    return getTimeAfter(time, 2,objectReturnInd);
   }
+  if(objectReturnInd) return _time[0]
   return _time[0].timeId;
 };
 export const getNearEndTime = (time) => {
@@ -256,27 +258,27 @@ export const isEmptyObject = (obj) => {
   return true;
 };
 export const  padTo2Digits=(num)=> {
-  return num.toString().padStart(2, '0');
+  return num?.toString().padStart(2, '0');
 }
 export const formatDate=(date) =>{
   return (
     [
-      padTo2Digits(date.getMonth() + 1),
-      padTo2Digits(date.getDate()),
-      date.getFullYear(),
+      padTo2Digits(date?.getMonth() + 1),
+      padTo2Digits(date?.getDate()),
+      date?.getFullYear(),
     ].join('/') +
     ' ' +
     [
-      padTo2Digits(date.getHours()),
-      padTo2Digits(date.getMinutes()),
-      padTo2Digits(date.getSeconds()),
+      padTo2Digits(date?.getHours()),
+      padTo2Digits(date?.getMinutes()),
+      padTo2Digits(date?.getSeconds()),
     ].join(':')
   );
 }
 export const getReadableFormattedDate=(date)=>{
-  let year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString().padStart(2, '0');
-    let day = date.getDate().toString().padStart(2, '0');
+  let year = date?.getFullYear();
+    let month = (1 + date?.getMonth()).toString().padStart(2, '0');
+    let day = date?.getDate().toString().padStart(2, '0');
   
     return month + '/' + day + '/' + year;
 }

@@ -37,6 +37,7 @@ import StepConnector, {
 import { RESPONSE_TYPES } from "../../../../constants/constants";
 import { APP } from "../../../../constants/userdata";
 import { handleResponse } from "../../../../toastr-response-handler/handler";
+import SessionService from "../../../../pages/api/session/SessionService";
 
 toast.configure();
 function CreateSession(props) {
@@ -244,7 +245,6 @@ function CreateSession(props) {
   const handleStep = (index, label) => () => {
     if (allStepsCompletedBeforeFinalStep()) {
       setActiveStep(index);
-      console.log(formdata);
       // payload creation for sending to api.
       const plans = formdata?.sponsor?.plans;
       plans.map((plan) => {
@@ -281,26 +281,15 @@ function CreateSession(props) {
                 educationalInstitution: formdata?.participant?.cohost?.eduIns,
                 campus: formdata?.participant?.cohost?.campus,
               }
-            : {},
+            : null,
           registrationQuestionnaireId: formdata?.participant?.questions,
           sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
           sponsorshipLevels: plans,
           timeZone: formdata?.schedule?.timezone
             ? formdata?.schedule?.timezone
             : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
-          startTime: {
-            hour: "21",
-            minute: "30",
-            hourMinuteSeparator: ":",
-            timeId: 333,
-          },
-          endTime: {
-            hour: "22",
-            minute: "00",
-            hourMinuteSeparator: ":",
-            timeId: "291",
-          },
-
+          startTime:formdata?.schedule?.startTime?formdata?.schedule?.startTime:{},
+          endTime: formdata?.schedule?.endTime?formdata?.schedule?.endTime:{},
           user: {},
           categories: [
             {
@@ -310,7 +299,8 @@ function CreateSession(props) {
             },
           ],
 
-          currentSchedule: {
+          currentSchedule:formdata?.schedule?.repeats? 
+          {
             repeateEveryCount: formdata?.schedule?.repeatEvery
               ? Number(formdata?.schedule?.repeatEvery)
               : 0,
@@ -320,7 +310,7 @@ function CreateSession(props) {
             endOfMeetingTypeStr:
               formdata?.schedule?.repeatSchedule?.currentSchedule
                 ?.endOfMeetingTypeStr,
-            csoccurence: formdata?.schedule?.occurenceCount.toString(),
+            csoccurence: formdata?.schedule?.occurenceCount?.toString(),
             repeateEveryCounttemp: formdata?.schedule?.repeatEvery
               ? formdata?.schedule?.repeatEvery.toString()
               : "0",
@@ -350,13 +340,35 @@ function CreateSession(props) {
               formdata?.schedule?.repeatScheduleFixed !== null
                 ? formdata?.schedule?.repeatScheduleFixed
                 : false,
-            occurence: formdata?.schedule?.occurenceCount.toString(),
+            occurence: formdata?.schedule?.occurenceCount?.toString(),
             startDate: formdata?.schedule.startDate
               ? getReadableFormattedDate(formdata?.schedule.startDate)
               : null,
             endDate: formdata?.schedule?.endDate
               ? formatDate(formdata?.schedule.endDate)
               : null,
+          }:{
+            repeateEveryCount: "",
+            monthlyRepeatTypeStr: "",
+            endOfMeetingTypeStr: "Occurence",
+            csoccurence: "",
+            repeateEveryCounttemp: "",
+            csstartDate: "",
+            endOfMeetingTypeInputStr: "Occurence",
+            monthlyRepeatTypeInputStr: "DayOfMonth",
+            repeattype: "None",
+            repeatTypeStr: "None",
+            selectedDaysOfWeektempStr: [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat"
+            ],
+            repeatcheckbox: ""
+        
           },
           EndDate: formdata?.schedule?.endDate
             ? formdata?.schedule?.endDate.toISOString()
@@ -381,6 +393,7 @@ function CreateSession(props) {
             ? true
             : false,
           url: formdata?.basic?.url,
+          //imageURL: "https://s3.amazonaws.com/uvsitydevcourseimages/2954/1645297175583",
           cost: Number(formdata?.fees.amount),
           fee: formdata?.fees?.paidInd ? "Paid" : "Free",
           sessionCoHostData: {
@@ -388,7 +401,7 @@ function CreateSession(props) {
               ? formdata?.participant?.cohost?.userDetailsId
               : null,
           },
-          tc: false,
+          tc: true,
           courseStartDateStr: formatDate(formdata?.schedule?.startDate),
           displayStartDateOnly: getReadableFormattedDate(
             formdata?.schedule?.startDate
@@ -402,7 +415,13 @@ function CreateSession(props) {
           courseStatus: "Submitted",
         },
       };
-      console.log(payload);
+           
+      
+  SessionService.isSessionCreationAllowed(payload).then((res)=>{
+    console.log(res.data.allowed)
+  }).catch((err)=>{
+    console.log(err)
+  })
     } else {
       const step_id = [1, 2, 3, 4];
       if (step_id.includes(label.id)) {
