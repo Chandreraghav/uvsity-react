@@ -13,7 +13,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AddIcon from "@mui/icons-material/Add";
 import CreateIcon from "@mui/icons-material/Create";
 import { WORKFLOW_CODES } from "./workflow-codes";
-import { timeOfDay } from "../utils/utility";
+import {  timeOfDay } from "../utils/utility";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
@@ -884,8 +884,17 @@ export const APP = {
       },
       FINAL_STEP_VISIT_DENIED:
         "Hey <user>, looks like you have not completed the other steps correctly. Revisit the steps and try completing again.",
+    
+        FINAL_STEP_COMPLETION_FAILED:
+        "Hey <user>, something happened on our side. It's not you but us. Please try again in a while.",
+    
+      },
+    INFO: {
+      TERMS_ACCEPT_TEXT:'By clicking on submit you agree to our ',
+      TnC:'terms and conditions.',
+      FINAL_STEP_COMPLETED:` <user>, now that you are almost done, review your changes and submit this session.`,
+      FINAL_STEP_EDITS_HELP_TEXT:'To make any changes, click on the pencil icon.'
     },
-    INFO: {},
   },
   SESSION: {
     DTO: {

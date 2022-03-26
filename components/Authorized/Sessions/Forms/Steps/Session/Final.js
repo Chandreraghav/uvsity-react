@@ -6,7 +6,10 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import TokenIcon from "@mui/icons-material/Token";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import React from "react";
+import InfoIcon from "@mui/icons-material/Info";
 import parse from "html-react-parser";
 import FormHelperText from "@mui/material/FormHelperText";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -15,7 +18,10 @@ import Profile from "../../../../Network/People/Dashboard/Profile";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import DateRangeIcon from "@mui/icons-material/DateRange";
-import { getTimezone } from "../../../../../../utils/utility";
+import {
+  getRandomArrayElement,
+  getTimezone,
+} from "../../../../../../utils/utility";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import ReactPlayer from "react-player";
 import AttachmentIcon from "@mui/icons-material/Attachment";
@@ -25,44 +31,144 @@ import PublicIcon from "@mui/icons-material/Public";
 import SnapProfile from "../../../../Network/People/Listing/Snap/Profile";
 import SessionStyle from "../../../../../../styles/Session.module.css";
 import QuizIcon from "@mui/icons-material/Quiz";
-import { SPONSORSHIP } from "../../../../../../constants/userdata";
+import {
+  APP,
+  PLACEHOLDERS,
+  SPONSORSHIP,
+  TOOLTIPS,
+} from "../../../../../../constants/userdata";
 import Plans from "../../../../Sponsorships/Plans";
 import EditIcon from "@mui/icons-material/Edit";
+import { USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION } from "../../../../../../constants/constants";
+import { getTime } from "date-fns/esm";
+
 function Final(props) {
   const [data, dispatch] = useDataLayerContextValue();
-  console.log(data, props.data);
+  console.log(data);
+  const generateMonetizationAmountOnCard = (data) => {
+    const amount = Number(data?.amount);
+    const isPaid = data?.paidInd;
+
+    if (!isPaid || !amount || amount == 0 || isNaN(amount)) {
+      return (
+        <Tooltip title={TOOLTIPS.FREE_SESSION}>
+          <div className={`${SessionStyle.session__card__costing} mt-2`}>
+            {PLACEHOLDERS.FREE}
+          </div>
+        </Tooltip>
+      );
+    }
+    return (
+      <Tooltip title={TOOLTIPS.PAID_SESSION}>
+        <div
+          className={`${SessionStyle.session__card__costing} ${SessionStyle.session__card__currency__amount}`}
+        >
+          <MonetizationOnIcon />
+          <span className={`${SessionStyle.session__card__currency__amount}`}>
+            {amount}
+          </span>
+        </div>
+      </Tooltip>
+    );
+  };
+  const getCompletionMessage = () => {
+    const randomString = getRandomArrayElement(
+      USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION
+    );
+    const _user = props?.data?.user?.data?.firstName;
+    const message = APP.MESSAGES.INFO.FINAL_STEP_COMPLETED.replace(
+      "<user>",
+      _user
+    );
+    return randomString + message;
+  };
+  const getStartDate = () => {
+    return data?.schedule?.startDate.getDate();
+  };
+  const getEndDate = () => {
+    return data?.schedule?.endDate.getDate();
+  };
+
+  const getEndYear = () => {
+    return data?.schedule?.endDate.getFullYear();
+  };
+
+  const getStartYear = () => {
+    return data?.schedule?.startDate.getFullYear();
+  };
+  const getStartMonth = () => {
+    const date = data?.schedule?.startDate;
+    const month = date.toLocaleString("default", { month: "short" });
+    return month;
+  };
+  const getEndMonth = () => {
+    const date = data?.schedule?.endDate;
+    const month = date.toLocaleString("default", { month: "short" });
+    return month;
+  };
+  const getTime = () => {
+    let startDisplay = data?.schedule.startTime.display;
+    let endDisplay = data?.schedule.endTime.display;
+    startDisplay = startDisplay.replace(/^0+/, "");
+    endDisplay = endDisplay.replace(/^0+/, "");
+    return `${startDisplay} - ${endDisplay}`;
+  };
+  const getEffectiveDate = () => {
+    // Mar 19, 2022 - Mar 20, 2022
+    let startMonth = getStartMonth();
+    let startYear = getStartYear();
+    let startDate = getStartDate();
+    let endDate = getEndDate();
+    let endMonth = getEndMonth();
+    let endYear = getEndYear();
+    const effectiveDate = `${startMonth} ${startDate},${startYear} - ${endMonth} ${endDate},${endYear}`;
+    return effectiveDate;
+  };
+  const getScheduleText = () => {
+    if (data?.schedule?.repeats) {
+      return data?.schedule?.repeatObject?.displayValue;
+    }
+    return "Once";
+  };
   return (
-    <div className={`p-3`}>
-      <Box sx={{ width: "100%" }}>
+    <div className={`p-4`}>
+      <div className="mb-2 flex gap-1 text-md text-blue-500 font-semibold">
+        <TokenIcon className="mt-1" />
+        <Typography className=" " variant="div">
+          {getCompletionMessage()}
+        </Typography>
+      </div>
+      <Divider className=" text-gray-500"></Divider>
+
+      <Box sx={{ width: "100%", mt: 1 }}>
         <div className="flex gap-1">
           <div className="flex flex-col mt-1">
-            <div className="lg:text-xl text-lg font-medium">20</div>
-            <div className="lg:text-lg text-sm  text-gray-600">Mar</div>
+            <div className="lg:text-xl text-lg font-medium">
+              {getStartDate()}
+            </div>
+            <div className="lg:text-lg text-sm  text-gray-600">
+              {getStartMonth()}
+            </div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex gap-1">
             <Typography
               variant="h6"
               className=" line-clamp-1 leading-loose text-gray-800"
             >
-              The Job Search Accelerator Masterclass — Kolkata
+              {data?.basic?.name}
             </Typography>
             <div
-              className="flex text-blue-600
-           -mt-3 md:ml-auto lg:ml-auto app__anchor__block cursor-pointer"
+              className="ml-auto  mt-2.5 flex text-blue-600
+            app__anchor__block cursor-pointer"
             >
-              <EditIcon className=" leading-3 font-semibold  text-sm" />
-              <Typography variant="div" className=" text-xs leading-snug">
-                Change
-              </Typography>
+              <Tooltip title="Change">
+                <EditIcon className=" leading-3 font-semibold  text-sm" />
+              </Tooltip>
             </div>
           </div>
 
           <div className={`ml-auto`}>
-            <div
-              className={`${SessionStyle.session__card__costing} ${SessionStyle.session__card__currency__amount}`}
-            >
-              Free
-            </div>
+            {generateMonetizationAmountOnCard(data?.fees)}
           </div>
         </div>
 
@@ -76,7 +182,7 @@ function Final(props) {
             <div className="flex flex-col py-1">
               <img
                 className=" relative block overflow-hidden  xl:h-48 lg:h-48  object-contain xl:object-cover lg:object-cover bg-gray-100 bg-center  rounded "
-                src="https://images.pexels.com/photos/688660/pexels-photo-688660.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                src={data?.basic?.binary?.images?.poster}
               />
               <div className="flex ">
                 <Profile
@@ -92,80 +198,91 @@ function Final(props) {
                 />
               </div>
 
-              <div>
-                <Typography
-                  variant="div"
-                  className="  font-normal line-clamp-3 text-sm mb-3  leading-snug text-black-600"
-                >
-                  {parse(` Lorem Ipsum is simply dummy text of the printing and
-                typesetting industry. Lorem Ipsum has been the industry's
-                standard dummy text ever since the 1500s, when an unknown
-                printer took a galley of type and scrambled it to make a type
-                specimen book. It has survived not only five centuries, but a
-              `)}
-                </Typography>
-              </div>
-              <Divider></Divider>
-              <div
-                className={` flex flex-col   gap-2     border-0 p-2  shadow-sm bg-repeat-round rounded-lg  `}
-              >
-                <div className="text-md flex gap-2">
-                  <CoPresentIcon className=" leading-3 font-semibold  text-xl text-gray-600" />{" "}
-                  <span className="text-md leading-tight font-semibold text-gray-600">
-                    Co-host
-                  </span>
-                  <div
-                    className="flex text-blue-600
-           ml-auto app__anchor__block cursor-pointer"
-                  >
-                    <EditIcon className=" leading-3 font-semibold  text-sm   " />
-                    <Typography
-                      variant="div"
-                      className=" text-xs leading-snug "
-                    >
-                      Change
-                    </Typography>
-                  </div>
-                </div>
-                <div className="flex">
-                  <SnapProfile
-                    firstName={"Arvind"}
-                    lastName={"Pattanayak"}
-                    avatar={""}
-                    oid={100}
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 py-3">
-                <div className="flex gap-1">
-                  <AutoAwesomeOutlinedIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+              {data?.basic?.summary?.html && (
+                <div>
                   <Typography
                     variant="div"
-                    className=" mb-1 font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
+                    className="  font-normal line-clamp-3 text-sm mb-3  leading-snug text-black-600"
                   >
-                    Sponsorship Levels:
+                    {parse(`${data?.basic?.summary?.html}
+ `)}
                   </Typography>
+                </div>
+              )}
 
-                  <div
-                    className="flex mr-2 text-blue-600
-           ml-auto app__anchor__block cursor-pointer"
-                  >
-                    <EditIcon className=" leading-3 font-semibold  text-sm   " />
-                    <Typography
-                      variant="div"
-                      className=" text-xs leading-snug "
+              <Divider></Divider>
+              {data?.participant?.cohost && (
+                <div
+                  className={` flex flex-col   gap-2     border-0 p-2  shadow-sm bg-repeat-round rounded-lg  `}
+                >
+                  <div className="text-md flex gap-2">
+                    <CoPresentIcon className=" leading-3 font-semibold  text-xl text-gray-600" />{" "}
+                    <span className="text-md leading-tight font-semibold text-gray-600">
+                      Co-host
+                    </span>
+                    <div
+                      className="flex text-blue-600
+              ml-auto app__anchor__block cursor-pointer"
                     >
-                      Change
-                    </Typography>
+                      <Tooltip title="Change">
+                        <EditIcon className=" leading-3 font-semibold  text-sm" />
+                      </Tooltip>
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <SnapProfile
+                      firstName={data?.participant?.cohost?.firstName}
+                      lastName={data?.participant?.cohost?.lastName}
+                      avatar={data?.participant?.cohost?.profilepicName}
+                      oid={data?.participant?.cohost?.userDetailsId}
+                      userType={data?.participant?.cohost?.userType}
+                      instituition={data?.participant?.cohost?.eduIns}
+                    />
                   </div>
                 </div>
+              )}
 
-                <div className="flex gap-2 -ml-5 lg:ml-0 md:ml-0">
-                  {SPONSORSHIP?.LEVELS?.map((level) => (
-                    <Plans showOnlyHeader={true} key={level.id} data={level} />
-                  ))}
+              {data?.sponsor?.sponsorShipInd && (
+                <div className="flex flex-col gap-2 py-3">
+                  <div className="flex gap-1">
+                    <AutoAwesomeOutlinedIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                    <Typography
+                      variant="div"
+                      className=" mb-1 font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
+                    >
+                      Sponsorship Levels:
+                    </Typography>
+
+                    <div
+                      className="flex mr-2 text-blue-600
+         ml-auto app__anchor__block cursor-pointer"
+                    >
+                      <Tooltip title="Change">
+                        <EditIcon className=" leading-3 font-semibold  text-sm" />
+                      </Tooltip>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 -ml-5 lg:ml-0 md:ml-0">
+                    {SPONSORSHIP?.LEVELS?.map((level) => (
+                      <Plans
+                        showOnlyHeader={true}
+                        key={level.id}
+                        data={level}
+                      />
+                    ))}
+                  </div>
                 </div>
+              )}
+
+              <div className="flex ml-1 gap-1 mt-2">
+                <InfoIcon className="text-gray-600" fontSize="small" />
+                <Typography
+                  className=" line-clamp-1 leading-tight mt-1  text-xs text-gray-600"
+                  sx={{ mt: 0 }}
+                >
+                  {APP.MESSAGES.INFO.FINAL_STEP_EDITS_HELP_TEXT}
+                </Typography>
               </div>
             </div>
           </Grid>
@@ -184,21 +301,17 @@ function Final(props) {
                   variant="div"
                   className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800"
                 >
-                  Once
+                  {getScheduleText()}
                 </Typography>
 
                 <div
-              className="flex mr-2 text-blue-600
+                  className="flex mr-2 text-blue-600
            ml-auto app__anchor__block cursor-pointer"
-            >
-              <EditIcon className=" leading-3 font-semibold  text-sm   " />
-              <Typography
-                variant="div"
-                className=" text-xs leading-snug "
-              >
-                Change
-              </Typography>
-            </div>
+                >
+                  <Tooltip title="Change">
+                    <EditIcon className=" leading-3 font-semibold  text-sm" />
+                  </Tooltip>
+                </div>
               </div>
               <div>
                 <div className="flex gap-1">
@@ -214,7 +327,7 @@ function Final(props) {
                     variant="div"
                     className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800"
                   >
-                    Mar 19, 2022 - Mar 20, 2022
+                    {getEffectiveDate()}
                   </Typography>
                 </div>
               </div>
@@ -231,7 +344,7 @@ function Final(props) {
                   variant="div"
                   className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-800"
                 >
-                  21:00 - 21:30({getTimezone()})
+                  {getTime()}({data?.schedule?.timezone || getTimezone()})
                 </Typography>
 
                 <Tooltip title="Browse timezones">
@@ -245,113 +358,135 @@ function Final(props) {
               </div>
               <Divider></Divider>
               <div className="flex flex-col gap-1">
+                {data?.basic?.url && (
+                  <>
+                    <div className="flex gap-1">
+                      <VideocamIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                      <Typography
+                        variant="div"
+                        className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-600"
+                      >
+                        <u>P</u>review
+                      </Typography>{" "}
+                      <div
+                        className="flex mr-2 text-blue-600
+           ml-auto app__anchor__block cursor-pointer"
+                      >
+                        <Tooltip title="Change">
+                          <EditIcon className=" leading-3 font-semibold  text-sm" />
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <ReactPlayer
+                      controls
+                      loop={true}
+                      muted
+                      width="400px"
+                      height="200px"
+                      url={data?.basic?.url}
+                    />
+                  </>
+                )}
+
+                {data?.basic?.binary?.documents?.consent && (
+                  <>
+                    <div className="flex gap-1">
+                      <AttachmentIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                      <Typography
+                        variant="div"
+                        className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-600"
+                      >
+                        <u>A</u>ttachment
+                      </Typography>{" "}
+                    </div>
+
+                    <div className="flex gap-1">
+                      <ArticleIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                      <Tooltip title="Click to download">
+                        <Typography
+                          variant="div"
+                          className="app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-gray-600"
+                        >
+                          {data?.basic?.binary?.documents?.data?.binary?.name}
+                        </Typography>
+                      </Tooltip>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+            {data?.participant?.questions && (
+              <div className=" border-dotted  py-1 mt-2 mb-2 flex flex-col gap-2 bg-gray-100 px-2 p-2 rounded-lg   shadow-sm bg-repeat-round">
                 <div className="flex gap-1">
-                  <VideocamIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                  <QuizIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                   <Typography
                     variant="div"
-                    className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-600"
+                    className="  font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
                   >
-                    <u>P</u>review
-                  </Typography>{" "}
-
+                    Questionairre:
+                  </Typography>
+                  <Tooltip title="Questions that would be asked to your attendees before registration.">
+                    <div className=" leading-3 font-semibold  text-xl text-gray-500 cursor-pointer">
+                      <HelpOutlineIcon fontSize="small" />
+                    </div>
+                  </Tooltip>
                   <div
-              className="flex mr-2 text-blue-600
+                    className="flex mr-2 text-blue-600
            ml-auto app__anchor__block cursor-pointer"
-            >
-              <EditIcon className=" leading-3 font-semibold  text-sm   " />
-              <Typography
-                variant="div"
-                className=" text-xs leading-snug "
-              >
-                Change
-              </Typography>
-            </div>
-                </div>
-                <ReactPlayer
-                  controls
-                  loop={true}
-                  muted
-                  width="400px"
-                  height="200px"
-                  url={`https://www.youtube.com/watch?v=l8RyZc9o5Vo`}
-                />
-
-                <div className="flex gap-1">
-                  <AttachmentIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
-                  <Typography
-                    variant="div"
-                    className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-600"
                   >
-                    <u>A</u>ttachment
-                  </Typography>{" "}
+                    <Tooltip title="Change">
+                      <EditIcon className=" leading-3 font-semibold  text-sm" />
+                    </Tooltip>
+                  </div>
                 </div>
 
-                <div className="flex gap-1">
-                  <ArticleIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                <div className="flex gap-1 font-normal line-clamp-3 text-sm   leading-snug text-black-700">
+                  <blockquote className="">
+                    <u>P</u>lease answer the following questions
+                  </blockquote>
+                </div>
+
+                <div className="flex flex-col p-2 border-l-2">
+                  <div className="flex gap-1">
+                    <div className="text-sm text-gray-800 font-semibold">
+                      1.
+                    </div>
+                    <div className="text-sm text-gray-800 font-semibold">
+                      What is there?
+                    </div>
+                    <div className="text-xs text-gray-600">(optional)</div>
+                  </div>
+                  <TextField
+                    placeholder="Answer"
+                    variant="standard"
+                    label="Answer"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                  <FormHelperText className=" text-xs leading-tight text-gray-700 font-normal">
+                    100
+                  </FormHelperText>
+                </div>
+              </div>
+            )}
+
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
+              {props.allStepsCompletedExceptFinalStep && (
+                <div className="flex ml-2 gap-1 mt-2">
+                  <InfoIcon className="text-gray-600" fontSize="small" />
                   <Typography
-                    variant="div"
-                    className="  app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-gray-600"
+                    className=" line-clamp-1 leading-tight mt-1  text-xs text-gray-600"
+                    sx={{ mt: 0 }}
                   >
-                    The business insider.txt
-                  </Typography>{" "}
+                    {APP.MESSAGES.INFO.TERMS_ACCEPT_TEXT}
+                    <span className=" cursor-pointer app__anchor__block">
+                      {APP.MESSAGES.INFO.TnC}
+                    </span>
+                  </Typography>
                 </div>
-              </div>
-            </div>
-            <div className=" border-dotted  py-1 mt-2 mb-2 flex flex-col gap-2 bg-gray-100 px-2 p-2 rounded-lg   shadow-sm bg-repeat-round">
-              <div className="flex gap-1">
-                <QuizIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
-                <Typography
-                  variant="div"
-                  className="  font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
-                >
-                  Questionairre:
-                </Typography>
-                <Tooltip title="Questions that would be asked to your attendees before registration.">
-                  <div className=" leading-3 font-semibold  text-xl text-gray-500 cursor-pointer">
-                    <HelpOutlineIcon fontSize="small" />
-                  </div>
-                </Tooltip>
-                <div
-              className="flex mr-2 text-blue-600
-           ml-auto app__anchor__block cursor-pointer"
-            >
-              <EditIcon className=" leading-3 font-semibold  text-sm   " />
-              <Typography
-                variant="div"
-                className=" text-xs leading-snug "
-              >
-                Change
-              </Typography>
-            </div>
-              </div>
-
-              <div className="flex gap-1 font-normal line-clamp-3 text-sm   leading-snug text-black-700">
-                <blockquote className="">
-                  <u>P</u>lease answer the following questions
-                </blockquote>
-              </div>
-
-              <div className="flex flex-col p-2 border-l-2">
-                <div className="flex gap-1">
-                  <div className="text-sm text-gray-800 font-semibold">1.</div>
-                  <div className="text-sm text-gray-800 font-semibold">
-                    What is there?
-                  </div>
-                  <div className="text-xs text-gray-600">(optional)</div>
-                </div>
-                <TextField
-                  placeholder="Answer"
-                  variant="standard"
-                  label="Answer"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-                <FormHelperText className=" text-xs leading-tight text-gray-700 font-normal">
-                  100
-                </FormHelperText>
-              </div>
-            </div>
+              )}
+            </Box>
           </Grid>
         </Grid>
       </Box>

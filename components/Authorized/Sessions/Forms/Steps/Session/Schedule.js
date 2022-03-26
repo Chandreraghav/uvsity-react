@@ -254,8 +254,8 @@ function Schedule(props) {
 
   const handleStartDateChange = (event) => {
     const startDate = event;
-    startDate.setHours(parseInt(startTime.hour));
-    startDate.setMinutes(parseInt(startTime.minute));
+    startDate.setHours(parseInt(Number(startTime.hour)));
+    startDate.setMinutes(parseInt(Number(startTime.minute)));
     startDate.setSeconds(0);
 
     setSelectedStartDate(startDate);
@@ -267,16 +267,16 @@ function Schedule(props) {
       schedule: APP.SESSION.DTO.SCHEDULE,
     });
     if (isToday(event)) {
-      const p = props.data?.static.times.filter(
-        (obj) => obj.timeId === startTime.timeid
+      const p = props?.data?.static.times.filter(
+        (obj) => obj?.timeId === startTime?.timeid
       );
       const selectedDate = event;
-      const selectedHour = parseInt(p[0].hour);
+      const selectedHour = parseInt(p[0]?.hour);
       selectedDate.setHours(selectedHour);
-      const selectedMinute = parseInt(p[0].minute);
+      const selectedMinute = parseInt(p[0]?.minute);
       selectedDate.setMinutes(selectedMinute);
       if (getDifferenceOfTimeWithCurrentTimeInMinutes(selectedDate) < 60) {
-        const startTime = getTimeAfter(props.data?.static.times, 2);
+        const startTime = getTimeAfter(props?.data?.static.times, 2);
         setStartTime(startTime);
         APP.SESSION.DTO.SCHEDULE.startTime = startTime;
         setDirty();
@@ -603,18 +603,17 @@ function Schedule(props) {
       setStartTime(starttime);
       APP.SESSION.DTO.SCHEDULE.startTime = starttime;
       // fetch data from context on load of form step.
-    const startDate = data?.schedule?.startDate
-    ? data?.schedule?.startDate
-    : new Date();
-    startDate.setHours(parseInt(data?.schedule?.startTime?.hour));
-    startDate.setMinutes(parseInt(data?.schedule?.startTime?.minute));
-    startDate.setSeconds(0);
-    setSelectedStartDate(startDate);
+      const startDate = data?.schedule?.startDate
+        ? data?.schedule?.startDate
+        : new Date();
+      startDate.setHours(parseInt(data?.schedule?.startTime?.hour));
+      startDate.setMinutes(parseInt(data?.schedule?.startTime?.minute));
+      startDate.setSeconds(0);
+      setSelectedStartDate(startDate);
       APP.SESSION.DTO.SCHEDULE.startDate = startDate;
 
       setEndsOnDateError(false);
-      
-     
+
       const duration = data?.schedule?.duration
         ? data?.schedule?.duration
         : DEFAULTS.TIME_ID;
@@ -714,13 +713,14 @@ function Schedule(props) {
       setStartTime(starttime);
       APP.SESSION.DTO.SCHEDULE.startTime = starttime;
       // fetch data from context on load of form step.
-    const startDate = data?.schedule?.startDate
-    ? data?.schedule?.startDate
-    : new Date();
-    startDate.setHours(parseInt(data?.schedule?.startTime?.hour));
-    startDate.setMinutes(parseInt(data?.schedule?.startTime?.minute));
-    startDate.setSeconds(0);
-    setSelectedStartDate(startDate);
+      const startDate = data?.schedule?.startDate
+        ? data?.schedule?.startDate
+        : new Date();
+
+      startDate.setHours(Number(starttime.hour));
+      startDate.setMinutes(Number(starttime.minute));
+      startDate.setSeconds(0);
+      setSelectedStartDate(startDate);
       APP.SESSION.DTO.SCHEDULE.startDate = startDate;
 
       setDuration(DEFAULTS.TIME_ID);

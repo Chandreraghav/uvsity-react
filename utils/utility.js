@@ -214,7 +214,12 @@ const roundTimeBy = (time, roundByMins) => {
 };
 export const getDifferenceOfTimeWithCurrentTimeInMinutes = (time) => {
   if (!time) return 0;
-  return Math.ceil((time.getTime() - new Date().getTime()) / 1000 / 60);
+  try {
+    return Math.ceil((time.getTime() - new Date().getTime()) / 1000 / 60);
+  } catch (error) {
+    return 0;
+  }
+ 
 };
 export const isToday = (someDate) => {
   const today = new Date();

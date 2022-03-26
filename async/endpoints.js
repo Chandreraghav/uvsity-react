@@ -47,6 +47,16 @@ export const ENDPOINTS = {
     DETAILS: "/view/profile/",
     SESSION_BY_ID: "/courses/#X#",
     SESSION_IS_ALLOWED:'/courses/allowed/',
+    UPLOADS:{
+      SESSION:{
+        CREATE:{
+          IMAGE:'/fileupload',
+          DOC:'/slidedeck'
+        }
+       
+      }
+      
+    },
     METADATA: {
       ROOT: "/courses/metadata",
       STATIC: "/courses/staticmetadata",
