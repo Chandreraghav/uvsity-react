@@ -312,4 +312,5 @@ export const TIME_OF_DAY_GREETING = {
   AFTERNOON: "Good afternoon",
   EVENING: "Good evening",
 };
+export const USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION=['Great job.','Superb!','Yay!!','Nailed it!!','Awesome.','You did it.',"That's it." ]
 

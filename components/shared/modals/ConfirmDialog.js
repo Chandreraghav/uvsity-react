@@ -32,7 +32,7 @@ function ConfirmDialog({
         aria-labelledby="responsive-dialog-title"
         onClose={() => handleClose(false, true)}
         disableEscapeKeyDown
-        disableBackdropClick
+        
         onBackdropClick={() => handleClose(false, true)}
       >
         <div className={`${theme ? "dark-dialog" : ""}`}>

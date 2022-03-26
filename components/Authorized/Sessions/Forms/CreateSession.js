@@ -38,9 +38,11 @@ import { RESPONSE_TYPES } from "../../../../constants/constants";
 import { APP } from "../../../../constants/userdata";
 import { handleResponse } from "../../../../toastr-response-handler/handler";
 import SessionService from "../../../../pages/api/session/SessionService";
+import { useRouter } from "next/router";
 
 toast.configure();
 function CreateSession(props) {
+  const Router = useRouter();
   const checkInteractiveErrors = false;
   const participantFormListener = () => {
     if (activeStep === 2) {
@@ -204,6 +206,7 @@ function CreateSession(props) {
       complete: false,
     },
   ]);
+  const [sessionSubmitted, setSessionSubmitted] = useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
   const [formdata, dispatch] = useDataLayerContextValue();
@@ -223,7 +226,7 @@ function CreateSession(props) {
     return completedSteps() === totalSteps();
   };
 
-  const allStepsCompletedBeforeFinalStep = () => {
+  const allStepsCompletedExceptFinalStep = () => {
     const completedSteps = steps.filter((step) => step.complete).length;
     return completedSteps === totalSteps() - 1;
   };
@@ -242,8 +245,12 @@ function CreateSession(props) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const getFinalStepIndex = () => {
+    return steps.findIndex((step) => step.id === 5);
+  };
   const handleStep = (index, label) => () => {
-    if (allStepsCompletedBeforeFinalStep()) {
+    if (allStepsCompletedExceptFinalStep() && !sessionSubmitted) {
+      // this is the final step entry
       setActiveStep(index);
       // payload creation for sending to api.
       const plans = formdata?.sponsor?.plans;
@@ -288,8 +295,12 @@ function CreateSession(props) {
           timeZone: formdata?.schedule?.timezone
             ? formdata?.schedule?.timezone
             : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
-          startTime:formdata?.schedule?.startTime?formdata?.schedule?.startTime:{},
-          endTime: formdata?.schedule?.endTime?formdata?.schedule?.endTime:{},
+          startTime: formdata?.schedule?.startTime
+            ? formdata?.schedule?.startTime
+            : {},
+          endTime: formdata?.schedule?.endTime
+            ? formdata?.schedule?.endTime
+            : {},
           user: {},
           categories: [
             {
@@ -299,77 +310,77 @@ function CreateSession(props) {
             },
           ],
 
-          currentSchedule:formdata?.schedule?.repeats? 
-          {
-            repeateEveryCount: formdata?.schedule?.repeatEvery
-              ? Number(formdata?.schedule?.repeatEvery)
-              : 0,
-            monthlyRepeatTypeStr:
-              formdata?.schedule?.repeatSchedule?.currentSchedule
-                ?.monthlyRepeatTypeStr,
-            endOfMeetingTypeStr:
-              formdata?.schedule?.repeatSchedule?.currentSchedule
-                ?.endOfMeetingTypeStr,
-            csoccurence: formdata?.schedule?.occurenceCount?.toString(),
-            repeateEveryCounttemp: formdata?.schedule?.repeatEvery
-              ? formdata?.schedule?.repeatEvery.toString()
-              : "0",
-            csstartDate: formdata?.schedule.startDate
-              ? getReadableFormattedDate(formdata?.schedule.startDate)
-              : null,
-            endOfMeetingTypeInputStr:
-              formdata?.schedule?.repeatSchedule?.currentSchedule
-                ?.endOfMeetingTypeStr,
-            monthlyRepeatTypeInputStr:
-              formdata?.schedule?.repeatSchedule?.currentSchedule
-                ?.monthlyRepeatTypeStr,
-            repeattype:
-              formdata?.schedule?.repeatSchedule?.currentSchedule
-                ?.repeatTypeStr,
-            repeatTypeStr:
-              formdata?.schedule?.repeatSchedule?.currentSchedule
-                ?.repeatTypeStr,
-            selectedDaysOfWeektempStr:
-              formdata?.schedule?.repeatSchedule?.currentSchedule
-                ?.selectedDaysOfWeekStr,
-            repeatcheckbox: formdata?.schedule.repeats
-              ? formdata?.schedule.repeats
-              : "",
-            isScheduleValid:
-              formdata?.schedule?.repeatScheduleFixed !== undefined &&
-              formdata?.schedule?.repeatScheduleFixed !== null
-                ? formdata?.schedule?.repeatScheduleFixed
-                : false,
-            occurence: formdata?.schedule?.occurenceCount?.toString(),
-            startDate: formdata?.schedule.startDate
-              ? getReadableFormattedDate(formdata?.schedule.startDate)
-              : null,
-            endDate: formdata?.schedule?.endDate
-              ? formatDate(formdata?.schedule.endDate)
-              : null,
-          }:{
-            repeateEveryCount: "",
-            monthlyRepeatTypeStr: "",
-            endOfMeetingTypeStr: "Occurence",
-            csoccurence: "",
-            repeateEveryCounttemp: "",
-            csstartDate: "",
-            endOfMeetingTypeInputStr: "Occurence",
-            monthlyRepeatTypeInputStr: "DayOfMonth",
-            repeattype: "None",
-            repeatTypeStr: "None",
-            selectedDaysOfWeektempStr: [
-                "Sun",
-                "Mon",
-                "Tue",
-                "Wed",
-                "Thu",
-                "Fri",
-                "Sat"
-            ],
-            repeatcheckbox: ""
-        
-          },
+          currentSchedule: formdata?.schedule?.repeats
+            ? {
+                repeateEveryCount: formdata?.schedule?.repeatEvery
+                  ? Number(formdata?.schedule?.repeatEvery)
+                  : 0,
+                monthlyRepeatTypeStr:
+                  formdata?.schedule?.repeatSchedule?.currentSchedule
+                    ?.monthlyRepeatTypeStr,
+                endOfMeetingTypeStr:
+                  formdata?.schedule?.repeatSchedule?.currentSchedule
+                    ?.endOfMeetingTypeStr,
+                csoccurence: formdata?.schedule?.occurenceCount?.toString(),
+                repeateEveryCounttemp: formdata?.schedule?.repeatEvery
+                  ? formdata?.schedule?.repeatEvery.toString()
+                  : "0",
+                csstartDate: formdata?.schedule.startDate
+                  ? getReadableFormattedDate(formdata?.schedule.startDate)
+                  : null,
+                endOfMeetingTypeInputStr:
+                  formdata?.schedule?.repeatSchedule?.currentSchedule
+                    ?.endOfMeetingTypeStr,
+                monthlyRepeatTypeInputStr:
+                  formdata?.schedule?.repeatSchedule?.currentSchedule
+                    ?.monthlyRepeatTypeStr,
+                repeattype:
+                  formdata?.schedule?.repeatSchedule?.currentSchedule
+                    ?.repeatTypeStr,
+                repeatTypeStr:
+                  formdata?.schedule?.repeatSchedule?.currentSchedule
+                    ?.repeatTypeStr,
+                selectedDaysOfWeektempStr:
+                  formdata?.schedule?.repeatSchedule?.currentSchedule
+                    ?.selectedDaysOfWeekStr,
+                repeatcheckbox: formdata?.schedule.repeats
+                  ? formdata?.schedule.repeats
+                  : "",
+                isScheduleValid:
+                  formdata?.schedule?.repeatScheduleFixed !== undefined &&
+                  formdata?.schedule?.repeatScheduleFixed !== null
+                    ? formdata?.schedule?.repeatScheduleFixed
+                    : false,
+                occurence: formdata?.schedule?.occurenceCount?.toString(),
+                startDate: formdata?.schedule.startDate
+                  ? getReadableFormattedDate(formdata?.schedule.startDate)
+                  : null,
+                endDate: formdata?.schedule?.endDate
+                  ? formatDate(formdata?.schedule.endDate)
+                  : null,
+              }
+            : {
+                repeateEveryCount: "",
+                monthlyRepeatTypeStr: "",
+                endOfMeetingTypeStr: "Occurence",
+                csoccurence: "",
+                repeateEveryCounttemp: "",
+                csstartDate: "",
+                endOfMeetingTypeInputStr: "Occurence",
+                monthlyRepeatTypeInputStr: "DayOfMonth",
+                repeattype: "None",
+                repeatTypeStr: "None",
+                selectedDaysOfWeektempStr: [
+                  "Sun",
+                  "Mon",
+                  "Tue",
+                  "Wed",
+                  "Thu",
+                  "Fri",
+                  "Sat",
+                ],
+                repeatcheckbox: "",
+              },
           EndDate: formdata?.schedule?.endDate
             ? formdata?.schedule?.endDate.toISOString()
             : new Date().toISOString(),
@@ -393,7 +404,11 @@ function CreateSession(props) {
             ? true
             : false,
           url: formdata?.basic?.url,
-          //imageURL: "https://s3.amazonaws.com/uvsitydevcourseimages/2954/1645297175583",
+          imageURL:
+            formdata?.basic?.binary?.images?.poster &&
+            formdata?.basic?.binary?.images?.poster.indexOf("blob:") === -1
+              ? formdata?.basic?.binary?.images?.poster
+              : null,
           cost: Number(formdata?.fees.amount),
           fee: formdata?.fees?.paidInd ? "Paid" : "Free",
           sessionCoHostData: {
@@ -415,25 +430,86 @@ function CreateSession(props) {
           courseStatus: "Submitted",
         },
       };
-           
-      
-  SessionService.isSessionCreationAllowed(payload).then((res)=>{
-    console.log(res.data.allowed)
-  }).catch((err)=>{
-    console.log(err)
-  })
-    } else {
-      const step_id = [1, 2, 3, 4];
-      if (step_id.includes(label.id)) {
-        setActiveStep(index);
-      } else {
+      let hasErrors = false;
+      SessionService.isSessionCreationAllowed(payload)
+        .then((res) => {
+          if (res.data.allowed) {
+            if (!payload.courseToSave.imageURL) {
+              // call fileupload
+              const image = formdata?.basic?.binary?.images?.data?.binary;
+              const formData = new FormData();
+              formData.append("file", image);
+              if (image && typeof image === "object") {
+                // call image upload
+                SessionService.uploadImage(formData)
+                  .then((res) => {
+                    console.log(res);
+                  })
+                  .catch((err) => {
+                    hasErrors = true;
+                  });
+              }
+            }
+            const document = formdata?.basic?.binary?.documents?.data?.binary;
+
+            if (document && typeof document === "object") {
+              // call doc upload
+              const docFormData = new FormData();
+              docFormData.append("file", document);
+              SessionService.uploadDoc(docFormData)
+                .then((res) => {
+                  console.log(res);
+                })
+                .catch((err) => {
+                  hasErrors = true;
+                });
+            }
+          } else {
+            hasErrors = true;
+          }
+        })
+        .catch((err) => {
+          hasErrors = true;
+        });
+      if (hasErrors) {
+        setSessionSubmitted(false);
+        handleInCompleteStep();
         const _user = props.data.user.data.firstName;
-        const err = APP.MESSAGES.ERRORS.FINAL_STEP_VISIT_DENIED.replace(
+        const err = APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED.replace(
           "<user>",
           _user
         );
         handleResponse(err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
+        return;
       }
+      if (!hasErrors) {
+        setSessionSubmitted(true);
+        handleComplete();
+      }
+    } else {
+      if (allStepsCompletedExceptFinalStep()) {
+        const finalStepIdx = getFinalStepIndex();
+        if (sessionSubmitted && index === finalStepIdx) {
+          setActiveStep(index);
+          return;
+        }
+        navigateToStep(label, index);
+        return;
+      }
+      navigateToStep(label, index);
+    }
+  };
+  const navigateToStep = (label, index) => {
+    const step_id = [1, 2, 3, 4];
+    if (step_id.includes(label.id)) {
+      setActiveStep(index);
+    } else {
+      const _user = props.data.user.data.firstName;
+      const err = APP.MESSAGES.ERRORS.FINAL_STEP_VISIT_DENIED.replace(
+        "<user>",
+        _user
+      );
+      handleResponse(err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
     }
   };
 
@@ -655,51 +731,39 @@ function CreateSession(props) {
           ))}
         </Stepper>
         <div>
-          {allStepsCompleted() ? (
-            <React.Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleReset}>Reset</Button>
-              </Box>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              {activeStep === 0 && <Basic data={props.data} />}
-              {activeStep === 1 && <Schedule data={props.data} />}
-              {activeStep === 2 && <Participant data={props.data} />}
-              {activeStep === 3 && <Fee data={props.data} />}
-              {activeStep === 4 && <Final data={props.data} />}
+          <React.Fragment>
+            {activeStep === 0 && <Basic data={props.data} />}
+            {activeStep === 1 && <Schedule data={props.data} />}
+            {activeStep === 2 && <Participant data={props.data} />}
+            {activeStep === 3 && <Fee data={props.data} />}
+            {activeStep === 4 && <Final allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()} data={props.data} />}
 
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}>
-                <Button
-                  color="inherit"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  sx={{ mr: 1 }}
-                >
-                  Back
-                </Button>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button
-                  disabled={!steps[activeStep].complete}
-                  onClick={handleNext}
-                  sx={{ mr: 1 }}
-                >
-                  Next
-                </Button>
-
-                <Button
-                  disabled={!allStepsCompletedBeforeFinalStep()}
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}>
+              <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                Back
+              </Button>
+              <Box sx={{ flex: "1 1 auto" }} />
+              <Button
+                disabled={!steps[activeStep].complete}
+                onClick={handleNext}
+                sx={{ mr: 1 }}
+              >
+                Next
+              </Button>
+              <Button
+                  disabled={!allStepsCompletedExceptFinalStep()}
                   sx={{ mr: 1 }}
                 >
                   Submit
                 </Button>
-              </Box>
-            </React.Fragment>
-          )}
+            
+            </Box>
+          </React.Fragment>
         </div>
       </Box>
     </div>

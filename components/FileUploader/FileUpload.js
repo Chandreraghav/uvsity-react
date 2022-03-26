@@ -57,9 +57,11 @@ function FileUpload(props) {
             setConsentDisabled(false);
           }
         });
+        
         setFiles(
           acceptedFiles.map((file) =>
             Object.assign(file, {
+              
               preview: URL.createObjectURL(file),
               extension: getFileExtension(file.name),
             })
