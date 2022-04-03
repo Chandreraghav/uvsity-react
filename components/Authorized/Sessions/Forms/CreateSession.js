@@ -114,6 +114,11 @@ function CreateSession(props) {
         handleInCompleteStep();
         return;
       }
+      if(formdata?.schedule?.repeats  && !formdata?.schedule?.repeatObject ){
+        console.log("Contains errors", steps[activeStep].title);
+        handleInCompleteStep();
+        return;
+      }
       console.log("No errors", steps[activeStep].title);
       setTimeout(() => {
         handleComplete();
@@ -217,6 +222,7 @@ function CreateSession(props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
   const [formdata, dispatch] = useDataLayerContextValue();
+  const [hasErrors, setHasErrors] = useState(false)
   const totalSteps = () => {
     return steps.length;
   };
@@ -255,6 +261,7 @@ function CreateSession(props) {
   };
 
   const handleBack = () => {
+    if(hasErrors()) {return}
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
@@ -262,6 +269,7 @@ function CreateSession(props) {
     return steps.findIndex((step) => step.id === 5);
   };
   const handleStep = (index, label) => () => {
+    if(hasErrors) return;
     if (allStepsCompletedExceptFinalStep() && !sessionSubmitted) {
       // this is the final step entry
       setActiveStep(index);
@@ -443,7 +451,7 @@ function CreateSession(props) {
           courseStatus: "Submitted",
         },
       };
-      let hasErrors = false;
+      
       SessionService.isSessionCreationAllowed(payload)
         .then((res) => {
           if (res.data.allowed) {
@@ -478,12 +486,13 @@ function CreateSession(props) {
                 });
             }
           } else {
-            hasErrors = true;
+            setHasErrors(true);
           }
         })
         .catch((err) => {
-          hasErrors = true;
-          setSessionSubmitted(false);
+          setHasErrors(true);
+          setSessionSubmitted(true);
+          setActiveStep(4) // final step
           handleInCompleteStep();
           const _user = props.data.user.data.firstName;
           const _err = APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED.replace(
@@ -493,17 +502,7 @@ function CreateSession(props) {
           handleResponse(_err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
           return;
         });
-      if (hasErrors) {
-        setSessionSubmitted(false);
-        handleInCompleteStep();
-        const _user = props.data.user.data.firstName;
-        const err = APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED.replace(
-          "<user>",
-          _user
-        );
-        handleResponse(err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
-        return;
-      }
+      
       if (!hasErrors) {
         undirtyDTO();
         setSessionSubmitted(true);
@@ -603,6 +602,10 @@ function CreateSession(props) {
     participantFormListener();
     feeSponsorShipFormListener();
   }, [formdata]);
+
+  useEffect(() => {
+   setHasErrors(false)
+  },[])
 
   const handleReset = () => {
     setActiveStep(0);
@@ -770,8 +773,8 @@ function CreateSession(props) {
           connector={<QontoConnector />}
         >
           {steps.map((label, index) => (
-            <Step key={label.id} completed={label.complete}>
-              <StepButton color="inherit" onClick={handleStep(index, label)}>
+            <Step className={hasErrors?'opacity-40':''} key={label.id} completed={label.complete}>
+              <StepButton  color="inherit" onClick={handleStep(index, label)}>
                 <StepLabel
                   StepIconComponent={ColorlibStepIcon}
                   error={label.validationError}
@@ -800,12 +803,12 @@ function CreateSession(props) {
             {activeStep === 1 && <Schedule data={props.data} />}
             {activeStep === 2 && <Participant data={props.data} />}
             {activeStep === 3 && <Fee data={props.data} />}
-            {activeStep === 4 && <Final allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()} data={props.data} />}
+            {activeStep === 4 && <Final allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()} hasErrors={hasErrors} data={props.data} />}
 
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}>
               <Button
                 color="inherit"
-                disabled={activeStep === 0}
+                disabled={activeStep === 0 || hasErrors}
                 onClick={handleBack}
                 sx={{ mr: 1 }}
               >
@@ -820,7 +823,7 @@ function CreateSession(props) {
                 Next 
               </Button>
               <Button
-                  disabled={!allStepsCompletedExceptFinalStep()}
+                  disabled={!allStepsCompletedExceptFinalStep() || hasErrors}
                   sx={{ mr: 1 }}
                 >
                   Submit

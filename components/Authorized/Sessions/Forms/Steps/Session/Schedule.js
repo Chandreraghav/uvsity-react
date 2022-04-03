@@ -158,7 +158,12 @@ function Schedule(props) {
 
   const handleRepeatCheckChange = (event) => {
     setRepeatChecked(event.target.checked);
+    
     setTimeout(() => {
+      if(!event.target.checked){
+        setRepeatObject(null);
+        APP.SESSION.DTO.SCHEDULE.repeatObject = null;
+      }
       APP.SESSION.DTO.SCHEDULE.repeats = event.target.checked;
       setDirty();
       if (!event.target.checked) {
@@ -368,9 +373,9 @@ function Schedule(props) {
       dateSeparator: "/",
       hourMinuteSeparator: ":",
     };
-    const daysOfWeekSelected = repeatByDaysOfWeek.filter((obj) => obj.checked);
+    const daysOfWeekSelected = repeatByDaysOfWeek?.filter((obj) => obj.checked);
     let daysOfWeek = [];
-    daysOfWeekSelected.map((day, index) => {
+    daysOfWeekSelected?.map((day, index) => {
       if (checkedRepeatByDaysOfWeekState[index]) {
         daysOfWeek.push(day.value);
       }
