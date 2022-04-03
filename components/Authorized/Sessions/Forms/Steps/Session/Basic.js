@@ -420,7 +420,7 @@ function Basic(props) {
               <FormControl fullWidth={true} variant="standard">
                 <Typography
                   variant="h6"
-                  className=" text-lg  items-center justify-center font-medium italic leading-loose text-gray-800 lowercase lg:border-r-2 lg:mt-3 lg:-ml-2"
+                  className=" text-lg  items-center justify-center font-medium italic leading-loose text-gray-800 lowercase   lg:mt-3  lg:-ml-2"
                 >
                   OR&nbsp;
                 </Typography>

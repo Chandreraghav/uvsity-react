@@ -12,10 +12,12 @@ const res=  await SessionService.getPopularSessions();
 return res.data;
 };
 function TrendingSessions() {
+
   const trendingSessions = useQuery(
     [KEYS.SESSION.PUBLIC.TOP],
     getTrendingSessions
   );
+  console.log(trendingSessions)
   return (
     <div id="discover-popular-live-sessions">
       <div
@@ -46,8 +48,8 @@ function TrendingSessions() {
         id="sessionsPreview"
         className={`${TrendingSessionsStyle.trending__sessions__wrapper__white__variant} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  bg-yellow-300`}
       >
-        {trendingSessions.isSuccess &&
-          trendingSessions && trendingSessions?.data &&
+        {trendingSessions?.isSuccess &&
+          trendingSessions && trendingSessions?.data  &&  trendingSessions?.data instanceof Array &&
           trendingSessions?.data?.map((session, index) => (
             <SessionCard
               key={index}

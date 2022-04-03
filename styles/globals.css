@@ -366,6 +366,9 @@ button.danger {
   min-height: 200px;
   max-height: 250px;
 }
+.w-30vw{
+  width: 30vw !important;
+}
 
 
 /* Extra small devices (phones, 600px and down) */

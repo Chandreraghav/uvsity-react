@@ -33,8 +33,8 @@ toast.configure();
 function Fee() {
   const Router = useRouter();
   const [data, dispatch] = useDataLayerContextValue();
-  const [freeSession, setSessionFree] = useState(false);
-  const [sponsorShipReqd, setSponsorShipReqd] = useState(true);
+  const [sessionFeePaidIndicator, setSessionPaidInd] = useState(false);
+  const [sponsorShipReqd, setSponsorShipReqd] = useState(false);
   const [sessionFee, setSessionFee] = useState(null);
   const [sposnsorshipFee, setSponsorshipFee] = useState(null);
   const [_editSponsorshipLevel, setEditSponsorshipLevel] = useState(false);
@@ -163,9 +163,9 @@ function Fee() {
     setEditorData(data);
   };
 
-  const handleSessionFreeOrPaid = () => {
-    setSessionFree(!freeSession);
-    APP.SESSION.DTO.FEE.paidInd = freeSession;
+  const handleSessionPaidIndicatorChange = (e) => {
+    setSessionPaidInd(!sessionFeePaidIndicator);
+    APP.SESSION.DTO.FEE.paidInd = !sessionFeePaidIndicator;
     setDirty("session-fee");
     updateErrors("session-fee");
     dispatch({
@@ -237,7 +237,7 @@ function Fee() {
   };
 
   useEffect(() => {
-    if (freeSession) {
+    if (sessionFeePaidIndicator) {
       reset();
       setSessionFee(null);
       APP.SESSION.DTO.FEE.amount = null;
@@ -248,7 +248,7 @@ function Fee() {
         fees: APP.SESSION.DTO.FEE,
       });
     }
-  }, [freeSession, sessionFee]);
+  }, [sessionFeePaidIndicator, sessionFee]);
 
   useEffect(() => {
     if (sponsorShipReqd) {
@@ -315,7 +315,7 @@ function Fee() {
   useEffect(() => {
     if (data.fees || data.sponsor) {
       // fetch data from context on load of form step.
-      setSessionFree(!data?.fees?.paidInd);
+      setSessionPaidInd(data?.fees?.paidInd);
       setSessionFee(data?.fees?.paidInd ? data?.fees?.amount : null);
       setSponsorShipReqd(data?.sponsor?.sponsorShipInd);
       setSponsorshipFee(
@@ -325,15 +325,15 @@ function Fee() {
         ? data?.sponsor?.plans
         : SPONSORSHIP.LEVELS;
     } else {
-      setDirty('session-fee');
-      APP.SESSION.DTO.FEE.paidInd=true
+      setDirty("session-fee");
+      APP.SESSION.DTO.FEE.paidInd = false;
       APP.SESSION.DTO.requestPath = Router.asPath;
       APP.SESSION.DTO.user = AuthService.getCurrentUser();
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
         fees: APP.SESSION.DTO.FEE,
       });
-      setDirty()
+      setDirty();
       APP.SESSION.DTO.SPONSOR.plans = SPONSORSHIP.LEVELS;
       dispatch({
         type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,
@@ -346,11 +346,24 @@ function Fee() {
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
-            <div className="flex gap-4 ">
-              <div className=" leading-loose lg:text-3xl text-xl md:text-3xl text-gray-700">
-                <Typography gutterBottom variant="h4" component="div">
-                  Free session
-                </Typography>
+         
+            <div className="flex gap-2 ">
+              <div className=" flex leading-loose lg:text-3xl text-xl md:text-3xl text-gray-700">
+                <div className="flex">
+                  <Typography gutterBottom variant="h4" component="div">
+                    Paid session
+                  </Typography>
+                  <Tooltip
+                    title={SPONSORSHIP.MESSAGES.INFO.SESSION_FEE_HELPTEXT}
+                  >
+                    <div className=" text-sm text-gray-600 cursor-pointer">
+                      <HelpOutlineIcon fontSize="small" />
+                    </div>
+                  </Tooltip>
+
+                  
+                </div>
+               
               </div>
               <FormControl variant="filled">
                 <FormControlLabel
@@ -360,21 +373,16 @@ function Fee() {
                       id="freeSessionOrPaid"
                       size="medium"
                       {...register(`freeSessionOrPaid`)}
-                      onChange={() => handleSessionFreeOrPaid()}
-                      checked={freeSession}
+                      onChange={() => handleSessionPaidIndicatorChange()}
+                      checked={sessionFeePaidIndicator}
                       inputProps={{ "aria-label": "controlled" }}
                     />
-                  }
-                  label={
-                    <>
-                      <h3 className="lg:text-3xl text-xl md:text-3xl">Yes</h3>
-                    </>
                   }
                 />
               </FormControl>
             </div>
           </Grid>
-          {!freeSession && (
+          {sessionFeePaidIndicator && (
             <>
               <Grid item xs={12}>
                 <FormControl variant="standard" fullWidth>
@@ -424,11 +432,22 @@ function Fee() {
           )}
 
           <Grid item xs={12}>
-            <div className="flex gap-4 ">
-              <div className=" leading-loose lg:text-3xl text-xl md:text-3xl text-gray-700">
-                <Typography gutterBottom variant="h5" component="div">
-                  Looking for sponsors?
-                </Typography>
+            <div className="flex gap-2 ">
+              <div className="flex leading-loose lg:text-3xl text-xl md:text-3xl text-gray-700">
+                <div className="flex">
+                  <Typography gutterBottom variant="h5" component="div">
+                    Sponsorships
+                  </Typography>
+                  <Tooltip
+                    title={
+                      SPONSORSHIP.MESSAGES.INFO.SESSION_SPONSORSHIP_HELPTEXT
+                    }
+                  >
+                    <div className=" text-xs text-gray-600 cursor-pointer">
+                      <HelpOutlineIcon fontSize="small" />
+                    </div>
+                  </Tooltip>
+                </div>
               </div>
               <FormControl variant="filled">
                 <FormControlLabel
@@ -436,16 +455,11 @@ function Fee() {
                   control={
                     <Switch
                       size="medium"
-                      checked={!sponsorShipReqd}
+                      checked={sponsorShipReqd}
                       {...register(`sponsorshipReqd`)}
                       onChange={() => handleSponsorshipReqdChange()}
                       inputProps={{ "aria-label": "controlled" }}
                     />
-                  }
-                  label={
-                    <>
-                      <h3 className="lg:text-3xl text-xl md:text-3xl">No</h3>
-                    </>
                   }
                 />
               </FormControl>
@@ -568,7 +582,12 @@ function Fee() {
                     >
                       Pre-customized offering Template
                     </label>
-                    <Tooltip title="This is a pre-customized sponsorship offering example template for you. You are free to tailor it according your sponsosrship needs.">
+                    <Tooltip
+                      title={
+                        SPONSORSHIP.MESSAGES.INFO
+                          .PRE_CUSTOMIZED_TEMPLATE_HELP_TEXT
+                      }
+                    >
                       <div className=" cursor-pointer">
                         <HelpOutlineIcon fontSize="small" />
                       </div>
@@ -608,6 +627,19 @@ function Fee() {
               </Grid>
             </>
           )}
+
+          {!sessionFeePaidIndicator && !sponsorShipReqd && (
+            <div className=" m-auto  w-1/2  px-40">
+            <>
+                   <img
+                     alt="user-session-fee-illustration"
+                     src="/static/images/fee-sponsorship-illustration.jpg"
+                     className=" hidden lg:block  h-48  border-0 object-contain"
+                   />
+                 </>
+            </div>
+          ) }
+           
         </Grid>
       </Box>
     </div>

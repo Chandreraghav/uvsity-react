@@ -865,6 +865,10 @@ export const SPONSORSHIP = {
     INFO: {
       SET_FEE_TYPEWRITER:
         "Great going, you've set an offer of $#XX from the sponsor.",
+      PRE_CUSTOMIZED_TEMPLATE_HELP_TEXT:'This is a pre-customized sponsorship offering example template for you. You are free to tailor it according to your sponsorship needs.',
+      
+      SESSION_FEE_HELPTEXT:'Paid sessions enable you to earn a fixed amount on your session. However, if you opt to conduct your session for free, you do not have to do anything in this step.',
+      SESSION_SPONSORSHIP_HELPTEXT:'Sponsorships enable you to have your session sponsored by others for which you can customize your own sponsorship rates. By opening yourself to sponsorships you get a chance to earn a fixed amount from people or organizations who may sponsor your session.'
     },
   },
 };

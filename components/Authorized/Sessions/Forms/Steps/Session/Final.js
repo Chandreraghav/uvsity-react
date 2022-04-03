@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import TokenIcon from "@mui/icons-material/Token";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import parse from "html-react-parser";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -40,28 +40,35 @@ import {
 import Plans from "../../../../Sponsorships/Plans";
 import EditIcon from "@mui/icons-material/Edit";
 import { USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION } from "../../../../../../constants/constants";
-import { getTime } from "date-fns/esm";
-
+import TimezoneBrowseDialog from "../../../../../shared/modals/TimezoneBrowseDialog";
+import { actionTypes } from "../../../../../../context/reducer";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import moment from 'moment-timezone'
+import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 function Final(props) {
+  
   const [data, dispatch] = useDataLayerContextValue();
-  console.log(data);
+  const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
+  const [timeDisplay, setTimeDisplay] = useState(null);
   const generateMonetizationAmountOnCard = (data) => {
     const amount = Number(data?.amount);
     const isPaid = data?.paidInd;
 
     if (!isPaid || !amount || amount == 0 || isNaN(amount)) {
       return (
-        <Tooltip title={TOOLTIPS.FREE_SESSION}>
-          <div className={`${SessionStyle.session__card__costing} mt-2`}>
+        <Tooltip title={`${TOOLTIPS.FREE_SESSION} | Click to change`}>
+          <div
+            className={`${SessionStyle.session__card__costing} mt-2 cursor-pointer`}
+          >
             {PLACEHOLDERS.FREE}
           </div>
         </Tooltip>
       );
     }
     return (
-      <Tooltip title={TOOLTIPS.PAID_SESSION}>
+      <Tooltip title={`${TOOLTIPS.PAID_SESSION} | Click to change`}>
         <div
-          className={`${SessionStyle.session__card__costing} ${SessionStyle.session__card__currency__amount}`}
+          className={`${SessionStyle.session__card__costing} ${SessionStyle.session__card__currency__amount} cursor-pointer`}
         >
           <MonetizationOnIcon />
           <span className={`${SessionStyle.session__card__currency__amount}`}>
@@ -83,6 +90,7 @@ function Final(props) {
     return randomString + message;
   };
   const getStartDate = () => {
+    console.log(data?.schedule)
     return data?.schedule?.startDate.getDate();
   };
   const getEndDate = () => {
@@ -106,22 +114,32 @@ function Final(props) {
     const month = date.toLocaleString("default", { month: "short" });
     return month;
   };
-  const getTime = () => {
-    let startDisplay = data?.schedule.startTime.display;
-    let endDisplay = data?.schedule.endTime.display;
-    startDisplay = startDisplay.replace(/^0+/, "");
-    endDisplay = endDisplay.replace(/^0+/, "");
+  const getTime = (obj) => {
+    let startDisplay,endDisplay
+    if(!obj){
+       startDisplay = data?.schedule.startTime.display;
+       endDisplay = data?.schedule.endTime.display;
+      startDisplay = startDisplay.replace(/^0+/, "");
+      endDisplay = endDisplay.replace(/^0+/, "");
+    }
+    else {
+      startDisplay = obj.startTime
+      endDisplay = obj.endTime
+    }
+   
     return `${startDisplay} - ${endDisplay}`;
   };
   const getEffectiveDate = () => {
-    // Mar 19, 2022 - Mar 20, 2022
     let startMonth = getStartMonth();
     let startYear = getStartYear();
     let startDate = getStartDate();
     let endDate = getEndDate();
     let endMonth = getEndMonth();
     let endYear = getEndYear();
-    const effectiveDate = `${startMonth} ${startDate},${startYear} - ${endMonth} ${endDate},${endYear}`;
+    const effectiveDate =
+      startDate === endDate
+        ? `${startMonth} ${startDate},${startYear}`
+        : `${startMonth} ${startDate},${startYear} - ${endMonth} ${endDate},${endYear}`;
     return effectiveDate;
   };
   const getScheduleText = () => {
@@ -130,6 +148,57 @@ function Final(props) {
     }
     return "Once";
   };
+  const handleTimezoneBrowserChange = () => {
+    setTimezoneBrowser(true);
+  };
+  const handleTimezoneCloseRequest = (obj) => {
+    setTimezoneBrowser(false);
+    if (obj?.timezone) {
+      setNewTimezone(obj);
+      setDynamicTimeDisplay(obj)
+    }
+  };
+  const setDynamicTimeDisplay=(obj)=>{
+    const defaultTimezone = getTimezone()
+    if(data?.schedule && data?.schedule?.timezone !== defaultTimezone && obj?.timezone!==defaultTimezone){
+      const start=moment(data?.schedule?.startDate)
+      const end=moment(data?.schedule?.endDate)
+      const startTime= start.tz(obj?.timezone).format('HH:mm')
+      const endTime= end.tz(obj?.timezone).format('HH:mm')
+      const _obj= {startTime, endTime}
+      setTimeDisplay(_obj)
+      return;
+     }
+     // for default time zone.
+     resetDefaultTimeDisplay();
+     
+  }
+  const resetDefaultTimeDisplay=()=> {
+    const defaultTimezone = getTimezone()
+    const start = moment(data?.schedule?.startDate);
+    const end = moment(data?.schedule?.endDate);
+    const startTime = start.tz(defaultTimezone).format('HH:mm');
+    const endTime = end.tz(defaultTimezone).format('HH:mm');
+    const _obj = { startTime, endTime };
+    setTimeDisplay(_obj);
+  }
+  const setNewTimezone=(obj) =>{
+    APP.SESSION.DTO.SCHEDULE.dirty = true;
+    APP.SESSION.DTO.SCHEDULE.timezone = obj.timezone;
+    dispatch({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
+      schedule: APP.SESSION.DTO.SCHEDULE,
+    });
+  }
+const resetTimezoneToDefault=()=>{
+  setNewTimezone({timezone:getTimezone()})
+  resetDefaultTimeDisplay()
+}
+  
+  useEffect(()=>{
+    const obj= {timezone:data?.schedule?.timezone || getTimezone()}
+    setDynamicTimeDisplay(obj)
+  },[])
   return (
     <div className={`p-4`}>
       <div className="mb-2 flex gap-1 text-md text-blue-500 font-semibold">
@@ -141,7 +210,7 @@ function Final(props) {
       <Divider className=" text-gray-500"></Divider>
 
       <Box sx={{ width: "100%", mt: 1 }}>
-        <div className="flex gap-1">
+        <div className="flex gap-1 ">
           <div className="flex flex-col mt-1">
             <div className="lg:text-xl text-lg font-medium">
               {getStartDate()}
@@ -150,19 +219,22 @@ function Final(props) {
               {getStartMonth()}
             </div>
           </div>
-          <div className="flex gap-1">
+          <div className="flex gap-1 lg:w-1/2 w-11/12">
             <Typography
               variant="h6"
-              className=" line-clamp-1 leading-loose text-gray-800"
+              className=" line-clamp-1  mt-1 text-gray-800"
             >
               {data?.basic?.name}
             </Typography>
             <div
-              className="ml-auto  mt-2.5 flex text-blue-600
-            app__anchor__block cursor-pointer"
+              className="ml-auto flex mt-2.5 text-blue-600
+                              app__anchor__block cursor-pointer"
             >
               <Tooltip title="Change">
-                <EditIcon className=" leading-3 font-semibold  text-sm" />
+                <EditIcon
+                  fontSize="small"
+                  className=" leading-3 font-semibold  text-sm"
+                />
               </Tooltip>
             </div>
           </div>
@@ -181,7 +253,7 @@ function Final(props) {
           <Grid item lg={6} sm={12} md={6} xs={12}>
             <div className="flex flex-col py-1">
               <img
-                className=" relative block overflow-hidden  xl:h-48 lg:h-48  object-contain xl:object-cover lg:object-cover bg-gray-100 bg-center  rounded "
+                className=" relative block overflow-hidden  xl:h-48 lg:h-48  object-contain xl:object-cover lg:object-cover bg-gray-100 bg-center  rounded mb-2 "
                 src={data?.basic?.binary?.images?.poster}
               />
               <div className="flex ">
@@ -225,7 +297,10 @@ function Final(props) {
               ml-auto app__anchor__block cursor-pointer"
                     >
                       <Tooltip title="Change">
-                        <EditIcon className=" leading-3 font-semibold  text-sm" />
+                        <EditIcon
+                          fontSize="small"
+                          className=" leading-3 font-semibold  text-sm"
+                        />
                       </Tooltip>
                     </div>
                   </div>
@@ -258,7 +333,10 @@ function Final(props) {
          ml-auto app__anchor__block cursor-pointer"
                     >
                       <Tooltip title="Change">
-                        <EditIcon className=" leading-3 font-semibold  text-sm" />
+                        <EditIcon
+                          fontSize="small"
+                          className=" leading-3 font-semibold  text-sm"
+                        />
                       </Tooltip>
                     </div>
                   </div>
@@ -278,7 +356,8 @@ function Final(props) {
               <div className="flex ml-1 gap-1 mt-2">
                 <InfoIcon className="text-gray-600" fontSize="small" />
                 <Typography
-                  className=" line-clamp-1 leading-tight mt-1  text-xs text-gray-600"
+                  variant="div"
+                  className=" line-clamp-1 leading-tight text-sm text-gray-600"
                   sx={{ mt: 0 }}
                 >
                   {APP.MESSAGES.INFO.FINAL_STEP_EDITS_HELP_TEXT}
@@ -309,11 +388,15 @@ function Final(props) {
            ml-auto app__anchor__block cursor-pointer"
                 >
                   <Tooltip title="Change">
-                    <EditIcon className=" leading-3 font-semibold  text-sm" />
+                    <EditIcon
+                      fontSize="small"
+                      className=" leading-3 font-semibold  text-sm"
+                    />
                   </Tooltip>
                 </div>
               </div>
               <div>
+                {!data?.schedule?.repeats && (
                 <div className="flex gap-1">
                   <DateRangeIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                   <Typography
@@ -329,7 +412,26 @@ function Final(props) {
                   >
                     {getEffectiveDate()}
                   </Typography>
-                </div>
+                </div>)}
+
+                {data?.schedule?.repeats && data?.schedule?.repeatScheduleSummary && (<div className="flex gap-1 ">
+                  
+                  <EventRepeatIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                  <Typography
+                    variant="div"
+                    className="  font-semibold line-clamp-1 text-md  leading-tight w-20 text-gray-600"
+                  >
+                    Occurence:
+                  </Typography>
+
+                  <Typography
+                    variant="div"
+                    className=" text-sm font-normal line-clamp-2 italic  leading-snug  text-gray-800"
+                  >
+                    {data?.schedule?.repeatScheduleSummary.substring(0,data?.schedule?.repeatScheduleSummary.indexOf('from')-1)}.
+                  </Typography>
+                </div>)}
+           
               </div>
               <div className="flex gap-1">
                 <PublicIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
@@ -344,17 +446,27 @@ function Final(props) {
                   variant="div"
                   className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-800"
                 >
-                  {getTime()}({data?.schedule?.timezone || getTimezone()})
+                  {getTime(timeDisplay)}({data?.schedule?.timezone || getTimezone()})
                 </Typography>
 
-                <Tooltip title="Browse timezones">
-                  <Typography
-                    variant="div"
-                    className=" app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-blue-600"
-                  >
-                    See other timezones
-                  </Typography>
-                </Tooltip>
+                <Typography
+                  onClick={() => handleTimezoneBrowserChange()}
+                  variant="div"
+                  className=" app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-blue-600"
+                >
+                  See other timezones
+                </Typography>
+
+                {data?.schedule && data?.schedule?.timezone !== getTimezone() && (
+                  <>
+                    {" "}
+                    <Tooltip title="Reset to region timezone">
+                      <div onClick={()=>resetTimezoneToDefault()} className="text-gray-600 -mt-1 cursor-pointer">
+                        <RestartAltIcon fontSize="small" />
+                      </div>
+                    </Tooltip>
+                  </>
+                )}
               </div>
               <Divider></Divider>
               <div className="flex flex-col gap-1">
@@ -373,7 +485,10 @@ function Final(props) {
            ml-auto app__anchor__block cursor-pointer"
                       >
                         <Tooltip title="Change">
-                          <EditIcon className=" leading-3 font-semibold  text-sm" />
+                          <EditIcon
+                            fontSize="small"
+                            className=" leading-3 font-semibold  text-sm"
+                          />
                         </Tooltip>
                       </div>
                     </div>
@@ -435,7 +550,10 @@ function Final(props) {
            ml-auto app__anchor__block cursor-pointer"
                   >
                     <Tooltip title="Change">
-                      <EditIcon className=" leading-3 font-semibold  text-sm" />
+                      <EditIcon
+                        fontSize="small"
+                        className=" leading-3 font-semibold  text-sm"
+                      />
                     </Tooltip>
                   </div>
                 </div>
@@ -473,10 +591,11 @@ function Final(props) {
 
             <Box sx={{ display: "flex", flexDirection: "row" }}>
               {props.allStepsCompletedExceptFinalStep && (
-                <div className="flex ml-2 gap-1 mt-2">
+                <div className="flex ml-2 gap-1 mt-1">
                   <InfoIcon className="text-gray-600" fontSize="small" />
                   <Typography
-                    className=" line-clamp-1 leading-tight mt-1  text-xs text-gray-600"
+                    variant="div"
+                    className=" line-clamp-1 leading-tight  text-sm text-gray-600"
                     sx={{ mt: 0 }}
                   >
                     {APP.MESSAGES.INFO.TERMS_ACCEPT_TEXT}
@@ -490,8 +609,15 @@ function Final(props) {
           </Grid>
         </Grid>
       </Box>
+      <TimezoneBrowseDialog
+        selectedTimezone={data?.schedule?.timezone || getTimezone()}
+        dialogCloseRequest={handleTimezoneCloseRequest}
+        isOpen={timezoneBrowserOpened}
+      />
     </div>
   );
+
+  
 }
 
 export default Final;
