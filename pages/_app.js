@@ -26,6 +26,7 @@ import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import Layout from "../components/Main/Layout";
 import Splash from "../components/shared/Splash";
+import { BrowserRouter } from "react-router-dom";
 
 function MyApp({ Component, pageProps }) {
   const [queryClient] = React.useState(() => new QueryClient());
@@ -75,15 +76,14 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     let controller = new AbortController();
     let isSubscribed = true;
-    if (isSubscribed)
-    setLoading(false);
-      // we will load gapi client and once that is done, render the page to client
-      AuthGuardService.loadGAPIClient().then(() => {
-        setLoading(false);
-      });
+    if (isSubscribed) setLoading(false);
+    // we will load gapi client and once that is done, render the page to client
+    AuthGuardService.loadGAPIClient().then(() => {
+      setLoading(false);
+    });
 
     return () => {
-     controller?.abort();
+      controller?.abort();
       isSubscribed = false;
     };
   }, []);
@@ -98,7 +98,15 @@ function MyApp({ Component, pageProps }) {
       <QueryClientProvider client={queryClient}>
         <DataLayer initialState={initialState} reducer={reducer}>
           <Hydrate state={pageProps.dehydratedState}>
-            <Component {...pageProps} />
+            <BrowserRouter
+              getUserConfirmation={(message, callback) => {
+                // this is the default behavior
+                const allowTransition = window.confirm(message);
+                callback(allowTransition);
+              }}
+            >
+              <Component {...pageProps} />
+            </BrowserRouter>
             <ReactQueryDevtools initialIsOpen={false} />
           </Hydrate>
         </DataLayer>

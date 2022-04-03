@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "../../../components/Authorized/Shared/Header";
 import Layout from "../../../components/Main/Layout";
 import Footer from "../../../components/shared/Footer";
@@ -9,7 +9,12 @@ import { useQuery } from "react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import UserDataService from "../../api/users/data/UserDataService";
 import PrivateRoute from "../../../components/Auth/HOC/Routes/PrivateRoute";
+import dynamic from 'next/dynamic'
 
+const DynamicComponentWithNoSSR = dynamic(
+  () => import('date-fns'),
+  { ssr: false }
+)
 function Create() {
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_NAME} | Create Session`,

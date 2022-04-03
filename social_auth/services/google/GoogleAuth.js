@@ -71,6 +71,7 @@ function GoogleAuth() {
     } else {
       setShowOverlay(false);
       // do nothing
+      router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD)
     }
   };
 

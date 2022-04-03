@@ -22,11 +22,11 @@ import GppMaybeIcon from "@mui/icons-material/GppMaybe";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import BeenhereIcon from "@mui/icons-material/Beenhere";
+import Slide from '@mui/material/Slide';
 import {
   formatDate,
   formattedName,
   getReadableFormattedDate,
-  getTimezone,
   isEmptyObject,
   isValidURL,
 } from "../../../../utils/utility";
@@ -39,14 +39,18 @@ import { APP } from "../../../../constants/userdata";
 import { handleResponse } from "../../../../toastr-response-handler/handler";
 import SessionService from "../../../../pages/api/session/SessionService";
 import { useRouter } from "next/router";
+import { actionTypes } from "../../../../context/reducer";
+import {useLeavePageConfirm} from '../../../../hooks/useLeave'
 
 toast.configure();
 function CreateSession(props) {
   const Router = useRouter();
   const checkInteractiveErrors = false;
+  useLeavePageConfirm(true);
   const participantFormListener = () => {
     if (activeStep === 2) {
       const isDirty = formdata?.participant?.dirty;
+      if(isDirty) {setSessionSubmitted(false)}
       if (checkInteractiveErrors) {
         const hasInteractiveErrors = !isEmptyObject(
           formdata?.participant?.errors
@@ -84,6 +88,7 @@ function CreateSession(props) {
   const feeSponsorShipFormListener = () => {
     if (activeStep === 3) {
       const isDirty = formdata?.fees?.dirty || formdata?.sponsor?.dirty;
+      if(isDirty) {setSessionSubmitted(false)}
       if (isDirty) {
         const fees = Number(formdata?.fees?.amount) || 0;
         if (fees <= 0 && formdata?.fees?.paidInd) {
@@ -102,7 +107,8 @@ function CreateSession(props) {
   };
   const scheduleFormListener = () => {
     if (activeStep === 1) {
-      const isDirty = formdata?.basic?.dirty;
+      const isDirty = formdata?.schedule?.dirty;
+      if(isDirty) {setSessionSubmitted(false)}
       if (!formdata?.schedule?.startDate instanceof Date) {
         console.log("Contains errors", steps[activeStep].title);
         handleInCompleteStep();
@@ -117,6 +123,7 @@ function CreateSession(props) {
   const basicFormListener = () => {
     if (activeStep === 0) {
       const isDirty = formdata?.basic?.dirty;
+      if(isDirty) {setSessionSubmitted(false)}
       if (checkInteractiveErrors) {
         const hasInteractiveErrors = !isEmptyObject(formdata?.basic?.errors);
         if (hasInteractiveErrors && isDirty) {
@@ -231,6 +238,12 @@ function CreateSession(props) {
     return completedSteps === totalSteps() - 1;
   };
 
+  const isNextDisabled=()=>{
+    if(isLastStep()){
+      return !allStepsCompletedExceptFinalStep()
+    }
+    return steps[activeStep].complete
+  }
   const handleNext = () => {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
@@ -470,6 +483,15 @@ function CreateSession(props) {
         })
         .catch((err) => {
           hasErrors = true;
+          setSessionSubmitted(false);
+          handleInCompleteStep();
+          const _user = props.data.user.data.firstName;
+          const _err = APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED.replace(
+            "<user>",
+            _user
+          );
+          handleResponse(_err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
+          return;
         });
       if (hasErrors) {
         setSessionSubmitted(false);
@@ -483,6 +505,7 @@ function CreateSession(props) {
         return;
       }
       if (!hasErrors) {
+        undirtyDTO();
         setSessionSubmitted(true);
         handleComplete();
       }
@@ -498,7 +521,44 @@ function CreateSession(props) {
       }
       navigateToStep(label, index);
     }
+
+    
   };
+  const undirtyDTO =()=>{
+      const basic=formdata?.basic
+      basic.dirty=false
+      dispatch({
+        type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
+        basic: basic,
+      });
+      const participant=formdata?.participant
+      participant.dirty=false
+      dispatch({
+        type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
+        participant: participant,
+      });
+      const fees=formdata?.fees
+      fees.dirty=false
+      dispatch({
+        type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
+        fees: fees,
+      });
+
+      const sponsor=formdata?.sponsor
+      sponsor.dirty=false
+      dispatch({
+        type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,
+        sponsor: sponsor,
+      });
+
+      const schedule=formdata?.schedule
+      schedule.dirty=false
+      dispatch({
+        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
+        schedule: schedule,
+      });
+
+  }
   const navigateToStep = (label, index) => {
     const step_id = [1, 2, 3, 4];
     if (step_id.includes(label.id)) {
@@ -693,11 +753,15 @@ function CreateSession(props) {
     icon: PropTypes.node,
   };
 
+ 
   return (
+   
     <div className="px-4 py-2 bg-white">
+     
       <Typography variant="h6" component="div">
         {props.data.workflow.workflow.alias}
       </Typography>
+      <Slide direction="up" in={true}>
       <Box sx={{ width: "100%" }} className="py-4">
         <Stepper
           alternativeLabel
@@ -749,11 +813,11 @@ function CreateSession(props) {
               </Button>
               <Box sx={{ flex: "1 1 auto" }} />
               <Button
-                disabled={!steps[activeStep].complete}
+                disabled={!steps[activeStep].complete || (activeStep===3 && !allStepsCompletedExceptFinalStep())}
                 onClick={handleNext}
                 sx={{ mr: 1 }}
               >
-                Next
+                Next 
               </Button>
               <Button
                   disabled={!allStepsCompletedExceptFinalStep()}
@@ -766,7 +830,10 @@ function CreateSession(props) {
           </React.Fragment>
         </div>
       </Box>
+      </Slide>
+      
     </div>
+    
   );
 }
 

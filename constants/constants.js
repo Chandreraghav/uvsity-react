@@ -313,4 +313,4 @@ export const TIME_OF_DAY_GREETING = {
   EVENING: "Good evening",
 };
 export const USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION=['Great job.','Superb!','Yay!!','Nailed it!!','Awesome.','You did it.',"That's it." ]
-
+export const USER_PAGE_LEAVE_CONFIRM_MESSAGE="Are you sure want to leave this page?"

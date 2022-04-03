@@ -298,7 +298,6 @@ function Participant(props) {
   };
   useEffect(() => {
     if (data.participant) {
-      console.log(data)
       // fetch data from context on load of form step.
       setNumberOfParticipants(
         data?.participant?.numberOfParticipants
