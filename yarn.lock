@@ -4660,6 +4660,11 @@ map-stream@0.0.7:
   resolved "https://registry.yarnpkg.com/map-stream/-/map-stream-0.0.7.tgz#8a1f07896d82b10926bd3744a2420009f88974a8"
   integrity sha1-ih8HiW2CsQkmvTdEokIACfiJdKg=
 
+markdown-to-html-converter@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/markdown-to-html-converter/-/markdown-to-html-converter-1.0.4.tgz#2d60406e9a18ff0cbdba9410552b68abd4e61252"
+  integrity sha1-LWBAbpoY/wy9upQQVStoq9TmElI=
+
 match-sorter@^4.1.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/match-sorter/-/match-sorter-4.2.1.tgz#575b4b3737185ba9518b67612b66877ea0b37358"

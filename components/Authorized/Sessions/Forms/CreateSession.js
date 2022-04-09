@@ -23,7 +23,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import BeenhereIcon from "@mui/icons-material/Beenhere";
 import Slide from "@mui/material/Slide";
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import {
   formatDate,
   formattedName,
@@ -36,21 +36,29 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 import { RESPONSE_TYPES } from "../../../../constants/constants";
-import { APP, TOOLTIPS } from "../../../../constants/userdata";
+import { APP, SESSION, TOOLTIPS } from "../../../../constants/userdata";
 import { handleResponse } from "../../../../toastr-response-handler/handler";
 import SessionService from "../../../../pages/api/session/SessionService";
 import { useRouter } from "next/router";
 import { actionTypes } from "../../../../context/reducer";
-import { useLeavePageConfirm } from "../../../../hooks/useLeave";
 import QuestionairreService from "../../../../pages/api/session/QuestionairreService";
 import ConfirmDialog from "../../../shared/modals/ConfirmDialog";
 import Overlay from "../../../shared/Overlay";
-
+import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
+import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
+import { SESSION_ERROR } from "../../../../constants/error-messages";
+import {useToggle} from 'react-use';
+import { useLeavePageConfirm } from "../../../../hooks/useLeave";
+import { eraseFormContext } from "../Clean/cleanup";
 toast.configure();
 function CreateSession(props) {
   const Router = useRouter();
   const checkInteractiveErrors = false;
-  useLeavePageConfirm(true);
+
+  const [imgUpload, setImgUpload] = useState(null);
+  const [docUpload, setDocUpload] = useState(null);
+  const [dirty, toggleDirty] = useToggle(false);
+  useLeavePageConfirm(dirty);
   const participantFormListener = () => {
     if (activeStep === 2) {
       const isDirty = formdata?.participant?.dirty;
@@ -238,7 +246,8 @@ function CreateSession(props) {
   const [processing, setProcessing] = React.useState(false);
   const [formdata, dispatch] = useDataLayerContextValue();
   const [hasErrors, setHasErrors] = useState(false);
-  const [showCompletionMessage, setShowCompletionMessage]=useState(false)
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const totalSteps = () => {
     return steps.length;
   };
@@ -287,8 +296,8 @@ function CreateSession(props) {
     return steps.findIndex((step) => step.id === 5);
   };
 
-  const getPayload=(plans)=>{
-    return  {
+  const getInitialPayload = (plans) => {
+    return {
       startDateStr: formatDate(formdata?.schedule?.startDate),
       timeZone: formdata?.schedule?.timezone
         ? formdata?.schedule?.timezone
@@ -322,9 +331,7 @@ function CreateSession(props) {
         startTime: formdata?.schedule?.startTime
           ? formdata?.schedule?.startTime
           : {},
-        endTime: formdata?.schedule?.endTime
-          ? formdata?.schedule?.endTime
-          : {},
+        endTime: formdata?.schedule?.endTime ? formdata?.schedule?.endTime : {},
         user: {},
         categories: [
           {
@@ -415,8 +422,8 @@ function CreateSession(props) {
         courseType:
           formdata?.participant?.visibility == null ||
           formdata?.participant?.visibility
-            ? "Public"
-            : "Private",
+            ? WORKFLOW_CODES.USER.SESSION.VISIBILITY.PUBLIC
+            : WORKFLOW_CODES.USER.SESSION.VISIBILITY.PRIVATE,
         courseFullName: formdata?.basic?.name,
         courseShortName: formdata?.basic?.shortName,
         docCheckbox:
@@ -434,7 +441,9 @@ function CreateSession(props) {
             ? formdata?.basic?.binary?.images?.poster
             : null,
         cost: Number(formdata?.fees.amount),
-        fee: formdata?.fees?.paidInd ? "Paid" : "Free",
+        fee: formdata?.fees?.paidInd
+          ? WORKFLOW_CODES.USER.SESSION.FEE.PAID
+          : WORKFLOW_CODES.USER.SESSION.FEE.FREE,
         sessionCoHostData: {
           sessionCoHostId: formdata?.participant?.cohost
             ? formdata?.participant?.cohost?.userDetailsId
@@ -451,16 +460,16 @@ function CreateSession(props) {
         displayStartDate: formatDate(formdata?.schedule?.startDate),
         displayStopDate: formatDate(formdata?.schedule?.endDate),
         courseEndDateStr: formatDate(formdata?.schedule?.endDate),
-        courseStatus: "Submitted",
+        courseStatus: WORKFLOW_CODES.USER.SESSION.SUBMITTED,
       },
-    }
-  }
+    };
+  };
   const handleStep = (index, label) => () => {
     if (hasErrors) return;
     if (allStepsCompletedExceptFinalStep() && !sessionSubmitted) {
       // this is the final step entry
       setActiveStep(index);
-      setShowCompletionMessage(true)
+      setShowCompletionMessage(true);
       // payload creation for sending to api.
       const plans = formdata?.sponsor?.plans;
       plans.map((plan) => {
@@ -473,7 +482,7 @@ function CreateSession(props) {
           : plan.defaults.price.text;
         plan.show = true;
       });
-      const payload = getPayload(plans);
+      const payload = getInitialPayload(plans);
 
       SessionService.isSessionCreationAllowed(payload)
         .then((res) => {
@@ -487,7 +496,7 @@ function CreateSession(props) {
                 // call image upload
                 SessionService.uploadImage(formData)
                   .then((res) => {
-                    console.log(res);
+                    setImgUpload(res);
                   })
                   .catch((err) => {
                     hasErrors = true;
@@ -502,7 +511,7 @@ function CreateSession(props) {
               docFormData.append("file", document);
               SessionService.uploadDoc(docFormData)
                 .then((res) => {
-                  console.log(res);
+                  setDocUpload(res);
                 })
                 .catch((err) => {
                   hasErrors = true;
@@ -525,22 +534,17 @@ function CreateSession(props) {
                 });
               });
             }
-          
           } else {
             setHasErrors(true);
           }
         })
         .catch((err) => {
-          setHasErrors(true);
-          setSessionSubmitted(true);
-          setActiveStep(4); // final step
-          handleInCompleteStep();
-          const _user = props.data.user.data.firstName;
-          const _err = APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED.replace(
-            "<user>",
-            _user
+          console.log(err)
+          handleError(
+            APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED,
+            true,
+            true
           );
-          handleResponse(_err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
           return;
         });
 
@@ -560,6 +564,20 @@ function CreateSession(props) {
         return;
       }
       navigateToStep(label, index);
+    }
+  };
+  const handleError = (msg, showToast, setStates) => {
+    if (setStates) {
+      setHasErrors(true);
+      setSessionSubmitted(true);
+      setActiveStep(4); // final step
+      handleInCompleteStep();
+    }
+
+    if (showToast) {
+      const _user = props.data.user.data.firstName;
+      const _err = msg.replace("<user>", _user);
+      handleResponse(_err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
     }
   };
   const undirtyDTO = () => {
@@ -601,12 +619,7 @@ function CreateSession(props) {
     if (step_id.includes(label.id)) {
       setActiveStep(index);
     } else {
-      const _user = props.data.user.data.firstName;
-      const err = APP.MESSAGES.ERRORS.FINAL_STEP_VISIT_DENIED.replace(
-        "<user>",
-        _user
-      );
-      handleResponse(err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
+      handleError(APP.MESSAGES.ERRORS.FINAL_STEP_VISIT_DENIED, true, false);
     }
   };
 
@@ -635,6 +648,7 @@ function CreateSession(props) {
     setSteps(_steps);
   };
   useEffect(() => {
+    toggleDirty(true)
     basicFormListener();
     scheduleFormListener();
     participantFormListener();
@@ -642,7 +656,9 @@ function CreateSession(props) {
   }, [formdata]);
 
   useEffect(() => {
+    eraseFormContext(dispatch)
     setHasErrors(false);
+    toggleDirty(false)
   }, []);
 
   const handleReset = () => {
@@ -783,6 +799,38 @@ function CreateSession(props) {
   const closeConfirmSessionSubmitDialog = () => {
     setConfirmSessionDialogOpened(false);
   };
+  const getPlans = () => {
+    const plans = formdata?.sponsor?.plans;
+    plans.map((plan) => {
+      plan.sponsorshipLevel = plan.alias;
+      plan.benefits = plan.current.featured.text
+        ? plan.current.featured.text
+        : plan.defaults.featured.text;
+      plan.amount = plan.current.price.text
+        ? plan.current.price.text
+        : plan.defaults.price.text;
+      plan.show = true;
+    });
+    return plans;
+  };
+  const getTimezone = () => {
+    return formdata?.schedule?.timezone
+      ? formdata?.schedule?.timezone
+      : Intl.DateTimeFormat().resolvedOptions().timeZone.toString();
+  };
+  const getImageURL = (finalSubmit) => {
+    if (finalSubmit) {
+      return imgUpload
+        ? imgUpload?.data
+        : formdata?.basic?.binary?.images?.poster;
+    }
+    return formdata?.basic?.binary?.images?.poster &&
+      formdata?.basic?.binary?.images?.poster.indexOf("blob:") === -1
+      ? formdata?.basic?.binary?.images?.poster
+      : finalSubmit
+      ? uploads.image
+      : null;
+  };
   const handleSessionSubmit = (obj) => {
     setTimeout(() => {
       scrollDivToTop();
@@ -792,25 +840,252 @@ function CreateSession(props) {
       return;
     }
     // submit session.
-    setProcessing(true)
-    setTimeout(()=>{
-      if(obj.confirm){
-        setShowCompletionMessage(false)
-       }
-    },100)
-    closeConfirmSessionSubmitDialog()
-    //https://dev.uvsity.com/uvsity/v1/courses/
-    // const plans = formdata?.sponsor?.plans;
-    // plans.map((plan) => {
-    //   plan.sponsorshipLevel = plan.alias;
-    //   plan.benefits = plan.current.featured.text
-    //     ? plan.current.featured.text
-    //     : plan.defaults.featured.text;
-    //   plan.amount = plan.current.price.text
-    //     ? plan.current.price.text
-    //     : plan.defaults.price.text;
-    //   plan.show = true;
-    // });
+    setProcessing(true);
+    setTimeout(() => {
+      if (obj.confirm) {
+        setShowCompletionMessage(false);
+      }
+    }, 100);
+    closeConfirmSessionSubmitDialog();
+
+    const sponsorshipLevels = getPlans();
+    const user = props.data.user.data;
+    const categories = [
+      {
+        courseCategoryName: "",
+        categoryFullText: "",
+        courseCategoryId: formdata?.basic?.categoryId,
+      },
+    ];
+    const currentSchedule = formdata?.schedule?.repeats
+      ? {
+          repeateEveryCount: formdata?.schedule?.repeatEvery
+            ? Number(formdata?.schedule?.repeatEvery)
+            : 0,
+          monthlyRepeatTypeStr:
+            formdata?.schedule?.repeatSchedule?.currentSchedule
+              ?.monthlyRepeatTypeStr,
+          endOfMeetingTypeStr:
+            formdata?.schedule?.repeatSchedule?.currentSchedule
+              ?.endOfMeetingTypeStr,
+          csoccurence: formdata?.schedule?.occurenceCount?.toString(),
+          repeateEveryCounttemp: formdata?.schedule?.repeatEvery
+            ? formdata?.schedule?.repeatEvery.toString()
+            : "0",
+          csstartDate: formdata?.schedule.startDate
+            ? getReadableFormattedDate(formdata?.schedule.startDate)
+            : null,
+          endOfMeetingTypeInputStr:
+            formdata?.schedule?.repeatSchedule?.currentSchedule
+              ?.endOfMeetingTypeStr,
+          monthlyRepeatTypeInputStr:
+            formdata?.schedule?.repeatSchedule?.currentSchedule
+              ?.monthlyRepeatTypeStr,
+          repeattype:
+            formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
+          repeatTypeStr:
+            formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
+          selectedDaysOfWeektempStr:
+            formdata?.schedule?.repeatSchedule?.currentSchedule
+              ?.selectedDaysOfWeekStr,
+          repeatcheckbox: formdata?.schedule.repeats
+            ? formdata?.schedule.repeats
+            : "",
+          isScheduleValid:
+            formdata?.schedule?.repeatScheduleFixed !== undefined &&
+            formdata?.schedule?.repeatScheduleFixed !== null
+              ? formdata?.schedule?.repeatScheduleFixed
+              : false,
+          occurence: formdata?.schedule?.occurenceCount?.toString(),
+          startDate: formdata?.schedule.startDate
+            ? getReadableFormattedDate(formdata?.schedule.startDate)
+            : null,
+          endDate: formdata?.schedule?.endDate
+            ? formatDate(formdata?.schedule.endDate)
+            : null,
+        }
+      : {
+          repeateEveryCount: "",
+          monthlyRepeatTypeStr: "",
+          endOfMeetingTypeStr: "Occurence",
+          csoccurence: "",
+          repeateEveryCounttemp: "",
+          csstartDate: "",
+          endOfMeetingTypeInputStr: "Occurence",
+          monthlyRepeatTypeInputStr: "DayOfMonth",
+          repeattype: "None",
+          repeatTypeStr: "None",
+          selectedDaysOfWeektempStr: [
+            "Sun",
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat",
+          ],
+          repeatcheckbox: "",
+        };
+    const cohost = formdata?.participant?.cohost
+      ? {
+          userName: formattedName(
+            formdata?.participant?.cohost?.firstName,
+            formdata?.participant?.cohost?.lastName
+          ),
+          imageURL: formdata?.participant?.cohost?.profilepicName,
+          userBaseType: formdata?.participant?.cohost?.userType,
+          educationalInstitution: formdata?.participant?.cohost?.eduIns,
+          campus: formdata?.participant?.cohost?.campus,
+        }
+      : null;
+
+    const finalPayload = {
+      expectedAttendees: formdata?.participant.numberOfParticipants,
+      isNewCourse: true,
+      notifyPastAttendees:
+        formdata?.participant.choiceOfInvitation === null ||
+        formdata?.participant.choiceOfInvitation === "0"
+          ? true
+          : false,
+      cohostUser: cohost,
+      registrationQuestionnaireId: formdata?.participant?.questions,
+      sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
+      sponsorshipLevels: sponsorshipLevels,
+      timeZone: getTimezone(),
+      startTime: formdata?.schedule?.startTime
+        ? formdata?.schedule?.startTime
+        : {},
+      endTime: formdata?.schedule?.endTime ? formdata?.schedule?.endTime : {},
+      user: user,
+      categories: categories,
+      currentSchedule: currentSchedule,
+      StartDate: formdata?.schedule?.startDate
+        ? formdata?.schedule?.startDate.toISOString()
+        : new Date().toISOString(),
+      courseSummary: formdata?.basic?.summary?.html,
+      courseType:
+        formdata?.participant?.visibility == null ||
+        formdata?.participant?.visibility
+          ? WORKFLOW_CODES.USER.SESSION.VISIBILITY.PUBLIC
+          : WORKFLOW_CODES.USER.SESSION.VISIBILITY.PRIVATE,
+      courseFullName: formdata?.basic?.name,
+      courseShortName: formdata?.basic?.shortName,
+      url: formdata?.basic?.url,
+      similarCourseId: formdata?.basic?.pastSessionId?formdata?.basic?.pastSessionId:null,
+      cost: Number(formdata?.fees.amount),
+      imageURL: getImageURL(true),
+      fee: formdata?.fees?.paidInd
+        ? WORKFLOW_CODES.USER.SESSION.FEE.PAID
+        : WORKFLOW_CODES.USER.SESSION.FEE.FREE,
+      tc: true, // true by default
+      EndDate: formdata?.schedule?.endDate
+        ? formdata?.schedule?.endDate.toISOString()
+        : new Date().toISOString(),
+      displayStartDateOnly: getReadableFormattedDate(
+        formdata?.schedule?.startDate
+      ),
+      displayStopDateOnly: getReadableFormattedDate(
+        formdata?.schedule?.endDate
+      ),
+      displayStartDate: formatDate(formdata?.schedule?.startDate),
+      displayStopDate: formatDate(formdata?.schedule?.endDate),
+      courseStartDateStr: formatDate(formdata?.schedule?.startDate),
+      courseEndDateStr: formatDate(formdata?.schedule?.endDate),
+      courseStatus: WORKFLOW_CODES.USER.SESSION.SUBMITTED,
+      courseCreateTime: null,
+      courseLastUpdateTime: null,
+      courseDuration: 0, // 0 by default
+      courseStartDTime: null,
+      courseEndDTime: null,
+      courseEventDesc: null,
+      approvedByUser: null,
+      countryForTimeZone: null,
+      numberOfAttendees: 0,
+      meetingUrl: null,
+      createdByUserName: null,
+      profilePicName: null,
+      severity: WORKFLOW_CODES.USER.SESSION.SEVERITY.GREEN,
+      creator: null,
+      courseCreatorImageURL: user.profilePicName,
+      webexMeetingKey: "",
+      webexGuestToken: "",
+      webexHostMeetingRequest: null,
+      webexAttendeeMeetingRequest: null,
+      webexHostUrl: null,
+      webexAttendeeUrl: null,
+      webexPassword: null,
+      userType: null,
+      courseAttendeeStatus: null,
+      review: null,
+      reviewCount: 0,
+      avgReview: 0,
+      avgReviewIntValue: 0,
+      reviewComment: null,
+      courseInfos: null,
+      active: false,
+      owner: true,
+      userLoggedIn: true,
+      userRegistered: false,
+      users: [],
+      createdByUser: user.userDetailsId,
+      displayStartDateOnlyConverted: getReadableFormattedDate(
+        formdata?.schedule?.startDate
+      ),
+      timeZoneConverted: getTimezone(),
+      displayStopDateOnlyConverted: getReadableFormattedDate(
+        formdata?.schedule?.endDate
+      ),
+      startTimeConverted: formdata?.schedule?.startTime
+        ? formdata?.schedule?.startTime.display
+        : {},
+      endTimeConverted: formdata?.schedule?.endTime
+        ? formdata?.schedule?.endTime.display
+        : {},
+    };
+    SessionService.create(finalPayload)
+      .then((res) => {
+        // redirect to my sessions page
+        // redirect to home dashboard(as of now), until session page is created.
+        setTimeout(()=>{
+          if(res.data.success){
+            toggleDirty(false)
+            setHasErrors(false)
+            const _user = props.data.user.data.firstName;
+            const msg = SESSION.CREATED.replace("<user>", _user);
+            handleResponse(
+              msg,
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.BOTTOM_CENTER
+            );
+            
+            Router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD) 
+            
+          }
+          else {
+            const _err=SESSION_ERROR.SESSION.CREATE
+            setErrorMessage(_err)
+            handleError(
+              _err,
+              true,
+              true
+            );
+            setHasErrors(true)
+            setProcessing(false)
+          }
+        },100)
+        
+      })
+      .catch((err) => {
+        const _err=SESSION_ERROR.SESSION.CREATE
+        setErrorMessage(_err)
+        handleError(
+          _err,
+          true,
+          true
+        );
+        setHasErrors(true)
+        setProcessing(false)
+      });
   };
 
   ColorlibStepIcon.propTypes = {
@@ -835,12 +1110,13 @@ function CreateSession(props) {
   };
   const handleNavigate = (navigationObject) => {
     let label = null;
-    const _steps = steps.filter((step,index) => index === navigationObject);
+    const _steps = steps.filter((step, index) => index === navigationObject);
     if (_steps.length === 1) {
       label = _steps[0];
       navigateToStep(label, navigationObject);
     }
   };
+ 
 
   return (
     <div id="create-session" className="px-4 py-2 bg-white">
@@ -896,6 +1172,7 @@ function CreateSession(props) {
                   onNavigate={handleNavigate}
                   allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()}
                   hasErrors={hasErrors}
+                  errorMessage={errorMessage}
                   data={props.data}
                 />
               )}
@@ -939,11 +1216,13 @@ function CreateSession(props) {
         theme="dark"
         confirmMessage={TOOLTIPS.SESSION_SUBMIT_CONFIRMATION}
       />
-       <Overlay icon={<RocketLaunchIcon/>}  message={TOOLTIPS.CREATING_SESSION} open={processing}/>
+      <Overlay
+        icon={<RocketLaunchIcon />}
+        message={TOOLTIPS.CREATING_SESSION}
+        open={processing}
+      />
     </div>
   );
 }
 
 export default CreateSession;
- 
-

@@ -13,7 +13,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AddIcon from "@mui/icons-material/Add";
 import CreateIcon from "@mui/icons-material/Create";
 import { WORKFLOW_CODES } from "./workflow-codes";
-import {  timeOfDay } from "../utils/utility";
+import { timeOfDay } from "../utils/utility";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
@@ -320,7 +320,7 @@ export const TOOLTIPS = {
   PEOPLE_WHO_VIEWED_YOU: "View more people who viewed your profile",
   VIEW_MORE: "View more of such people",
   SESSION_SUBMIT_CONFIRMATION: "Do you want to create this session now?",
-  CREATING_SESSION:'Hold tight...creating your session'
+  CREATING_SESSION: "Hold tight...creating your session",
 };
 
 export const GREETING = `${timeOfDay()} <user>`;
@@ -712,7 +712,7 @@ export const SPONSORSHIP = {
       title: "Silver",
       icon: "",
       alias: "Silver",
-      short:'Silver',
+      short: "Silver",
       workflow: {
         code: WORKFLOW_CODES.USER.SPONSORSHIP.EDITS.FEATURES.SILVER,
       },
@@ -759,7 +759,7 @@ export const SPONSORSHIP = {
       title: "Gold",
       icon: "",
       alias: "Gold",
-      short:'Gold',
+      short: "Gold",
       workflow: {
         code: WORKFLOW_CODES.USER.SPONSORSHIP.EDITS.FEATURES.GOLD,
       },
@@ -809,7 +809,7 @@ export const SPONSORSHIP = {
     {
       id: 3,
       title: "Platinum",
-      short:'Plat',
+      short: "Plat",
       icon: "",
       defaults: {
         price: {
@@ -870,10 +870,13 @@ export const SPONSORSHIP = {
     INFO: {
       SET_FEE_TYPEWRITER:
         "Great going, you've set an offer of $#XX from the sponsor.",
-      PRE_CUSTOMIZED_TEMPLATE_HELP_TEXT:'This is a pre-customized sponsorship offering example template for you. You are free to tailor it according to your sponsorship needs.',
-      
-      SESSION_FEE_HELPTEXT:'Paid sessions enable you to earn a fixed amount on your session. However, if you opt to conduct your session for free, you do not have to do anything in this step.',
-      SESSION_SPONSORSHIP_HELPTEXT:'Sponsorships enable you to have your session sponsored by others for which you can customize your own sponsorship rates. By opening yourself to sponsorships you get a chance to earn a fixed amount from people or organizations who may sponsor your session.'
+      PRE_CUSTOMIZED_TEMPLATE_HELP_TEXT:
+        "This is a pre-customized sponsorship offering example template for you. You are free to tailor it according to your sponsorship needs.",
+
+      SESSION_FEE_HELPTEXT:
+        "Paid sessions enable you to earn a fixed amount on your session. However, if you opt to conduct your session for free, you do not have to do anything in this step.",
+      SESSION_SPONSORSHIP_HELPTEXT:
+        "Sponsorships enable you to have your session sponsored by others for which you can customize your own sponsorship rates. By opening yourself to sponsorships you get a chance to earn a fixed amount from people or organizations who may sponsor your session.",
     },
   },
 };
@@ -893,16 +896,18 @@ export const APP = {
       },
       FINAL_STEP_VISIT_DENIED:
         "Hey <user>, looks like you have not completed the other steps correctly. Revisit the steps and try completing again.",
-    
-        FINAL_STEP_COMPLETION_FAILED:
+
+      FINAL_STEP_COMPLETION_FAILED:
         "Hey <user>, something happened on our side. It's not you but us. Please try again in a while.",
     
+      
       },
     INFO: {
-      TERMS_ACCEPT_TEXT:'By clicking on submit you agree to our ',
-      TnC:'terms and conditions.',
-      FINAL_STEP_COMPLETED:` <user>, now that you are almost done, review your changes and submit this session.`,
-      FINAL_STEP_EDITS_HELP_TEXT:'To make any changes, click on the pencil icon.'
+      TERMS_ACCEPT_TEXT: "By clicking on submit you agree to our ",
+      TnC: "terms and conditions.",
+      FINAL_STEP_COMPLETED: ` <user>, now that you are almost done, review your changes and submit this session.`,
+      FINAL_STEP_EDITS_HELP_TEXT:
+        "To make any changes, click on the pencil icon.",
     },
   },
   SESSION: {
@@ -963,7 +968,7 @@ export const APP = {
         visibility: null,
         choiceOfInvitation: null,
         questions: null,
-        questionairre:null,
+        questionairre: null,
         validationError: false,
         errors: {},
         dirty: false,
@@ -978,7 +983,7 @@ export const APP = {
       SPONSOR: {
         sponsorShipInd: false,
         amount: null,
-        plans:[],
+        plans: [],
         validationError: false,
         errors: {},
         dirty: false,
@@ -992,3 +997,8 @@ export const AUTH_TOKENS = {
   SESSION_MONITOR: "SESSION_MONITOR",
   IDLE_MONITOR: "IDLE_MONITOR",
 };
+export const SESSION={
+  CREATED:'<user>, your session has been created successfully',
+  EDITED:'<user>, your session has been modified successfully',
+  DELETED:'<user>, your session has been deleted permanently',
+}

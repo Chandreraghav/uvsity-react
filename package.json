@@ -40,6 +40,7 @@
     "google-auth-library": "^7.14.1",
     "html-react-parser": "^1.4.10",
     "lodash": "^4.17.21",
+    "markdown-to-html-converter": "^1.0.4",
     "material-ui-popup-state": "^2.0.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.34",

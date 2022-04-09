@@ -1,4 +1,4 @@
-const withTM = require('next-transpile-modules')(['@date-io/date-fns','date-fns']); // pass the modules you would like to see transpiled
+const withTM = require('next-transpile-modules')(['@date-io/date-fns','date-fns','markdown-to-html-converter']); // pass the modules you would like to see transpiled
 module.exports = withTM({
   reactStrictMode: true,
   eslint: {
