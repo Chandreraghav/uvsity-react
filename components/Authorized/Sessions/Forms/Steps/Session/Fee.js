@@ -8,6 +8,7 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import Slide from "@mui/material/Slide";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -333,6 +334,7 @@ function Fee() {
     }
   }, []);
   return (
+    <Slide direction="bottom" in={true}>
     <div className={`p-4`}>
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -634,6 +636,7 @@ function Fee() {
         </Grid>
       </Box>
     </div>
+    </Slide>
   );
 }
 

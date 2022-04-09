@@ -15,6 +15,7 @@ function ConfirmDialog({
   dialogCloseRequest,
   title,
   theme,
+  actionButtonProps,
   name,
 }) {
   if (!isOpen || !confirmMessage) return "";
@@ -71,14 +72,14 @@ function ConfirmDialog({
             onClick={() => handleClose(true, false)}
             autoFocus
           >
-            OK
+            {actionButtonProps? actionButtonProps.YES:'OK'}
           </Button>
           <Button
             color="error"
             variant="outlined"
             onClick={() => handleClose(false, true)}
-          >
-            Cancel
+          >{actionButtonProps? actionButtonProps.NO:'Cancel'}
+          
           </Button>
         </DialogActions>
       </Dialog>

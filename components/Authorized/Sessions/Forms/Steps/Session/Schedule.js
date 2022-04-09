@@ -30,6 +30,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import ScheduleModuleCSS from "../../../../../../styles/Schedule.module.css";
 import parse from "html-react-parser";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import Slide from "@mui/material/Slide";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import Radio from "@mui/material/Radio";
@@ -742,6 +743,7 @@ function Schedule(props) {
     }
   }, []);
   return (
+    <Slide direction="left" in={true}>
     <div
       className={`p-3 ${processInProgress ? "control__disabled__opaque" : ""}`}
     >
@@ -1174,6 +1176,7 @@ function Schedule(props) {
         </Grid>
       </Box>
     </div>
+    </Slide>
   );
 }
 

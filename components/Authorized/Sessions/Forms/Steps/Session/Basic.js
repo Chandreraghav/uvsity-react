@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import FileUpload from "../../../../../FileUploader/FileUpload";
+import Slide from "@mui/material/Slide";
 import {
   APP as APP,
   SESSION_DOCUMENT,
@@ -356,6 +357,7 @@ function Basic(props) {
   const { errors } = formState;
 
   return (
+    <Slide direction="up" in={true}>
     <div className={`p-3`}>
       <form name="basic-form">
         <Box sx={{ width: "100%" }}>
@@ -614,6 +616,7 @@ function Basic(props) {
       <Overlay  message='Processing...' open={processing}/>
       <PastSessionDialog selectedSession={pastSessionId} getSelectedSession={handlePastSessionChange} data={props?.data?.root?.expiredCourses} isOpen={pastSessionDialogOpen} dialogCloseRequest={handlePastSessionDialogClose} />
     </div>
+    </Slide>
   );
 }
 

@@ -2,7 +2,7 @@ import React from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-function Overlay({ open,message }) {
+function Overlay({ open,message,icon }) {
   if (!open) return "";
   return (
     <>
@@ -11,7 +11,7 @@ function Overlay({ open,message }) {
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
       >
-        <CircularProgress color="inherit" />
+        {icon ? icon : (<CircularProgress color="inherit" />)}
         {message && <p>{message}</p>}
       </Backdrop>
     </>
