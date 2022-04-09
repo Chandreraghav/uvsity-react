@@ -286,6 +286,175 @@ function CreateSession(props) {
   const getFinalStepIndex = () => {
     return steps.findIndex((step) => step.id === 5);
   };
+
+  const getPayload=(plans)=>{
+    return  {
+      startDateStr: formatDate(formdata?.schedule?.startDate),
+      timeZone: formdata?.schedule?.timezone
+        ? formdata?.schedule?.timezone
+        : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
+      courseToSave: {
+        expectedAttendees: formdata?.participant.numberOfParticipants,
+        isNewCourse: true,
+        notifyPastAttendees:
+          formdata?.participant.choiceOfInvitation === null ||
+          formdata?.participant.choiceOfInvitation === "0"
+            ? true
+            : false,
+        cohostUser: formdata?.participant?.cohost
+          ? {
+              userName: formattedName(
+                formdata?.participant?.cohost?.firstName,
+                formdata?.participant?.cohost?.lastName
+              ),
+              imageURL: formdata?.participant?.cohost?.profilepicName,
+              userBaseType: formdata?.participant?.cohost?.userType,
+              educationalInstitution: formdata?.participant?.cohost?.eduIns,
+              campus: formdata?.participant?.cohost?.campus,
+            }
+          : null,
+        registrationQuestionnaireId: formdata?.participant?.questions,
+        sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
+        sponsorshipLevels: plans,
+        timeZone: formdata?.schedule?.timezone
+          ? formdata?.schedule?.timezone
+          : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
+        startTime: formdata?.schedule?.startTime
+          ? formdata?.schedule?.startTime
+          : {},
+        endTime: formdata?.schedule?.endTime
+          ? formdata?.schedule?.endTime
+          : {},
+        user: {},
+        categories: [
+          {
+            courseCategoryName: "",
+            categoryFullText: "",
+            courseCategoryId: formdata?.basic?.categoryId,
+          },
+        ],
+
+        currentSchedule: formdata?.schedule?.repeats
+          ? {
+              repeateEveryCount: formdata?.schedule?.repeatEvery
+                ? Number(formdata?.schedule?.repeatEvery)
+                : 0,
+              monthlyRepeatTypeStr:
+                formdata?.schedule?.repeatSchedule?.currentSchedule
+                  ?.monthlyRepeatTypeStr,
+              endOfMeetingTypeStr:
+                formdata?.schedule?.repeatSchedule?.currentSchedule
+                  ?.endOfMeetingTypeStr,
+              csoccurence: formdata?.schedule?.occurenceCount?.toString(),
+              repeateEveryCounttemp: formdata?.schedule?.repeatEvery
+                ? formdata?.schedule?.repeatEvery.toString()
+                : "0",
+              csstartDate: formdata?.schedule.startDate
+                ? getReadableFormattedDate(formdata?.schedule.startDate)
+                : null,
+              endOfMeetingTypeInputStr:
+                formdata?.schedule?.repeatSchedule?.currentSchedule
+                  ?.endOfMeetingTypeStr,
+              monthlyRepeatTypeInputStr:
+                formdata?.schedule?.repeatSchedule?.currentSchedule
+                  ?.monthlyRepeatTypeStr,
+              repeattype:
+                formdata?.schedule?.repeatSchedule?.currentSchedule
+                  ?.repeatTypeStr,
+              repeatTypeStr:
+                formdata?.schedule?.repeatSchedule?.currentSchedule
+                  ?.repeatTypeStr,
+              selectedDaysOfWeektempStr:
+                formdata?.schedule?.repeatSchedule?.currentSchedule
+                  ?.selectedDaysOfWeekStr,
+              repeatcheckbox: formdata?.schedule.repeats
+                ? formdata?.schedule.repeats
+                : "",
+              isScheduleValid:
+                formdata?.schedule?.repeatScheduleFixed !== undefined &&
+                formdata?.schedule?.repeatScheduleFixed !== null
+                  ? formdata?.schedule?.repeatScheduleFixed
+                  : false,
+              occurence: formdata?.schedule?.occurenceCount?.toString(),
+              startDate: formdata?.schedule.startDate
+                ? getReadableFormattedDate(formdata?.schedule.startDate)
+                : null,
+              endDate: formdata?.schedule?.endDate
+                ? formatDate(formdata?.schedule.endDate)
+                : null,
+            }
+          : {
+              repeateEveryCount: "",
+              monthlyRepeatTypeStr: "",
+              endOfMeetingTypeStr: "Occurence",
+              csoccurence: "",
+              repeateEveryCounttemp: "",
+              csstartDate: "",
+              endOfMeetingTypeInputStr: "Occurence",
+              monthlyRepeatTypeInputStr: "DayOfMonth",
+              repeattype: "None",
+              repeatTypeStr: "None",
+              selectedDaysOfWeektempStr: [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat",
+              ],
+              repeatcheckbox: "",
+            },
+        EndDate: formdata?.schedule?.endDate
+          ? formdata?.schedule?.endDate.toISOString()
+          : new Date().toISOString(),
+        StartDate: formdata?.schedule?.startDate
+          ? formdata?.schedule?.startDate.toISOString()
+          : new Date().toISOString(),
+        courseSummary: formdata?.basic?.summary?.html,
+        courseType:
+          formdata?.participant?.visibility == null ||
+          formdata?.participant?.visibility
+            ? "Public"
+            : "Private",
+        courseFullName: formdata?.basic?.name,
+        courseShortName: formdata?.basic?.shortName,
+        docCheckbox:
+          formdata?.basic?.binary?.documents?.consent !== undefined &&
+          formdata?.basic?.binary?.documents?.consent !== null
+            ? formdata?.basic?.binary?.documents?.consent
+            : false,
+        isEndDateCalculatedFromSchedule: formdata?.schedule?.repeats
+          ? true
+          : false,
+        url: formdata?.basic?.url,
+        imageURL:
+          formdata?.basic?.binary?.images?.poster &&
+          formdata?.basic?.binary?.images?.poster.indexOf("blob:") === -1
+            ? formdata?.basic?.binary?.images?.poster
+            : null,
+        cost: Number(formdata?.fees.amount),
+        fee: formdata?.fees?.paidInd ? "Paid" : "Free",
+        sessionCoHostData: {
+          sessionCoHostId: formdata?.participant?.cohost
+            ? formdata?.participant?.cohost?.userDetailsId
+            : null,
+        },
+        tc: true, // true by default
+        courseStartDateStr: formatDate(formdata?.schedule?.startDate),
+        displayStartDateOnly: getReadableFormattedDate(
+          formdata?.schedule?.startDate
+        ),
+        displayStopDateOnly: getReadableFormattedDate(
+          formdata?.schedule?.endDate
+        ),
+        displayStartDate: formatDate(formdata?.schedule?.startDate),
+        displayStopDate: formatDate(formdata?.schedule?.endDate),
+        courseEndDateStr: formatDate(formdata?.schedule?.endDate),
+        courseStatus: "Submitted",
+      },
+    }
+  }
   const handleStep = (index, label) => () => {
     if (hasErrors) return;
     if (allStepsCompletedExceptFinalStep() && !sessionSubmitted) {
@@ -304,172 +473,7 @@ function CreateSession(props) {
           : plan.defaults.price.text;
         plan.show = true;
       });
-      const payload = {
-        startDateStr: formatDate(formdata?.schedule?.startDate),
-        timeZone: formdata?.schedule?.timezone
-          ? formdata?.schedule?.timezone
-          : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
-        courseToSave: {
-          expectedAttendees: formdata?.participant.numberOfParticipants,
-          isNewCourse: true,
-          notifyPastAttendees:
-            formdata?.participant.choiceOfInvitation === null ||
-            formdata?.participant.choiceOfInvitation === "0"
-              ? true
-              : false,
-          cohostUser: formdata?.participant?.cohost
-            ? {
-                userName: formattedName(
-                  formdata?.participant?.cohost?.firstName,
-                  formdata?.participant?.cohost?.lastName
-                ),
-                imageURL: formdata?.participant?.cohost?.profilepicName,
-                userBaseType: formdata?.participant?.cohost?.userType,
-                educationalInstitution: formdata?.participant?.cohost?.eduIns,
-                campus: formdata?.participant?.cohost?.campus,
-              }
-            : null,
-          registrationQuestionnaireId: formdata?.participant?.questions,
-          sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
-          sponsorshipLevels: plans,
-          timeZone: formdata?.schedule?.timezone
-            ? formdata?.schedule?.timezone
-            : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
-          startTime: formdata?.schedule?.startTime
-            ? formdata?.schedule?.startTime
-            : {},
-          endTime: formdata?.schedule?.endTime
-            ? formdata?.schedule?.endTime
-            : {},
-          user: {},
-          categories: [
-            {
-              courseCategoryName: "",
-              categoryFullText: "",
-              courseCategoryId: formdata?.basic?.categoryId,
-            },
-          ],
-
-          currentSchedule: formdata?.schedule?.repeats
-            ? {
-                repeateEveryCount: formdata?.schedule?.repeatEvery
-                  ? Number(formdata?.schedule?.repeatEvery)
-                  : 0,
-                monthlyRepeatTypeStr:
-                  formdata?.schedule?.repeatSchedule?.currentSchedule
-                    ?.monthlyRepeatTypeStr,
-                endOfMeetingTypeStr:
-                  formdata?.schedule?.repeatSchedule?.currentSchedule
-                    ?.endOfMeetingTypeStr,
-                csoccurence: formdata?.schedule?.occurenceCount?.toString(),
-                repeateEveryCounttemp: formdata?.schedule?.repeatEvery
-                  ? formdata?.schedule?.repeatEvery.toString()
-                  : "0",
-                csstartDate: formdata?.schedule.startDate
-                  ? getReadableFormattedDate(formdata?.schedule.startDate)
-                  : null,
-                endOfMeetingTypeInputStr:
-                  formdata?.schedule?.repeatSchedule?.currentSchedule
-                    ?.endOfMeetingTypeStr,
-                monthlyRepeatTypeInputStr:
-                  formdata?.schedule?.repeatSchedule?.currentSchedule
-                    ?.monthlyRepeatTypeStr,
-                repeattype:
-                  formdata?.schedule?.repeatSchedule?.currentSchedule
-                    ?.repeatTypeStr,
-                repeatTypeStr:
-                  formdata?.schedule?.repeatSchedule?.currentSchedule
-                    ?.repeatTypeStr,
-                selectedDaysOfWeektempStr:
-                  formdata?.schedule?.repeatSchedule?.currentSchedule
-                    ?.selectedDaysOfWeekStr,
-                repeatcheckbox: formdata?.schedule.repeats
-                  ? formdata?.schedule.repeats
-                  : "",
-                isScheduleValid:
-                  formdata?.schedule?.repeatScheduleFixed !== undefined &&
-                  formdata?.schedule?.repeatScheduleFixed !== null
-                    ? formdata?.schedule?.repeatScheduleFixed
-                    : false,
-                occurence: formdata?.schedule?.occurenceCount?.toString(),
-                startDate: formdata?.schedule.startDate
-                  ? getReadableFormattedDate(formdata?.schedule.startDate)
-                  : null,
-                endDate: formdata?.schedule?.endDate
-                  ? formatDate(formdata?.schedule.endDate)
-                  : null,
-              }
-            : {
-                repeateEveryCount: "",
-                monthlyRepeatTypeStr: "",
-                endOfMeetingTypeStr: "Occurence",
-                csoccurence: "",
-                repeateEveryCounttemp: "",
-                csstartDate: "",
-                endOfMeetingTypeInputStr: "Occurence",
-                monthlyRepeatTypeInputStr: "DayOfMonth",
-                repeattype: "None",
-                repeatTypeStr: "None",
-                selectedDaysOfWeektempStr: [
-                  "Sun",
-                  "Mon",
-                  "Tue",
-                  "Wed",
-                  "Thu",
-                  "Fri",
-                  "Sat",
-                ],
-                repeatcheckbox: "",
-              },
-          EndDate: formdata?.schedule?.endDate
-            ? formdata?.schedule?.endDate.toISOString()
-            : new Date().toISOString(),
-          StartDate: formdata?.schedule?.startDate
-            ? formdata?.schedule?.startDate.toISOString()
-            : new Date().toISOString(),
-          courseSummary: formdata?.basic?.summary?.html,
-          courseType:
-            formdata?.participant?.visibility == null ||
-            formdata?.participant?.visibility
-              ? "Public"
-              : "Private",
-          courseFullName: formdata?.basic?.name,
-          courseShortName: formdata?.basic?.shortName,
-          docCheckbox:
-            formdata?.basic?.binary?.documents?.consent !== undefined &&
-            formdata?.basic?.binary?.documents?.consent !== null
-              ? formdata?.basic?.binary?.documents?.consent
-              : false,
-          isEndDateCalculatedFromSchedule: formdata?.schedule?.repeats
-            ? true
-            : false,
-          url: formdata?.basic?.url,
-          imageURL:
-            formdata?.basic?.binary?.images?.poster &&
-            formdata?.basic?.binary?.images?.poster.indexOf("blob:") === -1
-              ? formdata?.basic?.binary?.images?.poster
-              : null,
-          cost: Number(formdata?.fees.amount),
-          fee: formdata?.fees?.paidInd ? "Paid" : "Free",
-          sessionCoHostData: {
-            sessionCoHostId: formdata?.participant?.cohost
-              ? formdata?.participant?.cohost?.userDetailsId
-              : null,
-          },
-          tc: true,
-          courseStartDateStr: formatDate(formdata?.schedule?.startDate),
-          displayStartDateOnly: getReadableFormattedDate(
-            formdata?.schedule?.startDate
-          ),
-          displayStopDateOnly: getReadableFormattedDate(
-            formdata?.schedule?.endDate
-          ),
-          displayStartDate: formatDate(formdata?.schedule?.startDate),
-          displayStopDate: formatDate(formdata?.schedule?.endDate),
-          courseEndDateStr: formatDate(formdata?.schedule?.endDate),
-          courseStatus: "Submitted",
-        },
-      };
+      const payload = getPayload(plans);
 
       SessionService.isSessionCreationAllowed(payload)
         .then((res) => {
@@ -795,6 +799,18 @@ function CreateSession(props) {
        }
     },100)
     closeConfirmSessionSubmitDialog()
+    //https://dev.uvsity.com/uvsity/v1/courses/
+    // const plans = formdata?.sponsor?.plans;
+    // plans.map((plan) => {
+    //   plan.sponsorshipLevel = plan.alias;
+    //   plan.benefits = plan.current.featured.text
+    //     ? plan.current.featured.text
+    //     : plan.defaults.featured.text;
+    //   plan.amount = plan.current.price.text
+    //     ? plan.current.price.text
+    //     : plan.defaults.price.text;
+    //   plan.show = true;
+    // });
   };
 
   ColorlibStepIcon.propTypes = {
@@ -929,3 +945,5 @@ function CreateSession(props) {
 }
 
 export default CreateSession;
+ 
+
