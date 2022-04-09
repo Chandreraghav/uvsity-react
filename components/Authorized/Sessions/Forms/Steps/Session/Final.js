@@ -14,8 +14,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import Slide from "@mui/material/Slide";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { useTheme } from "@mui/material/styles";
 import TokenIcon from "@mui/icons-material/Token";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import React, { useEffect, useState } from "react";
@@ -50,7 +50,10 @@ import {
 } from "../../../../../../constants/userdata";
 import Plans from "../../../../Sponsorships/Plans";
 import EditIcon from "@mui/icons-material/Edit";
-import { USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION, USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION } from "../../../../../../constants/constants";
+import {
+  USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION,
+  USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION,
+} from "../../../../../../constants/constants";
 import TimezoneBrowseDialog from "../../../../../shared/modals/TimezoneBrowseDialog";
 import { actionTypes } from "../../../../../../context/reducer";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
@@ -58,10 +61,12 @@ import moment from "moment-timezone";
 import WarningIcon from "@mui/icons-material/Warning";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
+import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre";
 function Final(props) {
   const [data, dispatch] = useDataLayerContextValue();
- 
+
   const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
+  const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [timeDisplay, setTimeDisplay] = useState(null);
   const generateMonetizationAmountOnCard = (data) => {
     const amount = Number(data?.amount);
@@ -71,6 +76,9 @@ function Final(props) {
       return (
         <Tooltip title={`${TOOLTIPS.FREE_SESSION} | Click to change`}>
           <div
+            onClick={() => {
+              props.onNavigate ? props.onNavigate(3) : null;
+            }}
             className={`${SessionStyle.session__card__costing} mt-2 cursor-pointer`}
           >
             {PLACEHOLDERS.FREE}
@@ -79,16 +87,22 @@ function Final(props) {
       );
     }
     return (
-      <Tooltip title={`${TOOLTIPS.PAID_SESSION} | Click to change`}>
-        <div
-          className={`${SessionStyle.session__card__costing} ${SessionStyle.session__card__currency__amount} cursor-pointer`}
-        >
-          <MonetizationOnIcon />
-          <span className={`${SessionStyle.session__card__currency__amount}`}>
-            {amount}
-          </span>
-        </div>
-      </Tooltip>
+      <div
+        onClick={() => {
+          props.onNavigate ? props.onNavigate(3) : null;
+        }}
+      >
+        <Tooltip title={`${TOOLTIPS.PAID_SESSION} | Click to change`}>
+          <div
+            className={`${SessionStyle.session__card__costing} ${SessionStyle.session__card__currency__amount} cursor-pointer`}
+          >
+            <MonetizationOnIcon />
+            <span className={`${SessionStyle.session__card__currency__amount}`}>
+              {amount}
+            </span>
+          </div>
+        </Tooltip>
+      </div>
     );
   };
   const getErrorMessage = () => {
@@ -115,12 +129,11 @@ function Final(props) {
     const randomString = getRandomArrayElement(
       USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION
     );
-    
+
     return `/static/images/${randomString}`;
   };
 
   const getStartDate = () => {
-   
     return data?.schedule?.startDate.getDate();
   };
   const getEndDate = () => {
@@ -232,8 +245,17 @@ function Final(props) {
       const obj = { timezone: data?.schedule?.timezone || getTimezone() };
       setDynamicTimeDisplay(obj);
     }
+     setShowCompletionMessage(props.showCompletionMessage)
   }, []);
+
+  useEffect(() => {
+     
+     setShowCompletionMessage(props.showCompletionMessage)
+  }, [props.showCompletionMessage]);
+
+
   return (
+    <Slide direction="left" in={true}>
     <div className={`p-4`}>
       {props.hasErrors ? (
         <>
@@ -252,15 +274,18 @@ function Final(props) {
         </>
       ) : (
         <>
-          <div className="mb-2 flex gap-1 text-md text-blue-500 font-semibold">
-            <TokenIcon className="mt-1" />
-            <Typography className=" " variant="div">
-              {getCompletionMessage()}
-            </Typography>
-          </div>
-          <Divider className=" text-gray-500"></Divider>
+          {showCompletionMessage && (
+            <> 
+              <div className="mb-2 flex gap-1 text-md text-blue-500 font-semibold">
+                <TokenIcon className="mt-1" />
+                <Typography className=" " variant="div">
+                  {getCompletionMessage()}
+                </Typography>
+              </div>
+              <Divider className=" text-gray-500"></Divider>
+            </>
+          )}
 
-        
           <Box sx={{ width: "100%", mt: 1 }}>
             <div className="flex gap-1 ">
               <div className="flex flex-col mt-1">
@@ -284,6 +309,9 @@ function Final(props) {
                 >
                   <Tooltip title="Change">
                     <EditIcon
+                      onClick={() => {
+                        props.onNavigate ? props.onNavigate(0) : null;
+                      }}
                       fontSize="small"
                       className=" leading-3 font-semibold  text-sm"
                     />
@@ -352,6 +380,9 @@ function Final(props) {
                         >
                           <Tooltip title="Change">
                             <EditIcon
+                              onClick={() => {
+                                props.onNavigate ? props.onNavigate(2) : null;
+                              }}
                               fontSize="small"
                               className=" leading-3 font-semibold  text-sm"
                             />
@@ -388,6 +419,9 @@ function Final(props) {
                         >
                           <Tooltip title="Change">
                             <EditIcon
+                              onClick={() => {
+                                props.onNavigate ? props.onNavigate(3) : null;
+                              }}
                               fontSize="small"
                               className=" leading-3 font-semibold  text-sm"
                             />
@@ -417,11 +451,8 @@ function Final(props) {
                       {APP.MESSAGES.INFO.FINAL_STEP_EDITS_HELP_TEXT}
                     </Typography>
                   </div>
-                  
                 </div>
-             
               </Grid>
-             
 
               <Grid item lg={6} sm={12} md={6} xs={12}>
                 <div className="flex flex-col gap-2 bg-gray-100 px-2 p-2 rounded-lg border-1 shadow-sm bg-repeat-round">
@@ -446,6 +477,9 @@ function Final(props) {
                     >
                       <Tooltip title="Change">
                         <EditIcon
+                          onClick={() => {
+                            props.onNavigate ? props.onNavigate(1) : null;
+                          }}
                           fontSize="small"
                           className=" leading-3 font-semibold  text-sm"
                         />
@@ -556,6 +590,9 @@ function Final(props) {
                           >
                             <Tooltip title="Change">
                               <EditIcon
+                                onClick={() => {
+                                  props.onNavigate ? props.onNavigate(0) : null;
+                                }}
                                 fontSize="small"
                                 className=" leading-3 font-semibold  text-sm"
                               />
@@ -617,7 +654,7 @@ function Final(props) {
                         >
                           Questionairre:
                         </Typography>
-                        <Tooltip title="Questions that would be asked to your attendees before registration.">
+                        <Tooltip title={CUSTOM_QUESTION_OPTS.helptext.text_1}>
                           <div className=" leading-3 font-semibold  text-xl text-gray-500 cursor-pointer">
                             <HelpOutlineIcon fontSize="small" />
                           </div>
@@ -628,6 +665,9 @@ function Final(props) {
                         >
                           <Tooltip title="Change">
                             <EditIcon
+                              onClick={() => {
+                                props.onNavigate ? props.onNavigate(2) : null;
+                              }}
                               fontSize="small"
                               className=" leading-3 font-semibold  text-sm"
                             />
@@ -820,11 +860,11 @@ function Final(props) {
                       </div>
                     </div>
                   )}
- <img
-                      alt="all-done-illustration"
-                      src={getCompletionImage()}
-                      className="  w-full h-60 object-contain"
-                    />
+                <img
+                  alt="all-done-illustration"
+                  src={getCompletionImage()}
+                  className="  w-full h-60 object-contain"
+                />
                 <Box sx={{ display: "flex", flexDirection: "row" }}>
                   {props.allStepsCompletedExceptFinalStep && (
                     <div className="flex ml-2 gap-1 mt-1">
@@ -842,12 +882,10 @@ function Final(props) {
                     </div>
                   )}
                 </Box>
-               
               </Grid>
             </Grid>
-           
           </Box>
-         
+
           <TimezoneBrowseDialog
             selectedTimezone={data?.schedule?.timezone || getTimezone()}
             dialogCloseRequest={handleTimezoneCloseRequest}
@@ -856,6 +894,7 @@ function Final(props) {
         </>
       )}
     </div>
+    </Slide>
   );
 }
 

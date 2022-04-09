@@ -21,6 +21,7 @@ import ParticipantStyles from "../../../../../../styles/Participant.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Switch from "@mui/material/Switch";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import Slide from "@mui/material/Slide";
 import {
   APP,
   PARTICIPANT_INVITATION_OPTIONS,
@@ -331,6 +332,7 @@ function Participant(props) {
   }, []);
 
   return (
+    <Slide direction="right" in={true}>
     <div className={`p-4 ${processing ? "control__disabled__opaque" : ""}`}>
       
         <Box sx={{ width: "100%" }}>
@@ -558,7 +560,7 @@ function Participant(props) {
                     )}
                   </div>
                 )}
-                <Tooltip title="Pre Questionairre for your attendees before registration">
+                <Tooltip title={CUSTOM_QUESTION_OPTS.helptext.text_2}>
                   <div className=" cursor-pointer">
                     <HelpOutlineIcon fontSize="small" />
                   </div>
@@ -594,6 +596,7 @@ function Participant(props) {
         title="Confirmation"
       />
     </div>
+    </Slide>
   );
 }
 

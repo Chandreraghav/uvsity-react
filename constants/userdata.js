@@ -319,6 +319,8 @@ export const TOOLTIPS = {
     "View more people whom you might be interested on",
   PEOPLE_WHO_VIEWED_YOU: "View more people who viewed your profile",
   VIEW_MORE: "View more of such people",
+  SESSION_SUBMIT_CONFIRMATION: "Do you want to create this session now?",
+  CREATING_SESSION:'Hold tight...creating your session'
 };
 
 export const GREETING = `${timeOfDay()} <user>`;

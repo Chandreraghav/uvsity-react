@@ -45,6 +45,10 @@ export const CUSTOM_QUESTION_OPTS = {
   maxLength: {
     default: 100,
   },
+  helptext:{
+    text_1:'Questions that would be asked to your attendees before registration.',
+    text_2:'Pre Questionairre for your attendees before registration'
+  },
   icons: {
     AddQuestion: <AddIcon fontSize="small"/>,
     RemoveQuestion: <RemoveIcon/>,

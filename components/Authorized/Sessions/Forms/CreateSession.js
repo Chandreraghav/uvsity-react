@@ -22,7 +22,8 @@ import GppMaybeIcon from "@mui/icons-material/GppMaybe";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import BeenhereIcon from "@mui/icons-material/Beenhere";
-import Slide from '@mui/material/Slide';
+import Slide from "@mui/material/Slide";
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import {
   formatDate,
   formattedName,
@@ -35,13 +36,15 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 import { RESPONSE_TYPES } from "../../../../constants/constants";
-import { APP } from "../../../../constants/userdata";
+import { APP, TOOLTIPS } from "../../../../constants/userdata";
 import { handleResponse } from "../../../../toastr-response-handler/handler";
 import SessionService from "../../../../pages/api/session/SessionService";
 import { useRouter } from "next/router";
 import { actionTypes } from "../../../../context/reducer";
-import {useLeavePageConfirm} from '../../../../hooks/useLeave'
+import { useLeavePageConfirm } from "../../../../hooks/useLeave";
 import QuestionairreService from "../../../../pages/api/session/QuestionairreService";
+import ConfirmDialog from "../../../shared/modals/ConfirmDialog";
+import Overlay from "../../../shared/Overlay";
 
 toast.configure();
 function CreateSession(props) {
@@ -51,7 +54,9 @@ function CreateSession(props) {
   const participantFormListener = () => {
     if (activeStep === 2) {
       const isDirty = formdata?.participant?.dirty;
-      if(isDirty) {setSessionSubmitted(false)}
+      if (isDirty) {
+        setSessionSubmitted(false);
+      }
       if (checkInteractiveErrors) {
         const hasInteractiveErrors = !isEmptyObject(
           formdata?.participant?.errors
@@ -89,7 +94,9 @@ function CreateSession(props) {
   const feeSponsorShipFormListener = () => {
     if (activeStep === 3) {
       const isDirty = formdata?.fees?.dirty || formdata?.sponsor?.dirty;
-      if(isDirty) {setSessionSubmitted(false)}
+      if (isDirty) {
+        setSessionSubmitted(false);
+      }
       if (isDirty) {
         const fees = Number(formdata?.fees?.amount) || 0;
         if (fees <= 0 && formdata?.fees?.paidInd) {
@@ -109,13 +116,15 @@ function CreateSession(props) {
   const scheduleFormListener = () => {
     if (activeStep === 1) {
       const isDirty = formdata?.schedule?.dirty;
-      if(isDirty) {setSessionSubmitted(false)}
+      if (isDirty) {
+        setSessionSubmitted(false);
+      }
       if (!formdata?.schedule?.startDate instanceof Date) {
         console.log("Contains errors", steps[activeStep].title);
         handleInCompleteStep();
         return;
       }
-      if(formdata?.schedule?.repeats  && !formdata?.schedule?.repeatObject ){
+      if (formdata?.schedule?.repeats && !formdata?.schedule?.repeatObject) {
         console.log("Contains errors", steps[activeStep].title);
         handleInCompleteStep();
         return;
@@ -129,7 +138,9 @@ function CreateSession(props) {
   const basicFormListener = () => {
     if (activeStep === 0) {
       const isDirty = formdata?.basic?.dirty;
-      if(isDirty) {setSessionSubmitted(false)}
+      if (isDirty) {
+        setSessionSubmitted(false);
+      }
       if (checkInteractiveErrors) {
         const hasInteractiveErrors = !isEmptyObject(formdata?.basic?.errors);
         if (hasInteractiveErrors && isDirty) {
@@ -220,10 +231,14 @@ function CreateSession(props) {
     },
   ]);
   const [sessionSubmitted, setSessionSubmitted] = useState(false);
+  const [confirmSessionDialogOpened, setConfirmSessionDialogOpened] =
+    useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
+  const [processing, setProcessing] = React.useState(false);
   const [formdata, dispatch] = useDataLayerContextValue();
-  const [hasErrors, setHasErrors] = useState(false)
+  const [hasErrors, setHasErrors] = useState(false);
+  const [showCompletionMessage, setShowCompletionMessage]=useState(false)
   const totalSteps = () => {
     return steps.length;
   };
@@ -245,12 +260,12 @@ function CreateSession(props) {
     return completedSteps === totalSteps() - 1;
   };
 
-  const isNextDisabled=()=>{
-    if(isLastStep()){
-      return !allStepsCompletedExceptFinalStep()
+  const isNextDisabled = () => {
+    if (isLastStep()) {
+      return !allStepsCompletedExceptFinalStep();
     }
-    return steps[activeStep].complete
-  }
+    return steps[activeStep].complete;
+  };
   const handleNext = () => {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
@@ -262,7 +277,9 @@ function CreateSession(props) {
   };
 
   const handleBack = () => {
-    if(hasErrors()) {return}
+    if (hasErrors()) {
+      return;
+    }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
@@ -270,10 +287,11 @@ function CreateSession(props) {
     return steps.findIndex((step) => step.id === 5);
   };
   const handleStep = (index, label) => () => {
-    if(hasErrors) return;
+    if (hasErrors) return;
     if (allStepsCompletedExceptFinalStep() && !sessionSubmitted) {
       // this is the final step entry
       setActiveStep(index);
+      setShowCompletionMessage(true)
       // payload creation for sending to api.
       const plans = formdata?.sponsor?.plans;
       plans.map((plan) => {
@@ -452,7 +470,7 @@ function CreateSession(props) {
           courseStatus: "Submitted",
         },
       };
-      
+
       SessionService.isSessionCreationAllowed(payload)
         .then((res) => {
           if (res.data.allowed) {
@@ -486,17 +504,24 @@ function CreateSession(props) {
                   hasErrors = true;
                 });
             }
-            const questionairreIdentifier=Number(formdata?.participant?.questions)
-            if(formdata?.participant?.questions && questionairreIdentifier>0){
-              QuestionairreService.getQuestionairre(questionairreIdentifier).then((res) => {
+            const questionairreIdentifier = Number(
+              formdata?.participant?.questions
+            );
+            if (
+              formdata?.participant?.questions &&
+              questionairreIdentifier > 0
+            ) {
+              QuestionairreService.getQuestionairre(
+                questionairreIdentifier
+              ).then((res) => {
                 APP.SESSION.DTO.PARTICIPANTS.questionairre = res.data;
                 dispatch({
                   type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
                   participant: APP.SESSION.DTO.PARTICIPANTS,
                 });
-              })
+              });
             }
-           
+          
           } else {
             setHasErrors(true);
           }
@@ -504,7 +529,7 @@ function CreateSession(props) {
         .catch((err) => {
           setHasErrors(true);
           setSessionSubmitted(true);
-          setActiveStep(4) // final step
+          setActiveStep(4); // final step
           handleInCompleteStep();
           const _user = props.data.user.data.firstName;
           const _err = APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED.replace(
@@ -514,7 +539,7 @@ function CreateSession(props) {
           handleResponse(_err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
           return;
         });
-      
+
       if (!hasErrors) {
         undirtyDTO();
         setSessionSubmitted(true);
@@ -532,44 +557,41 @@ function CreateSession(props) {
       }
       navigateToStep(label, index);
     }
-
-    
   };
-  const undirtyDTO =()=>{
-      const basic=formdata?.basic
-      basic.dirty=false
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
-        basic: basic,
-      });
-      const participant=formdata?.participant
-      participant.dirty=false
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
-        participant: participant,
-      });
-      const fees=formdata?.fees
-      fees.dirty=false
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
-        fees: fees,
-      });
+  const undirtyDTO = () => {
+    const basic = formdata?.basic;
+    basic.dirty = false;
+    dispatch({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.BASIC,
+      basic: basic,
+    });
+    const participant = formdata?.participant;
+    participant.dirty = false;
+    dispatch({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
+      participant: participant,
+    });
+    const fees = formdata?.fees;
+    fees.dirty = false;
+    dispatch({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
+      fees: fees,
+    });
 
-      const sponsor=formdata?.sponsor
-      sponsor.dirty=false
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,
-        sponsor: sponsor,
-      });
+    const sponsor = formdata?.sponsor;
+    sponsor.dirty = false;
+    dispatch({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.SPONSOR,
+      sponsor: sponsor,
+    });
 
-      const schedule=formdata?.schedule
-      schedule.dirty=false
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-        schedule: schedule,
-      });
-
-  }
+    const schedule = formdata?.schedule;
+    schedule.dirty = false;
+    dispatch({
+      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
+      schedule: schedule,
+    });
+  };
   const navigateToStep = (label, index) => {
     const step_id = [1, 2, 3, 4];
     if (step_id.includes(label.id)) {
@@ -616,8 +638,8 @@ function CreateSession(props) {
   }, [formdata]);
 
   useEffect(() => {
-   setHasErrors(false)
-  },[])
+    setHasErrors(false);
+  }, []);
 
   const handleReset = () => {
     setActiveStep(0);
@@ -750,6 +772,31 @@ function CreateSession(props) {
     );
   };
 
+  const openConfirmSessionSubmitDialog = () => {
+    scrollDivToTop("create-session");
+    setConfirmSessionDialogOpened(true);
+  };
+  const closeConfirmSessionSubmitDialog = () => {
+    setConfirmSessionDialogOpened(false);
+  };
+  const handleSessionSubmit = (obj) => {
+    setTimeout(() => {
+      scrollDivToTop();
+    }, 100);
+    if (obj.close) {
+      closeConfirmSessionSubmitDialog();
+      return;
+    }
+    // submit session.
+    setProcessing(true)
+    setTimeout(()=>{
+      if(obj.confirm){
+        setShowCompletionMessage(false)
+       }
+    },100)
+    closeConfirmSessionSubmitDialog()
+  };
+
   ColorlibStepIcon.propTypes = {
     /**
      * Whether this step is active.
@@ -767,88 +814,117 @@ function CreateSession(props) {
      */
     icon: PropTypes.node,
   };
+  const scrollDivToTop = (div) => {
+    window.scrollTo(0, 0);
+  };
+  const handleNavigate = (navigationObject) => {
+    let label = null;
+    const _steps = steps.filter((step,index) => index === navigationObject);
+    if (_steps.length === 1) {
+      label = _steps[0];
+      navigateToStep(label, navigationObject);
+    }
+  };
 
- 
   return (
-   
-    <div className="px-4 py-2 bg-white">
-     
+    <div id="create-session" className="px-4 py-2 bg-white">
       <Typography variant="h6" component="div">
         {props.data.workflow.workflow.alias}
       </Typography>
       <Slide direction="up" in={true}>
-      <Box sx={{ width: "100%" }} className="py-4">
-        <Stepper
-          alternativeLabel
-          activeStep={activeStep}
-          nonLinear
-          connector={<QontoConnector />}
-        >
-          {steps.map((label, index) => (
-            <Step className={hasErrors?'opacity-40':''} key={label.id} completed={label.complete}>
-              <StepButton  color="inherit" onClick={handleStep(index, label)}>
-                <StepLabel
-                  StepIconComponent={ColorlibStepIcon}
-                  error={label.validationError}
-                >
-                  <div
-                    className={` flex justify-center items-start mx-auto  gap-1 ${
-                      label.complete ? "font-semibold" : "font-normal"
-                    }`}
+        <Box sx={{ width: "100%" }} className="py-4">
+          <Stepper
+            alternativeLabel
+            activeStep={activeStep}
+            nonLinear
+            connector={<QontoConnector />}
+          >
+            {steps.map((label, index) => (
+              <Step
+                className={hasErrors ? "opacity-40" : ""}
+                key={label.id}
+                completed={label.complete}
+              >
+                <StepButton color="inherit" onClick={handleStep(index, label)}>
+                  <StepLabel
+                    StepIconComponent={ColorlibStepIcon}
+                    error={label.validationError}
                   >
                     <div
-                      className={`  ${
-                        index === activeStep ? "italic" : "normal"
+                      className={` flex justify-center items-start mx-auto  gap-1 ${
+                        label.complete ? "font-semibold" : "font-normal"
                       }`}
                     >
-                      {label.title}
+                      <div
+                        className={`  ${
+                          index === activeStep ? "italic" : "normal"
+                        }`}
+                      >
+                        {label.title}
+                      </div>
                     </div>
-                  </div>
-                </StepLabel>
-              </StepButton>
-            </Step>
-          ))}
-        </Stepper>
-        <div>
-          <React.Fragment>
-            {activeStep === 0 && <Basic data={props.data} />}
-            {activeStep === 1 && <Schedule data={props.data} />}
-            {activeStep === 2 && <Participant data={props.data} />}
-            {activeStep === 3 && <Fee data={props.data} />}
-            {activeStep === 4 && <Final allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()} hasErrors={hasErrors} data={props.data} />}
+                  </StepLabel>
+                </StepButton>
+              </Step>
+            ))}
+          </Stepper>
+          <div>
+            <React.Fragment>
+              {activeStep === 0 && <Basic data={props.data} />}
+              {activeStep === 1 && <Schedule data={props.data} />}
+              {activeStep === 2 && <Participant data={props.data} />}
+              {activeStep === 3 && <Fee data={props.data} />}
+              {activeStep === 4 && (
+                <Final
+                  showCompletionMessage={showCompletionMessage}
+                  onNavigate={handleNavigate}
+                  allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()}
+                  hasErrors={hasErrors}
+                  data={props.data}
+                />
+              )}
 
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0 || hasErrors}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button
-                disabled={!steps[activeStep].complete || (activeStep===3 && !allStepsCompletedExceptFinalStep())}
-                onClick={handleNext}
-                sx={{ mr: 1 }}
-              >
-                Next 
-              </Button>
-              <Button
+              <Box sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}>
+                <Button
+                  color="inherit"
+                  disabled={activeStep === 0 || hasErrors}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  Back
+                </Button>
+                <Box sx={{ flex: "1 1 auto" }} />
+                <Button
+                  disabled={
+                    !steps[activeStep].complete ||
+                    (activeStep === 3 && !allStepsCompletedExceptFinalStep())
+                  }
+                  onClick={handleNext}
+                  sx={{ mr: 1 }}
+                >
+                  Next
+                </Button>
+                <Button
                   disabled={!allStepsCompletedExceptFinalStep() || hasErrors}
                   sx={{ mr: 1 }}
+                  onClick={openConfirmSessionSubmitDialog}
                 >
                   Submit
                 </Button>
-            
-            </Box>
-          </React.Fragment>
-        </div>
-      </Box>
+              </Box>
+            </React.Fragment>
+          </div>
+        </Box>
       </Slide>
-      
+      <ConfirmDialog
+        actionButtonProps={{ YES: "Yes", NO: "Not now" }}
+        dialogCloseRequest={handleSessionSubmit}
+        isOpen={confirmSessionDialogOpened}
+        theme="dark"
+        confirmMessage={TOOLTIPS.SESSION_SUBMIT_CONFIRMATION}
+      />
+       <Overlay icon={<RocketLaunchIcon/>}  message={TOOLTIPS.CREATING_SESSION} open={processing}/>
     </div>
-    
   );
 }
 
