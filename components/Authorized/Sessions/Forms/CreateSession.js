@@ -49,7 +49,6 @@ import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import { SESSION_ERROR } from "../../../../constants/error-messages";
 import {useToggle} from 'react-use';
 import { useLeavePageConfirm } from "../../../../hooks/useLeave";
-import { eraseFormContext } from "../Clean/cleanup";
 toast.configure();
 function CreateSession(props) {
   const Router = useRouter();
@@ -656,7 +655,7 @@ function CreateSession(props) {
   }, [formdata]);
 
   useEffect(() => {
-    eraseFormContext(dispatch)
+    
     setHasErrors(false);
     toggleDirty(false)
   }, []);
