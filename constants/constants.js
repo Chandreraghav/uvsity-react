@@ -312,5 +312,7 @@ export const TIME_OF_DAY_GREETING = {
   AFTERNOON: "Good afternoon",
   EVENING: "Good evening",
 };
+export const USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION=['all-done-illustration.jpg','all-done-man-illustration.png','all-done-woman-illustration.webp' ]
+
 export const USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION=['Great job.','Superb!','Yay!!','Nailed it!!','Awesome.','You did it.',"That's it." ]
 export const USER_PAGE_LEAVE_CONFIRM_MESSAGE="Are you sure want to leave this page?"

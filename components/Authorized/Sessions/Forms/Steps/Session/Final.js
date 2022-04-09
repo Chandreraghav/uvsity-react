@@ -1,11 +1,21 @@
 import {
   Box,
+  Checkbox,
   Divider,
+  FormControl,
+  FormControlLabel,
   Grid,
+  MenuItem,
+  OutlinedInput,
+  Radio,
+  RadioGroup,
+  Select,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { useTheme } from "@mui/material/styles";
 import TokenIcon from "@mui/icons-material/Token";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import React, { useEffect, useState } from "react";
@@ -21,6 +31,7 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import {
   getRandomArrayElement,
   getTimezone,
+  HTMLUnderlineByCharacterIndex,
 } from "../../../../../../utils/utility";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import ReactPlayer from "react-player";
@@ -39,15 +50,17 @@ import {
 } from "../../../../../../constants/userdata";
 import Plans from "../../../../Sponsorships/Plans";
 import EditIcon from "@mui/icons-material/Edit";
-import { USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION } from "../../../../../../constants/constants";
+import { USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION, USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION } from "../../../../../../constants/constants";
 import TimezoneBrowseDialog from "../../../../../shared/modals/TimezoneBrowseDialog";
 import { actionTypes } from "../../../../../../context/reducer";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import moment from "moment-timezone";
 import WarningIcon from "@mui/icons-material/Warning";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 function Final(props) {
   const [data, dispatch] = useDataLayerContextValue();
+ 
   const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
   const [timeDisplay, setTimeDisplay] = useState(null);
   const generateMonetizationAmountOnCard = (data) => {
@@ -97,8 +110,17 @@ function Final(props) {
     );
     return randomString + message;
   };
+
+  const getCompletionImage = () => {
+    const randomString = getRandomArrayElement(
+      USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION
+    );
+    
+    return `/static/images/${randomString}`;
+  };
+
   const getStartDate = () => {
-    console.log(data?.schedule);
+   
     return data?.schedule?.startDate.getDate();
   };
   const getEndDate = () => {
@@ -238,6 +260,7 @@ function Final(props) {
           </div>
           <Divider className=" text-gray-500"></Divider>
 
+        
           <Box sx={{ width: "100%", mt: 1 }}>
             <div className="flex gap-1 ">
               <div className="flex flex-col mt-1">
@@ -372,7 +395,7 @@ function Final(props) {
                         </div>
                       </div>
 
-                      <div className="flex gap-2 -ml-5 lg:ml-0 md:ml-0">
+                      <div className="flex gap-2  lg:ml-0 md:ml-0">
                         {SPONSORSHIP?.LEVELS?.map((level) => (
                           <Plans
                             showOnlyHeader={true}
@@ -394,8 +417,11 @@ function Final(props) {
                       {APP.MESSAGES.INFO.FINAL_STEP_EDITS_HELP_TEXT}
                     </Typography>
                   </div>
+                  
                 </div>
+             
               </Grid>
+             
 
               <Grid item lg={6} sm={12} md={6} xs={12}>
                 <div className="flex flex-col gap-2 bg-gray-100 px-2 p-2 rounded-lg border-1 shadow-sm bg-repeat-round">
@@ -536,14 +562,17 @@ function Final(props) {
                             </Tooltip>
                           </div>
                         </div>
-                        <ReactPlayer
-                          controls
-                          loop={true}
-                          muted
-                          width="400px"
-                          height="200px"
-                          url={data?.basic?.url}
-                        />
+                        <div className="player__wrapper">
+                          <ReactPlayer
+                            controls
+                            loop={true}
+                            muted
+                            width="100%"
+                            height="100%"
+                            className="player"
+                            url={data?.basic?.url}
+                          />
+                        </div>
                       </>
                     )}
 
@@ -577,65 +606,225 @@ function Final(props) {
                     )}
                   </div>
                 </div>
-                {data?.participant?.questions && (
-                  <div className=" border-dotted  py-1 mt-2 mb-2 flex flex-col gap-2 bg-gray-100 px-2 p-2 rounded-lg   shadow-sm bg-repeat-round">
-                    <div className="flex gap-1">
-                      <QuizIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
-                      <Typography
-                        variant="div"
-                        className="  font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
-                      >
-                        Questionairre:
-                      </Typography>
-                      <Tooltip title="Questions that would be asked to your attendees before registration.">
-                        <div className=" leading-3 font-semibold  text-xl text-gray-500 cursor-pointer">
-                          <HelpOutlineIcon fontSize="small" />
-                        </div>
-                      </Tooltip>
-                      <div
-                        className="flex mr-2 text-blue-600
-           ml-auto app__anchor__block cursor-pointer"
-                      >
-                        <Tooltip title="Change">
-                          <EditIcon
-                            fontSize="small"
-                            className=" leading-3 font-semibold  text-sm"
-                          />
-                        </Tooltip>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-1 font-normal line-clamp-3 text-sm   leading-snug text-black-700">
-                      <blockquote className="">
-                        <u>P</u>lease answer the following questions
-                      </blockquote>
-                    </div>
-
-                    <div className="flex flex-col p-2 border-l-2">
+                {data?.participant?.questions &&
+                  data?.participant?.questionairre && (
+                    <div className=" border-dotted  py-1 mt-2 mb-2 flex flex-col gap-2 bg-gray-100 px-2 p-2 rounded-lg   shadow-sm bg-repeat-round">
                       <div className="flex gap-1">
-                        <div className="text-sm text-gray-800 font-semibold">
-                          1.
+                        <QuizIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                        <Typography
+                          variant="div"
+                          className="  font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
+                        >
+                          Questionairre:
+                        </Typography>
+                        <Tooltip title="Questions that would be asked to your attendees before registration.">
+                          <div className=" leading-3 font-semibold  text-xl text-gray-500 cursor-pointer">
+                            <HelpOutlineIcon fontSize="small" />
+                          </div>
+                        </Tooltip>
+                        <div
+                          className="flex mr-2 text-blue-600
+           ml-auto app__anchor__block cursor-pointer"
+                        >
+                          <Tooltip title="Change">
+                            <EditIcon
+                              fontSize="small"
+                              className=" leading-3 font-semibold  text-sm"
+                            />
+                          </Tooltip>
                         </div>
-                        <div className="text-sm text-gray-800 font-semibold">
-                          What is there?
-                        </div>
-                        <div className="text-xs text-gray-600">(optional)</div>
                       </div>
-                      <TextField
-                        placeholder="Answer"
-                        variant="standard"
-                        label="Answer"
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                      <FormHelperText className=" text-xs leading-tight text-gray-700 font-normal">
-                        100
-                      </FormHelperText>
-                    </div>
-                  </div>
-                )}
 
+                      <div className="flex gap-1 font-normal  text-sm   leading-snug text-black-700">
+                        <blockquote className="line-clamp-1">
+                          {parse(
+                            HTMLUnderlineByCharacterIndex(
+                              data?.participant?.questionairre?.description,
+                              0
+                            )
+                          )}
+                        </blockquote>
+                      </div>
+
+                      <div className=" overflow-auto max-h-52">
+                        {data?.participant?.questionairre?.questions.map(
+                          (q, index) => (
+                            <>
+                              <div className="flex flex-col p-2 border-l-2">
+                                <div className="flex gap-1">
+                                  <div className="text-sm text-gray-800 font-semibold">
+                                    Q{index + 1}.
+                                  </div>
+                                  <div className="text-sm text-gray-800 font-semibold line-clamp-1">
+                                    {q.question}
+                                  </div>
+                                  {q.optional && (
+                                    <div className="text-xs text-gray-600">
+                                      (optional)
+                                    </div>
+                                  )}
+                                </div>
+                                {q.answerTypeCode === 1 && (
+                                  <TextField
+                                    placeholder="Answer"
+                                    variant="standard"
+                                    label="Answer"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
+                                  />
+                                )}
+
+                                {q.answerTypeCode === 2 && (
+                                  <>
+                                    <FormControl>
+                                      <RadioGroup
+                                        className="text-gray-600 text-xs font-normal"
+                                        aria-labelledby="radio-buttons"
+                                        name="row-radio-buttons-group"
+                                      >
+                                        <div className="flex">
+                                          {q.options.map((option) => (
+                                            <div
+                                              className="text-gray-700 leading-snug text-xs font-normal "
+                                              key={option}
+                                            >
+                                              <FormControlLabel
+                                                value={option}
+                                                control={<Radio disabled />}
+                                                label={<>{option}</>}
+                                              />
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </RadioGroup>
+                                    </FormControl>
+                                  </>
+                                )}
+
+                                {q.answerTypeCode === 3 && (
+                                  <>
+                                    <div className="flex">
+                                      {q.options.map((option) => (
+                                        <FormControlLabel
+                                          className="text-sm text-gray-700"
+                                          disabled
+                                          control={<Checkbox size="small" />}
+                                          label={option}
+                                          labelPlacement="end"
+                                          key={option}
+                                        />
+                                      ))}
+                                    </div>
+                                  </>
+                                )}
+
+                                {q.answerTypeCode === 4 && (
+                                  <>
+                                    <div className="flex mt-1">
+                                      <FormControl
+                                        fullWidth={true}
+                                        variant="standard"
+                                        sx={{ marginBottom: 1 }}
+                                      >
+                                        <Select
+                                          name="dropdown-question"
+                                          labelId="dropdown-question-label"
+                                          id="dropdown-question"
+                                          value={q.options[0]}
+                                          placeholder="Choose answer"
+                                          fullWidth
+                                        >
+                                          {q.options?.map((option) => (
+                                            <MenuItem
+                                              key={option}
+                                              disabled
+                                              value={option}
+                                            >
+                                              {option}
+                                            </MenuItem>
+                                          ))}
+                                        </Select>
+                                      </FormControl>
+                                    </div>
+                                  </>
+                                )}
+
+                                {q.answerTypeCode === 5 && (
+                                  <>
+                                    <div className="flex mt-1">
+                                      <FormControl
+                                        fullWidth={true}
+                                        variant="standard"
+                                        sx={{ marginBottom: 1 }}
+                                      >
+                                        <Select
+                                          fullWidth
+                                          multiple
+                                          input={
+                                            <OutlinedInput variant="standard" />
+                                          }
+                                          value={q.options}
+                                          variant="standard"
+                                        >
+                                          {q.options.map((option) => (
+                                            <MenuItem
+                                              key={option}
+                                              value={option}
+                                              disabled
+                                            >
+                                              {option}
+                                            </MenuItem>
+                                          ))}
+                                        </Select>
+                                      </FormControl>
+                                    </div>
+                                  </>
+                                )}
+
+                                {q.answerTypeCode === 7 && (
+                                  <>
+                                    <div className="flex mt-1">
+                                      <FormControl
+                                        fullWidth={true}
+                                        sx={{ marginBottom: 1 }}
+                                      >
+                                        <LocalizationProvider
+                                          dateAdapter={AdapterDateFns}
+                                        >
+                                          <DesktopDatePicker
+                                            disabled
+                                            inputFormat="MM/dd/yyyy"
+                                            renderInput={(params) => (
+                                              <TextField
+                                                variant="standard"
+                                                {...params}
+                                              />
+                                            )}
+                                          />
+                                        </LocalizationProvider>
+                                      </FormControl>
+                                    </div>
+                                  </>
+                                )}
+
+                                {q.answerTypeCode === 1 && (
+                                  <FormHelperText className=" text-xs leading-tight text-gray-700 font-normal">
+                                    {q.maxLength}
+                                  </FormHelperText>
+                                )}
+                              </div>
+                            </>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+ <img
+                      alt="all-done-illustration"
+                      src={getCompletionImage()}
+                      className="  w-full h-60 object-contain"
+                    />
                 <Box sx={{ display: "flex", flexDirection: "row" }}>
                   {props.allStepsCompletedExceptFinalStep && (
                     <div className="flex ml-2 gap-1 mt-1">
@@ -653,9 +842,12 @@ function Final(props) {
                     </div>
                   )}
                 </Box>
+               
               </Grid>
             </Grid>
+           
           </Box>
+         
           <TimezoneBrowseDialog
             selectedTimezone={data?.schedule?.timezone || getTimezone()}
             dialogCloseRequest={handleTimezoneCloseRequest}

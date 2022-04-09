@@ -41,6 +41,7 @@ import SessionService from "../../../../pages/api/session/SessionService";
 import { useRouter } from "next/router";
 import { actionTypes } from "../../../../context/reducer";
 import {useLeavePageConfirm} from '../../../../hooks/useLeave'
+import QuestionairreService from "../../../../pages/api/session/QuestionairreService";
 
 toast.configure();
 function CreateSession(props) {
@@ -485,6 +486,17 @@ function CreateSession(props) {
                   hasErrors = true;
                 });
             }
+            const questionairreIdentifier=Number(formdata?.participant?.questions)
+            if(formdata?.participant?.questions && questionairreIdentifier>0){
+              QuestionairreService.getQuestionairre(questionairreIdentifier).then((res) => {
+                APP.SESSION.DTO.PARTICIPANTS.questionairre = res.data;
+                dispatch({
+                  type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
+                  participant: APP.SESSION.DTO.PARTICIPANTS,
+                });
+              })
+            }
+           
           } else {
             setHasErrors(true);
           }

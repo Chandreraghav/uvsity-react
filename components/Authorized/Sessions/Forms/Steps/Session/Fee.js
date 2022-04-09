@@ -166,6 +166,10 @@ function Fee() {
   const handleSessionPaidIndicatorChange = (e) => {
     setSessionPaidInd(!sessionFeePaidIndicator);
     APP.SESSION.DTO.FEE.paidInd = !sessionFeePaidIndicator;
+    if(!APP.SESSION.DTO.FEE.paidInd){
+      setSessionFee(null);
+      APP.SESSION.DTO.FEE.amount=null;
+    }
     setDirty("session-fee");
     updateErrors("session-fee");
     dispatch({
@@ -236,19 +240,7 @@ function Fee() {
     }
   };
 
-  useEffect(() => {
-    if (sessionFeePaidIndicator) {
-      reset();
-      setSessionFee(null);
-      APP.SESSION.DTO.FEE.amount = null;
-      setDirty("session-fee");
-      updateErrors("session-fee");
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.FEES,
-        fees: APP.SESSION.DTO.FEE,
-      });
-    }
-  }, [sessionFeePaidIndicator, sessionFee]);
+  
 
   useEffect(() => {
     if (sponsorShipReqd) {
@@ -326,7 +318,6 @@ function Fee() {
         : SPONSORSHIP.LEVELS;
     } else {
       setDirty("session-fee");
-      APP.SESSION.DTO.FEE.paidInd = false;
       APP.SESSION.DTO.requestPath = Router.asPath;
       APP.SESSION.DTO.user = AuthService.getCurrentUser();
       dispatch({

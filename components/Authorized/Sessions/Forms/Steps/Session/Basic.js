@@ -590,16 +590,21 @@ function Basic(props) {
                     id="previewurl"
                   />
                 </FormControl>
+
+              
                 {isValidURL(videoPreviewURL) &&
                   !errors?.previewurl?.message && (
+                    <div className="player__wrapper">
                     <ReactPlayer
                       controls
                       loop={true}
                       muted
-                      width="400px"
-                      height="200px"
+                      width="100%"
+                      height="100%"
+                      className="player"
                       url={videoPreviewURL}
                     />
+                    </div>
                   )}
               </div>
             </Grid>
