@@ -2,6 +2,7 @@
   display: flex;
   color: #111;
 }
+
 .tutorial__wrapper {
   display: flex;
   flex-direction: column;
@@ -9,87 +10,98 @@
   background-size: cover;
   /* background-repeat: no-repeat; */
   background-attachment: fixed;
-  padding-bottom: 20px;;
+  padding-bottom: 20px;
+  ;
 }
-.tutorial__header__text{
-  
-  text-align:left;
-  
+
+.tutorial__header__text {
+
+  text-align: left;
+
   font-size: 1.5rem;
   font-weight: bold;
   color: #F0B01E
 }
+
 @media only screen and (max-width: 640px) {
   .tutorial__header__text {
-    
+
     font-size: 1.3rem;
   }
 }
 
 @media only screen and (max-width: 480px) {
   .tutorial__header__text {
-    
+
     font-size: 1rem;
   }
 }
+
 @media only screen and (max-width: 320px) {
   .tutorial__header__text {
-   
+
     font-size: 0.7rem;
   }
 }
+
 .react__player {
-  
-   
+
+
   width: 400px !important;
   height: 200px !important;
 }
+
 .player__description {
   font-size: 1rem;
   line-height: 2;
   font-weight: 500;
   /* margin-left:10px; */
- 
-}
-@media only screen and (max-width: 640px) {
-    .player__description {
-        font-size: 0.7rem!important;
-        /* margin-left:4px; */
-    }
-  }
-  @media only screen and (max-width: 480px) {
-    .player__description {
-        font-size: 0.6rem!important;
-        /* margin-left:2px; */
-    }
-  }
-  @media only screen and (max-width: 320px) {
-    .player__description {
-        font-size: 0.5rem!important;
-        /* margin-left:0px; */
-    }
-  }
-@media only screen and (max-width: 640px) {
-    .react__player {
-  
-      width: 300px !important;
-      height: 200px !important;
-    }
-  }
 
- 
- 
+}
+
+@media only screen and (max-width: 640px) {
+  .player__description {
+    font-size: 0.7rem !important;
+    /* margin-left:4px; */
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .player__description {
+    font-size: 0.6rem !important;
+    /* margin-left:2px; */
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .player__description {
+    font-size: 0.5rem !important;
+    /* margin-left:0px; */
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  .react__player {
+
+    width: 300px !important;
+    height: 200px !important;
+  }
+}
+
+
+
 @media only screen and (max-width: 480px) {
   .react__player {
-     
+
     width: 200px !important;
     height: 200px !important;
   }
 }
+
 @media only screen and (max-width: 320px) {
   .react__player {
-    
-    
+
+
     width: 200px !important;
     height: 150px !important;
   }
@@ -99,4 +111,18 @@
   color: #e51126;
   margin-bottom: 5px;
   font-weight: 500;
+}
+
+.player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.player__wrapper {
+  position: relative;
+  padding-top: 56.25%;
+  /* Player ratio: 100 / (1280 / 720) */
 }

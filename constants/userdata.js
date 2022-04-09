@@ -710,6 +710,7 @@ export const SPONSORSHIP = {
       title: "Silver",
       icon: "",
       alias: "Silver",
+      short:'Silver',
       workflow: {
         code: WORKFLOW_CODES.USER.SPONSORSHIP.EDITS.FEATURES.SILVER,
       },
@@ -756,6 +757,7 @@ export const SPONSORSHIP = {
       title: "Gold",
       icon: "",
       alias: "Gold",
+      short:'Gold',
       workflow: {
         code: WORKFLOW_CODES.USER.SPONSORSHIP.EDITS.FEATURES.GOLD,
       },
@@ -805,6 +807,7 @@ export const SPONSORSHIP = {
     {
       id: 3,
       title: "Platinum",
+      short:'Plat',
       icon: "",
       defaults: {
         price: {
@@ -958,6 +961,7 @@ export const APP = {
         visibility: null,
         choiceOfInvitation: null,
         questions: null,
+        questionairre:null,
         validationError: false,
         errors: {},
         dirty: false,

@@ -107,14 +107,14 @@ export const SESSION = {
         freeSessionOrPaid: Yup.boolean(),
         sponsorshipReqd: Yup.boolean(),
         fees: Yup.number()
-          .nullable()
+        .nullable()
           .typeError("you must specify a numeric amount")
           .min(1, "Amount must be atleast 1")
           .positive("Amount must be atleast 1")
           .when("freeSessionOrPaid", {
             is: true,
             then: Yup.number()
-              .required("Amount is required"),
+              .typeError("you must specify a numeric amount").required("Amount is required")
           }),
 
         sponsorshipFee: Yup.number()
@@ -124,8 +124,8 @@ export const SESSION = {
         .positive("Amount must be atleast 1")
         .when("sponsorshipReqd", {
           is: true,
-          then: Yup.number()
-            .required("Amount is required"),
+          then: Yup.number().typeError("you must specify a numeric amount")
+            .required("Amount is required")
         }),
       }),
     },
