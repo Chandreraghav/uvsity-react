@@ -56,5 +56,10 @@ export const SESSION_ERROR={
      CREATE: "There occured a problem creating the questionairre. Please try again.",
      UPDATE: "There occured a problem updating the questionairre. Please try again.",
      DELETE: "There occured a problem deleting the questionairre."
+  },
+  SESSION:{
+    CREATE: "We are sorry <user>!! Something happened at our end for which your session could not be created. Please try again in a while.",
+    UPDATE: "There occured a problem updating the session. Please try again.",
+    DELETE: "There occured a problem deleting the session."
   }
 }

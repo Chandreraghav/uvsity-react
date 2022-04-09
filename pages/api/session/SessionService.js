@@ -10,6 +10,9 @@ export default class SessionService {
     return await asyncInstance.post(ENDPOINTS.USER.SESSION_IS_ALLOWED, payload);
   }
 
+  static async create(payload) {
+    return await asyncInstance.post(ENDPOINTS.USER.CREATE_SESSION, payload);
+  }
   static async uploadImage(payload) {
     return await asyncInstance.post(
       ENDPOINTS.USER.UPLOADS.SESSION.CREATE.IMAGE,

@@ -16,6 +16,18 @@ export const WORKFLOW_CODES = {
       VIEW: "S_VIE",
       FEED: "S_FEE",
       CREATE: "S_CRE",
+      SUBMITTED:'Submitted',
+      VISIBILITY:{
+        PUBLIC:'Public',
+        PRIVATE:'Private'
+      },
+      FEE:{
+        PAID:'Paid',
+        FREE:'Free'
+       },
+       SEVERITY:{
+         GREEN:"green"
+       }
     },
     SPONSORSHIP: {
       EDITS: {
@@ -26,6 +38,7 @@ export const WORKFLOW_CODES = {
         },
       },
     },
+    
 
     CONNECTION_TYPES: {
       STUDENT: "CT_STUD",
