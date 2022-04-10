@@ -1,5 +1,6 @@
 import HomeIcon from "@mui/icons-material/Home";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
@@ -646,6 +647,7 @@ export const SESSION_DOCUMENT = {
     DOCX: <ArticleIcon />,
     DOC: <ArticleIcon />,
     PDF: <PictureAsPdfIcon />,
+    IMG: <InsertPhotoIcon />,
     ZIP: <FolderZipIcon />,
   },
   icon: <ArticleIcon />,

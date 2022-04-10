@@ -942,6 +942,11 @@ function CreateSession(props) {
           ? true
           : false,
       cohostUser: cohost,
+      sessionCoHostData: {
+        sessionCoHostId: formdata?.participant?.cohost
+          ? formdata?.participant?.cohost?.userDetailsId
+          : null,
+      },
       registrationQuestionnaireId: formdata?.participant?.questions,
       sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
       sponsorshipLevels: sponsorshipLevels,
@@ -970,6 +975,8 @@ function CreateSession(props) {
         : null,
       cost: Number(formdata?.fees.amount),
       imageURL: getImageURL(true),
+      slideDeckFileName:formdata?.basic?.binary.documents.consent? formdata?.basic?.binary?.documents?.data?.binary?.name:null,
+      slideDeckFileNameOriginal: formdata?.basic?.binary.documents.consent?formdata?.basic?.binary?.documents?.data?.binary?.name:null,
       fee: formdata?.fees?.paidInd
         ? WORKFLOW_CODES.USER.SESSION.FEE.PAID
         : WORKFLOW_CODES.USER.SESSION.FEE.FREE,
