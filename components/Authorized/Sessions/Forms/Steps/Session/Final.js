@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
   FormControl,
   FormControlLabel,
@@ -52,6 +53,7 @@ import {
   SESSION_DOCUMENT,
   SPONSORSHIP,
   TOOLTIPS,
+  VALIDATING_REQUEST,
 } from "../../../../../../constants/userdata";
 import Plans from "../../../../Sponsorships/Plans";
 import EditIcon from "@mui/icons-material/Edit";
@@ -59,8 +61,8 @@ import {
   USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION,
   USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION,
 } from "../../../../../../constants/constants";
-import ReplayIcon from '@mui/icons-material/Replay';
-import StartIcon from '@mui/icons-material/Start';
+import ReplayIcon from "@mui/icons-material/Replay";
+import StartIcon from "@mui/icons-material/Start";
 import TimezoneBrowseDialog from "../../../../../shared/modals/TimezoneBrowseDialog";
 import { actionTypes } from "../../../../../../context/reducer";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
@@ -160,7 +162,6 @@ function Final(props) {
 
     return `/static/images/${randomString}`;
   };
- 
 
   const getStartDate = () => {
     return data?.schedule?.startDate.getDate();
@@ -303,19 +304,40 @@ function Final(props) {
               src="/static/images/something-wrong-illustration-1.webp"
               className="  w-full h-60 object-contain"
             />
-<div className=" flex justify-center items-center mt-5">
-<Stack direction="row" spacing={2}>
-      <Button onClick={()=>{sendRetryRequest()}} variant="outlined" startIcon={<ReplayIcon />}>
-        Retry
-      </Button>
-      <Button onClick={()=>{location.reload()}} variant="contained" endIcon={<StartIcon />}>
-        Restart
-      </Button>
-    </Stack>
-</div>
-
+            <div className=" flex justify-center items-center mt-5">
+              <Stack direction="row" spacing={2}>
+                <Button
+                  onClick={() => {
+                    sendRetryRequest();
+                  }}
+                  variant="outlined"
+                  startIcon={<ReplayIcon />}
+                >
+                  Retry
+                </Button>
+                <Button
+                  onClick={() => {
+                    location.reload();
+                  }}
+                  variant="contained"
+                  endIcon={<StartIcon />}
+                >
+                  Restart
+                </Button>
+              </Stack>
+            </div>
           </>
-        ) : (
+        ) : !props.preRequisiteSessionAPIComplete?(<>
+        
+
+         <div className="mb-2 flex gap-1 text-md text-gray-600 font-semibold">
+         <CircularProgress className="text-sm -mt-1.5" color="inherit" />
+                  <Typography className=" " variant="div">
+                     {VALIDATING_REQUEST}
+                  </Typography>
+                </div>
+        
+        </>): (
           <>
             {showCompletionMessage && (
               <>
@@ -677,30 +699,36 @@ function Final(props) {
 
                           <div className="flex gap-1">
                             <div className="text-gray-600 line-clamp-1">
-                            {getIconPerFileExtension(
-                              getFileExtension(
-                                data?.basic?.binary?.documents?.data?.binary
-                                  ?.name
-                              )
-                            )}
-                            </div>
-                            
-                           
-                           <div onClick={()=>download(data?.basic?.binary?.documents?.data?.binary?.preview,data?.basic?.binary?.documents?.data?.binary
-                                    ?.name)}>
-                           <Tooltip title="Click to download">
-                              <Typography 
-                                variant="div"
-                                className="app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm mt-1  leading-tight  text-gray-600"
-                              >
-                                {
+                              {getIconPerFileExtension(
+                                getFileExtension(
                                   data?.basic?.binary?.documents?.data?.binary
                                     ?.name
-                                }
-                              </Typography>
-                            </Tooltip>
-                           </div>
-                            
+                                )
+                              )}
+                            </div>
+
+                            <div
+                              onClick={() =>
+                                download(
+                                  data?.basic?.binary?.documents?.data?.binary
+                                    ?.preview,
+                                  data?.basic?.binary?.documents?.data?.binary
+                                    ?.name
+                                )
+                              }
+                            >
+                              <Tooltip title="Click to download">
+                                <Typography
+                                  variant="div"
+                                  className="app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm mt-1  leading-tight  text-gray-600"
+                                >
+                                  {
+                                    data?.basic?.binary?.documents?.data?.binary
+                                      ?.name
+                                  }
+                                </Typography>
+                              </Tooltip>
+                            </div>
                           </div>
                         </>
                       )}
