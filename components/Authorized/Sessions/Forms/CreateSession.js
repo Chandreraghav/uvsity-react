@@ -942,11 +942,11 @@ function CreateSession(props) {
           ? true
           : false,
       cohostUser: cohost,
-      sessionCoHostData: {
+      sessionCoHostData:formdata?.participant?.cohost? {
         sessionCoHostId: formdata?.participant?.cohost
           ? formdata?.participant?.cohost?.userDetailsId
           : null,
-      },
+      }:null,
       registrationQuestionnaireId: formdata?.participant?.questions,
       sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
       sponsorshipLevels: sponsorshipLevels,

@@ -152,10 +152,10 @@ function PeekProfile(props) {
                 props?.isConnectionRequestSent && "control__disabled"
               }`}
               role="button"
-              onTouchStart={props?.onHover}
-              onTouchEnd={props?.onLeave}
-              onMouseEnter={props?.onHover}
-              onMouseLeave={props?.onLeave}
+              // onTouchStart={props?.onHover}
+              // onTouchEnd={props?.onLeave}
+              // onMouseEnter={props?.onHover}
+              // onMouseLeave={props?.onLeave}
             >
               <IconButton
                 className=" cursor-pointer inline-flex "
@@ -178,7 +178,13 @@ function PeekProfile(props) {
                     </small>
                   </>
                 ) : (
+                  <span
+                  onClick={(e) => handleConnectRequest()}
+                  className=""
+                  title={`Connect with ${props.metaData.firstName}`}
+                >
                   <PersonAddAltIcon />
+                  </span>
                 )}
               </IconButton>
 
