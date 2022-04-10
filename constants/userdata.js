@@ -913,6 +913,7 @@ export const APP = {
       FINAL_STEP_COMPLETED: ` <user>, now that you are almost done, review your changes and submit this session.`,
       FINAL_STEP_EDITS_HELP_TEXT:
         "To make any changes, click on the pencil icon.",
+     
     },
   },
   SESSION: {
@@ -1007,3 +1008,4 @@ export const SESSION={
   EDITED:'<user>, your session has been modified successfully',
   DELETED:'<user>, your session has been deleted permanently',
 }
+export const VALIDATING_REQUEST= 'Please wait, we are validating your request...'

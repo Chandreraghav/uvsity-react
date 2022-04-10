@@ -59,6 +59,7 @@ function CreateSession(props) {
   const [imgUpload, setImgUpload] = useState(null);
   const [docUpload, setDocUpload] = useState(null);
   const [dirty, toggleDirty] = useToggle(false);
+  const [allowSessionCreationAPIComplete,setAllowSessionCreationAPIComplete]=useState(false)
   useLeavePageConfirm(dirty);
   const participantFormListener = () => {
     if (activeStep === 2) {
@@ -463,6 +464,7 @@ function CreateSession(props) {
   const handleStep = (index, label) => () => {
     if (hasErrors) return;
     if (allStepsCompletedExceptFinalStep() && !sessionSubmitted) {
+      setAllowSessionCreationAPIComplete(false)
       // this is the final step entry
       setActiveStep(index);
       setShowCompletionMessage(true);
@@ -533,8 +535,10 @@ function CreateSession(props) {
           } else {
             setHasErrors(true);
           }
+          setAllowSessionCreationAPIComplete(true)
         })
         .catch((err) => {
+          setAllowSessionCreationAPIComplete(true)
           handleError(
             APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED,
             true,
@@ -651,6 +655,7 @@ function CreateSession(props) {
   }, [formdata]);
 
   useEffect(() => {
+      setAllowSessionCreationAPIComplete(false)
       setHasErrors(false);
       toggleDirty(false);
        _delay(2000).then(()=>{
@@ -1079,8 +1084,12 @@ function CreateSession(props) {
   };
 
   const handleRetry=(obj)=>{
+    toggleDirty(false)
     handleNavigate(obj)
     setHasErrors(false)
+    setTimeout(() => {
+      scrollDivToTop();
+    }, 100);
   }
   ColorlibStepIcon.propTypes = {
     /**
@@ -1169,6 +1178,7 @@ function CreateSession(props) {
                   allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()}
                   hasErrors={hasErrors}
                   errorMessage={errorMessage}
+                  preRequisiteSessionAPIComplete={allowSessionCreationAPIComplete}
                   data={props.data}
                   onRetry={handleRetry}
                 />
