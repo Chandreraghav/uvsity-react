@@ -409,11 +409,11 @@ function CreateSession(props) {
               repeatcheckbox: "",
             },
         EndDate: formdata?.schedule?.endDate
-          ? formdata?.schedule?.endDate.toISOString()
-          : new Date().toISOString(),
+          ? formdata?.schedule?.endDate?.toISOString()
+          : new Date()?.toISOString(),
         StartDate: formdata?.schedule?.startDate
-          ? formdata?.schedule?.startDate.toISOString()
-          : new Date().toISOString(),
+          ? formdata?.schedule?.startDate?.toISOString()
+          : new Date()?.toISOString(),
         courseSummary: formdata?.basic?.summary?.html,
         courseType:
           formdata?.participant?.visibility == null ||
@@ -535,7 +535,6 @@ function CreateSession(props) {
           }
         })
         .catch((err) => {
-          console.log(err);
           handleError(
             APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED,
             true,
@@ -1079,6 +1078,10 @@ function CreateSession(props) {
       });
   };
 
+  const handleRetry=(obj)=>{
+    handleNavigate(obj)
+    setHasErrors(false)
+  }
   ColorlibStepIcon.propTypes = {
     /**
      * Whether this step is active.
@@ -1167,6 +1170,7 @@ function CreateSession(props) {
                   hasErrors={hasErrors}
                   errorMessage={errorMessage}
                   data={props.data}
+                  onRetry={handleRetry}
                 />
               )}
 
