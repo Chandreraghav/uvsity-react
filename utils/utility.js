@@ -170,13 +170,14 @@ export const HTMLUnderlineByCharacterIndex = (str, pos) => {
 
 export const getDateAfter = (days, date) => {
   if (!days) {
-    return new Date();}
+    return new Date();
+  }
   var result = !date ? new Date() : new Date(date);
   result.setDate(result.getDate() + parseInt(days));
   return result;
 };
 
-export const getTimeAfter = (time, hourUnits,objectReturnInd) => {
+export const getTimeAfter = (time, hourUnits, objectReturnInd) => {
   var dt = new Date();
   dt.setHours(dt.getHours() + hourUnits);
 
@@ -188,9 +189,9 @@ export const getTimeAfter = (time, hourUnits,objectReturnInd) => {
   const differenceOfRoundedTimeWithCurrentTimeInMins =
     getDifferenceOfTimeWithCurrentTimeInMinutes(s);
   if (differenceOfRoundedTimeWithCurrentTimeInMins < 60) {
-    return getTimeAfter(time, 2,objectReturnInd);
+    return getTimeAfter(time, 2, objectReturnInd);
   }
-  if(objectReturnInd) return _time[0]
+  if (objectReturnInd) return _time[0];
   return _time[0].timeId;
 };
 export const getNearEndTime = (time) => {
@@ -219,7 +220,6 @@ export const getDifferenceOfTimeWithCurrentTimeInMinutes = (time) => {
   } catch (error) {
     return 0;
   }
- 
 };
 export const isToday = (someDate) => {
   const today = new Date();
@@ -253,37 +253,40 @@ export const parseBoolean = (string) => {
 
 export const isEmptyObject = (obj) => {
   try {
-    if(!obj || obj===undefined){
+    if (!obj || obj === undefined) {
       return true;
     }
     return Object.keys(obj).length === 0 && obj.constructor === Object;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
   return true;
 };
-export const  padTo2Digits=(num)=> {
-  return num?.toString().padStart(2, '0');
-}
-export const formatDate=(date) =>{
+export const padTo2Digits = (num) => {
+  return num?.toString().padStart(2, "0");
+};
+export const formatDate = (date) => {
   return (
     [
       padTo2Digits(date?.getMonth() + 1),
       padTo2Digits(date?.getDate()),
       date?.getFullYear(),
-    ].join('/') +
-    ' ' +
+    ].join("/") +
+    " " +
     [
       padTo2Digits(date?.getHours()),
       padTo2Digits(date?.getMinutes()),
       padTo2Digits(date?.getSeconds()),
-    ].join(':')
+    ].join(":")
   );
-}
-export const getReadableFormattedDate=(date)=>{
+};
+export const getReadableFormattedDate = (date) => {
   let year = date?.getFullYear();
-    let month = (1 + date?.getMonth()).toString().padStart(2, '0');
-    let day = date?.getDate().toString().padStart(2, '0');
-  
-    return month + '/' + day + '/' + year;
-}
+  let month = (1 + date?.getMonth()).toString().padStart(2, "0");
+  let day = date?.getDate().toString().padStart(2, "0");
+
+  return month + "/" + day + "/" + year;
+};
+export const _delay = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};

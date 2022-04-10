@@ -688,6 +688,9 @@ export const PARTICIPANT_QUESTIONAIRRES = {
   UPDATED: "Questionairre updated successfully",
   DELETED: "Questionairre deleted successfully",
 };
+export const PARTICIPANT_VISIBILITY={
+  ON_PRIVATE_SESSION:'You are going to create a private session. This means your session will not appear in session search and viewable by the public users.'
+}
 
 export const FEE = {
   PROMO_CODES: {

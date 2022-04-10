@@ -22,10 +22,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Switch from "@mui/material/Switch";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Slide from "@mui/material/Slide";
+import InfoIcon from "@mui/icons-material/Info";
 import {
   APP,
   PARTICIPANT_INVITATION_OPTIONS,
   PARTICIPANT_QUESTIONAIRRES,
+  PARTICIPANT_VISIBILITY,
 } from "../../../../../../constants/userdata";
 import Questions from "../../../../../shared/Questionairre/Questions";
 import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre";
@@ -298,16 +300,21 @@ function Participant(props) {
     });
   };
   useEffect(() => {
-    if (data.participant) {
+    if (data?.participant) {
       // fetch data from context on load of form step.
       setNumberOfParticipants(
         data?.participant?.numberOfParticipants
           ? parseInt(data?.participant?.numberOfParticipants)
           : null
       );
-      setVisibilityPublic(
-        data?.participant?.visibility ? data?.participant?.visibility : false
-      );
+      if(data?.participant?.visibility===true || data?.participant?.visibility===false){
+        setVisibilityPublic(
+          data?.participant?.visibility
+        );
+      }else {
+        setVisibilityPublic(true)
+      }
+     
       setSelectedChoiceOfInvitation(
         data?.participant?.choiceOfInvitation
           ? data?.participant?.choiceOfInvitation
@@ -321,7 +328,9 @@ function Participant(props) {
         data?.participant?.cohost ? data?.participant?.cohost : null
       );
       setItemSelected(data?.participant?.cohost ? true : false);
+      setDirty();
     } else {
+      setDirty();
       APP.SESSION.DTO.requestPath = Router.asPath;
       APP.SESSION.DTO.user = AuthService.getCurrentUser();
       dispatch({
@@ -465,6 +474,13 @@ function Participant(props) {
                       label="Public"
                     />
                   </div>
+                  {!publicVisibility && (<>
+                  
+                    <div className="text-sm text-gray-600 flex">
+                      <InfoIcon fontSize="small"/>
+                      <div>{PARTICIPANT_VISIBILITY.ON_PRIVATE_SESSION}</div></div>
+                  </>)}
+                 
                 </FormControl>
               </div>
             </Grid>

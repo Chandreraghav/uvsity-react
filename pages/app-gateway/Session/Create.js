@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/Authorized/Shared/Header";
 import Layout from "../../../components/Main/Layout";
 import Footer from "../../../components/shared/Footer";
@@ -9,12 +9,10 @@ import { useQuery } from "react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import UserDataService from "../../api/users/data/UserDataService";
 import PrivateRoute from "../../../components/Auth/HOC/Routes/PrivateRoute";
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic";
+import { eraseFormContext } from "../../../components/Authorized/Sessions/Clean/cleanup";
+import { useDataLayerContextValue } from "../../../context/DataLayer";
 
-const DynamicComponentWithNoSSR = dynamic(
-  () => import('date-fns'),
-  { ssr: false }
-)
 function Create() {
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_NAME} | Create Session`,
@@ -27,35 +25,52 @@ function Create() {
       alias: "Create Session",
     },
   };
+  const [formdata, dispatch] = useDataLayerContextValue();
+  const [oldContextErased, setOldContextErased] = useState(false);
   const getRootMetaData = async () =>
     (await MetaDataService.getRootData()).data;
   const getStaticMetaData = async () =>
     (await MetaDataService.getStaticData()).data;
   const getSummary = async () => (await UserDataService.getSummary()).data;
-  const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary,{refetchOnWindowFocus: false,});
-  const STATIC_META_DATA = useQuery([KEYS.METADATA.STATIC], getStaticMetaData,{refetchOnWindowFocus: false,});
-  const ROOT_META_DATA = useQuery([KEYS.METADATA.ROOT], getRootMetaData,{refetchOnWindowFocus: false,});
+  const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary, {
+    refetchOnWindowFocus: false,
+  });
+  const STATIC_META_DATA = useQuery([KEYS.METADATA.STATIC], getStaticMetaData, {
+    refetchOnWindowFocus: false,
+  });
+  const ROOT_META_DATA = useQuery([KEYS.METADATA.ROOT], getRootMetaData, {
+    refetchOnWindowFocus: false,
+  });
   const getData = {
     USER_PROFILE_SUMMARY,
     STATIC_META_DATA,
     ROOT_META_DATA,
   };
 
-  return(
-    <Layout private options={layoutObj}>
-    <Header data={getData.USER_PROFILE_SUMMARY} />
-    <CreateSession
-      data={{
-        static: getData.STATIC_META_DATA.data,
-        root: getData.ROOT_META_DATA.data,
-        workflow: workflowObj,
-        user:getData.USER_PROFILE_SUMMARY
-      }}
-    />
-    <Footer />
-  </Layout>
-  )
+  useEffect(() => {
+    eraseFormContext(formdata, dispatch).then(() => {
+      setOldContextErased(true);
+    });
+  }, []);
 
+  return (
+    <Layout private options={layoutObj}>
+      <Header data={getData.USER_PROFILE_SUMMARY} />
+      {oldContextErased && (
+        <>
+          <CreateSession
+            data={{
+              static: getData.STATIC_META_DATA.data,
+              root: getData.ROOT_META_DATA.data,
+              workflow: workflowObj,
+              user: getData.USER_PROFILE_SUMMARY,
+            }}
+          />
+        </>
+      )}
+      <Footer />
+    </Layout>
+  );
 }
 
-export default PrivateRoute(Create)
+export default PrivateRoute(Create);
