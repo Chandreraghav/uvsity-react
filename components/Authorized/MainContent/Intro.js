@@ -17,13 +17,10 @@ import { AUTHORIZED_ROUTES } from "../../../constants/routes";
 import { v4 as uuidv4 } from "uuid";
 import Shimmer from "./Shimmer/Shimmer";
 import IntroShimmer from "./Shimmer/IntroShimmer";
-import { eraseFormContext } from "../Sessions/Clean/cleanup";
-import { useDataLayerContextValue } from "../../../context/DataLayer";
 
 function Intro(props) {
   const userdata = props.data;
   const router = useRouter();
-  const [formdata, dispatch] = useDataLayerContextValue();
   const [introMoodColor, setIntroMoodColor] = useState(null);
   const introObject = INTRO_TEXT_KEYWORDS[0];
   const [introHeader, setIntroHeader] = useState(
@@ -64,7 +61,7 @@ function Intro(props) {
 
   const invokeIntroAction = (code) => {
     if (code === WORKFLOW_CODES.USER.INTRO_PATHS.SESSION) {
-      eraseFormContext(formdata,dispatch)
+      
       router.push({
         pathname: AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
         query: { token: uuidv4() },

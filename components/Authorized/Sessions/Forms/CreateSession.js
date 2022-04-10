@@ -30,6 +30,7 @@ import {
   getReadableFormattedDate,
   isEmptyObject,
   isValidURL,
+  _delay,
 } from "../../../../utils/utility";
 import { styled } from "@mui/material/styles";
 import StepConnector, {
@@ -47,13 +48,14 @@ import Overlay from "../../../shared/Overlay";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import { SESSION_ERROR } from "../../../../constants/error-messages";
-import {useToggle} from 'react-use';
+import { useToggle } from "react-use";
 import { useLeavePageConfirm } from "../../../../hooks/useLeave";
+import Shimmer from "./Shimmer.js/Shimmer";
 toast.configure();
 function CreateSession(props) {
   const Router = useRouter();
   const checkInteractiveErrors = false;
-
+  const [shimmer, setShimmer] = useState(true);
   const [imgUpload, setImgUpload] = useState(null);
   const [docUpload, setDocUpload] = useState(null);
   const [dirty, toggleDirty] = useToggle(false);
@@ -81,6 +83,7 @@ function CreateSession(props) {
         const numberOfParticipants =
           parseInt(formdata?.participant?.numberOfParticipants) || 0;
         if (
+          !numberOfParticipants ||
           numberOfParticipants <= 0 ||
           numberOfParticipants > 100 ||
           isNaN(numberOfParticipants)
@@ -268,12 +271,6 @@ function CreateSession(props) {
     return completedSteps === totalSteps() - 1;
   };
 
-  const isNextDisabled = () => {
-    if (isLastStep()) {
-      return !allStepsCompletedExceptFinalStep();
-    }
-    return steps[activeStep].complete;
-  };
   const handleNext = () => {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
@@ -497,7 +494,7 @@ function CreateSession(props) {
                   .then((res) => {
                     setImgUpload(res);
                   })
-                  .catch((err) => {
+                  .catch(() => {
                     hasErrors = true;
                   });
               }
@@ -512,7 +509,7 @@ function CreateSession(props) {
                 .then((res) => {
                   setDocUpload(res);
                 })
-                .catch((err) => {
+                .catch(() => {
                   hasErrors = true;
                 });
             }
@@ -538,7 +535,7 @@ function CreateSession(props) {
           }
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
           handleError(
             APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED,
             true,
@@ -647,7 +644,7 @@ function CreateSession(props) {
     setSteps(_steps);
   };
   useEffect(() => {
-    toggleDirty(true)
+    toggleDirty(true);
     basicFormListener();
     scheduleFormListener();
     participantFormListener();
@@ -655,15 +652,13 @@ function CreateSession(props) {
   }, [formdata]);
 
   useEffect(() => {
-    
-    setHasErrors(false);
-    toggleDirty(false)
+      setHasErrors(false);
+      toggleDirty(false);
+       _delay(2000).then(()=>{
+         setShimmer(false)
+       })
   }, []);
 
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
-  };
 
   const QontoConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -970,7 +965,9 @@ function CreateSession(props) {
       courseFullName: formdata?.basic?.name,
       courseShortName: formdata?.basic?.shortName,
       url: formdata?.basic?.url,
-      similarCourseId: formdata?.basic?.pastSessionId?formdata?.basic?.pastSessionId:null,
+      similarCourseId: formdata?.basic?.pastSessionId
+        ? formdata?.basic?.pastSessionId
+        : null,
       cost: Number(formdata?.fees.amount),
       imageURL: getImageURL(true),
       fee: formdata?.fees?.paidInd
@@ -1045,10 +1042,10 @@ function CreateSession(props) {
       .then((res) => {
         // redirect to my sessions page
         // redirect to home dashboard(as of now), until session page is created.
-        setTimeout(()=>{
-          if(res.data.success){
-            toggleDirty(false)
-            setHasErrors(false)
+        setTimeout(() => {
+          if (res.data.success) {
+            toggleDirty(false);
+            setHasErrors(false);
             const _user = props.data.user.data.firstName;
             const msg = SESSION.CREATED.replace("<user>", _user);
             handleResponse(
@@ -1056,34 +1053,22 @@ function CreateSession(props) {
               RESPONSE_TYPES.SUCCESS,
               toast.POSITION.BOTTOM_CENTER
             );
-            
-            Router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD) 
-            
+            Router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD);
+          } else {
+            const _err = SESSION_ERROR.SESSION.CREATE;
+            setErrorMessage(_err);
+            handleError(_err, true, true);
+            setHasErrors(true);
+            setProcessing(false);
           }
-          else {
-            const _err=SESSION_ERROR.SESSION.CREATE
-            setErrorMessage(_err)
-            handleError(
-              _err,
-              true,
-              true
-            );
-            setHasErrors(true)
-            setProcessing(false)
-          }
-        },100)
-        
+        }, 100);
       })
-      .catch((err) => {
-        const _err=SESSION_ERROR.SESSION.CREATE
-        setErrorMessage(_err)
-        handleError(
-          _err,
-          true,
-          true
-        );
-        setHasErrors(true)
-        setProcessing(false)
+      .catch(() => {
+        const _err = SESSION_ERROR.SESSION.CREATE;
+        setErrorMessage(_err);
+        handleError(_err, true, true);
+        setHasErrors(true);
+        setProcessing(false);
       });
   };
 
@@ -1104,7 +1089,7 @@ function CreateSession(props) {
      */
     icon: PropTypes.node,
   };
-  const scrollDivToTop = (div) => {
+  const scrollDivToTop = () => {
     window.scrollTo(0, 0);
   };
   const handleNavigate = (navigationObject) => {
@@ -1115,14 +1100,16 @@ function CreateSession(props) {
       navigateToStep(label, navigationObject);
     }
   };
- 
 
   return (
     <div id="create-session" className="px-4 py-2 bg-white">
       <Typography variant="h6" component="div">
         {props.data.workflow.workflow.alias}
       </Typography>
-      <Slide direction="up" in={true}>
+      <Shimmer visible={shimmer}/>
+      {!shimmer && (
+      <>
+        <Slide direction="up" in={true}>
         <Box sx={{ width: "100%" }} className="py-4">
           <Stepper
             alternativeLabel
@@ -1220,6 +1207,8 @@ function CreateSession(props) {
         message={TOOLTIPS.CREATING_SESSION}
         open={processing}
       />
+      </>)}
+      
     </div>
   );
 }
