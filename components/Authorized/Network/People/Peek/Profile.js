@@ -57,8 +57,6 @@ function PeekProfile(props) {
             return true;
           }
         }
-
-        
       }
 
       if (metadata.associatedCoHostData) {
@@ -179,11 +177,15 @@ function PeekProfile(props) {
                   </>
                 ) : (
                   <span
-                  onClick={(e) => handleConnectRequest()}
-                  className=""
-                  title={`Connect with ${props.metaData.firstName}`}
-                >
-                  <PersonAddAltIcon />
+                    onClick={(e) => handleConnectRequest()}
+                    className=""
+                    title={`${
+                      props?.metaData?.firstName
+                        ? `Connect with ${props.metaData.firstName}`
+                        : ""
+                    }`}
+                  >
+                    <PersonAddAltIcon />
                   </span>
                 )}
               </IconButton>
@@ -211,10 +213,10 @@ function PeekProfile(props) {
                     props?.isConnectionRequestSent && "control__disabled"
                   }`}
                   role="button"
-                  onTouchStart={props?.onHover}
-                  onTouchEnd={props?.onLeave}
-                  onMouseEnter={props?.onHover}
-                  onMouseLeave={props?.onLeave}
+                  // onTouchStart={props?.onHover}
+                  // onTouchEnd={props?.onLeave}
+                  // onMouseEnter={props?.onHover}
+                  // onMouseLeave={props?.onLeave}
                 >
                   <IconButton
                     className=" cursor-pointer inline-flex "
@@ -239,7 +241,17 @@ function PeekProfile(props) {
                         </small>
                       </>
                     ) : (
-                      <PersonAddAltIcon />
+                      <span
+                        onClick={(e) => handleConnectRequest()}
+                        className=""
+                        title={`${
+                          props?.metaData?.firstName
+                            ? `Connect with ${props.metaData.firstName}`
+                            : ""
+                        }`}
+                      >
+                        <PersonAddAltIcon />
+                      </span>
                     )}
                   </IconButton>
 
@@ -266,10 +278,10 @@ function PeekProfile(props) {
                     props?.isConnectionAcceptRequestSent && "control__disabled"
                   }`}
                   role="button"
-                  onTouchStart={props?.onHoverAccept}
-                  onTouchEnd={props?.onLeaveAccept}
-                  onMouseEnter={props?.onHoverAccept}
-                  onMouseLeave={props?.onLeaveAccept}
+                  // onTouchStart={props?.onHoverAccept}
+                  // onTouchEnd={props?.onLeaveAccept}
+                  // onMouseEnter={props?.onHoverAccept}
+                  // onMouseLeave={props?.onLeaveAccept}
                 >
                   <IconButton
                     className=" cursor-pointer inline-flex "
@@ -293,7 +305,18 @@ function PeekProfile(props) {
                         </small>
                       </>
                     ) : (
-                      <AddTaskIcon />
+                      <span
+                        onClick={(e) => handleAcceptRequest(e)}
+                        className=""
+                        title={`${
+                          props?.metaData?.firstName
+                            ? `Accept connection request from ${props.metaData.firstName}`
+                            : ""
+                        }`}
+                      >
+                        {" "}
+                        <AddTaskIcon />
+                      </span>
                     )}
                   </IconButton>
 
@@ -339,7 +362,14 @@ function PeekProfile(props) {
               {isInPendingState && (
                 <div className={`flex cursor-pointer  slow-transition`}>
                   <IconButton
-                    title={`${TITLES.CONNECTION_REQUEST_PENDING}${props.metaData.firstName || props.metaData.creator.firstName}`}
+                    title={`${
+                      props?.metaData?.firstName
+                        ? TITLES.CONNECTION_REQUEST_PENDING +
+                          (props.metaData.firstName ||
+                            props.metaData.creator.firstName)
+                        : TITLES.CONNECTION_REQUEST_PENDING +
+                          props.data.primary.split(" ")[0]
+                    }`}
                     className=" cursor-pointer inline-flex "
                     fontSize="small"
                     sx={{ color: "#EF107D" }}
