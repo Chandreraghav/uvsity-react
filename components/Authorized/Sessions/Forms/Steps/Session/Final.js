@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Checkbox,
   Divider,
   FormControl,
@@ -10,6 +11,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Stack,
   TextField,
   Tooltip,
   Typography,
@@ -57,6 +59,8 @@ import {
   USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION,
   USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION,
 } from "../../../../../../constants/constants";
+import ReplayIcon from '@mui/icons-material/Replay';
+import StartIcon from '@mui/icons-material/Start';
 import TimezoneBrowseDialog from "../../../../../shared/modals/TimezoneBrowseDialog";
 import { actionTypes } from "../../../../../../context/reducer";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
@@ -277,6 +281,11 @@ function Final(props) {
     setShowCompletionMessage(props.showCompletionMessage);
   }, [props.showCompletionMessage]);
 
+  const sendRetryRequest = () => {
+    if (props.onRetry) {
+      props.onRetry(0);
+    }
+  };
   return (
     <Slide direction="left" in={true}>
       <div className={`p-4`}>
@@ -294,6 +303,17 @@ function Final(props) {
               src="/static/images/something-wrong-illustration-1.webp"
               className="  w-full h-60 object-contain"
             />
+<div className=" flex justify-center items-center mt-5">
+<Stack direction="row" spacing={2}>
+      <Button onClick={()=>{sendRetryRequest()}} variant="outlined" startIcon={<ReplayIcon />}>
+        Retry
+      </Button>
+      <Button onClick={()=>{location.reload()}} variant="contained" endIcon={<StartIcon />}>
+        Restart
+      </Button>
+    </Stack>
+</div>
+
           </>
         ) : (
           <>

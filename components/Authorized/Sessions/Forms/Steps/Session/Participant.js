@@ -207,6 +207,7 @@ function Participant(props) {
             setProcessing(false);
             setQuestionairreIdentifier(null);
             APP.SESSION.DTO.PARTICIPANTS.questions = null;
+            APP.SESSION.DTO.PARTICIPANTS.questionairre=null
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
               participant: APP.SESSION.DTO.PARTICIPANTS,
