@@ -1,7 +1,32 @@
+import {
+  APP,
+  SESSION_DOCUMENT,
+  SESSION_POSTER,
+} from "../../../../constants/userdata";
 import { actionTypes } from "../../../../context/reducer";
 
 export const eraseFormContext = (data, clean) => {
   return new Promise((res, rej) => {
+    SESSION_POSTER.imageURL = null;
+    SESSION_POSTER.binary = null;
+    SESSION_DOCUMENT.binary = null;
+    SESSION_DOCUMENT.consent.hasConsent = false;
+    APP.SESSION.DTO.BASIC.binary.documents = {
+      consent: false,
+      document: "",
+      data: null,
+      error: false,
+    };
+    APP.SESSION.DTO.BASIC.binary.images = {
+      poster: "",
+      data: null,
+      error: false,
+    };
+    APP.SESSION.DTO.PARTICIPANTS.choiceOfInvitation = null;
+    APP.SESSION.DTO.PARTICIPANTS.visibility = null;
+    APP.SESSION.DTO.PARTICIPANTS.numberOfParticipants = null;
+    APP.SESSION.DTO.PARTICIPANTS.questions = null;
+    APP.SESSION.DTO.PARTICIPANTS.questionairre = null;
     cleanFormData(data, clean).then((r) => {
       res(true);
     });

@@ -29,6 +29,8 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import {
+  download,
+  getFileExtension,
   getRandomArrayElement,
   getTimezone,
   HTMLUnderlineByCharacterIndex,
@@ -45,6 +47,7 @@ import QuizIcon from "@mui/icons-material/Quiz";
 import {
   APP,
   PLACEHOLDERS,
+  SESSION_DOCUMENT,
   SPONSORSHIP,
   TOOLTIPS,
 } from "../../../../../../constants/userdata";
@@ -69,6 +72,27 @@ function Final(props) {
   const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [timeDisplay, setTimeDisplay] = useState(null);
+  const getIconPerFileExtension = (ext) => {
+    const icons = SESSION_DOCUMENT.icons;
+    switch (ext) {
+      case "docx":
+      case "doc":
+        return icons.DOCX;
+      case "txt":
+        return icons.TXT;
+      case "pdf":
+        return icons.PDF;
+      case "zip":
+        return icons.ZIP;
+      case "jpg":
+      case "png":
+      case "webp":
+      case "gif":
+        return icons.IMG;
+      default:
+        return icons.TXT;
+    }
+  };
   const generateMonetizationAmountOnCard = (data) => {
     const amount = Number(data?.amount);
     const isPaid = data?.paidInd;
@@ -107,13 +131,10 @@ function Final(props) {
     );
   };
   const getErrorMessage = () => {
-    let msg=APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED
-    if(props.errorMessage) msg=props.errorMessage
+    let msg = APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED;
+    if (props.errorMessage) msg = props.errorMessage;
     const _user = props.data.user.data.firstName;
-    const _err = msg.replace(
-      "<user>",
-      _user
-    );
+    const _err = msg.replace("<user>", _user);
     return _err;
   };
   const getCompletionMessage = () => {
@@ -135,6 +156,7 @@ function Final(props) {
 
     return `/static/images/${randomString}`;
   };
+ 
 
   const getStartDate = () => {
     return data?.schedule?.startDate.getDate();
@@ -335,7 +357,11 @@ function Final(props) {
                   <div className="flex flex-col py-1">
                     <img
                       className=" relative block overflow-hidden  xl:h-48 lg:h-48  object-contain xl:object-cover lg:object-cover bg-gray-100 bg-center  rounded mb-2 "
-                      src={data?.basic?.binary?.images?.poster}
+                      src={
+                        data?.basic?.binary?.images?.poster
+                          ? data?.basic?.binary?.images?.poster
+                          : "/static/images/session-poster-not-found.webp"
+                      }
                     />
                     <div className="flex ">
                       <Profile
@@ -572,10 +598,11 @@ function Final(props) {
                           </>
                         )}
                     </div>
-                    <Divider></Divider>
+
                     <div className="flex flex-col gap-1">
                       {data?.basic?.url && (
                         <>
+                          <Divider></Divider>
                           <div className="flex gap-1">
                             <VideocamIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                             <Typography
@@ -601,7 +628,7 @@ function Final(props) {
                               </Tooltip>
                             </div>
                           </div>
-                          <div className="player__wrapper">
+                          <div className="player__wrapper py-1">
                             <ReactPlayer
                               controls
                               loop={true}
@@ -617,6 +644,7 @@ function Final(props) {
 
                       {data?.basic?.binary?.documents?.consent && (
                         <>
+                          <Divider></Divider>
                           <div className="flex gap-1">
                             <AttachmentIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                             <Typography
@@ -628,11 +656,22 @@ function Final(props) {
                           </div>
 
                           <div className="flex gap-1">
-                            <ArticleIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
-                            <Tooltip title="Click to download">
-                              <Typography
+                            <div className="text-gray-600 line-clamp-1">
+                            {getIconPerFileExtension(
+                              getFileExtension(
+                                data?.basic?.binary?.documents?.data?.binary
+                                  ?.name
+                              )
+                            )}
+                            </div>
+                            
+                           
+                           <div onClick={()=>download(data?.basic?.binary?.documents?.data?.binary?.preview,data?.basic?.binary?.documents?.data?.binary
+                                    ?.name)}>
+                           <Tooltip title="Click to download">
+                              <Typography 
                                 variant="div"
-                                className="app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-gray-600"
+                                className="app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm mt-1  leading-tight  text-gray-600"
                               >
                                 {
                                   data?.basic?.binary?.documents?.data?.binary
@@ -640,6 +679,8 @@ function Final(props) {
                                 }
                               </Typography>
                             </Tooltip>
+                           </div>
+                            
                           </div>
                         </>
                       )}

@@ -290,3 +290,11 @@ export const getReadableFormattedDate = (date) => {
 export const _delay = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
+export const download = (src, name) => {
+  const a = document.createElement("a");
+  a.href = src;
+  a.download = name || src.split("/").pop();
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
