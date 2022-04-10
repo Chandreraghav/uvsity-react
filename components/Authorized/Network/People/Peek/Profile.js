@@ -178,7 +178,7 @@ function PeekProfile(props) {
                 ) : (
                   <span
                     onClick={(e) => handleConnectRequest()}
-                    className=""
+                    className="-mt-1"
                     title={`${
                       props?.metaData?.firstName
                         ? `Connect with ${props.metaData.firstName}`
@@ -243,7 +243,7 @@ function PeekProfile(props) {
                     ) : (
                       <span
                         onClick={(e) => handleConnectRequest()}
-                        className=""
+                        className="-mt-1"
                         title={`${
                           props?.metaData?.firstName
                             ? `Connect with ${props.metaData.firstName}`
@@ -307,7 +307,7 @@ function PeekProfile(props) {
                     ) : (
                       <span
                         onClick={(e) => handleAcceptRequest(e)}
-                        className=""
+                        className="-mt-1"
                         title={`${
                           props?.metaData?.firstName
                             ? `Accept connection request from ${props.metaData.firstName}`
