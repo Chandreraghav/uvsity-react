@@ -402,7 +402,7 @@ function Profile({
                   ) : (
                     <span
                       onClick={(e) => addToNetwork(e)}
-                      className=""
+                      className="-mt-1"
                       title={`Connect with ${firstName}`}
                     >
                       <PersonAddAltIcon />
@@ -456,7 +456,7 @@ function Profile({
                       ) : (
                         <span
                         onClick={(e) => addToNetwork(e)}
-                        className=""
+                        className="-mt-1"
                         title={`Connect with ${firstName}`}
                       >
                         <PersonAddAltIcon />
@@ -513,7 +513,7 @@ function Profile({
                       ) : (
                         <span
                         onClick={(e) => acceptRequest(e)}
-                        className=""
+                        className="-mt-1"
                         title={`Accept connection request from ${firstName}`}
                       >
                         <AddTaskIcon />

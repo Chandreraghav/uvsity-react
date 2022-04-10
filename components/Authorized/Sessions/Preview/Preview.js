@@ -2,6 +2,7 @@ import { Tooltip } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
+import convertToHTML from "markdown-to-html-converter";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
@@ -238,7 +239,8 @@ function Preview({ data, authorized,userdata }) {
               options={{ connect: false, mixedMode: true }}
             />
             <div className={` ${SessionStyle.session__description__clamp} line-clamp-3 text-gray-700 py-1 mb-1 leading-snug`}>
-              {parse(data.courseSummary)}
+             
+              {parse(convertToHTML(data?.courseSummary))}
             </div>
           </div>
         </div>
