@@ -199,12 +199,13 @@ function Profile({
     setConnectionAcceptRequestInProgress(true);
     if (
       metaData.invitationAction &&
-      (metaData.invitationRequestId ||   metaData.invitationAction.invitationRequestId)
+      (metaData.invitationRequestId ||
+        metaData.invitationAction.invitationRequestId)
     ) {
-      const requestId= metaData.invitationRequestId ||   metaData.invitationAction.invitationRequestId;
-      ConnectionService.acceptConnectionRequest(
-        requestId
-      )
+      const requestId =
+        metaData.invitationRequestId ||
+        metaData.invitationAction.invitationRequestId;
+      ConnectionService.acceptConnectionRequest(requestId)
         .then(() => {
           setConnectionAcceptRequestSendError(false);
           handleResponse(
@@ -289,10 +290,10 @@ function Profile({
           isConnectionAcceptRequestSendError={
             isConnectionAcceptRequestSendError
           }
-          onHover={onHover}
-          onLeave={onLeave}
-          onHoverAccept={onHoverAccept}
-          onLeaveAccept={onLeaveAccept}
+          // onHover={onHover}
+          // onLeave={onLeave}
+          // onHoverAccept={onHoverAccept}
+          // onLeaveAccept={onLeaveAccept}
           dark
           data={{
             oid: oid,
@@ -375,10 +376,10 @@ function Profile({
                   isConnectionRequestSent && "control__disabled"
                 }`}
                 role="button"
-                onTouchStart={onHover}
-                onTouchEnd={onLeave}
-                onMouseEnter={onHover}
-                onMouseLeave={onLeave}
+                // onTouchStart={onHover}
+                // onTouchEnd={onLeave}
+                // onMouseEnter={onHover}
+                // onMouseLeave={onLeave}
               >
                 <IconButton
                   className=" cursor-pointer inline-flex "
@@ -399,7 +400,13 @@ function Profile({
                       </small>
                     </>
                   ) : (
-                    <PersonAddAltIcon />
+                    <span
+                      onClick={(e) => addToNetwork(e)}
+                      className=""
+                      title={`Connect with ${firstName}`}
+                    >
+                      <PersonAddAltIcon />
+                    </span>
                   )}
                 </IconButton>
 
