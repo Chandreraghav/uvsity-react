@@ -1,3 +1,4 @@
+import moment from "moment";
 import { TIME_OF_DAY_GREETING } from "../constants/constants";
 import { getLocalStorageObject } from "../localStorage/local-storage";
 
@@ -298,3 +299,7 @@ export const download = (src, name) => {
   a.click();
   document.body.removeChild(a);
 };
+
+export const  timestamp= () => {
+return moment(new Date()).format('DDMMYYYYhhmmss').toString() + moment.tz.zone(Intl.DateTimeFormat().resolvedOptions().timeZone.toString()).abbr(360);
+} 

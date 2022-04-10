@@ -2,6 +2,7 @@ import { FormHelperText } from "@mui/material";
 
 import React, { useEffect, useState, useRef } from "react";
 import { JWT } from "../../../jwt/auth/JWT";
+import { timestamp } from "../../../utils/utility";
  
 function CEditor(props) {
   let editorRef = useRef();
@@ -17,7 +18,7 @@ function CEditor(props) {
     };
     setLoaded(true);
   }, []); // run on mounting
-
+   
   if (loaded) {
     return (
       <>
@@ -73,16 +74,22 @@ function CEditor(props) {
               // https://ckeditor.com/docs/ckeditor5/latest/features/image-upload/simple-upload-adapter.html
               simpleUpload: {
                 // The URL that the images are uploaded to.
-                uploadUrl: "http://example.com",
+                uploadUrl: `${process.env.NEXT_PUBLIC_API_URL}session/inlineimage?timestamp=${timestamp()}&jwtToken=${JWT.authHeader().Authorization}`,
+                 
+                 // Enable the XMLHttpRequest.withCredentials property.
+              //  withCredentials: true,
   
-                // Enable the XMLHttpRequest.withCredentials property.
-                withCredentials: true,
-  
-                // Headers sent along with the XMLHttpRequest to the upload server.
-                headers: {
-                  "X-CSRF-TOKEN": "CSRF-Token",
-                  Authorization: JWT.authHeader().Authorization,
-                },
+               // Headers sent along with the XMLHttpRequest to the upload server.
+                // headers: {
+                //   "X-CSRF-TOKEN": "CSRF-Token",
+                //   Authorization: JWT.authHeader().Authorization,
+                //   Cookie:{
+                //      JSESSIONID:"hJ-gX1iIqmEl52ljkjYZgV78SihDyECL35WnIIdR.uvsity",
+                //      G_ENABLED_IDPS:'google',
+                //      G_AUTHUSER_H:0,
+                //   }
+                // }
+                
               },
               
             }}
