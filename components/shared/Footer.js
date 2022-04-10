@@ -6,28 +6,28 @@ function Footer() {
       <footer className={FooterStyle.footer}>
         <ul className={FooterStyle.child__footer__links}>
           <li className={`${FooterStyle.child__footer__link__wrapper}`}>
-            <a className={`${FooterStyle.child__footer__link}  app__anchor`} href="/browse/subtitles">
+            <a className={`${FooterStyle.child__footer__link}  app__anchor__footer`} href="/browse/subtitles">
                 User Agreement
               
             </a>
           </li>
 
           <li className={FooterStyle.child__footer__link__wrapper}>
-            <a className={`${FooterStyle.child__footer__link} app__anchor`} href="/browse/subtitles">
+            <a className={`${FooterStyle.child__footer__link} app__anchor__footer`} href="/browse/subtitles">
                 Privacy Policy
                
             </a>
           </li>
 
           <li className={FooterStyle.child__footer__link__wrapper}>
-            <a className={`${FooterStyle.child__footer__link} app__anchor`} href="/browse/subtitles">
+            <a className={`${FooterStyle.child__footer__link} app__anchor__footer`} href="/browse/subtitles">
                Help Center
                
             </a>
           </li>
 
           <li className={FooterStyle.child__footer__link__wrapper}>
-            <a className={`${FooterStyle.child__footer__link} app__anchor`} href="/browse/subtitles">
+            <a className={`${FooterStyle.child__footer__link} app__anchor__footer`} href="/browse/subtitles">
                 Contact us
                
             </a>
