@@ -59,6 +59,12 @@ a {
   text-decoration: none;
   color: #f8ac41;
 }
+.app__anchor__footer:hover {
+  text-decoration: underline !important;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  color: #111 !important;
+}
 .app__anchor:hover {
   text-decoration: underline !important;
   transition-timing-function: ease-in;
