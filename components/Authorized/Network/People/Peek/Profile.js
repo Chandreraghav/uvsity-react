@@ -1,4 +1,4 @@
-import { Avatar, Button, Stack, IconButton } from "@mui/material";
+import { Avatar, Button, Stack, IconButton, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import {
   COMPLETION_DETAIL_ACTION,
@@ -393,14 +393,26 @@ function PeekProfile(props) {
             <Button size="small" variant="contained" endIcon={<SendIcon />}>
               Message
             </Button>
-
-            <Button
-              size="small"
-              variant="contained"
-              endIcon={<RecommendOutlinedIcon />}
-            >
-              Ask recommendation
-            </Button>
+            <div className=" xl:flex inline md:flex inline lg:flex inline hidden">
+              <Button
+                size="small"
+                variant="contained"
+                endIcon={<RecommendOutlinedIcon />}
+              >
+                Ask Recommendation
+              </Button>
+            </div>
+            <div className="flex xl:hidden md:hidden inline lg:hidden sm:flex inline xs:flex inline">
+              <div className="text-blue-500 ml-auto cursor-pointer ">
+                <Tooltip
+                  title={`Ask a recommendation from ${
+                    props.data.primary.split(" ")[0]
+                  }`}
+                >
+                  <RecommendOutlinedIcon  />
+                </Tooltip>
+              </div>
+            </div>
           </Stack>
         </div>
       )}
@@ -418,14 +430,25 @@ function PeekProfile(props) {
                   {action.title}
                 </Button>
               ) : (
-                <Button
-                  key={index}
-                  variant="contained"
-                  endIcon={action.icon}
-                  size={action.size}
-                >
-                  {action.title}
-                </Button>
+                <div key={index}>
+                  <div className="  hidden xl:flex inline md:flex inline lg:flex inline ">
+                    <Button
+                      variant="contained"
+                      endIcon={action.icon}
+                      size={action.size}
+                    >
+                      {action.title}
+                    </Button>
+                  </div>
+
+                  <div className="flex xl:hidden inline md:hidden inline lg:hidden inline sm:flex inline xs:flex inline">
+                    <div className="ml-auto text-blue-500 cursor-pointer ">
+                      <Tooltip title={`${action.tooltip}`}>
+                        <RecommendOutlinedIcon  />
+                      </Tooltip>
+                    </div>
+                  </div>
+                </div>
               )
             )}
           </Stack>
