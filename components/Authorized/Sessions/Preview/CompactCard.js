@@ -7,7 +7,7 @@ function CompactCard({ data, title }) {
   return (
     <div>
       <div className="flex flex-col">
-        <h2 className="font-bold text-lg pr-2">{title}</h2>
+        <h2 className="font-bold text-lg pr-8">{title}</h2>
         <Spacer />
         <Divider />
         <div

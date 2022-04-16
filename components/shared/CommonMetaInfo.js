@@ -3,7 +3,13 @@ import Head from "next/head";
 function CommonMetaInfo(props) {
   return (
     <Head>
-     <meta charSet="utf-8" />
+      <title>
+        {props?.options?.title
+          ? props.options.title
+          : process.env.NEXT_PUBLIC_APP_OG_TITLE}
+      </title>
+
+      <meta charSet="utf-8" />
       <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       <meta
         name="viewport"
@@ -59,11 +65,7 @@ function CommonMetaInfo(props) {
         name="google-signin-client_id"
         content={process.env.NEXT_PUBLIC_GOOGLE_ID}
       />
-      <title>
-        {props?.options?.title
-          ? props.options.title
-          : process.env.NEXT_PUBLIC_APP_OG_TITLE}
-      </title>
+
       <noscript>You need to enable JavaScript to run this app.</noscript>
     </Head>
   );

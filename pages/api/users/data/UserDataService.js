@@ -37,7 +37,7 @@ export default class UserDataService {
       "#X#",
       course_id.toString()
     );
-    return await asyncInstance.get(endpoint, {data:null});
+    return await asyncInstance.get(endpoint, { data: null });
   }
 
   static async getSessionDetailPerCourse(course_id) {
@@ -45,10 +45,13 @@ export default class UserDataService {
       "#X#",
       course_id.toString()
     );
-    return await asyncInstance.get(endpoint, {data:null});
+    return await asyncInstance.get(endpoint, { data: null });
   }
 
-  static async getUserById(id){
-    return await asyncInstance.get(ENDPOINTS.USER.DETAILS+id, {data:null});
+  static async getUserById(id) {
+    return await asyncInstance.get(ENDPOINTS.USER.DETAILS + id, { data: null });
+  }
+  static async getUserProfileBy(id) {
+    return await asyncInstance.get(ENDPOINTS.USER.PEOPLE.VIEW + id + "/");
   }
 }

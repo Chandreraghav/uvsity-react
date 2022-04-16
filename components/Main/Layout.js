@@ -5,7 +5,7 @@ const Layout = (props) => {
   const options = {
     title: props?.options?.title,
     desc: props?.options?.desc,
-    poster: props?.options?.poster,
+    poster: props?.options?.poster
   };
  
   return props?.private ? (

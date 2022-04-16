@@ -42,7 +42,8 @@ export const ENDPOINTS = {
       ATTENDEES: "/course/#X#/attendees",
       SEARCH:{
         ATTENDEES:'universalsearch/attendees/'
-      }
+      },
+      VIEW:'view/profile/'
     },
     DETAILS: "/view/profile/",
     SESSION_BY_ID: "/courses/#X#",

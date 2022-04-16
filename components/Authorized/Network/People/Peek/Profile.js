@@ -20,9 +20,12 @@ import AddTaskIcon from "@mui/icons-material/AddTask";
 import ProfileStyle from "../../../../../styles/DashboardProfile.module.css";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { navigateToProfile } from "../../../Shared/Navigator";
 toast.configure();
 function PeekProfile(props) {
   if (!props.isOpen) return <></>;
+  const router = useRouter();
   const invitedState =
     props.metaData?.invitationAction?.invitationAction ===
       NETWORK.CONNECTION_RELATION_STATE.CONNECT ||
@@ -93,6 +96,12 @@ function PeekProfile(props) {
     props?.acceptRequest();
     setIsConnected(true);
   };
+  const getUserID = () => {
+    if (props?.data?.oid) return props?.data?.oid;
+    if (props?.metaData?.creator?.userDetailsId)
+      return props?.metaData?.creator?.userDetailsId;
+    return props?.metaData?.associatedUserData?.userDetailsId;
+  };
 
   return (
     <div
@@ -123,6 +132,7 @@ function PeekProfile(props) {
         </div>
         <div className="flex flex-col px-2 py-2">
           <h2
+            onClick={() => navigateToProfile(getUserID(), router)}
             className={`text-xl leading-snug font-semibold line-clamp-1 dialog-title`}
           >
             {props.data.primary}
@@ -409,7 +419,7 @@ function PeekProfile(props) {
                     props.data.primary.split(" ")[0]
                   }`}
                 >
-                  <RecommendOutlinedIcon  />
+                  <RecommendOutlinedIcon />
                 </Tooltip>
               </div>
             </div>
@@ -444,7 +454,7 @@ function PeekProfile(props) {
                   <div className="flex xl:hidden inline md:hidden inline lg:hidden inline sm:flex inline xs:flex inline">
                     <div className="ml-auto text-blue-500 cursor-pointer ">
                       <Tooltip title={`${action.tooltip}`}>
-                        <RecommendOutlinedIcon  />
+                        <RecommendOutlinedIcon />
                       </Tooltip>
                     </div>
                   </div>

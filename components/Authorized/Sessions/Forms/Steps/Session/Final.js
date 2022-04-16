@@ -49,6 +49,7 @@ import SessionStyle from "../../../../../../styles/Session.module.css";
 import QuizIcon from "@mui/icons-material/Quiz";
 import {
   APP,
+  IMAGE_PATHS,
   PLACEHOLDERS,
   SESSION_DOCUMENT,
   SPONSORSHIP,
@@ -402,7 +403,7 @@ function Final(props) {
                       src={
                         data?.basic?.binary?.images?.poster
                           ? data?.basic?.binary?.images?.poster
-                          : "/static/images/session-poster-not-found.webp"
+                          : IMAGE_PATHS.NO_DATA.EVENT_POSTER
                       }
                     />
                     <div className="flex ">

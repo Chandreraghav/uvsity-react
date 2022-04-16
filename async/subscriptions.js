@@ -5,25 +5,30 @@ export const asyncSubscriptions = {
     enabled: true,
     subscribed: false,
     pollEvery: standardSubscriptionPollDelay,
-    model:false,
+    model: false,
+  },
+  PROFILE_VIEWS: {
+    enabled: false,
+    subscribed: false,
+    pollEvery: standardSubscriptionPollDelay,
+    model: false,
   },
   INTERESTING_CONNECTIONS: {
     enabled: true,
     subscribed: false,
     pollEvery: standardSubscriptionPollDelay,
-    model:false,
+    model: false,
   },
   LOGGED_IN_USER_INFO: {
     enabled: true,
     subscribed: false,
     pollEvery: 60000,
-    model:false,
+    model: false,
   },
   SESSION_EXPIRY: {
     enabled: true,
     subscribed: false,
     pollEvery: sessionValidityPollDelay,
-    model:true,
+    model: true,
   },
 };
-
