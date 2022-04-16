@@ -7,9 +7,11 @@
   align-items: center;
   flex-direction: column;
 }
+
 .profile__mini__secondary__information {
   margin: 8px;
 }
+
 .profile__completion__indicator {
   display: flex;
   width: 120px;
@@ -17,7 +19,8 @@
   padding: 5px;
   margin: 10px;
 }
-.profile__mini > img {
+
+.profile__mini>img {
   margin-bottom: -40px;
   width: 100%;
   height: 90px;
@@ -28,18 +31,20 @@
   place-items: center;
   place-content: center;
 }
-.profile__mini > div > div > h4 {
+
+.profile__mini>div>div>h4 {
   color: gray;
   font-size: 12px !important;
   font-weight: 400;
 }
 
-.profile__mini > div > div > h3 {
+.profile__mini>div>div>h3 {
   color: gray;
   font-size: 11px !important;
   font-weight: 400;
 }
-.profile__mini > div > h2 {
+
+.profile__mini>div>h2 {
   font-size: 18px !important;
   text-align: center;
   place-items: center;
@@ -47,18 +52,105 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.profile__mini > div > h2:hover {
+
+.profile__mini>div>h2:hover {
   cursor: pointer;
   text-decoration: underline;
   transition-timing-function: ease-in;
   transition: all 0.8s;
-  color: var(--blue)!important;
+  color: var(--blue) !important;
 }
 
-.profile__mini > div > h2:hover {
+.profile__mini>div>h2:hover {
   cursor: pointer;
   text-decoration: underline;
   transition-timing-function: ease-in;
   transition: all 0.8s;
-  color: var(--blue)!important;
+  color: var(--blue) !important;
+}
+
+/* MACRO PROFILE */
+.profile__macro__top__fixed__header {
+  position: fixed;
+  top: 2;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  height: 50px;
+  z-index: 100;
+  background-color: #e2e2e2;
+  /***Animation**/
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+}
+
+.profile__macro__header__show {
+  background-color: #111;
+  display: inline-block;
+  color: #e2e2e2;
+  -webkit-box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.5);
+
+  background: rgb(82, 113, 255);
+  background: -moz-linear-gradient(90deg, rgba(82, 113, 255, 1) 46%, rgba(228, 200, 160, 1) 100%);
+  background: -webkit-linear-gradient(90deg, rgba(82, 113, 255, 1) 46%, rgba(228, 200, 160, 1) 100%);
+  background: linear-gradient(90deg, rgba(82, 113, 255, 1) 46%, rgba(228, 200, 160, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#5271ff", endColorstr="#e4c8a0", GradientType=1);
+}
+
+.profile__macro__avatar {
+  margin-bottom: 10px;
+
+}
+
+.profile__macro {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.profile__completion__indicator {
+  display: flex;
+  width: 120px;
+  height: 120px;
+  padding: 5px;
+  margin: 10px;
+}
+
+.profile__macro>img {
+  margin-bottom: -40px;
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  object-fit: cover;
+  align-items: center;
+  place-items: center;
+  place-content: center;
+}
+
+.profile__macro>div>div>h4 {
+  color: gray;
+  font-weight: 400;
+}
+
+.profile__macro>div>div>h3 {
+  color: gray;
+  font-weight: 400;
+}
+
+.profile__macro>div>h2 {
+  font-size: 24px !important;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.profile__macro__profile__name {
+  color: #5271ff !important;
+}
+
+.profile__macro__review__star {
+  color: gold;
+  font-size: 20px !important;
 }
