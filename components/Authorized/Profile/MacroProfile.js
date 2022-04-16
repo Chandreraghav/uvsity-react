@@ -71,6 +71,7 @@ function MacroProfile(props) {
           url: userdata?.linkedInProfile,
           tooltip: "Linkedin profile",
           icon: <LinkedInIcon />,
+          display: isConnected || isItMe,
         },
       },
     ],
@@ -89,7 +90,9 @@ function MacroProfile(props) {
     const ratings = [];
     for (var i = 0; i < starRating; i++) {
       ratings.push(
-        <StarRateIcon className={` mt-1 ${ProfileStyle.profile__macro__review__star}`} />
+        <StarRateIcon
+          className={` mt-1 ${ProfileStyle.profile__macro__review__star}`}
+        />
       );
     }
     return <>{ratings}</>;
@@ -105,20 +108,32 @@ function MacroProfile(props) {
             className={`Profile-Name-Image-Cover-Picture-Secondary-Information-Connection-Status-social-profile-reference-Star-Rating uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__macro}`}
           >
             <img
-              className=" h-28 lg:h-52 xl:h-52 md:h-48"
+              className={`${!isConnected ? '-mb-10':'  -mb-16'} h-28 lg:h-52 xl:h-52 md:h-48`}
               src={DEFAULT_COVER_IMAGE}
               alt="profile-cover-image"
             />
+            {isConnected && (
+              <>
+                <div className=" relative send-message send-rating ask-recommendation ">
+                  <div className="flex">
+                    <div></div>
+                    <div className=" flex bottom-0 ml-auto mr-2">
+                      kk
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
 
             {profileImage &&
             !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
               <Avatar
-                className={` cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                className={`  cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                 src={profileImage}
               />
             ) : (
               <Avatar
-                className={`  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                className={`    ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                 {...avatarToString(`${profileName}`)}
               />
             )}
@@ -187,8 +202,13 @@ function MacroProfile(props) {
                     <>
                       <div className="social-handles ml-auto">
                         {metaData?.social_profiles?.map((profile, index) => (
-                          <>
-                            <div className="mt-1" key={index}>
+                          <div
+                            className={`${
+                              profile.in.url && profile.in.display ? "mt-1" : ""
+                            }`}
+                            key={index}
+                          >
+                            {profile.in.url && profile.in.display && (
                               <a
                                 href={profile.in.url}
                                 target="_blank"
@@ -196,8 +216,8 @@ function MacroProfile(props) {
                               >
                                 {profile.in.icon}
                               </a>
-                            </div>
-                          </>
+                            )}
+                          </div>
                         ))}
                       </div>
                     </>
