@@ -3,6 +3,7 @@ export const KEYS = {
     VISITS: "visits",
     COMPLETION: "completion",
     SUMMARY: "summary",
+    VIEWS:'views'
   },
   LOGIN: {
     INFO: "login-info",

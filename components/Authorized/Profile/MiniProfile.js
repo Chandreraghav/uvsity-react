@@ -10,7 +10,9 @@ import { IMAGE_PATHS, TOOLTIPS } from "../../../constants/userdata";
 import Spacer from "../../shared/Spacer";
 import PeekProfile from "../Network/People/Peek/Profile";
 import { makeStyles } from "@material-ui/core/styles";
-import MiniProfileShimmer from './Shimmer/MiniProfileShimmer'
+import MiniProfileShimmer from "./Shimmer/MiniProfileShimmer";
+import { useRouter } from "next/router";
+import { navigateToProfile } from "../Shared/Navigator";
 const useStyles = makeStyles((theme) => ({
   popover: {
     pointerEvents: "none",
@@ -31,6 +33,7 @@ function MiniProfile({
   metaData,
   masterData,
 }) {
+  const router = useRouter();
   const classes = useStyles();
   const popoverAnchor = useRef(null);
   const [openedPopover, setOpenedPopover] = useState(false);
@@ -41,6 +44,11 @@ function MiniProfile({
   const handlePopoverClose = () => {
     setOpenedPopover(false);
   };
+
+  const goToProfile=(masterData,router)=>{
+    
+    navigateToProfile(masterData.data.userDetailsId, router)
+  }
 
   if (!name) return "";
   return (
@@ -80,6 +88,7 @@ function MiniProfile({
               metaData?.country
             ),
             isItMe: true,
+            oid:masterData.data.userDetailsId
           }}
         />
       </Popover>
@@ -125,7 +134,13 @@ function MiniProfile({
 
           <div className={ProfileStyle.profile__mini__information}>
             <Tooltip title={TOOLTIPS.GO_TO_PROFILE}>
-              <h2>{name}</h2>
+              <h2
+                onClick={() =>
+                  goToProfile(masterData, router)
+                }
+              >
+                {name}
+              </h2>
             </Tooltip>
             <div
               className={`text-center ${ProfileStyle.profile__mini__secondary__information}`}

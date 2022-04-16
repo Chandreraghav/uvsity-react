@@ -128,6 +128,7 @@ function Profiles({
             {bo?.map((value) => (
               <Profile
                 options={options}
+                oid={value.userDetailsId}
                 key={value.userDetailsId}
                 firstName={value.firstName}
                 lastName={value.lastName}

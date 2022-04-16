@@ -32,6 +32,8 @@ import PendingIcon from "@mui/icons-material/Pending";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import PeekProfile from "../Peek/Profile";
 import { makeStyles } from "@material-ui/core/styles";
+import { useRouter } from "next/router";
+import { navigateToProfile } from "../../../Shared/Navigator";
 toast.configure();
 const useStyles = makeStyles((theme) => ({
   popover: {
@@ -67,7 +69,7 @@ function Profile({
 }) {
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
     useState(false);
-
+  const router = useRouter();
   const classes = useStyles();
   const popoverAnchor = useRef(null);
   const [openedPopover, setOpenedPopover] = useState(false);
@@ -246,6 +248,9 @@ function Profile({
   ) {
     return "";
   }
+  const goToProfile = (id) => {
+    navigateToProfile(id, router);
+  };
 
   return (
     <div>
@@ -363,7 +368,10 @@ function Profile({
                     : TOOLTIPS.VIEW_PROFILE
                 }
               >
-                <span className="name">
+                <span
+                  onClick={() => goToProfile(oid)}
+                  className="name"
+                >
                   {profilePrimaryLine}
                   {isMePrefixOnProfileName ? <>{ME}</> : <></>}
                 </span>
@@ -455,11 +463,11 @@ function Profile({
                         </>
                       ) : (
                         <span
-                        onClick={(e) => addToNetwork(e)}
-                        className="-mt-1"
-                        title={`Connect with ${firstName}`}
-                      >
-                        <PersonAddAltIcon />
+                          onClick={(e) => addToNetwork(e)}
+                          className="-mt-1"
+                          title={`Connect with ${firstName}`}
+                        >
+                          <PersonAddAltIcon />
                         </span>
                       )}
                     </IconButton>
@@ -512,11 +520,11 @@ function Profile({
                         </>
                       ) : (
                         <span
-                        onClick={(e) => acceptRequest(e)}
-                        className="-mt-1"
-                        title={`Accept connection request from ${firstName}`}
-                      >
-                        <AddTaskIcon />
+                          onClick={(e) => acceptRequest(e)}
+                          className="-mt-1"
+                          title={`Accept connection request from ${firstName}`}
+                        >
+                          <AddTaskIcon />
                         </span>
                       )}
                     </IconButton>

@@ -3,6 +3,9 @@ export const AUTHORIZED_ROUTES={
     DASHBOARD: '/app-gateway/Landing',
     SESSION:{
        CREATE:"/app-gateway/Session/Create"
+    },
+    PEOPLE:{
+       PROFILE:'/app-gateway/User/Profile/'
     }
    }
     

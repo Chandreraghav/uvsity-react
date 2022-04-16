@@ -25,7 +25,7 @@ function Dashboard({data}) {
         <CompactCard data={data} title={TITLES.POPULAR_SESSION} />
         
       </div>
-      <div className=" col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
+      <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
       <Sidebar data={data} type='right' />
          
       </div>
