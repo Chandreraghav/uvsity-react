@@ -21,7 +21,7 @@ const UserProfile = () => {
     desc: null,
     poster: null,
   };
-  const [layoutObject, setLayoutObject] = useState(layoutObj);
+  const [layoutObject, setLayoutObject] = useState(null);
   const getLoggedInUserSummary = async () =>
     (await UserDataService.getSummary()).data;
   const getProfileSummary = async () =>
@@ -54,11 +54,11 @@ const UserProfile = () => {
     );
   };
   const profileName = () => {
-    const _profileName=formattedName(
+    const _profileName = formattedName(
       getData.PROFILE_SUMMARY.data?.firstName,
       getData.PROFILE_SUMMARY.data?.lastName
-    )
-    return _profileName
+    );
+    return _profileName;
   };
 
   if (isError) {
@@ -75,10 +75,21 @@ const UserProfile = () => {
       };
       setLayoutObject(obj);
       setProfileOwner(isOwner());
+
+      return () => {
+        setLayoutObject(null);
+      };
     }
   }, [data]);
+
+  useEffect(() => {
+    setLayoutObject(layoutObj);
+    return () => {
+      setLayoutObject(null);
+    };
+  }, []);
   return (
-    <Layout private lowZoom={false}  options={layoutObject}>
+    <Layout private lowZoom={false} options={layoutObject}>
       <Header data={getData.LOGGED_IN_USER_SUMMARY} />
       {isSuccess && (
         <>
@@ -88,7 +99,7 @@ const UserProfile = () => {
           />
         </>
       )}
-      {isLoading && <>Loading....</>}
+      {isLoading && <>Shimmering....</>}
       <Footer />
     </Layout>
   );

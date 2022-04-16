@@ -208,6 +208,10 @@ button.danger {
   width: 48px !important;
   height: 48px !important;
 }
+.avatar-lg{
+  width: 200px !important;
+  height: 200px !important;
+}
 
 .avatar-xs {
   width: 40px !important;

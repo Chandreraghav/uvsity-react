@@ -29,7 +29,6 @@ function Intro(props) {
     </>
   );
   useEffect(() => {
-    
     if (GREETING) {
       if (GREETING.includes(TIME_OF_DAY_GREETING.MORNING)) {
         setIntroMoodColor("morning");
@@ -43,7 +42,7 @@ function Intro(props) {
   useEffect(() => {
     let controller = new AbortController();
     if (INTRO_TEXT_KEYWORDS) {
-    window.introTextSwapperInterval= setInterval(() => {
+      window.introTextSwapperInterval = setInterval(() => {
         let object = getRandomArrayElement(INTRO_TEXT_KEYWORDS);
         setIntroHeader(
           <>
@@ -55,13 +54,17 @@ function Intro(props) {
 
     return () => {
       controller?.abort();
+      if (
+        window.introTextSwapperInterval != undefined &&
+        window.introTextSwapperInterval != "undefined"
+      ) {
+        window.clearInterval(window.introTextSwapperInterval);
+      }
     };
   }, []);
-  
 
   const invokeIntroAction = (code) => {
     if (code === WORKFLOW_CODES.USER.INTRO_PATHS.SESSION) {
-      
       router.push({
         pathname: AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
         query: { token: uuidv4() },
