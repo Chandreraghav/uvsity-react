@@ -69,7 +69,7 @@ function MacroProfile(props) {
       {
         in: {
           url: userdata?.linkedInProfile,
-          tooltip: `${firstName}'s Linkedin`,
+          tooltip: `${isItMe ?'My':firstName+"'s"} Linkedin`,
           icon: <LinkedInIcon />,
           display: isConnected || isItMe,
         },
