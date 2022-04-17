@@ -3,12 +3,23 @@ import { IconButton, Tooltip } from "@mui/material";
 import MessageIcon from "@mui/icons-material/Message";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import RecommendIcon from "@mui/icons-material/Recommend";
-import { green, pink, blue } from "@mui/material/colors";
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import { green, pink, blue,purple } from "@mui/material/colors";
 function Actions(props) {
   return (
     <div className=" send-message send-rating ask-recommendation ">
       <div></div>
       <div className="flex gap-2">
+
+      <div className=" cursor-pointer">
+        <Tooltip title={`Schedule a meeting with ${props.userdata?.firstName}`}>
+          <IconButton aria-label="schedule-meeting" size="large">
+            <DateRangeIcon sx={{ color: purple[500] }} fontSize="inherit" />
+          </IconButton>
+          </Tooltip>
+        </div>
+
+
         <div className=" cursor-pointer">
         <Tooltip title={`Send a message to ${props.userdata?.firstName}`}>
           <IconButton aria-label="send-message" size="large">
@@ -17,20 +28,21 @@ function Actions(props) {
           </Tooltip>
         </div>
         <div className="cursor-pointer ">
-        <Tooltip title={`Rate ${props.userdata?.firstName}`}>
-          <IconButton aria-label="send-review" size="large">
-            <ThumbsUpDownIcon sx={{ color: blue[500] }} fontSize="inherit" />
-          </IconButton>
-          </Tooltip>
-        </div>
-        <div className="cursor-pointer ">
-          <Tooltip title={`Ask a recommendation from ${props.userdata?.firstName}`}>
+          <Tooltip title={`Ask for a recommendation from ${props.userdata?.firstName}`}>
           <IconButton aria-label="ask-recommendation" size="large">
             <RecommendIcon sx={{ color: pink[500] }} fontSize="inherit" />
           </IconButton>
           </Tooltip>
          
         </div>
+        <div className="cursor-pointer ">
+        <Tooltip title={`Rate ${props.userdata?.firstName}`}>
+          <IconButton aria-label="send-review" size="large">
+            <ThumbsUpDownIcon sx={{ color: blue[500] }} fontSize="inherit" />
+          </IconButton>
+          </Tooltip>
+        </div>
+      
       </div>
     </div>
   );

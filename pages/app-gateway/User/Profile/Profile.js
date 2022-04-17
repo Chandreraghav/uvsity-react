@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import MacroProfile from "../../../../components/Authorized/Profile/MacroProfile";
 import Spacer from "../../../../components/shared/Spacer";
 import ProfileStyle from "../../../../styles/Profile.module.css";
+import {
+  formattedName,
+  formattedProfileSubtitle,
+} from "../../../../utils/utility";
 
 function Profile(props) {
   const [show, handleShow] = useState(false);
@@ -10,12 +14,20 @@ function Profile(props) {
     return () => window.removeEventListener("scroll", transitionNavBar);
   }, []);
   const transitionNavBar = () => {
-    if (window.scrollY > 50) {
+    if (window.scrollY > 150) {
       handleShow(true);
     } else {
       handleShow(false);
     }
   };
+  const handleChangeEvent = (event) => {
+    if (props.changeEvent) {
+      props.changeEvent(event);
+    }
+  };
+  const userType = props?.userdata?.userType;
+  const eduIns = props?.userdata?.eduIns;
+  const profileSecondaryLine = formattedProfileSubtitle(userType, eduIns);
   return (
     <>
       {props?.userdata && (
@@ -26,7 +38,21 @@ function Profile(props) {
               show ? ProfileStyle.profile__macro__header__show : "hidden"
             }`}
           >
-            MacroProfile Header
+            <div className="flex-col">
+              <div>
+                {formattedName(
+                  props?.userdata?.firstName,
+                  props?.userdata?.lastName
+                )}
+              </div>
+              {profileSecondaryLine && (
+                <>
+                  <div className="-mt-1.5 text-sm text-gray-400 font-light line-clamp-1">
+                    <small>{profileSecondaryLine}</small>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </>
       )}
@@ -39,7 +65,12 @@ function Profile(props) {
       >
         <div className=" col-span-12 md:pt-2 md:col-span-9 lg:col-span-9 xl:col-span-7">
           {/* Main Content */}
-          <MacroProfile data={props} />
+          <MacroProfile
+            loggedInUserID={props?.loggedInUser?.userDetailsId}
+            hasChangeEventTriggered={props?.hasChangeEventTriggered}
+            changeEvent={handleChangeEvent}
+            data={props}
+          />
         </div>
 
         <div className=" col-span-12 md:col-span-1 lg:col-span-1 py-2 xl:col-span-1">

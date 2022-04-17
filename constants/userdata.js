@@ -2,11 +2,17 @@ import HomeIcon from "@mui/icons-material/Home";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import ScienceIcon from '@mui/icons-material/Science';
+import StarsIcon from '@mui/icons-material/Stars';
+import SchoolIcon from '@mui/icons-material/School';
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
 import AutoGraphOutlinedIcon from "@mui/icons-material/AutoGraphOutlined";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import UpgradeIcon from "@mui/icons-material/Upgrade";
+import InterestsIcon from '@mui/icons-material/Interests';
+import AssistantPhotoIcon from '@mui/icons-material/AssistantPhoto';
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import PersonIcon from "@mui/icons-material/Person";
@@ -14,8 +20,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AddIcon from "@mui/icons-material/Add";
 import CreateIcon from "@mui/icons-material/Create";
 import { WORKFLOW_CODES } from "./workflow-codes";
-import { timeOfDay } from "../utils/utility";
+import { HTMLUnderlineByCharacterIndex, timeOfDay } from "../utils/utility";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import InfoIcon from '@mui/icons-material/Info';
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
@@ -53,6 +60,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
+import { blue, green, red, purple, orange, pink,  brown} from "@mui/material/colors";
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -203,6 +211,7 @@ export const CONNECTIONS = [
     title: "Students",
     hidden: false,
     tooltip: "Connections who are students",
+    icon:'',
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.STUDENT,
   },
   {
@@ -210,6 +219,7 @@ export const CONNECTIONS = [
     title: "Professors",
     hidden: false,
     tooltip: "Connections who are professors",
+    icon:'',
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.PROFESSOR,
   },
   {
@@ -217,6 +227,7 @@ export const CONNECTIONS = [
     title: "Alumni",
     hidden: false,
     tooltip: "Connections who are alumni",
+    icon:'',
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.ALUMNI,
   },
 ];
@@ -1014,3 +1025,68 @@ export const SESSION={
   DELETED:'<user>, your session has been deleted permanently',
 }
 export const VALIDATING_REQUEST= 'Please wait, we are validating your request...'
+
+export const PROFILE_AREAS = [
+  {
+    id: 1,
+    title: HTMLUnderlineByCharacterIndex("About <#>",0),
+    icon: InfoIcon,
+    hidden: false,
+    color:'#111'
+  },
+  {
+    id: 8,
+    title: HTMLUnderlineByCharacterIndex("Education",0),
+    icon: SchoolIcon,
+    hidden: false,
+    color:brown[500]
+  },
+  {
+    id: 2,
+    title: HTMLUnderlineByCharacterIndex("Specialities &amp; Skills",0),
+    icon: StarsIcon,
+    hidden: false,
+    color:pink[500]
+  },
+
+  {
+    id: 3,
+    title: HTMLUnderlineByCharacterIndex("Project/Research/Work Experience",0),
+    icon: ScienceIcon,
+    hidden: false,
+    color:purple[500]
+  },
+
+  {
+    id: 4,
+    title: HTMLUnderlineByCharacterIndex("Recommended sessions by <#>",0),
+    icon: AssistantPhotoIcon,
+    hidden: false,
+    color:green[500]
+  },
+  {
+    id: 5,
+    title: HTMLUnderlineByCharacterIndex("Interests",0),
+    icon: InterestsIcon,
+    hidden: false,
+    color:red[500]
+  },
+
+  {
+    id: 6,
+    title: HTMLUnderlineByCharacterIndex("Recommendations received",0),
+    icon: ThumbUpIcon,
+    hidden: false,
+    color:orange[500]
+  },
+
+  {
+    id: 7,
+    title: HTMLUnderlineByCharacterIndex("Sessions by <#>",0),
+    icon: EventNoteOutlinedIcon,
+    hidden: false,
+    color:blue[500]
+  },
+
+ 
+];
