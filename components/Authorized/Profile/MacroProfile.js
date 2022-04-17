@@ -635,7 +635,7 @@ function MacroProfile(props) {
                             <div className="mb-1">
 
                               {area.id===1 && aboutMe && (<>
-                              <div className=" text-justify overflow-auto h-20  ">
+                              <div className=" leading-snug text-gray-700 text-sm lg:text-md xl:text-md overflow-auto max-h-20  ">
                                 <Typography  variant="div">
                                 {aboutMe}
                                 </Typography>
