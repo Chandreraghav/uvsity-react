@@ -358,7 +358,7 @@ function PeekProfile(props) {
                     )}`}
                     className=" cursor-pointer inline-flex text-green-700 "
                     fontSize="small"
-                    sx={{ color: "green!important" }}
+                    sx={{ color: NETWORK.COLOR_VARIANTS.CONNECTED }}
                     aria-label="connected-to-person"
                   >
                     <CheckCircleIcon fontSize="small" />
@@ -382,7 +382,7 @@ function PeekProfile(props) {
                     }`}
                     className=" cursor-pointer inline-flex "
                     fontSize="small"
-                    sx={{ color: "#EF107D" }}
+                    sx={{ color: NETWORK.COLOR_VARIANTS.PENDING }}
                     aria-label="awaiting-connection-response-from-person"
                   >
                     <PendingIcon fontSize="small" />

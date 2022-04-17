@@ -99,7 +99,7 @@
 }
 
 .profile__macro__avatar {
-  margin-bottom: 10px;
+  margin-bottom: 2px;
 
 }
 
@@ -151,5 +151,4 @@
 
 .profile__macro__review__star {
   color: gold;
-  font-size: 20px !important;
 }

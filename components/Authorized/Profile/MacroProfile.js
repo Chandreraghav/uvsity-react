@@ -1,4 +1,7 @@
 import { Avatar, IconButton, Typography } from "@mui/material";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import { blue, green } from "@mui/material/colors";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import React, { useState, useEffect } from "react";
 import {
   DEFAULT_COVER_IMAGE,
@@ -11,8 +14,6 @@ import ProfileStyle from "../../../styles/Profile.module.css";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import AddTaskIcon from "@mui/icons-material/AddTask";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import {
   avatarToString,
   formattedName,
@@ -21,9 +22,8 @@ import {
 } from "../../../utils/utility";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import WorkIcon from "@mui/icons-material/Work";
-import SendIcon from "@mui/icons-material/Send";
 import StarRateIcon from "@mui/icons-material/StarRate";
-
+import Actions from "./ActionableItems/Actions";
 function MacroProfile(props) {
   console.log(props);
   const [show, setShow] = useState(false);
@@ -69,7 +69,7 @@ function MacroProfile(props) {
       {
         in: {
           url: userdata?.linkedInProfile,
-          tooltip: "Linkedin profile",
+          tooltip: `${firstName}'s Linkedin`,
           icon: <LinkedInIcon />,
           display: isConnected || isItMe,
         },
@@ -90,9 +90,20 @@ function MacroProfile(props) {
     const ratings = [];
     for (var i = 0; i < starRating; i++) {
       ratings.push(
-        <StarRateIcon
-          className={` mt-1 ${ProfileStyle.profile__macro__review__star}`}
-        />
+        <>
+          <div className=" hidden lg:inline-block xl:inline-block">
+            <StarRateIcon
+              fontSize="large"
+              className={`mt-1 ${ProfileStyle.profile__macro__review__star}`}
+            />
+          </div>
+          <div className=" lg:hidden xl:hidden flex">
+            <StarRateIcon
+              fontSize="medium"
+              className={`mt-1 ${ProfileStyle.profile__macro__review__star}`}
+            />
+          </div>
+        </>
       );
     }
     return <>{ratings}</>;
@@ -107,121 +118,203 @@ function MacroProfile(props) {
           <div
             className={`Profile-Name-Image-Cover-Picture-Secondary-Information-Connection-Status-social-profile-reference-Star-Rating uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__macro}`}
           >
-            <img
-              className={`${!isConnected ? '-mb-10':'  -mb-16'} h-28 lg:h-52 xl:h-52 md:h-48`}
-              src={DEFAULT_COVER_IMAGE}
-              alt="profile-cover-image"
-            />
-            {isConnected && (
-              <>
-                <div className=" relative send-message send-rating ask-recommendation ">
-                  <div className="flex">
-                    <div></div>
-                    <div className=" flex bottom-0 ml-auto mr-2">
-                      kk
-                    </div>
+            <div className="lg:hidden xl:hidden flex ">
+              <img
+                className={`${
+                  !isConnected ? "-mb-10" : "  -mb-10"
+                } w-screen h-28 lg:h-52 xl:h-52 md:h-48 `}
+                src={DEFAULT_COVER_IMAGE}
+                alt="profile-cover-image"
+              />
+            </div>
+
+            <div className="hidden lg:inline-block xl:inline-block">
+              <img
+                className={`${
+                  !isConnected ? "-mb-28" : "  -mb-28"
+                } w-screen h-28 lg:h-52 xl:h-52 md:h-48 `}
+                src={DEFAULT_COVER_IMAGE}
+                alt="profile-cover-image"
+              />
+            </div>
+
+            <div className="flex">
+              {profileImage &&
+              !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
+                <>
+                  <div className=" hidden lg:inline-block xl:inline-block">
+                    <Avatar
+                      alt={`${firstName}'s photo`}
+                      className={` avatar-lg cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                      src={profileImage}
+                    />
                   </div>
+
+                  <div className=" lg:hidden xl:hidden inline-block">
+                    <Avatar
+                      alt={`${firstName}'s photo`}
+                      className={` cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                      src={profileImage}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className=" hidden lg:inline-block xl:inline-block">
+                    <Avatar
+                      alt={`${firstName}'s photo`}
+                      className={` hidden lg:block xl:block avatar-lg   ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                      {...avatarToString(`${profileName}`)}
+                    />
+                  </div>
+
+                  <div className="lg:hidden xl:hidden inline-block">
+                    <Avatar
+                      alt={`${firstName}'s photo`}
+                      className={` hidden lg:block xl:block    ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                      {...avatarToString(`${profileName}`)}
+                    />
+                  </div>
+                </>
+              )}
+              <div className="ml-auto mr-0">
+                <div className="mt-12 xl:mt-32 lg:mt-32">
+                  {isConnected && <Actions userdata={userdata} />}
                 </div>
-              </>
-            )}
+              </div>
+            </div>
 
-            {profileImage &&
-            !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
-              <Avatar
-                className={`  cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
-                src={profileImage}
-              />
-            ) : (
-              <Avatar
-                className={`    ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
-                {...avatarToString(`${profileName}`)}
-              />
-            )}
-
-            <div className={`ml-3 ${ProfileStyle.profile__macro__information}`}>
+            <div className={`  ml-3`}>
               <div className="flex">
                 <div className="flex gap-1">
-                  <Typography
-                    className={ProfileStyle.profile__macro__profile__name}
-                    variant="h5"
-                    gutterBottom
-                  >
-                    {profileName} {isItMe ? ME : <></>}
-                  </Typography>
+                  <div className="mb-2 hidden lg:inline-block xl:inline-block">
+                    <Typography
+                      className={`${ProfileStyle.profile__macro__profile__name} mb-1 leading-snug line-clamp-1`}
+                      variant="h3"
+                      gutterBottom
+                    >
+                      {profileName} {isItMe ? ME : <></>}
+                    </Typography>
+                  </div>
+
+                  <div className="mb-2 lg:hidden xl:hidden inline-block">
+                    <Typography
+                      className={`${ProfileStyle.profile__macro__profile__name} mb-1 leading-snug line-clamp-1`}
+                      variant="h4"
+                      gutterBottom
+                    >
+                      {profileName} {isItMe ? ME : <></>}
+                    </Typography>
+                  </div>
+
                   {hasRatings && <>{generateStarRatings()}</>}
                 </div>
 
-                <div className="mr-2 ml-auto flex gap-1">
-                  <div className=" connection-status">
-                    {isPending && (
-                      <>
+                <div className="mr-2 ml-auto flex flex-col gap-1">
+                  <div className="flex ml-auto">
+                    <div className=" connection-status">
+                      {isPending && (
+                        <>
+                          <div
+                            className={`flex cursor-pointer non-actionable  slow-transition`}
+                          >
+                            <IconButton
+                              title={`${
+                                TITLES.CONNECTION_REQUEST_PENDING + firstName
+                              }`}
+                              className=" cursor-pointer inline-flex "
+                              fontSize="small"
+                              sx={{ color: NETWORK.COLOR_VARIANTS.PENDING }}
+                              aria-label="awaiting-connection-response-from-person"
+                            >
+                              <PendingIcon fontSize="small" />
+                              <small className={`text-sm font-small`}>
+                                {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
+                              </small>
+                            </IconButton>
+                          </div>
+                        </>
+                      )}
+
+                      {isConnected && (
                         <div
-                          className={`flex cursor-pointer non-actionable  slow-transition`}
+                          className={`flex non-actionable cursor-pointer  slow-transition`}
                         >
                           <IconButton
-                            title={`${
-                              TITLES.CONNECTION_REQUEST_PENDING + firstName
-                            }`}
-                            className=" cursor-pointer inline-flex "
+                            title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
+                              "#X#",
+                              firstName
+                            )}`}
+                            className=" cursor-pointer inline-flex text-green-700 "
                             fontSize="small"
-                            sx={{ color: "#EF107D" }}
-                            aria-label="awaiting-connection-response-from-person"
+                            sx={{ color: NETWORK.COLOR_VARIANTS.CONNECTED }}
+                            aria-label="connected-to-person"
                           >
-                            <PendingIcon fontSize="small" />
+                            <CheckCircleIcon fontSize="small" />
                             <small className={`text-sm font-small`}>
-                              {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
+                              {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
                             </small>
                           </IconButton>
                         </div>
+                      )}
+
+                      {canSendOutgoingConnectionInvite && (
+                        <div
+                          className={`flex actionable cursor-pointer  slow-transition`}
+                        >
+                          <IconButton
+                            title={`Connect with ${firstName}`}
+                            className=" cursor-pointer inline-flex text-green-700 "
+                            fontSize="small"
+                            aria-label="connect or invite"
+                          >
+                            <PersonAddAltIcon sx={{ color: blue[500] }} />
+                          </IconButton>
+                        </div>
+                      )}
+
+                      {canAcceptIncomingConnectionInvite && (
+                        <div
+                          className={`flex actionable cursor-pointer  slow-transition`}
+                        >
+                          <IconButton
+                            title={`Accept connection request from ${firstName}`}
+                            className=" cursor-pointer inline-flex text-green-700 "
+                            fontSize="small"
+                            aria-label="accept invite"
+                          >
+                            <AddTaskIcon sx={{ color: green[500] }} />
+                          </IconButton>
+                        </div>
+                      )}
+                    </div>
+                    {metaData?.social_profiles && (
+                      <>
+                        <div className="social-handles">
+                          {metaData?.social_profiles?.map((profile, index) => (
+                            <div
+                              className={`${
+                                profile.in.url && profile.in.display
+                                  ? "mt-1"
+                                  : ""
+                              }`}
+                              key={index}
+                            >
+                              {profile.in.url && profile.in.display && (
+                                <a
+                                  href={profile.in.url}
+                                  target="_blank"
+                                  title={profile.in.tooltip}
+                                >
+                                  {profile.in.icon}
+                                </a>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </>
                     )}
-
-                    {isConnected && (
-                      <div
-                        className={`flex non-actionable cursor-pointer  slow-transition`}
-                      >
-                        <IconButton
-                          title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
-                            "#X#",
-                            firstName
-                          )}`}
-                          className=" cursor-pointer inline-flex text-green-700 "
-                          fontSize="small"
-                          sx={{ color: "green!important" }}
-                          aria-label="connected-to-person"
-                        >
-                          <CheckCircleIcon fontSize="small" />
-                          <small className={`text-sm font-small`}>
-                            {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
-                          </small>
-                        </IconButton>
-                      </div>
-                    )}
                   </div>
-                  {metaData?.social_profiles && (
-                    <>
-                      <div className="social-handles ml-auto">
-                        {metaData?.social_profiles?.map((profile, index) => (
-                          <div
-                            className={`${
-                              profile.in.url && profile.in.display ? "mt-1" : ""
-                            }`}
-                            key={index}
-                          >
-                            {profile.in.url && profile.in.display && (
-                              <a
-                                href={profile.in.url}
-                                target="_blank"
-                                title={profile.in.tooltip}
-                              >
-                                {profile.in.icon}
-                              </a>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
                 </div>
               </div>
 
@@ -230,13 +323,14 @@ function MacroProfile(props) {
               >
                 {profileSecondaryLine && (
                   <div className="flex gap-1">
-                    <div className=" text-gray-600 font-semibold">
-                      <Typography
-                        variant="h5"
-                        gutterBottom
-                        className="text-sm leading-loose line-clamp-1"
-                      >
-                        <WorkIcon /> {profileSecondaryLine}
+                    <div className="text-sm md:text-md lg:text-lg xl:text-lg  text-gray-600 font-semibold leading-loose line-clamp-1">
+                      <Typography variant="div">
+                        <div className="flex gap-1">
+                          <WorkIcon />
+                          <div className="-mt-0.5 lg:-mt-1 xl:-mt-1">
+                            {profileSecondaryLine}
+                          </div>
+                        </div>
                       </Typography>
                     </div>
                   </div>
@@ -244,15 +338,14 @@ function MacroProfile(props) {
                 {profileTertiaryLine && (
                   <>
                     <div className="flex gap-1">
-                      <div className="text-gray-500 font-light">
-                        <Typography
-                          variant="h6"
-                          gutterBottom
-                          className={`text-xs leading-loose line-clamp-1"
-                `}
-                        >
-                          <LocationOnIcon fontSize="small" />
-                          {profileTertiaryLine}
+                      <div className="text-xs md:text-sm lg:text-md xl:text-md text-gray-500  font-normal leading-loose line-clamp-1">
+                        <Typography variant="div">
+                          <div className="flex gap-1">
+                            <LocationOnIcon className="" fontSize="small" />
+                            <div className="ml-1 -mt-0.5 lg:-mt-1 xl:-mt-1">
+                              {profileTertiaryLine}
+                            </div>
+                          </div>
                         </Typography>
                       </div>
                     </div>
