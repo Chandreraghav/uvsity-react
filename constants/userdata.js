@@ -570,6 +570,11 @@ export const NETWORK = {
     CONNECTED: "connected",
     ACCEPT: "Accept",
   },
+  COLOR_VARIANTS:{
+    PENDING: "#EF107D",
+    CONNECTED: "green!important",
+    ACCEPT: ""
+  }
 };
 
 export const SESSION_ACTIONS = [

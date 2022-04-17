@@ -37,12 +37,12 @@ function Profile(props) {
     gap-2 px-2 mx-auto xl:container md:gap-4 
     xl:grid-cols-8 2xl:px-5 "
       >
-        <div className=" col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
+        <div className=" col-span-12 md:pt-2 md:col-span-9 lg:col-span-9 xl:col-span-7">
           {/* Main Content */}
           <MacroProfile data={props} />
         </div>
 
-        <div className=" col-span-12 md:col-span-2 lg:col-span-2 py-2 xl:col-span-2">
+        <div className=" col-span-12 md:col-span-1 lg:col-span-1 py-2 xl:col-span-1">
           {/* Any misc content on user profile such as ads, people you may know */}
           Misc
         </div>
