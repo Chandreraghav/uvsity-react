@@ -1,4 +1,14 @@
-import { Avatar, IconButton, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Divider,
+  Grid,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import Paper from '@mui/material/Paper';
+import Container from '@mui/material/Container';
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import { blue, green } from "@mui/material/colors";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
@@ -8,6 +18,8 @@ import {
   IMAGE_PATHS,
   ME,
   NETWORK,
+  PAYLOAD_DEFAULT_TEXTS,
+  PROFILE_AREAS,
   TITLES,
 } from "../../../constants/userdata";
 import ProfileStyle from "../../../styles/Profile.module.css";
@@ -24,10 +36,37 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import WorkIcon from "@mui/icons-material/Work";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Actions from "./ActionableItems/Actions";
+import { handleResponse } from "../../../toastr-response-handler/handler";
+import { RESPONSE_TYPES } from "../../../constants/constants";
+import { toast } from "react-toastify";
+import { PEOPLE } from "../../../constants/error-messages";
+import { getWorkflowError } from "../../../error-handler/handler";
+import ConnectionService from "../../../pages/api/people/network/ConnectionService";
+import { ClipLoader } from "react-spinners";
+import DoneIcon from "@mui/icons-material/Done";
+import ProfileStats from "./Connection/ProfileStats";
+import Spacer from "../../shared/Spacer";
+import parse from "html-react-parser";
+toast.configure();
 function MacroProfile(props) {
   console.log(props);
   const [show, setShow] = useState(false);
+  const [
+    isConnectionAcceptRequestInProgress,
+    setConnectionAcceptRequestInProgress,
+  ] = useState(false);
+  const [isConnectionAcceptRequestSent, setConnectionAcceptRequestSent] =
+    useState(false);
+
+  const [isConnectionRequestInProgress, setConnectionRequestInProgress] =
+    useState(false);
+  const [isConnectionRequestSent, setConnectionRequestSent] = useState(false);
+
   useEffect(() => {
+    if (props?.hasChangeEventTriggered) {
+      setShow(true);
+      return;
+    }
     _delay(1000).then(() => {
       setShow(true);
     });
@@ -54,6 +93,7 @@ function MacroProfile(props) {
       NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
 
   const userdata = props?.data?.userdata;
+  const aboutMe=userdata?.aboutMe
   const firstName = userdata?.firstName;
   const profileImage = userdata?.profilepicName;
   const profileName = formattedName(userdata?.firstName, userdata?.lastName);
@@ -69,13 +109,29 @@ function MacroProfile(props) {
       {
         in: {
           url: userdata?.linkedInProfile,
-          tooltip: `${isItMe ?'My':firstName+"'s"} Linkedin`,
+          tooltip: `${isItMe ? "My" : firstName + "'s"} Linkedin`,
           icon: <LinkedInIcon />,
           display: isConnected || isItMe,
         },
       },
     ],
+    invitationRequestId: userdata?.invitationRequestId,
   };
+  const getTotalStatCount = () => {
+    try {
+      const count =
+        Number(userdata?.noOfAlumniCOnnections) +
+        Number(userdata?.noOfStudentConnections) +
+        Number(userdata?.noOfProfessorConnections);
+      if (isNaN(count)) {
+        return 0;
+      }
+      return count;
+    } catch (error) {
+      return 0;
+    }
+  };
+  const statCount = getTotalStatCount();
 
   const profileSecondaryLine = formattedProfileSubtitle(
     userType,
@@ -108,6 +164,109 @@ function MacroProfile(props) {
     }
     return <>{ratings}</>;
   };
+
+  const acceptRequest = () => {
+    setConnectionAcceptRequestInProgress(true);
+    if (metaData.invitationRequestId) {
+      const requestId = metaData.invitationRequestId;
+      ConnectionService.acceptConnectionRequest(requestId)
+        .then(() => {
+          if (props.changeEvent) {
+            props.changeEvent({
+              trigger: "connection-status-change",
+              changed: true,
+            });
+          }
+          handleResponse(
+            TITLES.CONNECTED_PEOPLE.replace("#X#", firstName),
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.TOP_LEFT
+          );
+          setConnectionAcceptRequestSent(true);
+        })
+        .catch(() => {
+          handleResponse(
+            getWorkflowError(
+              PEOPLE.NETWORK.CONNECTION_ACCEPT_ERROR + " " + firstName
+            ),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.TOP_LEFT
+          );
+          setConnectionAcceptRequestSent(false);
+        })
+        .finally(() => {
+          setConnectionAcceptRequestInProgress(false);
+        });
+    } else {
+      setConnectionAcceptRequestInProgress(false);
+      handleResponse(
+        TITLES.CONNECTED_PEOPLE_ALREADY.replace("#X#", firstName),
+        RESPONSE_TYPES.INFO,
+        toast.POSITION.TOP_RIGHT
+      );
+    }
+  };
+
+  const getPayload = () => {
+    let payload = {
+      requestFrom: {
+        userDetailsId: props?.loggedInUserID,
+      },
+      requestTo: { userDetailsId: userdata?.userDetailsId },
+      userRequestText: "",
+      userRequestType: NETWORK.REQUEST_TYPE,
+    };
+    let requestText =
+      PAYLOAD_DEFAULT_TEXTS.CONNECTION_REQUEST_SENDING_TEXT.replace(
+        "#X#",
+        payload.requestFrom
+      );
+    requestText = PAYLOAD_DEFAULT_TEXTS.CONNECTION_REQUEST_SENDING_TEXT.replace(
+      "#Y#",
+      payload.requestTo
+    );
+    payload.userRequestText = requestText;
+    return payload;
+  };
+
+  const addToNetwork = () => {
+    setConnectionRequestInProgress(true);
+    ConnectionService.sendConnectionRequest(
+      getPayload(NETWORK.CONNECTION_RELATION_STATE.CONNECT)
+    )
+      .then(() => {
+        if (props.changeEvent) {
+          props.changeEvent({
+            trigger: "connection-status-change",
+            changed: true,
+          });
+        }
+        handleResponse(
+          `${TITLES.CONNECTION_REQUEST_SENT_TO}${firstName}`,
+          RESPONSE_TYPES.SUCCESS,
+          toast.POSITION.TOP_RIGHT
+        );
+        setConnectionRequestSent(true);
+      })
+      .catch(() => {
+        handleResponse(
+          getWorkflowError(
+            PEOPLE.NETWORK.CONNECTION_REQUEST_ERROR + " " + firstName
+          ),
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.TOP_RIGHT
+        );
+        setConnectionRequestSent(false);
+      })
+      .finally(() => {
+        setConnectionRequestInProgress(false);
+      });
+  };
+  const getProfileAreaTitle = (area) => {
+    let _area_title = area.title;
+    _area_title = _area_title.replace("<#>", isItMe ? "me" : firstName);
+    return  parse(_area_title);
+  };
   return (
     <>
       {!show ? (
@@ -116,7 +275,7 @@ function MacroProfile(props) {
         <>
           {/* SECTION 1 Profile Name, Image, Cover Picture and Secondary Information */}
           <div
-            className={`Profile-Name-Image-Cover-Picture-Secondary-Information-Connection-Status-social-profile-reference-Star-Rating uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__macro}`}
+            className={`Profile-Name-Image-Cover-Picture-Secondary-Information-Connection-Status-social-profile-reference-Star-Rating actionable-items-on-connected-state schedule-calendar Connection stats uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__macro}`}
           >
             <div className="lg:hidden xl:hidden flex ">
               <img
@@ -177,6 +336,17 @@ function MacroProfile(props) {
                   </div>
                 </>
               )}
+
+              {statCount > 0 && (
+                <>
+                  <div className="hidden lg:inline-flex xl:inline-flex md:inline-flex">
+                    <div className="absolute bottom-56 md:bottom-60 sm:bottom-72 ml-4 flex justify-center items-center ">
+                      <ProfileStats userdata={userdata} />
+                    </div>
+                  </div>
+                </>
+              )}
+
               <div className="ml-auto mr-0">
                 <div className="mt-12 xl:mt-32 lg:mt-32">
                   {isConnected && <Actions userdata={userdata} />}
@@ -218,20 +388,23 @@ function MacroProfile(props) {
                           <div
                             className={`flex cursor-pointer non-actionable  slow-transition`}
                           >
-                            <IconButton
+                            <Tooltip
                               title={`${
                                 TITLES.CONNECTION_REQUEST_PENDING + firstName
                               }`}
-                              className=" cursor-pointer inline-flex "
-                              fontSize="small"
-                              sx={{ color: NETWORK.COLOR_VARIANTS.PENDING }}
-                              aria-label="awaiting-connection-response-from-person"
                             >
-                              <PendingIcon fontSize="small" />
-                              <small className={`text-sm font-small`}>
-                                {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
-                              </small>
-                            </IconButton>
+                              <IconButton
+                                className=" cursor-pointer inline-flex "
+                                fontSize="small"
+                                sx={{ color: NETWORK.COLOR_VARIANTS.PENDING }}
+                                aria-label="awaiting-connection-response-from-person"
+                              >
+                                <PendingIcon fontSize="small" />
+                                <small className={`text-sm font-small`}>
+                                  {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
+                                </small>
+                              </IconButton>
+                            </Tooltip>
                           </div>
                         </>
                       )}
@@ -240,21 +413,24 @@ function MacroProfile(props) {
                         <div
                           className={`flex non-actionable cursor-pointer  slow-transition`}
                         >
-                          <IconButton
+                          <Tooltip
                             title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
                               "#X#",
                               firstName
                             )}`}
-                            className=" cursor-pointer inline-flex text-green-700 "
-                            fontSize="small"
-                            sx={{ color: NETWORK.COLOR_VARIANTS.CONNECTED }}
-                            aria-label="connected-to-person"
                           >
-                            <CheckCircleIcon fontSize="small" />
-                            <small className={`text-sm font-small`}>
-                              {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
-                            </small>
-                          </IconButton>
+                            <IconButton
+                              className=" cursor-pointer inline-flex text-green-700 "
+                              fontSize="small"
+                              sx={{ color: NETWORK.COLOR_VARIANTS.CONNECTED }}
+                              aria-label="connected-to-person"
+                            >
+                              <CheckCircleIcon fontSize="small" />
+                              <small className={`text-sm font-small`}>
+                                {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
+                              </small>
+                            </IconButton>
+                          </Tooltip>
                         </div>
                       )}
 
@@ -262,29 +438,98 @@ function MacroProfile(props) {
                         <div
                           className={`flex actionable cursor-pointer  slow-transition`}
                         >
-                          <IconButton
-                            title={`Connect with ${firstName}`}
-                            className=" cursor-pointer inline-flex text-green-700 "
-                            fontSize="small"
-                            aria-label="connect or invite"
-                          >
-                            <PersonAddAltIcon sx={{ color: blue[500] }} />
-                          </IconButton>
+                          {!isConnectionRequestInProgress &&
+                            !isConnectionRequestSent && (
+                              <>
+                                <Tooltip title={`Connect with ${firstName}`}>
+                                  <IconButton
+                                    title={`Connect with ${firstName}`}
+                                    className=" cursor-pointer inline-flex text-green-700 "
+                                    fontSize="small"
+                                    aria-label="connect or invite"
+                                    onClick={addToNetwork}
+                                  >
+                                    <PersonAddAltIcon
+                                      sx={{ color: blue[500] }}
+                                    />
+                                  </IconButton>
+                                </Tooltip>
+                              </>
+                            )}
+                          {isConnectionRequestInProgress ? (
+                            <>
+                              <ClipLoader color={`darkgrey`} size={20} />
+                            </>
+                          ) : isConnectionRequestSent ? (
+                            <>
+                              <div className="flex">
+                                <DoneIcon fontSize="small" />
+                                <small className={`text-sm mt-0.5 font-small`}>
+                                  {TITLES.CONNECTION_REQUEST_SENT}
+                                </small>
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       )}
 
                       {canAcceptIncomingConnectionInvite && (
                         <div
-                          className={`flex actionable cursor-pointer  slow-transition`}
+                          className={`flex actionable ${
+                            isConnectionAcceptRequestInProgress
+                              ? ""
+                              : "cursor-pointer"
+                          }   slow-transition`}
                         >
-                          <IconButton
-                            title={`Accept connection request from ${firstName}`}
-                            className=" cursor-pointer inline-flex text-green-700 "
-                            fontSize="small"
-                            aria-label="accept invite"
-                          >
-                            <AddTaskIcon sx={{ color: green[500] }} />
-                          </IconButton>
+                          {!isConnectionAcceptRequestInProgress &&
+                            !isConnectionAcceptRequestSent && (
+                              <>
+                                <Tooltip
+                                  title={`Accept connection request from ${firstName}`}
+                                >
+                                  <IconButton
+                                    onClick={acceptRequest}
+                                    className=" cursor-pointer inline-flex text-green-700 "
+                                    fontSize="small"
+                                    aria-label="accept invite"
+                                  >
+                                    <AddTaskIcon sx={{ color: green[500] }} />
+                                  </IconButton>
+                                </Tooltip>
+                              </>
+                            )}
+                          {isConnectionAcceptRequestInProgress ? (
+                            <>
+                              <ClipLoader color={`darkgrey`} size={20} />
+                            </>
+                          ) : isConnectionAcceptRequestSent ? (
+                            <>
+                              <Tooltip
+                                title={`${TITLES.CONNECTED_PEOPLE.replace(
+                                  "#X#",
+                                  firstName
+                                )}`}
+                              >
+                                <div className="flex">
+                                  <CheckCircleIcon
+                                    sx={{
+                                      color: NETWORK.COLOR_VARIANTS.CONNECTED,
+                                    }}
+                                    fontSize="small"
+                                  />
+                                  <small
+                                    className={`mt-0.5 text-sm font-small text-green-700`}
+                                  >
+                                    {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
+                                  </small>
+                                </div>
+                              </Tooltip>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       )}
                     </div>
@@ -301,13 +546,11 @@ function MacroProfile(props) {
                               key={index}
                             >
                               {profile.in.url && profile.in.display && (
-                                <a
-                                  href={profile.in.url}
-                                  target="_blank"
-                                  title={profile.in.tooltip}
-                                >
-                                  {profile.in.icon}
-                                </a>
+                                <Tooltip title={profile.in.tooltip}>
+                                  <a href={profile.in.url} target="_blank">
+                                    {profile.in.icon}
+                                  </a>
+                                </Tooltip>
                               )}
                             </div>
                           ))}
@@ -353,7 +596,63 @@ function MacroProfile(props) {
                 )}
               </div>
             </div>
+            {/* SECTION 1.1 Connection stats(SMALL OR EXTRA SMALL SCREENS) */}
+            {statCount > 0 && (
+              <>
+                <div className="Connection stats mb-2 px-2 inline-flex lg:hidden xl:hidden md:hidden">
+                  <ProfileStats userdata={userdata} />
+                </div>
+              </>
+            )}
           </div>
+
+          {/* SECTION 2 - consists of 8 sections, refer userdata.PROFILE_AREAS*/}
+
+          <Box className="p-2" sx={{ width: "100%" }}>
+            <Grid
+              container
+              rowSpacing={1}
+              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            >
+              {PROFILE_AREAS.filter((hidden) => hidden !== true).map((area) => (
+                <React.Fragment key={area.id}>
+                  <Grid item xs={12} lg={6} md={6} sm={12}>
+                  <Paper elevation={1}>
+                      <div className="profile__section__wrapper p-2">
+                        <Container className="profile__section__container">
+                          <div className="flex flex-column">
+                            <div className="flex gap-1 mb-1">
+                               <area.icon sx={{color: area.color}}/>
+                              <div className="line-clamp-1 text-gray-700 font-normal">
+                              <Typography variant="div" >
+                              {getProfileAreaTitle(area)}
+                              </Typography>
+                              
+                              </div>
+                              </div>
+                            <Divider/>
+                            <Spacer/>
+                            <div className="mb-1">
+
+                              {area.id===1 && aboutMe && (<>
+                              <div className=" text-justify overflow-auto h-20  ">
+                                <Typography  variant="div">
+                                {aboutMe}
+                                </Typography>
+                                
+                              </div>
+                              </>)}
+
+                            </div>
+                          </div>
+                        </Container>
+                      </div>
+                    </Paper>
+                  </Grid>
+                </React.Fragment>
+              ))}
+            </Grid>
+          </Box>
         </>
       )}
     </>

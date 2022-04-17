@@ -22,6 +22,7 @@ const UserProfile = () => {
     poster: null,
   };
   const [layoutObject, setLayoutObject] = useState(null);
+  const [hasChangeEventTriggered, setChangeEventTriggered] = useState(false);
   const getLoggedInUserSummary = async () =>
     (await UserDataService.getSummary()).data;
   const getProfileSummary = async () =>
@@ -86,16 +87,28 @@ const UserProfile = () => {
     setLayoutObject(layoutObj);
     return () => {
       setLayoutObject(null);
+      setChangeEventTriggered(false);
     };
   }, []);
+  const handleChangeEvent = (event) => {
+    if (event) {
+      getProfileSummary().then((res) => {
+        getData.PROFILE_SUMMARY = res;
+        setChangeEventTriggered(event?.changed);
+      });
+    }
+  };
   return (
     <Layout private lowZoom={false} options={layoutObject}>
       <Header data={getData.LOGGED_IN_USER_SUMMARY} />
       {isSuccess && (
         <>
           <Profile
+            hasChangeEventTriggered={hasChangeEventTriggered}
+            changeEvent={handleChangeEvent}
             owner={isProfileOwner}
             userdata={getData.PROFILE_SUMMARY.data}
+            loggedInUser={getData.LOGGED_IN_USER_SUMMARY.data}
           />
         </>
       )}

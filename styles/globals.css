@@ -217,6 +217,12 @@ button.danger {
   width: 40px !important;
   height: 40px !important;
 }
+
+.avatar-2xs {
+  width: 30px !important;
+  height: 30px !important;
+  font-size: smaller !important;
+}
 .usticky {
   position: -webkit-sticky; /* for Safari */
   position: sticky;
