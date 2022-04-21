@@ -66,6 +66,7 @@ function Profile({
   origin,
   sticky,
   userdata,
+  noCardOnHover
 }) {
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
     useState(false);
@@ -74,6 +75,7 @@ function Profile({
   const popoverAnchor = useRef(null);
   const [openedPopover, setOpenedPopover] = useState(false);
   const handlePopoverOpen = (event) => {
+    if(noCardOnHover) return
     setOpenedPopover(true);
   };
 
@@ -329,7 +331,7 @@ function Profile({
               className={`${
                 isVisibleOnSessionCard
                   ? "avatar-sm"
-                  : isVisibleAsCoHost
+                  : (isVisibleAsCoHost || (origin && origin==='recommendation_feed'))
                   ? "avatar-xs"
                   : "avatar-dashboard"
               }`}
@@ -346,10 +348,11 @@ function Profile({
               className={`${
                 isVisibleOnSessionCard
                   ? "avatar-sm"
-                  : isVisibleAsCoHost
+                  : (isVisibleAsCoHost || (origin && origin==='recommendation_feed'))
                   ? "avatar-xs"
                   : "avatar-dashboard"
               }`}
+              
               {...avatarToString(`${profilePrimaryLine}`)}
             />
           )}

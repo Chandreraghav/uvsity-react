@@ -51,6 +51,7 @@ import About from "./Areas/About";
 import SkillSets from "./Areas/SkillSets";
 import WorkExperience from "./Areas/WorkExperience";
 import Interests from "./Areas/Interests";
+import RecommendationsFeed from "./Areas/RecommendationsFeed";
 toast.configure();
 function MacroProfile(props) {
   console.log(props);
@@ -100,7 +101,8 @@ function MacroProfile(props) {
   const aboutMe = userdata?.aboutMe;
   const userSkillsets = userdata?.userSkillsets;
   const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
-  const interests =userdata?.myInterests
+  const interests = userdata?.myInterests;
+  const recommendations = userdata?.recommendationsReceived; 
   const firstName = userdata?.firstName;
   const profileImage = userdata?.profilepicName;
   const profileName = formattedName(userdata?.firstName, userdata?.lastName);
@@ -654,9 +656,15 @@ function MacroProfile(props) {
 
                               {area.id === 5 && (
                                 <>
-                                  
-                                  <Interests interests={interests}/>
-                                  
+                                  <Interests interests={interests} />
+                                </>
+                              )}
+
+                              {area.id === 6 && (
+                                <>
+                                  <RecommendationsFeed
+                                    recommendations={recommendations}
+                                  />
                                 </>
                               )}
                             </div>
