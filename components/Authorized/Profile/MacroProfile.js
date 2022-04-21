@@ -7,8 +7,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import Paper from '@mui/material/Paper';
-import Container from '@mui/material/Container';
+import Paper from "@mui/material/Paper";
+import Container from "@mui/material/Container";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import { blue, green } from "@mui/material/colors";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
@@ -47,6 +47,10 @@ import DoneIcon from "@mui/icons-material/Done";
 import ProfileStats from "./Connection/ProfileStats";
 import Spacer from "../../shared/Spacer";
 import parse from "html-react-parser";
+import About from "./Areas/About";
+import SkillSets from "./Areas/SkillSets";
+import WorkExperience from "./Areas/WorkExperience";
+import Interests from "./Areas/Interests";
 toast.configure();
 function MacroProfile(props) {
   console.log(props);
@@ -93,7 +97,10 @@ function MacroProfile(props) {
       NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
 
   const userdata = props?.data?.userdata;
-  const aboutMe=userdata?.aboutMe
+  const aboutMe = userdata?.aboutMe;
+  const userSkillsets = userdata?.userSkillsets;
+  const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
+  const interests =userdata?.myInterests
   const firstName = userdata?.firstName;
   const profileImage = userdata?.profilepicName;
   const profileName = formattedName(userdata?.firstName, userdata?.lastName);
@@ -265,7 +272,7 @@ function MacroProfile(props) {
   const getProfileAreaTitle = (area) => {
     let _area_title = area.title;
     _area_title = _area_title.replace("<#>", isItMe ? "me" : firstName);
-    return  parse(_area_title);
+    return parse(_area_title);
   };
   return (
     <>
@@ -333,16 +340,6 @@ function MacroProfile(props) {
                       className={` hidden lg:block xl:block    ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                       {...avatarToString(`${profileName}`)}
                     />
-                  </div>
-                </>
-              )}
-
-              {statCount > 0 && (
-                <>
-                  <div className="hidden lg:inline-flex xl:inline-flex md:inline-flex">
-                    <div className="absolute bottom-56 md:bottom-60 sm:bottom-72 ml-4 flex justify-center items-center ">
-                      <ProfileStats userdata={userdata} />
-                    </div>
                   </div>
                 </>
               )}
@@ -599,7 +596,7 @@ function MacroProfile(props) {
             {/* SECTION 1.1 Connection stats(SMALL OR EXTRA SMALL SCREENS) */}
             {statCount > 0 && (
               <>
-                <div className="Connection stats mb-2 px-2 inline-flex lg:hidden xl:hidden md:hidden">
+                <div className="Connection stats mb-2 px-2 inline-flex">
                   <ProfileStats userdata={userdata} />
                 </div>
               </>
@@ -607,8 +604,8 @@ function MacroProfile(props) {
           </div>
 
           {/* SECTION 2 - consists of 8 sections, refer userdata.PROFILE_AREAS*/}
-
-          <Box className="p-2" sx={{ width: "100%" }}>
+          <Spacer count={2} />
+          <Box sx={{ width: "100%" }}>
             <Grid
               container
               rowSpacing={1}
@@ -616,33 +613,52 @@ function MacroProfile(props) {
             >
               {PROFILE_AREAS.filter((hidden) => hidden !== true).map((area) => (
                 <React.Fragment key={area.id}>
-                  <Grid item xs={12} lg={6} md={6} sm={12}>
-                  <Paper elevation={1}>
-                      <div className="profile__section__wrapper p-2">
+                  <Grid item xs={12} lg={12} md={12} sm={12}>
+                    <Paper elevation={1}>
+                      <div className="profile__section__wrapper mb-1 py-2">
                         <Container className="profile__section__container">
                           <div className="flex flex-column">
                             <div className="flex gap-1 mb-1">
-                               <area.icon sx={{color: area.color}}/>
+                              <area.icon sx={{ color: area.color }} />
                               <div className="line-clamp-1 text-gray-700 font-normal">
-                              <Typography variant="div" >
-                              {getProfileAreaTitle(area)}
-                              </Typography>
-                              
-                              </div>
-                              </div>
-                            <Divider/>
-                            <Spacer/>
-                            <div className="mb-1">
-
-                              {area.id===1 && aboutMe && (<>
-                              <div className=" leading-snug text-gray-700 text-sm lg:text-md xl:text-md overflow-auto max-h-20  ">
-                                <Typography  variant="div">
-                                {aboutMe}
+                                <Typography variant="div">
+                                  {getProfileAreaTitle(area)}
                                 </Typography>
-                                
                               </div>
-                              </>)}
+                            </div>
+                            <Divider />
+                            <Spacer />
+                            <div className="mb-1">
+                              {area.id === 1 && (
+                                <>
+                                  <About aboutMe={aboutMe} />
+                                </>
+                              )}
 
+                              {area.id === 2 && (
+                                <>
+                                  <SkillSets
+                                    skillSetOwnerFirstName={firstName}
+                                    userSkillsets={userSkillsets}
+                                  />
+                                </>
+                              )}
+
+                              {area.id === 3 && (
+                                <>
+                                  <WorkExperience
+                                    experiences={projectResearchWorkExperience}
+                                  />
+                                </>
+                              )}
+
+                              {area.id === 5 && (
+                                <>
+                                  
+                                  <Interests interests={interests}/>
+                                  
+                                </>
+                              )}
                             </div>
                           </div>
                         </Container>

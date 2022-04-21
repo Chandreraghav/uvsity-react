@@ -21,15 +21,17 @@ function ProfileStats(props) {
   return (
     <div className="flex gap-4">
       <Tooltip title={TOOLTIPS.VIEW_ALL_CONNECTIONS}>
-        <div className="app__anchor__block cursor-pointer flex gap-1 text-md mt-0.5">
-          <SupervisorAccountIcon sx={{ color: blue[400] }} />
-          <Typography className="  text-gray-600 font-normal" variant="div">
-            <u>C</u>onnections
+        <div className="app__anchor__block cursor-pointer flex gap-1">
+          
+          <Typography className="flex gap-1 text-gray-600 font-normal" variant="div">
+          <SupervisorAccountIcon className="mt-0.5"   sx={{ color: blue[400] }} />
+          
+             <span  ><u>C</u>onnections</span>
           </Typography>
         </div>
       </Tooltip>
       <>
-        <div className="flex gap-4 mt-0.5">
+        <div className="flex gap-x-2 sm:gap-x-1 lg:gap-x-8 xl:gap-x-8  md:gap-x-4 ">
           {CONNECTIONS.filter((hidden) => hidden !== true).map(
             (connection) =>
               getCount(connection.code) > 0 && (
@@ -37,17 +39,18 @@ function ProfileStats(props) {
                 <Tooltip title={`${getCount(connection.code)} ${connection.title.toLowerCase()}`}>
                 <div
                   
-                  className={`flex gap-2 cursor-pointer text-sm items-center justify-center`}
+                  className={`flex gap-x-1 sm:gap-x-1 lg:gap-x-2 xl:gap-x-2  md:gap-x-2 cursor-pointer text-sm items-center justify-center`}
                 >
                   <Avatar
-                    sx={{ bgcolor: green[500] }}
-                    className="ml-auto avatar-2xs"
+                    sx={{ bgcolor: blue[500] }}
+                    className="ml-auto  avatar-2xs"
                     alt={getCount(connection.code)}
                   >
-                    {getCount(connection.code)}
+                    <span className=" justify-center items-center"> {getCount(connection.code)}</span>
+                   
                   </Avatar>
-                  <div className=" text-gray-500 font-normal line-clamp-1 ">
-                    <Typography className="app__anchor__block " variant="div">
+                  <div className=" text-xs ml-auto sm:text-xs  lg:text-base xl:text-base text-gray-500 font-normal line-clamp-1 ">
+                    <Typography className="  app__anchor__block " variant="div">
                       {connection.title}
                     </Typography>
                   </div>
