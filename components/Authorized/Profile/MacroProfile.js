@@ -52,9 +52,13 @@ import SkillSets from "./Areas/SkillSets";
 import WorkExperience from "./Areas/WorkExperience";
 import Interests from "./Areas/Interests";
 import RecommendationsFeed from "./Areas/RecommendationsFeed";
+import { redirectToURI } from "../Shared/Navigator";
+import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
+import RequestFailedDialog from "../../shared/modals/RequestFailedDialog";
 toast.configure();
 function MacroProfile(props) {
-  console.log(props);
+  const [requestFailed, setRequestFailed] = useState(false);
+  const [requestFailureDetail, setRequestFailureDetail] = useState({});
   const [show, setShow] = useState(false);
   const [
     isConnectionAcceptRequestInProgress,
@@ -102,7 +106,7 @@ function MacroProfile(props) {
   const userSkillsets = userdata?.userSkillsets;
   const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
   const interests = userdata?.myInterests;
-  const recommendations = userdata?.recommendationsReceived; 
+  const recommendations = userdata?.recommendationsReceived;
   const firstName = userdata?.firstName;
   const profileImage = userdata?.profilepicName;
   const profileName = formattedName(userdata?.firstName, userdata?.lastName);
@@ -276,6 +280,43 @@ function MacroProfile(props) {
     _area_title = _area_title.replace("<#>", isItMe ? "me" : firstName);
     return parse(_area_title);
   };
+  const handleEvent = (event, component) => {
+    if (component || !event) {
+      // generate a generic request failed error.
+      setRequestFailed(true);
+      return;
+    }
+    switch (component) {
+      case "RecommendationsFeed":
+        if (
+          event.triggerName === WORKFLOW_CODES.PEOPLE.PROFILE_VIEW &&
+          event.id
+        ) {
+          redirectToURI(getProfileViewURI(event));
+        } else {
+          // generate a custom request failed error.
+          const requestErr = {
+            code: WORKFLOW_CODES.PEOPLE.PROFILE_VIEW,
+            url: window.location.href,
+          };
+          setRequestFailed(true);
+          setRequestFailureDetail(requestErr);
+        }
+        break;
+
+      default:
+        break;
+    }
+  };
+  const getProfileViewURI = (event) => {
+    let currentHref = window.location.href;
+    currentHref = currentHref.substring(0, currentHref.lastIndexOf("/") + 1);
+    return currentHref + event.id;
+  };
+  const handleRequestFailedDialogCloseRequest = (obj) => {
+    setRequestFailed(false);
+    setRequestFailureDetail({});
+  };
   return (
     <>
       {!show ? (
@@ -333,7 +374,7 @@ function MacroProfile(props) {
                       alt={`${firstName}'s photo`}
                       className={` hidden lg:block xl:block avatar-lg   ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                       {...avatarToString(`${profileName}`)}
-                    />
+                    ></Avatar>
                   </div>
 
                   <div className="lg:hidden xl:hidden inline-block">
@@ -633,13 +674,14 @@ function MacroProfile(props) {
                             <div className="mb-1">
                               {area.id === 1 && (
                                 <>
-                                  <About aboutMe={aboutMe} />
+                                  <About owner={isItMe} aboutMe={aboutMe} />
                                 </>
                               )}
 
                               {area.id === 2 && (
                                 <>
                                   <SkillSets
+                                    owner={isItMe}
                                     skillSetOwnerFirstName={firstName}
                                     userSkillsets={userSkillsets}
                                   />
@@ -649,6 +691,7 @@ function MacroProfile(props) {
                               {area.id === 3 && (
                                 <>
                                   <WorkExperience
+                                    owner={isItMe}
                                     experiences={projectResearchWorkExperience}
                                   />
                                 </>
@@ -656,14 +699,19 @@ function MacroProfile(props) {
 
                               {area.id === 5 && (
                                 <>
-                                  <Interests interests={interests} />
+                                  <Interests
+                                    owner={isItMe}
+                                    interests={interests}
+                                  />
                                 </>
                               )}
 
                               {area.id === 6 && (
                                 <>
                                   <RecommendationsFeed
+                                    owner={isItMe}
                                     recommendations={recommendations}
+                                    consumeEvent={handleEvent}
                                   />
                                 </>
                               )}
@@ -679,6 +727,13 @@ function MacroProfile(props) {
           </Box>
         </>
       )}
+      <RequestFailedDialog
+        url={requestFailureDetail?.url}
+        message={requestFailureDetail?.message}
+        code={requestFailureDetail?.code}
+        dialogCloseRequest={handleRequestFailedDialogCloseRequest}
+        isOpen={requestFailed}
+      />
     </>
   );
 }

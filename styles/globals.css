@@ -211,6 +211,7 @@ button.danger {
 .avatar-lg{
   width: 200px !important;
   height: 200px !important;
+  font-size: 52px!important;
 }
 
 .avatar-xs {
@@ -219,6 +220,11 @@ button.danger {
 }
 
 .avatar-2xs {
+  width: 30px !important;
+  height: 30px !important;
+  font-size: smaller !important;
+}
+.avatar-3xs{
   width: 30px !important;
   height: 30px !important;
   font-size: smaller !important;

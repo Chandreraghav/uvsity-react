@@ -62,4 +62,6 @@ export const SESSION_ERROR={
     UPDATE: "There occured a problem updating the session. Please try again.",
     DELETE: "There occured a problem deleting the session."
   }
+
 }
+export const REQUEST_FAILED_MESSAGE='The request could not be completed due to an internal error. Please try again in a while.'
