@@ -1,5 +1,6 @@
 import { Avatar, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import {
   IMAGE_PATHS,
   ME,
@@ -13,6 +14,8 @@ import {
 import ProfileStyle from "../../../../../../styles/DashboardProfile.module.css";
 import { toast } from "react-toastify";
 import { makeStyles } from "@material-ui/core/styles";
+import { navigateToProfile } from "../../../../../Authorized/Shared/Navigator";
+import { WORKFLOW_CODES } from "../../../../../../constants/workflow-codes";
 toast.configure();
 const useStyles = makeStyles((theme) => ({
   popover: {
@@ -35,7 +38,20 @@ function SnapProfile({
   oid,
   origin,
   userdata,
+  onProfileViewRequest,
 }) {
+  const router = useRouter();
+  const handleUserProfileView = () => {
+    if (!origin) {
+      if (oid) navigateToProfile(Number(oid), router);
+    } else {
+      if (origin === "recommendation_feed") {
+        if (onProfileViewRequest) {
+          onProfileViewRequest({triggerName: WORKFLOW_CODES.PEOPLE.PROFILE_VIEW, id:oid});
+        }
+      }
+    }
+  };
   const profilePrimaryLine = formattedName(firstName, lastName);
   const profileSecondaryLine = formattedProfileSubtitle(userType, instituition);
   const [isMePrefixOnProfileName, setMePrefixOnProfileName] = useState(false);
@@ -48,17 +64,32 @@ function SnapProfile({
   return (
     <>
       <div className="flex gap-1">
-        <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
-          {avatar !== "" &&
+        <div
+          className={`avatar flex items-center justify-center flex-shrink-0 w-10 h-10 ${
+            origin === "recommendation_feed" ? "" : "mr-2"
+          } rounded-full bg-brand-grey-200 dark:bg-brand-grey-700`}
+        >
+          {avatar &&
+          avatar !== "" &&
           !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
             <Avatar
               className="avatar-xs"
               alt={`${profilePrimaryLine}`}
               src={avatar}
             />
+          ) : origin === "recommendation_feed" ? (
+            <>
+              <Avatar
+                src={avatar}
+                className="avatar-3xs"
+                alt={profilePrimaryLine}
+                {...avatarToString(`${profilePrimaryLine}`)}
+              />
+            </>
           ) : (
             <Avatar
-              className="avatar-xs"
+              className={`avatar-xs`}
+              alt={profilePrimaryLine}
               {...avatarToString(`${profilePrimaryLine}`)}
             />
           )}
@@ -67,6 +98,7 @@ function SnapProfile({
         <div className={`flex flex-col text-sm leading-snug w-full`}>
           <div className={"flex"}>
             <div
+              onClick={handleUserProfileView}
               className={`name font-bold flex flex-row flex-wrap items-center mb-px ${ProfileStyle.profile__name}`}
             >
               <Tooltip
