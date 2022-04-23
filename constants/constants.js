@@ -316,3 +316,6 @@ export const USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION=['all-done-illustrati
 
 export const USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION=['Great job.','Superb!','Yay!!','Nailed it!!','Awesome.','You did it.',"That's it." ]
 export const USER_PAGE_LEAVE_CONFIRM_MESSAGE="Are you sure want to leave this page?"
+export const ERROR_DETAILS='Click to check error details'
+export const CONTACT_SUPPORT="Please contact support if the problem persists further."
+export const REQUEST_FAILED_HEADER="Request failed"

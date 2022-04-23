@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Grid, Stack } from "@mui/material";
 import convertToHTML from "markdown-to-html-converter";
+import NoData from "../../Shared/NoData";
 function WorkExperience(props) {
   const experiences = props?.experiences;
   const getDurationOfexperience = (exp) => {
@@ -61,7 +62,7 @@ function WorkExperience(props) {
       </Box>
     </>
   ) : (
-    <>No data</>
+    <NoData message='No project or work experience available.'/>
   );
 }
 

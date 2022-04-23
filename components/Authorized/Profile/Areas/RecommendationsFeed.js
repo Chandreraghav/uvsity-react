@@ -2,6 +2,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import React from "react";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import SnapProfile from "../../Network/People/Listing/Snap/Profile";
+import NoData from "../../Shared/NoData";
 
 function RecommendationsFeed(props) {
   const handleOnProfileView=(obj)=>{
@@ -44,7 +45,7 @@ function RecommendationsFeed(props) {
       </Box>
     </>
   ) : (
-    <>No data</>
+    <NoData message='No recommendations yet.'/>
   );
 }
 

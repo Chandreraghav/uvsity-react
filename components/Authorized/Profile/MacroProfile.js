@@ -52,11 +52,13 @@ import SkillSets from "./Areas/SkillSets";
 import WorkExperience from "./Areas/WorkExperience";
 import Interests from "./Areas/Interests";
 import RecommendationsFeed from "./Areas/RecommendationsFeed";
-import { redirectToURI } from "../Shared/Navigator";
+import { navigateToProfile, redirectToURI } from "../Shared/Navigator";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
+import { useRouter } from "next/router";
 import RequestFailedDialog from "../../shared/modals/RequestFailedDialog";
 toast.configure();
 function MacroProfile(props) {
+  const router = useRouter();
   const [requestFailed, setRequestFailed] = useState(false);
   const [requestFailureDetail, setRequestFailureDetail] = useState({});
   const [show, setShow] = useState(false);
@@ -281,7 +283,7 @@ function MacroProfile(props) {
     return parse(_area_title);
   };
   const handleEvent = (event, component) => {
-    if (component || !event) {
+    if (!component || !event) {
       // generate a generic request failed error.
       setRequestFailed(true);
       return;
@@ -483,7 +485,7 @@ function MacroProfile(props) {
                               <>
                                 <Tooltip title={`Connect with ${firstName}`}>
                                   <IconButton
-                                    title={`Connect with ${firstName}`}
+                                    
                                     className=" cursor-pointer inline-flex text-green-700 "
                                     fontSize="small"
                                     aria-label="connect or invite"
@@ -728,6 +730,7 @@ function MacroProfile(props) {
         </>
       )}
       <RequestFailedDialog
+      theme
         url={requestFailureDetail?.url}
         message={requestFailureDetail?.message}
         code={requestFailureDetail?.code}

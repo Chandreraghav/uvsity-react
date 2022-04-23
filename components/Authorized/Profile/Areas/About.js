@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
 import React from "react";
+import NoData from "../../Shared/NoData";
 
 function About(props) {
   const aboutMe = props?.aboutMe;
@@ -12,7 +13,7 @@ function About(props) {
         <Typography variant="div">{aboutMe}</Typography>
       </div>
     </>
-  ):(<>No data</>);
+  ):(<NoData message='No intro available yet.'/>);
 }
 
 export default About;
