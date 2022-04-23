@@ -45,7 +45,7 @@ function RecommendationsFeed(props) {
       </Box>
     </>
   ) : (
-    <NoData message='No recommendations yet.'/>
+    <NoData message='No recommendations received yet.'/>
   );
 }
 
