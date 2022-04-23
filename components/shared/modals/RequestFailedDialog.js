@@ -15,7 +15,11 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { CONTACT_SUPPORT, ERROR_DETAILS, REQUEST_FAILED_HEADER } from "../../../constants/constants";
+import {
+  CONTACT_SUPPORT,
+  ERROR_DETAILS,
+  REQUEST_FAILED_HEADER,
+} from "../../../constants/constants";
 // A reusable component that is used to invoke in scenarios when a async request(invoked via user interaction) fails to serve to the user.
 // This is invoked only from component level.
 function RequestFailedDialog({
@@ -29,6 +33,8 @@ function RequestFailedDialog({
   diagnostics,
   code,
   name,
+  status,
+  method,
 }) {
   if (!isOpen) return "";
   const [expanded, setExpanded] = useState(false);
@@ -82,19 +88,25 @@ function RequestFailedDialog({
               fontWeight: 400,
             }}
             variant="div"
-            color={theme?'#e2e2e2':''}
+            color={theme ? "#e2e2e2" : ""}
           >
             {message ? message : REQUEST_FAILED_MESSAGE}
           </Typography>
           <Spacer count={2} />
           <div>
             <Accordion
-              className={`${theme ? "dark-dialog border-solid border-2 border-white" : "border-solid border-2 border-black"}  `}
+              className={`${
+                theme
+                  ? "dark-dialog border-solid border-2 border-white"
+                  : "border-solid border-2 border-black"
+              }  `}
               expanded={expanded === "panel1"}
               onChange={handleChange("panel1")}
             >
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon className={`${theme ? "dark-dialog" : ""}`}  />}
+                expandIcon={
+                  <ExpandMoreIcon className={`${theme ? "dark-dialog" : ""}`} />
+                }
                 aria-controls="panel1bh-content"
                 id="panel1bh-header"
               >
@@ -110,11 +122,7 @@ function RequestFailedDialog({
                 </Typography>
 
                 {!expanded && (
-                  <Typography
-                     
-                     
-                    sx={{ color: "darkgrey", fontSize: "12px" }}
-                  >
+                  <Typography sx={{ color: "darkgrey", fontSize: "12px" }}>
                     {ERROR_DETAILS}
                   </Typography>
                 )}
@@ -136,6 +144,32 @@ function RequestFailedDialog({
                             {url ? url : window.location.href}
                           </a>
                         </Typography>
+                      </div>
+                    </div>
+                  </>
+
+                  <>
+                    <div className="text-sm flex gap-2">
+                      <div className=" text-gray-600">
+                        <u>M</u>ethod:
+                      </div>
+                      <div className=" line-clamp-1">
+                        <Typography sx={{ fontSize: "14px" }}>
+                          {method ? method : "NA"}
+                        </Typography>
+                      </div>
+                    </div>
+                  </>
+
+                  <>
+                    <div className="text-sm flex gap-2">
+                      <div className=" text-gray-600">
+                        <u>S</u>tatus:
+                      </div>
+                      <div className=" line-clamp-1">
+                        <Typography sx={{ fontSize: "14px" }}>
+                          {status ? status : 500}
+                        </Typography>{" "}
                       </div>
                     </div>
                   </>

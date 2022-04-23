@@ -27,7 +27,8 @@ export const WORKFLOW_CODES = {
        },
        SEVERITY:{
          GREEN:"green"
-       }
+       },
+      LOAD:'SESS_LOAD',
     },
     SPONSORSHIP: {
       EDITS: {
