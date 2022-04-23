@@ -3,7 +3,7 @@ import React from "react";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import SnapProfile from "../../Network/People/Listing/Snap/Profile";
 import NoData from "../../Shared/NoData";
-
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 function RecommendationsFeed(props) {
   const handleOnProfileView = (obj) => {
     if (props.consumeEvent) {
@@ -36,7 +36,7 @@ function RecommendationsFeed(props) {
                 </div>
                 <div className=" ml-10 text-sm">
                   <Typography variant="div" color="text.secondary">
-                    {_recommendation.recommendation}
+                   <QuestionAnswerIcon/> {_recommendation.recommendation}
                   </Typography>
                 </div>
               </div>

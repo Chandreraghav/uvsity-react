@@ -71,15 +71,23 @@ const UserProfile = () => {
  
   if (isError) {
     if(!requestFailed && !requestFailureDetail && error){
+      
+      const obj = {
+        title: PROFILE_UNAVAILABLE,
+        desc: `Unknown`,
+        poster: null,
+      };
+     
     const requestErr = {
       code: WORKFLOW_CODES.PEOPLE.PROFILE_VIEW,
       url: window.location.href,
       message:PROFILE_UNAVAILABLE,
       diagnostics:error.toString()
     };
-    
+    setLayoutObject(obj);
       setRequestFailed(true);
       setRequestFailureDetail(requestErr);
+     
     }
   }
 

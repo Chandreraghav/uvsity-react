@@ -7,6 +7,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useQuery } from "react-query";
 import Paper from "@mui/material/Paper";
 import Container from "@mui/material/Container";
 import AddTaskIcon from "@mui/icons-material/AddTask";
@@ -57,10 +58,14 @@ import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import RequestFailedDialog from "../../shared/modals/RequestFailedDialog";
 import Education from "./Areas/Education";
 import RecommendedSessions from "./Areas/RecommendedSessions";
+import Sessions from "./Areas/Sessions";
+import SessionService from "../../../pages/api/session/SessionService";
+import { KEYS } from "../../../async/queries/keys/unique-keys";
 toast.configure();
 function MacroProfile(props) {
   console.log(props);
   const [requestFailed, setRequestFailed] = useState(false);
+  const [lazySessionData, setLazySessionData] = useState(null);
   const [requestFailureDetail, setRequestFailureDetail] = useState({});
   const [show, setShow] = useState(false);
   const [
@@ -109,7 +114,7 @@ function MacroProfile(props) {
   const userSkillsets = userdata?.userSkillsets;
   const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
   const interests = userdata?.myInterests;
-  const recommendedSessions=userdata?.coursesIRecommend
+  const recommendedSessions = userdata?.coursesIRecommend;
   const recommendations = userdata?.recommendationsReceived;
   const education = {
     highestLevel: userdata?.degreeCourse,
@@ -163,11 +168,26 @@ function MacroProfile(props) {
     metaData?.city,
     metaData?.country
   );
+
+   
+   
+  useEffect(() => {
+    if (props?.lazyAPI && props?.loggedInUserID) {
+      SessionService.getSessionsByUserID(props?.loggedInUserID)
+        .then((res) => {
+          setLazySessionData(res.data?.courses);
+        })
+        .catch((err) => {
+          setLazySessionData(null);
+        });
+    }
+    return ()=>setLazySessionData(null)
+  }, [props?.lazyAPI]);
   const generateStarRatings = () => {
     const ratings = [];
     for (var i = 0; i < starRating; i++) {
       ratings.push(
-        <div  key={i}>
+        <div key={i}>
           <div className=" hidden lg:inline-block xl:inline-block">
             <StarRateIcon
               fontSize="large"
@@ -586,13 +606,12 @@ function MacroProfile(props) {
                         <div className="social-handles">
                           {metaData?.social_profiles?.map((profile, index) => (
                             <div
-                            key={index}
+                              key={index}
                               className={`${
                                 profile.in.url && profile.in.display
                                   ? "mt-1"
                                   : ""
                               }`}
-                              
                             >
                               {profile.in.url && profile.in.display && (
                                 <Tooltip title={profile.in.tooltip}>
@@ -665,7 +684,7 @@ function MacroProfile(props) {
             >
               {PROFILE_AREAS.filter((hidden) => hidden !== true).map((area) => (
                 <React.Fragment key={area.id}>
-                  <Grid  item xs={12} lg={12} md={12} sm={12}>
+                  <Grid item xs={12} lg={12} md={12} sm={12}>
                     <Paper elevation={1}>
                       <div className="profile__section__wrapper mb-1 py-2">
                         <Container className="profile__section__container">
@@ -705,10 +724,16 @@ function MacroProfile(props) {
                                   />
                                 </>
                               )}
- 
-                              {area.id === 4 && <>
-                              <RecommendedSessions consumeEvent={handleEvent}  owner={isItMe} sessions={recommendedSessions}/>
-                              </>}
+
+                              {area.id === 4 && (
+                                <>
+                                  <RecommendedSessions
+                                    consumeEvent={handleEvent}
+                                    owner={isItMe}
+                                    sessions={recommendedSessions}
+                                  />
+                                </>
+                              )}
 
                               {area.id === 5 && (
                                 <>
@@ -724,6 +749,16 @@ function MacroProfile(props) {
                                   <RecommendationsFeed
                                     owner={isItMe}
                                     recommendations={recommendations}
+                                    consumeEvent={handleEvent}
+                                  />
+                                </>
+                              )}
+
+                              {area.id === 7 && (
+                                <>
+                                  <Sessions
+                                    sessions={lazySessionData}
+                                    owner={isItMe}
                                     consumeEvent={handleEvent}
                                   />
                                 </>

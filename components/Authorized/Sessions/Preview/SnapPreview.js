@@ -25,7 +25,7 @@ function SnapPreview(props) {
         <div className="flex flex-col">
           <Tooltip title={props.session.courseName}>
             <div className=" app__anchor__block cursor-pointer line-clamp-1 leading-snug">
-              <Typography sx={{ fontSize: 15, color: "#111" }}>
+              <Typography sx={{ fontSize: 15, color:'#5271ff' }}>
                 {props.session.courseName}
               </Typography>
             </div>

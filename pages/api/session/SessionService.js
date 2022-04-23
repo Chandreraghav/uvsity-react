@@ -36,4 +36,9 @@ export default class SessionService {
       }
     );
   }
+  static async getSessionsByUserID(id) {
+    let endpoint = ENDPOINTS.USER.SESSION_BY_USER;
+    endpoint = endpoint.replace("#X#", id);
+    return await asyncInstance.get(endpoint);
+  }
 }

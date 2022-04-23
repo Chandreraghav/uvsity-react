@@ -98,12 +98,15 @@ function stringToColor(string) {
 }
 
 export const avatarToString = (name) => {
-  return {
-    sx: {
-      bgcolor: stringToColor(name),
-    },
-    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
-  };
+  try {
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+    };
+  } catch (error) {}
+  return null;
 };
 export const localTZDate = (data) => {
   let local_date = new Date(data).toLocaleString("en-US", {
@@ -300,6 +303,11 @@ export const download = (src, name) => {
   document.body.removeChild(a);
 };
 
-export const  timestamp= () => {
-return moment(new Date()).format('DDMMYYYYhhmmss').toString() + moment.tz.zone(Intl.DateTimeFormat().resolvedOptions().timeZone.toString()).abbr(360);
-} 
+export const timestamp = () => {
+  return (
+    moment(new Date()).format("DDMMYYYYhhmmss").toString() +
+    moment.tz
+      .zone(Intl.DateTimeFormat().resolvedOptions().timeZone.toString())
+      .abbr(360)
+  );
+};
