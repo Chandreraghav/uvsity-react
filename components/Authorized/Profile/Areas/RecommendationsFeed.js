@@ -34,7 +34,7 @@ function RecommendationsFeed(props) {
                   />
                 </div>
                 <div className="  text-sm">
-                  <Typography classname="" variant="div" color="text.secondary">
+                  <Typography  variant="div" color="text.secondary">
                     {_recommendation.recommendation}
                   </Typography>
                 </div>

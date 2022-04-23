@@ -52,12 +52,14 @@ import SkillSets from "./Areas/SkillSets";
 import WorkExperience from "./Areas/WorkExperience";
 import Interests from "./Areas/Interests";
 import RecommendationsFeed from "./Areas/RecommendationsFeed";
-import { navigateToProfile, redirectToURI } from "../Shared/Navigator";
+import { redirectToURI } from "../Shared/Navigator";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import RequestFailedDialog from "../../shared/modals/RequestFailedDialog";
+import Education from "./Areas/Education";
 toast.configure();
 function MacroProfile(props) {
+  console.log(props)
   const router = useRouter();
   const [requestFailed, setRequestFailed] = useState(false);
   const [requestFailureDetail, setRequestFailureDetail] = useState({});
@@ -109,6 +111,10 @@ function MacroProfile(props) {
   const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
   const interests = userdata?.myInterests;
   const recommendations = userdata?.recommendationsReceived;
+  const education ={
+    highestLevel:userdata?.degreeCourse,
+    pastEducation:userdata?.pastEducations
+  }
   const firstName = userdata?.firstName;
   const profileImage = userdata?.profilepicName;
   const profileName = formattedName(userdata?.firstName, userdata?.lastName);
@@ -485,7 +491,6 @@ function MacroProfile(props) {
                               <>
                                 <Tooltip title={`Connect with ${firstName}`}>
                                   <IconButton
-                                    
                                     className=" cursor-pointer inline-flex text-green-700 "
                                     fontSize="small"
                                     aria-label="connect or invite"
@@ -717,6 +722,12 @@ function MacroProfile(props) {
                                   />
                                 </>
                               )}
+ 
+                              {area.id === 8 && (
+                                <>
+                                  <Education education={education} owner={isItMe} />
+                                </>
+                              )}
                             </div>
                           </div>
                         </Container>
@@ -730,7 +741,7 @@ function MacroProfile(props) {
         </>
       )}
       <RequestFailedDialog
-      theme
+        theme
         url={requestFailureDetail?.url}
         message={requestFailureDetail?.message}
         code={requestFailureDetail?.code}

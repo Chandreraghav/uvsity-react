@@ -48,7 +48,7 @@ function SkillSets(props) {
           </div>
         </>
       ) : (
-      <NoData message='There are no skill sets to show'/>
+      <NoData message='There are no skill sets to show.'/>
       )}
     </div>
   );
