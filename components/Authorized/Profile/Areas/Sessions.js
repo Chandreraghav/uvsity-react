@@ -7,6 +7,7 @@ function Sessions(props) {
   const [data, setData] = useState(null);
   const [slicedData, setSlicedData] = useState([]);
   useEffect(() => {
+    if (props?.sessions?.error) return;
     setData(props?.sessions);
     const _slicedData = props?.sessions?.slice(
       0,
@@ -29,9 +30,29 @@ function Sessions(props) {
             ))}
           </div>
         </>
+      ) : props?.sessions?.error ? (
+        <>
+          <NoData
+            message={`${
+              props?.owner
+                ? "Some internal error occured while loading your sessions."
+                : "Some internal error occured while loading this feed."
+            }`}
+          />
+        </>
       ) : (
         <>Loading...</>
       )}
+    </>
+  ) : props?.sessions?.error ? (
+    <>
+      <NoData
+        message={`${
+          props?.owner
+            ? "Some internal error occured while loading your sessions."
+            : "Some internal error occured while loading this feed."
+        }`}
+      />
     </>
   ) : (
     <NoData

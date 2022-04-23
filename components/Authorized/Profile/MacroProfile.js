@@ -61,6 +61,7 @@ import RecommendedSessions from "./Areas/RecommendedSessions";
 import Sessions from "./Areas/Sessions";
 import SessionService from "../../../pages/api/session/SessionService";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
+import { ENDPOINTS } from "../../../async/endpoints";
 toast.configure();
 function MacroProfile(props) {
   console.log(props);
@@ -169,8 +170,6 @@ function MacroProfile(props) {
     metaData?.country
   );
 
-   
-   
   useEffect(() => {
     if (props?.lazyAPI && props?.loggedInUserID) {
       SessionService.getSessionsByUserID(props?.loggedInUserID)
@@ -178,10 +177,22 @@ function MacroProfile(props) {
           setLazySessionData(res.data?.courses);
         })
         .catch((err) => {
-          setLazySessionData(null);
+          setLazySessionData({ error: true });
+          let endpoint = ENDPOINTS.USER.SESSION_BY_USER;
+          endpoint = endpoint.replace("#X#", props?.loggedInUserID);
+          const requestErr = {
+            code: WORKFLOW_CODES.USER.SESSION.LOAD,
+            url: endpoint,
+            method: "GET",
+            status: 500,
+            message: `Sessions from user ${props?.loggedInUserID} could not be loaded. Please try again.`,
+            diagnostics: err.toString(),
+          };
+          setRequestFailed(true);
+          setRequestFailureDetail(requestErr);
         });
     }
-    return ()=>setLazySessionData(null)
+    return () => setLazySessionData(null);
   }, [props?.lazyAPI]);
   const generateStarRatings = () => {
     const ratings = [];
@@ -786,6 +797,8 @@ function MacroProfile(props) {
       )}
       <RequestFailedDialog
         theme
+        status={requestFailureDetail?.status}
+        method={requestFailureDetail?.method}
         url={requestFailureDetail?.url}
         message={requestFailureDetail?.message}
         code={requestFailureDetail?.code}
