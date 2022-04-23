@@ -44,7 +44,7 @@ function Education(props) {
                                   <span>{education?.campus}</span>
                                   &nbsp;|&nbsp;
                                   <span>
-                                    {education.educationStartDateForDisplay} -
+                                    {education.educationStartDateForDisplay} -&nbsp;
                                     {education.educationEndDateForDisplay}
                                   </span>
                                 </div>

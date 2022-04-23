@@ -9,15 +9,23 @@ import {
 
 function Profile(props) {
   const [show, handleShow] = useState(false);
+  const [callSessionsByUserLazyAPI, setSessionsByAPI] = useState(false);
   useEffect(() => {
     window.addEventListener("scroll", transitionNavBar);
-    return () => window.removeEventListener("scroll", transitionNavBar);
+    return () => {
+      window.removeEventListener("scroll", transitionNavBar);
+      setSessionsByAPI(false);
+    };
   }, []);
   const transitionNavBar = () => {
     if (window.scrollY > 150) {
       handleShow(true);
     } else {
       handleShow(false);
+    }
+
+    if (window.scrollY > 200) {
+      setSessionsByAPI(true);
     }
   };
   const handleChangeEvent = (event) => {
@@ -69,6 +77,7 @@ function Profile(props) {
             loggedInUserID={props?.loggedInUser?.userDetailsId}
             hasChangeEventTriggered={props?.hasChangeEventTriggered}
             changeEvent={handleChangeEvent}
+            lazyAPI={callSessionsByUserLazyAPI}
             data={props}
           />
         </div>
