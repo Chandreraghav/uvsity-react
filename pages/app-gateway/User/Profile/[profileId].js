@@ -98,6 +98,11 @@ const UserProfile = () => {
       });
     }
   };
+
+  useEffect(()=>{
+    console.log('ok')
+    setChangeEventTriggered(true);
+  },[profileId])
   return (
     <Layout private lowZoom={false} options={layoutObject}>
       <Header data={getData.LOGGED_IN_USER_SUMMARY} />

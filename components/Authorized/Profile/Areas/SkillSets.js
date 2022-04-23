@@ -1,6 +1,8 @@
 import { Chip, Stack, Tooltip, Typography } from "@mui/material";
 import React from "react";
-
+import InfoIcon from '@mui/icons-material/Info';
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
+import NoData from "../../Shared/NoData";
 function SkillSets(props) {
   const userSkillsets = props?.userSkillsets;
   const ownerName = props?.skillSetOwnerFirstName;
@@ -46,7 +48,7 @@ function SkillSets(props) {
           </div>
         </>
       ) : (
-        <>No data</>
+      <NoData message='There are no skill sets to show'/>
       )}
     </div>
   );

@@ -15,7 +15,8 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-// A reusable component that is used to invoke in scenarios when a request fails to serve to a response.
+import { CONTACT_SUPPORT, ERROR_DETAILS, REQUEST_FAILED_HEADER } from "../../../constants/constants";
+// A reusable component that is used to invoke in scenarios when a async request(invoked via user interaction) fails to serve to the user.
 // This is invoked only from component level.
 function RequestFailedDialog({
   isOpen,
@@ -54,7 +55,7 @@ function RequestFailedDialog({
           >
             <Typography gutterBottom variant="h6" component="div">
               <>
-                <ErrorIcon /> {title || "Request failed"}{" "}
+                <ErrorIcon /> {title || REQUEST_FAILED_HEADER}
               </>
             </Typography>
           </div>
@@ -72,7 +73,7 @@ function RequestFailedDialog({
             </div>
           </Tooltip>
         </div>
-        <div className="flex flex-col px-4 mb-2 -mt-3 text-gray-600">
+        <div className={`flex flex-col px-4 mb-2 -mt-3  `}>
           <Typography
             sx={{
               width: "100%",
@@ -81,18 +82,19 @@ function RequestFailedDialog({
               fontWeight: 400,
             }}
             variant="div"
-            color="#3b5999"
+            color={theme?'#e2e2e2':''}
           >
             {message ? message : REQUEST_FAILED_MESSAGE}
           </Typography>
           <Spacer count={2} />
           <div>
             <Accordion
+              className={`${theme ? "dark-dialog border-solid border-2 border-white" : "border-solid border-2 border-black"}  `}
               expanded={expanded === "panel1"}
               onChange={handleChange("panel1")}
             >
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={<ExpandMoreIcon className={`${theme ? "dark-dialog" : ""}`}  />}
                 aria-controls="panel1bh-content"
                 id="panel1bh-header"
               >
@@ -109,10 +111,11 @@ function RequestFailedDialog({
 
                 {!expanded && (
                   <Typography
-                    className="ml-auto"
-                    sx={{ color: "text.secondary", fontSize: "12px" }}
+                     
+                     
+                    sx={{ color: "darkgrey", fontSize: "12px" }}
                   >
-                    Click to check error details
+                    {ERROR_DETAILS}
                   </Typography>
                 )}
               </AccordionSummary>
@@ -154,9 +157,7 @@ function RequestFailedDialog({
                       </div>
                       <div className=" line-clamp-1">
                         <Typography sx={{ fontSize: "14px" }}>
-                          {diagnostics
-                            ? diagnostics
-                            : "Please contact support if the problem persists further."}
+                          {diagnostics ? diagnostics : CONTACT_SUPPORT}
                         </Typography>
                       </div>
                     </div>
