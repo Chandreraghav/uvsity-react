@@ -51,11 +51,11 @@ function WorkExperience(props) {
   );
   return experiences && experiences.length > 0 ? (
     <>
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "100%",maxHeight:400, overflow: "auto" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           {experiences?.map((experience, index) => (
             <Grid key={index} item xs={12} lg={6} md={6} sm={12}>
-              <Card sx={{minHeight:170, maxHeight:170}} variant="outlined">{card(experience)}</Card>
+              <Card sx={{minHeight:170, maxHeight:170, overflow: "auto"}} variant="outlined">{card(experience)}</Card>
             </Grid>
           ))}
         </Grid>

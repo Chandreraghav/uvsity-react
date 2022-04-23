@@ -44,7 +44,7 @@ function ProfileStats(props) {
                   <Avatar
                     sx={{ bgcolor: blue[500] }}
                     className="ml-auto  avatar-2xs"
-                    alt={getCount(connection.code)}
+                    alt={getCount(connection.code).toString()}
                   >
                     <span className=" justify-center items-center"> {getCount(connection.code)}</span>
                    

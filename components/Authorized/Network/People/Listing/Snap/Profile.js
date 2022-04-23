@@ -33,6 +33,7 @@ function SnapProfile({
   firstName,
   lastName,
   avatar,
+  campus,
   userType,
   instituition,
   oid,
@@ -45,9 +46,15 @@ function SnapProfile({
     if (!origin) {
       if (oid) navigateToProfile(Number(oid), router);
     } else {
-      if (origin === "recommendation_feed") {
+      if (
+        origin === "recommendation_feed" ||
+        origin === "recommended_session_author"
+      ) {
         if (onProfileViewRequest) {
-          onProfileViewRequest({triggerName: WORKFLOW_CODES.PEOPLE.PROFILE_VIEW, id:oid});
+          onProfileViewRequest({
+            triggerName: WORKFLOW_CODES.PEOPLE.PROFILE_VIEW,
+            id: oid,
+          });
         }
       }
     }
@@ -64,42 +71,46 @@ function SnapProfile({
   return (
     <>
       <div className="flex gap-1">
-        <div
-          className={`avatar flex items-center justify-center flex-shrink-0 w-10 h-10 ${
-            origin === "recommendation_feed" ? "" : "mr-2"
-          } rounded-full bg-brand-grey-200 dark:bg-brand-grey-700`}
-        >
-          {avatar &&
-          avatar !== "" &&
-          !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
-            <Avatar
-              className="avatar-xs"
-              alt={`${profilePrimaryLine}`}
-              src={avatar}
-            />
-          ) : origin === "recommendation_feed" ? (
-            <>
-              <Avatar
-                src={avatar}
-                className="avatar-3xs"
-                alt={profilePrimaryLine}
-                {...avatarToString(`${profilePrimaryLine}`)}
-              />
-            </>
-          ) : (
-            <Avatar
-              className={`avatar-xs`}
-              alt={profilePrimaryLine}
-              {...avatarToString(`${profilePrimaryLine}`)}
-            />
-          )}
-        </div>
+        {origin !== "recommended_session_author" && (
+          <>
+            <div
+              className={`avatar flex items-center justify-center flex-shrink-0 w-10 h-10 ${
+                origin === "recommendation_feed" ? "" : "mr-2"
+              } rounded-full bg-brand-grey-200 dark:bg-brand-grey-700`}
+            >
+              {avatar &&
+              avatar !== "" &&
+              !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
+                <Avatar
+                  className="avatar-xs"
+                  alt={`${profilePrimaryLine}`}
+                  src={avatar}
+                />
+              ) : origin === "recommendation_feed" ? (
+                <>
+                  <Avatar
+                    src={avatar}
+                    className="avatar-3xs"
+                    alt={profilePrimaryLine}
+                    {...avatarToString(`${profilePrimaryLine}`)}
+                  />
+                </>
+              ) : (
+                <Avatar
+                  className={`avatar-xs`}
+                  alt={profilePrimaryLine}
+                  {...avatarToString(`${profilePrimaryLine}`)}
+                />
+              )}
+            </div>
+          </>
+        )}
 
         <div className={`flex flex-col text-sm leading-snug w-full`}>
           <div className={"flex"}>
             <div
               onClick={handleUserProfileView}
-              className={`name font-bold flex flex-row flex-wrap items-center mb-px ${ProfileStyle.profile__name}`}
+              className={`name font-bold flex flex-row flex-wrap items-center mb-px ${ProfileStyle.profile__name} ${origin==='recommended_session_author' || origin==='secondary-name'?' text-gray-600':''}`}
             >
               <Tooltip
                 title={
@@ -108,7 +119,7 @@ function SnapProfile({
                     : TOOLTIPS.VIEW_PROFILE
                 }
               >
-                <span className="name">
+                <span className={`name `}>
                   {profilePrimaryLine}
                   {isMePrefixOnProfileName ? <>{ME}</> : <></>}
                 </span>
@@ -120,7 +131,8 @@ function SnapProfile({
             {profileSecondaryLine !== "" && (
               <Tooltip title={profileSecondaryLine}>
                 <div className={`${origin ? "" : "-mt-2-px"}`}>
-                  {profileSecondaryLine}
+                  {profileSecondaryLine} 
+                  {campus && (<>, {campus}</>)}
                 </div>
               </Tooltip>
             )}

@@ -90,7 +90,6 @@ function SignIn({ dialogCloseRequest, isOpen }) {
 
       })
       .catch((err) => {
-        
         handleResponse(
           getWorkflowError(err),
           RESPONSE_TYPES.ERROR,

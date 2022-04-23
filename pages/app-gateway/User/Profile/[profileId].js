@@ -7,7 +7,10 @@ import PrivateRoute from "../../../../components/Auth/HOC/Routes/PrivateRoute";
 import Header from "../../../../components/Authorized/Shared/Header";
 import Layout from "../../../../components/Main/Layout";
 import Footer from "../../../../components/shared/Footer";
+import RequestFailedDialog from "../../../../components/shared/modals/RequestFailedDialog";
+import { PROFILE_UNAVAILABLE } from "../../../../constants/error-messages";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
+import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import { formattedName } from "../../../../utils/utility";
 import UserDataService from "../../../api/users/data/UserDataService";
 import Profile from "./Profile";
@@ -21,6 +24,8 @@ const UserProfile = () => {
     desc: null,
     poster: null,
   };
+  const [requestFailed, setRequestFailed] = useState(false);
+  const [requestFailureDetail, setRequestFailureDetail] = useState(null);
   const [layoutObject, setLayoutObject] = useState(null);
   const [hasChangeEventTriggered, setChangeEventTriggered] = useState(false);
   const getLoggedInUserSummary = async () =>
@@ -32,8 +37,9 @@ const UserProfile = () => {
     [KEYS.PROFILE.SUMMARY],
     getLoggedInUserSummary
   );
-
-  const { data, isError, isSuccess, isLoading } = useQuery(
+   
+ 
+  const { data, isError, isSuccess, isLoading,error } = useQuery(
     [KEYS.PROFILE.VIEWS],
     getProfileSummary,
     {
@@ -43,6 +49,7 @@ const UserProfile = () => {
           : false,
     }
   );
+  
 
   const getData = {
     LOGGED_IN_USER_SUMMARY: LOGGED_IN_USER_SUMMARY,
@@ -61,9 +68,19 @@ const UserProfile = () => {
     );
     return _profileName;
   };
-
+ 
   if (isError) {
-    router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD);
+    if(!requestFailed && !requestFailureDetail && error){
+    const requestErr = {
+      code: WORKFLOW_CODES.PEOPLE.PROFILE_VIEW,
+      url: window.location.href,
+      message:PROFILE_UNAVAILABLE,
+      diagnostics:error.toString()
+    };
+    
+      setRequestFailed(true);
+      setRequestFailureDetail(requestErr);
+    }
   }
 
   useEffect(() => {
@@ -99,10 +116,9 @@ const UserProfile = () => {
     }
   };
 
-  useEffect(()=>{
-    console.log('ok')
-    setChangeEventTriggered(true);
-  },[profileId])
+  const handleRequestFailedDialogCloseRequest =()=>{
+    router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD);
+  }
   return (
     <Layout private lowZoom={false} options={layoutObject}>
       <Header data={getData.LOGGED_IN_USER_SUMMARY} />
@@ -119,6 +135,16 @@ const UserProfile = () => {
       )}
       {isLoading && <>Shimmering....</>}
       <Footer />
+
+      <RequestFailedDialog
+        theme
+        url={requestFailureDetail?.url}
+        message={requestFailureDetail?.message}
+        code={requestFailureDetail?.code}
+        dialogCloseRequest={handleRequestFailedDialogCloseRequest}
+        isOpen={requestFailed}
+        diagnostics={requestFailureDetail?.diagnostics}
+      />
     </Layout>
   );
 };

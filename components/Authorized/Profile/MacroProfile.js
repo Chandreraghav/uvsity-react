@@ -54,14 +54,12 @@ import Interests from "./Areas/Interests";
 import RecommendationsFeed from "./Areas/RecommendationsFeed";
 import { redirectToURI } from "../Shared/Navigator";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
-import { useRouter } from "next/router";
 import RequestFailedDialog from "../../shared/modals/RequestFailedDialog";
 import Education from "./Areas/Education";
 import RecommendedSessions from "./Areas/RecommendedSessions";
 toast.configure();
 function MacroProfile(props) {
   console.log(props);
-  const router = useRouter();
   const [requestFailed, setRequestFailed] = useState(false);
   const [requestFailureDetail, setRequestFailureDetail] = useState({});
   const [show, setShow] = useState(false);
@@ -169,7 +167,7 @@ function MacroProfile(props) {
     const ratings = [];
     for (var i = 0; i < starRating; i++) {
       ratings.push(
-        <>
+        <div  key={i}>
           <div className=" hidden lg:inline-block xl:inline-block">
             <StarRateIcon
               fontSize="large"
@@ -182,7 +180,7 @@ function MacroProfile(props) {
               className={`mt-1 ${ProfileStyle.profile__macro__review__star}`}
             />
           </div>
-        </>
+        </div>
       );
     }
     return <>{ratings}</>;
@@ -298,6 +296,7 @@ function MacroProfile(props) {
     }
     switch (component) {
       case "RecommendationsFeed":
+      case "RecommendedSessions":
         if (
           event.triggerName === WORKFLOW_CODES.PEOPLE.PROFILE_VIEW &&
           event.id
@@ -587,12 +586,13 @@ function MacroProfile(props) {
                         <div className="social-handles">
                           {metaData?.social_profiles?.map((profile, index) => (
                             <div
+                            key={index}
                               className={`${
                                 profile.in.url && profile.in.display
                                   ? "mt-1"
                                   : ""
                               }`}
-                              key={index}
+                              
                             >
                               {profile.in.url && profile.in.display && (
                                 <Tooltip title={profile.in.tooltip}>
@@ -665,7 +665,7 @@ function MacroProfile(props) {
             >
               {PROFILE_AREAS.filter((hidden) => hidden !== true).map((area) => (
                 <React.Fragment key={area.id}>
-                  <Grid item xs={12} lg={12} md={12} sm={12}>
+                  <Grid  item xs={12} lg={12} md={12} sm={12}>
                     <Paper elevation={1}>
                       <div className="profile__section__wrapper mb-1 py-2">
                         <Container className="profile__section__container">
@@ -707,7 +707,7 @@ function MacroProfile(props) {
                               )}
  
                               {area.id === 4 && <>
-                              <RecommendedSessions  owner={isItMe} sessions={recommendedSessions}/>
+                              <RecommendedSessions consumeEvent={handleEvent}  owner={isItMe} sessions={recommendedSessions}/>
                               </>}
 
                               {area.id === 5 && (
