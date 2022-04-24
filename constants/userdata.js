@@ -309,6 +309,7 @@ export const TITLES = {
   CONNECTED_PEOPLE_ALREADY: "You and #X# are already connected",
   CONNECTION_REQUEST_PENDING: "Your connection request is yet pending from ",
   CONNECTION_REQUEST_SENT_TO_LATENT: "You have sent a request to ",
+  PROFILE_PHOTO_UPDATED: "Profile photo updated successfully 😊",
 };
 export const PAYLOAD_DEFAULT_TEXTS = {
   CONNECTION_REQUEST_SENDING_TEXT:
@@ -1090,3 +1091,6 @@ export const PROFILE_AREAS = [
 
  
 ];
+export const USER_PROFILE={
+  CHANGE_PROFILE_PICTURE:'Change profile picture'
+}

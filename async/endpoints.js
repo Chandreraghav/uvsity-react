@@ -57,6 +57,9 @@ export const ENDPOINTS = {
           DOC:'/slidedeck'
         }
        
+      },
+      PROFILE:{
+        PICTURE:'/edit/profile/profilepic'
       }
       
     },

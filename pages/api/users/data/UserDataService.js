@@ -54,4 +54,16 @@ export default class UserDataService {
   static async getUserProfileBy(id) {
     return await asyncInstance.get(ENDPOINTS.USER.PEOPLE.VIEW + id + "/");
   }
+
+  static async uploadProfilePicture(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.UPLOADS.PROFILE.PICTURE,
+      payload,
+      {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      }
+    );
+  }
 }

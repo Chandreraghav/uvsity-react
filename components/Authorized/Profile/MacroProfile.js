@@ -39,7 +39,10 @@ import Actions from "./ActionableItems/Actions";
 import { handleResponse } from "../../../toastr-response-handler/handler";
 import { RESPONSE_TYPES } from "../../../constants/constants";
 import { toast } from "react-toastify";
-import { PEOPLE } from "../../../constants/error-messages";
+import {
+  PEOPLE,
+  PROFILE_PHOTO_UPDATE_FAILED,
+} from "../../../constants/error-messages";
 import { getWorkflowError } from "../../../error-handler/handler";
 import ConnectionService from "../../../pages/api/people/network/ConnectionService";
 import { ClipLoader } from "react-spinners";
@@ -59,10 +62,17 @@ import Education from "./Areas/Education";
 import RecommendedSessions from "./Areas/RecommendedSessions";
 import Sessions from "./Areas/Sessions";
 import SessionService from "../../../pages/api/session/SessionService";
+import UserDataService from "../../../pages/api/users/data/UserDataService";
 import { ENDPOINTS } from "../../../async/endpoints";
 import MacroProfileShimmer from "./Shimmer/MacroProfileShimmer";
+import ChangeProfilePicture from "./ActionableItems/ChangeProfilePicture";
+
+import ChangeProfilePictureDialog from "../../shared/modals/ChangeProfilePictureModal";
 toast.configure();
 function MacroProfile(props) {
+  const [selectedpicture, setSelectedPictureEvent] = useState(null);
+  const [openProfilePictureModal, setProfilePictureModal] = useState(false);
+  const [showChangeAvatarOption, setShowChangeAvatarOption] = useState(false);
   const [requestFailed, setRequestFailed] = useState(false);
   const [lazySessionData, setLazySessionData] = useState(null);
   const [requestFailureDetail, setRequestFailureDetail] = useState({});
@@ -121,6 +131,7 @@ function MacroProfile(props) {
   };
   const firstName = userdata?.firstName;
   const profileImage = userdata?.profilepicName;
+  const [profilePic, setProfilePic] = useState(profileImage);
   const profileName = formattedName(userdata?.firstName, userdata?.lastName);
   const userType = userdata?.userType;
   const starRating = Number(userdata?.noOfRatingStars);
@@ -360,16 +371,74 @@ function MacroProfile(props) {
     setRequestFailed(false);
     setRequestFailureDetail({});
   };
+  const showAvatarChangeOption = (event) => {
+    setShowChangeAvatarOption(true);
+  };
+  const hideAvatarChangeOption = () => {
+    setShowChangeAvatarOption(false);
+  };
+  const handleProfilePictureChange = (obj) => {
+    if (obj) {
+      if (!openProfilePictureModal) setProfilePictureModal(true);
+      setSelectedPictureEvent(obj);
+    }
+  };
+  const handleProfilePictureDialogClose = (obj) => {
+    if (!obj.save) {
+      setProfilePictureModal(false);
+      setSelectedPictureEvent(null);
+      return;
+    }
+
+    const image = selectedpicture?.target?.files[0];
+    const formData = new FormData();
+    formData.append("profilepic", image);
+    if (image && typeof image === "object") {
+      UserDataService.uploadProfilePicture(formData)
+        .then((res) => {
+          if (res.data) {
+            setProfilePictureModal(false);
+            setSelectedPictureEvent(null);
+            setProfilePic(res.data);
+            handleResponse(
+              TITLES.PROFILE_PHOTO_UPDATED,
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setProfilePictureModal(false);
+          handleResponse(
+            getWorkflowError(PROFILE_PHOTO_UPDATE_FAILED),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
+    } else {
+      setProfilePictureModal(false);
+      handleResponse(
+        getWorkflowError(PROFILE_PHOTO_UPDATE_FAILED),
+        RESPONSE_TYPES.ERROR,
+        toast.POSITION.BOTTOM_CENTER
+      );
+    }
+  };
+
   return (
     <>
       {!show ? (
-        <><MacroProfileShimmer visible/></>
+        <>
+          <MacroProfileShimmer visible />
+        </>
       ) : (
         <>
           {/* SECTION 1 Profile Name, Image, Cover Picture and Secondary Information */}
           <div
             className={`Profile-Name-Image-Cover-Picture-Secondary-Information-Connection-Status-social-profile-reference-Star-Rating actionable-items-on-connected-state schedule-calendar Connection stats uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__macro}`}
           >
+            {/* COVER IMAGE */}
             <div className="lg:hidden xl:hidden flex ">
               <img
                 className={`${
@@ -390,46 +459,79 @@ function MacroProfile(props) {
               />
             </div>
 
+            {/* AVATAR */}
             <div className="flex">
               {profileImage &&
               !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
-                <>
+                <div
+                  onMouseLeave={hideAvatarChangeOption}
+                  onMouseEnter={showAvatarChangeOption}
+                >
+                  {/* AVATAR SAMPLE 1 */}
                   <div className=" hidden lg:inline-block xl:inline-block">
+                    {isItMe && showChangeAvatarOption && (
+                      <ChangeProfilePicture
+                        consumeEvent={handleProfilePictureChange}
+                        large
+                      />
+                    )}
+
                     <Avatar
                       alt={`${firstName}'s photo`}
                       className={` avatar-lg cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
-                      src={profileImage}
+                      src={profilePic}
                     />
                   </div>
-
+                  {/* AVATAR SAMPLE 2 */}
                   <div className=" lg:hidden xl:hidden inline-block">
+                    {isItMe && showChangeAvatarOption && (
+                      <ChangeProfilePicture
+                        consumeEvent={handleProfilePictureChange}
+                      />
+                    )}
                     <Avatar
                       alt={`${firstName}'s photo`}
                       className={` cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
-                      src={profileImage}
+                      src={profilePic}
                     />
                   </div>
-                </>
+                </div>
               ) : (
-                <>
+                <div
+                  onMouseLeave={hideAvatarChangeOption}
+                  onMouseEnter={showAvatarChangeOption}
+                >
+                  {/* AVATAR SAMPLE 3 */}
                   <div className=" hidden lg:inline-block xl:inline-block">
+                    {isItMe && showChangeAvatarOption && (
+                      <ChangeProfilePicture
+                        consumeEvent={handleProfilePictureChange}
+                        large
+                      />
+                    )}
+
                     <Avatar
                       alt={`${firstName}'s photo`}
                       className={` hidden lg:block xl:block avatar-lg   ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                       {...avatarToString(`${profileName}`)}
                     ></Avatar>
                   </div>
-
+                  {/* AVATAR SAMPLE 4 */}
                   <div className="lg:hidden xl:hidden inline-block">
+                    {isItMe && showChangeAvatarOption && (
+                      <ChangeProfilePicture
+                        consumeEvent={handleProfilePictureChange}
+                      />
+                    )}
                     <Avatar
                       alt={`${firstName}'s photo`}
                       className={` hidden lg:block xl:block    ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                       {...avatarToString(`${profileName}`)}
                     />
                   </div>
-                </>
+                </div>
               )}
-
+              {/* INTER-USER COMMUNICATIVE ACTIONS */}
               <div className="ml-auto mr-0">
                 <div className="mt-12 xl:mt-32 lg:mt-32">
                   {isConnected && <Actions userdata={userdata} />}
@@ -438,6 +540,7 @@ function MacroProfile(props) {
             </div>
 
             <div className={`  ml-3`}>
+              {/* NAME(PRIMARY, SECONDARY, TERTIARY LINES) & STAR RATING */}
               <div className="flex">
                 <div className="flex gap-1">
                   <div className="mb-2 hidden lg:inline-block xl:inline-block">
@@ -809,6 +912,14 @@ function MacroProfile(props) {
         code={requestFailureDetail?.code}
         dialogCloseRequest={handleRequestFailedDialogCloseRequest}
         isOpen={requestFailed}
+      />
+
+      <ChangeProfilePictureDialog
+        data={selectedpicture}
+        dialogCloseRequest={handleProfilePictureDialogClose}
+        theme
+        isOpen={openProfilePictureModal}
+        consumeEvent={handleProfilePictureChange}
       />
     </>
   );
