@@ -66,3 +66,4 @@ export const SESSION_ERROR={
 }
 export const REQUEST_FAILED_MESSAGE='The request could not be completed due to an internal error. Please try again in a while.'
 export const PROFILE_UNAVAILABLE='The requested profile is not available.'
+export const PROFILE_PHOTO_UPDATE_FAILED='Your profile photo was not updated due to an internal error. Please try again in a while.'
