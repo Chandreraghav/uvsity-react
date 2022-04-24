@@ -60,10 +60,8 @@ import RecommendedSessions from "./Areas/RecommendedSessions";
 import Sessions from "./Areas/Sessions";
 import SessionService from "../../../pages/api/session/SessionService";
 import { ENDPOINTS } from "../../../async/endpoints";
-import MacroProfileShimmer from "./Shimmer/MacroProfileShimmer";
 toast.configure();
 function MacroProfile(props) {
-  console.log(props);
   const [requestFailed, setRequestFailed] = useState(false);
   const [lazySessionData, setLazySessionData] = useState(null);
   const [requestFailureDetail, setRequestFailureDetail] = useState({});
