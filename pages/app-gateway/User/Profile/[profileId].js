@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
 import { asyncSubscriptions } from "../../../../async/subscriptions";
 import PrivateRoute from "../../../../components/Auth/HOC/Routes/PrivateRoute";
+import MacroProfileShimmer from "../../../../components/Authorized/Profile/Shimmer/MacroProfileShimmer";
 import Header from "../../../../components/Authorized/Shared/Header";
 import Layout from "../../../../components/Main/Layout";
 import Footer from "../../../../components/shared/Footer";
@@ -141,7 +142,7 @@ const UserProfile = () => {
           />
         </>
       )}
-      {isLoading && <>Shimmering....</>}
+      {isLoading && <><MacroProfileShimmer visible/></>}
       <Footer />
 
       <RequestFailedDialog
