@@ -36,7 +36,7 @@ function RecommendationsFeed(props) {
                 </div>
                 <div className=" ml-10 text-sm">
                   <Typography variant="div" color="text.secondary">
-                   <QuestionAnswerIcon/> {_recommendation.recommendation}
+                   <QuestionAnswerIcon sx={{color:'blueviolet', fontSize:14}}/> {_recommendation.recommendation}
                   </Typography>
                 </div>
               </div>
