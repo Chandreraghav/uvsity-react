@@ -12,6 +12,7 @@ import PrivateRoute from "../../../components/Auth/HOC/Routes/PrivateRoute";
 import dynamic from "next/dynamic";
 import { eraseFormContext } from "../../../components/Authorized/Sessions/Clean/cleanup";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
+import PhoneMenu from "../../../components/Authorized/Shared/FireFighter/PhoneMenu";
 
 function Create() {
   const layoutObj = {
@@ -68,7 +69,8 @@ function Create() {
           />
         </>
       )}
-      <Footer />
+      <PhoneMenu data={getData.USER_PROFILE_SUMMARY} />
+      <Footer minimizeOnSmallScreens />
     </Layout>
   );
 }

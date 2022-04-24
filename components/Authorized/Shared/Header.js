@@ -3,7 +3,6 @@ import HeaderStyle from "../../../styles/Header.module.css";
 import HeaderOption from "./HeaderOption";
 import { HEADER_OPTIONS } from "../../../constants/userdata";
 import Search from "./Search";
-import Hamburger from "./FireFighter/Hamburger";
 import { formattedName } from "../../../utils/utility";
 import Shimmer from "./Shimmer/Shimmer";
 function Header(props) {
@@ -14,7 +13,7 @@ function Header(props) {
         <img src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE} alt="uvsity-Logo" />
         <Search />
       </div>
-
+      
       {userdata.isLoading && (
         <>
           <div className={` hidden md:flex items-center`}>
@@ -45,7 +44,7 @@ function Header(props) {
         </>
       )}
 
-      <Hamburger color="gray" />
+      
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import React from 'react'
 import FooterStyle from  "../../styles/Footer.module.css";
 
-function Footer() {
+function Footer(props) {
     return (
-      <footer className={FooterStyle.footer}>
+      <footer className={`${props?.minimizeOnSmallScreens?'hidden md:block':''} ${FooterStyle.footer}`}>
         <ul className={FooterStyle.child__footer__links}>
           <li className={`${FooterStyle.child__footer__link__wrapper}`}>
             <a className={`${FooterStyle.child__footer__link}  app__anchor__footer`} href="/browse/subtitles">

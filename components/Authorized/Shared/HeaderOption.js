@@ -14,7 +14,8 @@ function HeaderOption({
   name,
   isAuthorizedProfile,
   hidden,
-  redirectTo
+  redirectTo,
+  phoneMenu,
 }) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -70,11 +71,18 @@ function HeaderOption({
       ) : (
         ""
       )}
-      <h3
-        className={` lg:flex md:hidden sm:hidden  ${HeaderOptionsStyle.headerOption__title}`}
-      >
-        {title}
-      </h3>
+
+      {phoneMenu ? (
+        <h3 className={` flex  ${HeaderOptionsStyle.headerOption__title}`}>
+          {title}
+        </h3>
+      ) : (
+        <h3
+          className={` lg:flex md:hidden  sm:hidden  ${HeaderOptionsStyle.headerOption__title}`}
+        >
+          {title}
+        </h3>
+      )}
     </div>
   );
 }

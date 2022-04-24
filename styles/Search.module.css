@@ -11,17 +11,29 @@
     outline: none;
     border: none;
     background: none;
-    width: 40vw;
+     
   }
 
-  @media screen and (max-width: 780px) {
+  @media screen and (max-width: 768px) {
     .search > input {
-     width:38vw;
+      
     }
   }
 
-  @media screen and (max-width: 1084px) {
+  @media screen and (max-width: 1024px) {
     .search > input {
-     width:36vw;
+      
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    .search > input {
+     
+    }
+  }
+
+  @media screen and (max-width: 320px) {
+    .search > input {
+     width:55vw
     }
   }

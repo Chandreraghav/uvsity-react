@@ -7,6 +7,7 @@ import { KEYS } from "../../async/queries/keys/unique-keys";
 import UserDataService from "../api/users/data/UserDataService";
 import { asyncSubscriptions } from "../../async/subscriptions";
 import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
+import PhoneMenu from "../../components/Authorized/Shared/FireFighter/PhoneMenu";
 
 function Landing() {
   const layoutObj = {
@@ -53,7 +54,7 @@ function Landing() {
           : false,
     }
   );
-  
+
   const getData = {
     USER_LOGIN_INFO,
     USER_PROFILE_SUMMARY,
@@ -67,7 +68,8 @@ function Landing() {
     <Layout private lowZoom={false} options={layoutObj}>
       <Header data={getData.USER_PROFILE_SUMMARY} />
       <Dashboard data={getData} />
-      <Footer />
+      <PhoneMenu data={getData.USER_PROFILE_SUMMARY} />
+      <Footer minimizeOnSmallScreens />
     </Layout>
   );
 }
