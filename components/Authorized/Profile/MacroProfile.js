@@ -87,7 +87,7 @@ function MacroProfile(props) {
   const [isConnectionRequestInProgress, setConnectionRequestInProgress] =
     useState(false);
   const [isConnectionRequestSent, setConnectionRequestSent] = useState(false);
-
+  const [profilePic, setProfilePic] = useState(null);
   useEffect(() => {
     if (props?.hasChangeEventTriggered) {
       setShow(true);
@@ -98,8 +98,11 @@ function MacroProfile(props) {
     });
     return () => {
       setShow(false);
+      setProfilePic(null)
     };
   }, []);
+
+  
   const isItMe = props?.data?.owner;
   const isConnected =
     isItMe === false &&
@@ -131,7 +134,6 @@ function MacroProfile(props) {
   };
   const firstName = userdata?.firstName;
   const profileImage = userdata?.profilepicName;
-  const [profilePic, setProfilePic] = useState(profileImage);
   const profileName = formattedName(userdata?.firstName, userdata?.lastName);
   const userType = userdata?.userType;
   const starRating = Number(userdata?.noOfRatingStars);
@@ -397,9 +399,9 @@ function MacroProfile(props) {
       UserDataService.uploadProfilePicture(formData)
         .then((res) => {
           if (res.data) {
+            setProfilePic(res.data);
             setProfilePictureModal(false);
             setSelectedPictureEvent(null);
-            setProfilePic(res.data);
             handleResponse(
               TITLES.PROFILE_PHOTO_UPDATED,
               RESPONSE_TYPES.SUCCESS,
@@ -410,6 +412,7 @@ function MacroProfile(props) {
         .catch((err) => {
           console.log(err);
           setProfilePictureModal(false);
+          setProfilePic(null);
           handleResponse(
             getWorkflowError(PROFILE_PHOTO_UPDATE_FAILED),
             RESPONSE_TYPES.ERROR,
@@ -417,6 +420,7 @@ function MacroProfile(props) {
           );
         });
     } else {
+      setProfilePic(null);
       setProfilePictureModal(false);
       handleResponse(
         getWorkflowError(PROFILE_PHOTO_UPDATE_FAILED),
@@ -479,7 +483,7 @@ function MacroProfile(props) {
                     <Avatar
                       alt={`${firstName}'s photo`}
                       className={` avatar-lg cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
-                      src={profilePic}
+                      src={profilePic || profileImage}
                     />
                   </div>
                   {/* AVATAR SAMPLE 2 */}
@@ -492,7 +496,7 @@ function MacroProfile(props) {
                     <Avatar
                       alt={`${firstName}'s photo`}
                       className={` cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
-                      src={profilePic}
+                      src={profilePic || profileImage}
                     />
                   </div>
                 </div>
