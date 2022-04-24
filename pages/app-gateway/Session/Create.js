@@ -53,10 +53,13 @@ function Create() {
       setOldContextErased(true);
     });
   }, []);
+  const handleNavigationError = (obj) => {
+    console.log(obj);
+  };
 
   return (
     <Layout private options={layoutObj}>
-      <Header data={getData.USER_PROFILE_SUMMARY} />
+      <Header onHeaderNavigationError={handleNavigationError} data={getData.USER_PROFILE_SUMMARY} />
       {oldContextErased && (
         <>
           <CreateSession

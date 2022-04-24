@@ -7,13 +7,18 @@ import { formattedName } from "../../../utils/utility";
 import Shimmer from "./Shimmer/Shimmer";
 function Header(props) {
   const userdata = props.data;
+  const handleErrorOnRedirect = (obj) => {
+    if (props.onHeaderNavigationError) {
+      props.onHeaderNavigationError(obj);
+    }
+  };
   return (
     <div className={HeaderStyle.header}>
       <div className={HeaderStyle.header__left}>
         <img src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE} alt="uvsity-Logo" />
         <Search />
       </div>
-      
+
       {userdata.isLoading && (
         <>
           <div className={` hidden md:flex items-center`}>
@@ -27,6 +32,7 @@ function Header(props) {
             {HEADER_OPTIONS.map((data) => (
               <HeaderOption
                 key={data.id}
+                oid={userdata.data.userDetailsId}
                 isAuthorizedProfile={data.hasAvatar}
                 hidden={data.hidden}
                 avatar={userdata.data.profilePicName}
@@ -38,13 +44,12 @@ function Header(props) {
                 )}
                 tooltip={data.tooltip}
                 redirectTo={data.redirectTo}
+                errorOnRedirect={handleErrorOnRedirect}
               />
             ))}
           </div>
         </>
       )}
-
-      
     </div>
   );
 }

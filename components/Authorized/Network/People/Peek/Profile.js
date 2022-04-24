@@ -102,6 +102,9 @@ function PeekProfile(props) {
       return props?.metaData?.creator?.userDetailsId;
     return props?.metaData?.associatedUserData?.userDetailsId;
   };
+  const handleProfileEdit=()=>{
+    navigateToProfile(getUserID(), router)
+  }
 
   return (
     <div
@@ -436,6 +439,7 @@ function PeekProfile(props) {
                   variant="contained"
                   startIcon={action.icon}
                   size={action.size}
+                  onClick={handleProfileEdit}
                 >
                   {action.title}
                 </Button>

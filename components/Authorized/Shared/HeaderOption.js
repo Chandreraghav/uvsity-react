@@ -6,8 +6,12 @@ import Tooltip from "@mui/material/Tooltip";
 import AccountMenu from "../Profile/Account/AccountMenu";
 import { IMAGE_PATHS } from "../../../constants/userdata";
 import { useRouter } from "next/router";
+import UserDataService from "../../../pages/api/users/data/UserDataService";
+import { openNewTab } from "./Navigator";
+import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 function HeaderOption({
   avatar,
+  oid,
   Icon,
   title,
   tooltip,
@@ -16,6 +20,7 @@ function HeaderOption({
   hidden,
   redirectTo,
   phoneMenu,
+  errorOnRedirect,
 }) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -27,7 +32,30 @@ function HeaderOption({
     else setOpen(!open);
   };
   const handleRedirects = () => {
-    if (redirectTo) router.push(redirectTo);
+    if (redirectTo) {
+      router.push(redirectTo);
+      return;
+    }
+    if (title === "Calendar") {
+      UserDataService.getUserProfileBy(oid)
+        .then((res) => {
+          openNewTab(
+            process.env.NEXT_PUBLIC_CALENDAR_APP_URL +
+              res.data.publicCalendarProfileIdentifier
+          );
+        })
+        .catch((err) => {
+          const requestErr = {
+            code: WORKFLOW_CODES.USER.ADHOC_LINKS_OPENER.CALENDAR,
+            url: process.env.NEXT_PUBLIC_CALENDAR_APP_URL,
+            message: "The requested link could not be opened.",
+            diagnostics: err?.toString(),
+          };
+          if (errorOnRedirect) {
+            errorOnRedirect(requestErr);
+          }
+        });
+    }
     return;
   };
   if (hidden) return null;

@@ -105,15 +105,18 @@ const UserProfile = () => {
       setProfileOwner(isOwner());
 
       return () => {
+        setRequestFailed(false)
         setLayoutObject(null);
       };
     }
   }, [data]);
 
   useEffect(() => {
+    setRequestFailed(false)
     setLayoutObject(layoutObj);
     return () => {
       setLayoutObject(null);
+      setRequestFailed(false)
       setChangeEventTriggered(false);
     };
   }, []);
@@ -129,9 +132,13 @@ const UserProfile = () => {
   const handleRequestFailedDialogCloseRequest =()=>{
     router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD);
   }
+  const handleNavigationError = (obj) => {
+    console.log(obj);
+  };
+
   return (
     <Layout private lowZoom={false} options={layoutObject}>
-      <Header data={getData.LOGGED_IN_USER_SUMMARY} />
+      <Header onHeaderNavigationError={handleNavigationError} data={getData.LOGGED_IN_USER_SUMMARY} />
       {isSuccess && (
         <>
           <Profile
@@ -143,7 +150,7 @@ const UserProfile = () => {
           />
         </>
       )}
-      {isLoading && <>Loading...</>}
+      {isLoading && <div className=" bg-white">Loading...</div>}
       <PhoneMenu data={getData.LOGGED_IN_USER_SUMMARY} />
       <Footer minimizeOnSmallScreens />
 
