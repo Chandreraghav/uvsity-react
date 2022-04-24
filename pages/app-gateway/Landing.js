@@ -8,8 +8,12 @@ import UserDataService from "../api/users/data/UserDataService";
 import { asyncSubscriptions } from "../../async/subscriptions";
 import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
 import PhoneMenu from "../../components/Authorized/Shared/FireFighter/PhoneMenu";
+import { useState, useEffect } from "react";
+import RequestFailedDialog from "../../components/shared/modals/RequestFailedDialog";
 
 function Landing() {
+  const [requestFailed, setRequestFailed] = useState(false);
+  const [requestFailureDetail, setRequestFailureDetail] = useState(null);
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_TITLE}`,
   };
@@ -63,13 +67,40 @@ function Landing() {
     TOP_SESSIONS,
     SUGGESTED_FRIENDS,
   };
+  useEffect(() => {
+    return () => {
+      setRequestFailed(false);
+      setRequestFailureDetail(null);
+    };
+  }, []);
+  const handleNavigationError = (obj) => {
+    console.log(obj);
+    setRequestFailed(true);
+    setRequestFailureDetail(obj);
+  };
+  const handleRequestFailedDialogCloseRequest = () => {
+    setRequestFailed(false);
+    setRequestFailureDetail(null);
+  };
 
   return (
     <Layout private lowZoom={false} options={layoutObj}>
-      <Header data={getData.USER_PROFILE_SUMMARY} />
+      <Header
+        onHeaderNavigationError={handleNavigationError}
+        data={getData.USER_PROFILE_SUMMARY}
+      />
       <Dashboard data={getData} />
       <PhoneMenu data={getData.USER_PROFILE_SUMMARY} />
       <Footer minimizeOnSmallScreens />
+      <RequestFailedDialog
+        theme
+        url={requestFailureDetail?.url}
+        message={requestFailureDetail?.message}
+        code={requestFailureDetail?.code}
+        dialogCloseRequest={handleRequestFailedDialogCloseRequest}
+        isOpen={requestFailed}
+        diagnostics={requestFailureDetail?.diagnostics}
+      />
     </Layout>
   );
 }

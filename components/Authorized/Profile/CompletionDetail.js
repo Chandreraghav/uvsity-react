@@ -21,10 +21,15 @@ import {
 import DoubleArrowOutlinedIcon from "@mui/icons-material/DoubleArrowOutlined";
 import Spacer from "../../shared/Spacer";
 import CompletionDetailShimmer from "./Shimmer/CompletionDetailShimmer";
+import { navigateToProfile } from "../Shared/Navigator";
+import { useRouter } from "next/router";
 function CompletionDetail({ data }) {
+  const router = useRouter();
   const [suggestionShowed, setSuggestionShown] = useState(false);
   const [completionTextObject, setCompletionTextObject] = useState({});
-
+  const handleProfileEdit=()=>{
+    navigateToProfile(data?.USER_LOGIN_INFO?.data?.userDetailsId, router)
+  }
   const toggleSuggestions = (e) => {
     setSuggestionShown(!suggestionShowed);
   };
@@ -162,7 +167,7 @@ function CompletionDetail({ data }) {
                 <div key={action.id}>
                   {action.startIcon ? (
                     <Tooltip title={action.tooltip}>
-                      <Button startIcon={action.icon} size={action.size}>
+                      <Button onClick={handleProfileEdit} startIcon={action.icon} size={action.size}>
                         {action.title}
                       </Button>
                     </Tooltip>

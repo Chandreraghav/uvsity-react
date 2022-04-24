@@ -39,6 +39,9 @@ export const WORKFLOW_CODES = {
         },
       },
     },
+    ADHOC_LINKS_OPENER:{
+        CALENDAR:'ADHOC_CAL_OPEN'
+    },
     
 
     CONNECTION_TYPES: {
