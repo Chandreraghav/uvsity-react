@@ -7,7 +7,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useQuery } from "react-query";
 import Paper from "@mui/material/Paper";
 import Container from "@mui/material/Container";
 import AddTaskIcon from "@mui/icons-material/AddTask";
@@ -60,8 +59,8 @@ import Education from "./Areas/Education";
 import RecommendedSessions from "./Areas/RecommendedSessions";
 import Sessions from "./Areas/Sessions";
 import SessionService from "../../../pages/api/session/SessionService";
-import { KEYS } from "../../../async/queries/keys/unique-keys";
 import { ENDPOINTS } from "../../../async/endpoints";
+import MacroProfileShimmer from "./Shimmer/MacroProfileShimmer";
 toast.configure();
 function MacroProfile(props) {
   console.log(props);
@@ -336,6 +335,7 @@ function MacroProfile(props) {
           event.triggerName === WORKFLOW_CODES.PEOPLE.PROFILE_VIEW &&
           event.id
         ) {
+          if(Number(event.id)===userdata?.userDetailsId) return; // do nothing if same person
           redirectToURI(getProfileViewURI(event));
         } else {
           // generate a custom request failed error.
@@ -363,9 +363,7 @@ function MacroProfile(props) {
   };
   return (
     <>
-      {!show ? (
-        <>Shimmers</>
-      ) : (
+     
         <>
           {/* SECTION 1 Profile Name, Image, Cover Picture and Secondary Information */}
           <div
@@ -799,7 +797,7 @@ function MacroProfile(props) {
             </Grid>
           </Box>
         </>
-      )}
+      
       <RequestFailedDialog
         theme
         status={requestFailureDetail?.status}
