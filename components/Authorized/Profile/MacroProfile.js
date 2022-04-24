@@ -60,6 +60,7 @@ import RecommendedSessions from "./Areas/RecommendedSessions";
 import Sessions from "./Areas/Sessions";
 import SessionService from "../../../pages/api/session/SessionService";
 import { ENDPOINTS } from "../../../async/endpoints";
+import MacroProfileShimmer from "./Shimmer/MacroProfileShimmer";
 toast.configure();
 function MacroProfile(props) {
   const [requestFailed, setRequestFailed] = useState(false);
@@ -314,9 +315,9 @@ function MacroProfile(props) {
   const getProfileAreaTitle = (area) => {
     let _area_title = area.title;
     _area_title = _area_title.replace("<#>", isItMe ? "me" : firstName);
-    if(area.id===7){
-       const numberOfSessions = lazySessionData?.length.toString() || "0"
-      _area_title=_area_title+`(${numberOfSessions})`
+    if (area.id === 7) {
+      const numberOfSessions = lazySessionData?.length.toString() || "0";
+      _area_title = _area_title + `(${numberOfSessions})`;
     }
     return parse(_area_title);
   };
@@ -333,7 +334,7 @@ function MacroProfile(props) {
           event.triggerName === WORKFLOW_CODES.PEOPLE.PROFILE_VIEW &&
           event.id
         ) {
-          if(Number(event.id)===userdata?.userDetailsId) return; // do nothing if same person
+          if (Number(event.id) === userdata?.userDetailsId) return; // do nothing if same person
           redirectToURI(getProfileViewURI(event));
         } else {
           // generate a custom request failed error.
@@ -361,7 +362,9 @@ function MacroProfile(props) {
   };
   return (
     <>
-     
+      {!show ? (
+        <><MacroProfileShimmer visible/></>
+      ) : (
         <>
           {/* SECTION 1 Profile Name, Image, Cover Picture and Secondary Information */}
           <div
@@ -795,7 +798,8 @@ function MacroProfile(props) {
             </Grid>
           </Box>
         </>
-      
+      )}
+
       <RequestFailedDialog
         theme
         status={requestFailureDetail?.status}

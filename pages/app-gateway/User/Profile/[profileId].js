@@ -5,6 +5,7 @@ import { KEYS } from "../../../../async/queries/keys/unique-keys";
 import { asyncSubscriptions } from "../../../../async/subscriptions";
 import PrivateRoute from "../../../../components/Auth/HOC/Routes/PrivateRoute";
 import MacroProfileShimmer from "../../../../components/Authorized/Profile/Shimmer/MacroProfileShimmer";
+import PhoneMenu from "../../../../components/Authorized/Shared/FireFighter/PhoneMenu";
 import Header from "../../../../components/Authorized/Shared/Header";
 import Layout from "../../../../components/Main/Layout";
 import Footer from "../../../../components/shared/Footer";
@@ -142,8 +143,9 @@ const UserProfile = () => {
           />
         </>
       )}
-      {isLoading && <><MacroProfileShimmer visible/></>}
-      <Footer />
+      {isLoading && <>Loading...</>}
+      <PhoneMenu data={getData.LOGGED_IN_USER_SUMMARY} />
+      <Footer minimizeOnSmallScreens />
 
       <RequestFailedDialog
         theme
