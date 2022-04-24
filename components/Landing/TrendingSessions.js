@@ -17,7 +17,6 @@ function TrendingSessions() {
     [KEYS.SESSION.PUBLIC.TOP],
     getTrendingSessions
   );
-  console.log(trendingSessions)
   return (
     <div id="discover-popular-live-sessions">
       <div

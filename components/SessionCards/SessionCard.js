@@ -27,9 +27,10 @@ import CornerRibbon from "react-corner-ribbon";
 import { IMAGE_PATHS, PLACEHOLDERS, TOOLTIPS } from "../../constants/userdata";
 import { Tooltip } from "@mui/material";
 
-export default function SessionCard({ data, shimmerTime, authorized }) {
+export default function SessionCard({ data, shimmer, shimmerTime, authorized, origin }) {
   const [shimTimeOut, setShimTimeOut] = useState(SHIM_MAX_TIMEOUT_IN_MILLIS);
   const [showOriginalContent, setShowOriginalContent] = useState(false);
+  const [showShimmers, setShowShimmers] = useState(shimmer);
   let session_author = null;
   useEffect(() => {
     session_author = formattedName(
@@ -39,7 +40,9 @@ export default function SessionCard({ data, shimmerTime, authorized }) {
     let controller = new AbortController();
     let _shimmerTime = shimmerTime || shimTimeOut;
     setTimeout(() => {
+      
       setShowOriginalContent(true);
+      setShowShimmers(false)
     }, _shimmerTime);
     return () => {
       controller?.abort();
@@ -52,12 +55,7 @@ export default function SessionCard({ data, shimmerTime, authorized }) {
       isNaN(reviewCount) ||
       reviewCount > 5
     ) {
-      return (
-        <img
-          className={SessionStyle.session__card__review__star__replacement}
-          src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE_SHORTHAND}
-        />
-      );
+      return <></>;
     }
     let design = [];
     let _rc = reviewCount;
@@ -100,7 +98,7 @@ export default function SessionCard({ data, shimmerTime, authorized }) {
     );
   };
 
-  if (!showOriginalContent) {
+  if (!showOriginalContent && origin!=='profile_timeline' ) {
     return (
       <div
         className={`${SessionStyle.session__card__shimmering__behavior} ${
@@ -111,125 +109,184 @@ export default function SessionCard({ data, shimmerTime, authorized }) {
       </div>
     );
   }
+  if(origin==='profile_timeline'  && showShimmers ){
+    return (
+      <div
+         
+      >
+        <Shimmer visible={showShimmers} />
+      </div>
+    );
+  }
   return (
-    <Card
-      className={`${SessionStyle.session__card} ${
-        !authorized
-          ? SessionStyle.session__card__lightblue__variant
-          : SessionStyle.session__card__white__variant
-      } 
+    
+      <Card
+        className={`${
+          origin === "profile_timeline"
+            ? SessionStyle.session__card__profile__timeline
+            : SessionStyle.session__card
+        } ${
+          !authorized
+            ? SessionStyle.session__card__lightblue__variant
+            : SessionStyle.session__card__white__variant
+        } 
       ${
         !authorized
           ? "mt-5 mb-5 ml-5 mr-5  max-w-lg"
-          : "mt-2 sm:w-48 md:w-72 lg:w-96"
+          : "mt-2 sm:w-48 md:w-72 lg:w-72"
       }
     shadow-3xl antialiased`}
-    >
-      <CornerRibbon
-        position="bottom-right" // OPTIONAL, default as "top-right"
-        fontColor="#f0f0f0" // OPTIONAL, default as "#f0f0f0"
-        backgroundColor="#2c7" // OPTIONAL, default as "#2c7"
-        containerStyle={{}} // OPTIONAL, style of the ribbon
-        style={{}} // OPTIONAL, style of ribbon content
-        className="" // OPTIONAL, css class of ribbon
       >
-        New
-      </CornerRibbon>
+        {1 == 2 && (
+          <CornerRibbon
+            position="bottom-right" // OPTIONAL, default as "top-right"
+            fontColor="#f0f0f0" // OPTIONAL, default as "#f0f0f0"
+            backgroundColor="#2c7" // OPTIONAL, default as "#2c7"
+            containerStyle={{}} // OPTIONAL, style of the ribbon
+            style={{}} // OPTIONAL, style of ribbon content
+            className="" // OPTIONAL, css class of ribbon
+          >
+            New
+          </CornerRibbon>
+        )}
 
-      <CardMedia
-        component="img"
-        image={data?.imageURL}
-        alt={data?.courseFullName}
-      />
-
-      <CardContent>
-        {/* session title */}
-
-        <div className={` line-clamp-1 ${SessionStyle.session__card__title}`}>
-          {data?.courseFullName}
-        </div>
-
-        <Divider
-          variant="fullwidth"
-          className={SessionStyle.session__card__divider}
-          component="div"
+        <CardMedia
+          component="img"
+          image={
+            data?.imageURL ? data?.imageURL : IMAGE_PATHS.NO_DATA.EVENT_POSTER
+          }
+          alt={data?.courseFullName}
         />
-        <div className="flex flex-row py-2">
-          <div>
-            {/* avatar */}
-            {data?.courseCreatorImageURL !== "" && (
-              <Avatar
-                alt={`${session_author}`}
-                src={data.courseCreatorImageURL}
-              />
-            )}
-            {(data?.courseCreatorImageURL === "" ||
-              data?.courseCreatorImageURL == null || data?.courseCreatorImageURL.includes(IMAGE_PATHS.NO_PROFILE_PICTURE)) && (
-              <Avatar {...avatarToString(`${session_author}`)} />
-            )}
+
+        <CardContent>
+          {/* session title */}
+          <Tooltip title={data?.courseFullName}>
+          <div className={` line-clamp-1 ${SessionStyle.session__card__title}`}>
+            {data?.courseFullName}
           </div>
-          <div className="flex flex-col -mt-2">
-            {/* author name */}
-            <div className="ml-2">
-              <span
-                className={`lg:text-lg md:text-md sm:text-xs text-xs font-bold line-clamp-1 text-gray-400`}
-              >
-                {session_author}
-              </span>
-            </div>
-            {/* profile info */}
-            <div className="mb-2">
-              <span
-                className={`line-clamp-1  ${SessionStyle.session__card__profile__subtitle}`}
-              >
-                <SchoolIcon
-                  className={SessionStyle.session__card__profile__icon}
-                />
-                {formattedProfileSubtitle(
-                  data.creator.userType,
-                  data.creator.educationalInstitute
+          </Tooltip>
+
+          <Divider
+            variant="fullwidth"
+            className={SessionStyle.session__card__divider}
+            component="div"
+          />
+          {origin !== "profile_timeline" && (
+            <div className="flex flex-row py-2">
+              {origin !== "profile_timeline" && (
+                <div>
+                  {/* avatar */}
+                  {data?.courseCreatorImageURL !== "" && (
+                    <Avatar
+                      alt={`${session_author}`}
+                      src={data.courseCreatorImageURL}
+                    />
+                  )}
+                  {(data?.courseCreatorImageURL === "" ||
+                    data?.courseCreatorImageURL == null ||
+                    data?.courseCreatorImageURL.includes(
+                      IMAGE_PATHS.NO_PROFILE_PICTURE
+                    )) && <Avatar {...avatarToString(`${session_author}`)} />}
+                </div>
+              )}
+
+              <div className="flex flex-col -mt-2">
+                {/* author name */}
+                {origin !== "profile_timeline" && (
+                  <div className="ml-2">
+                    <span
+                      className={`lg:text-lg md:text-md sm:text-xs text-xs font-bold line-clamp-1 text-gray-400`}
+                    >
+                      {session_author}
+                    </span>
+                  </div>
                 )}
-              </span>
+
+                {/* profile info */}
+                {origin !== "profile_timeline" && (
+                  <div className="mb-2">
+                    <span
+                      className={`line-clamp-1  ${SessionStyle.session__card__profile__subtitle}`}
+                    >
+                      <SchoolIcon
+                        className={SessionStyle.session__card__profile__icon}
+                      />
+                      {formattedProfileSubtitle(
+                        data.creator.userType,
+                        data.creator.educationalInstitute
+                      )}
+                    </span>
+                  </div>
+                )}
+
+                {/* starts on */}
+                {origin !== "profile_timeline" && (
+                  <div className="mb-2">
+                    <span
+                      className={`sm:line-clamp-1  ${SessionStyle.session__card__event__time__subtitle}`}
+                    >
+                      <EventIcon
+                        className={SessionStyle.session__card__event__icon}
+                      />
+                      {localTZDate(data.displayStartDate)}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
-            {/* starts on */}
-            <div className="mb-2">
+          )}
+
+          {origin === "profile_timeline" && (
+            <div className="">
               <span
-                className={`sm:line-clamp-1  ${SessionStyle.session__card__event__time__subtitle}`}
+                className={`sm:line-clamp-1  ${SessionStyle.session__card__event__time__subtitle__profile__timeline}`}
               >
-                <EventIcon
-                  className={SessionStyle.session__card__event__icon}
-                />
+                <EventIcon />
                 {localTZDate(data.displayStartDate)}
               </span>
             </div>
-          </div>
-        </div>
-        <div className="flex flex-row justify-between">
-          {/* Reviews */}
-          <div className="flex">
-            {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
-          </div>
-          {/* Attending count */}
-          {data?.numberOfAttendees > 0 && (
-            <div className="flex flex-row space-x-1">
-              <span className={SessionStyle.session__card__attendance__count}>
-                {data?.numberOfAttendees}
-              </span>
-              <span
-                className={`${SessionStyle.session__card__attendance__text} line-clamp-1`}
-              >
-                {PLACEHOLDERS.ATTENDING}
-              </span>
-            </div>
           )}
-        </div>
-      </CardContent>
-      <Divider
-        variant="inset"
-        className={SessionStyle.session__card__divider}
-        component="div"
-      />
-      <CardActions>{generateMonetizationAmountOnCard(data.cost)}</CardActions>
-    </Card>
+
+          <div
+            className={`${
+              origin === "profile_timeline" ? "mt-2" : ""
+            } flex flex-row justify-between`}
+          >
+            {/* Reviews */}
+            <div className="flex">
+              {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
+            </div>
+            {/* Attending count */}
+            {data?.numberOfAttendees > 0 && (
+              <div className="flex flex-row space-x-1">
+                <span className={SessionStyle.session__card__attendance__count}>
+                  {data?.numberOfAttendees}
+                </span>
+                <span
+                  className={`${SessionStyle.session__card__attendance__text} line-clamp-1`}
+                >
+                  {PLACEHOLDERS.ATTENDING}
+                </span>
+              </div>
+            )}
+            {data?.numberOfAttendees === 0 && origin === "profile_timeline" && (
+              <>
+                <div
+                  className={`${SessionStyle.session__card__attendance__text} mb-2 line-clamp-1`}
+                >
+                  Be the first to attend
+                </div>
+              </>
+            )}
+          </div>
+        </CardContent>
+        <Divider
+          variant="inset"
+          className={SessionStyle.session__card__divider}
+          component="div"
+        />
+        <CardActions>{generateMonetizationAmountOnCard(data.cost)}</CardActions>
+      </Card>
+   
   );
 }

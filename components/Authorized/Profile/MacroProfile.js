@@ -171,21 +171,21 @@ function MacroProfile(props) {
   );
 
   useEffect(() => {
-    if (props?.lazyAPI && props?.loggedInUserID) {
-      SessionService.getSessionsByUserID(props?.loggedInUserID)
+    if (props?.lazyAPI && userdata?.userDetailsId) {
+      SessionService.getSessionsByUserID(userdata?.userDetailsId)
         .then((res) => {
           setLazySessionData(res.data?.courses);
         })
         .catch((err) => {
           setLazySessionData({ error: true });
           let endpoint = ENDPOINTS.USER.SESSION_BY_USER;
-          endpoint = endpoint.replace("#X#", props?.loggedInUserID);
+          endpoint = endpoint.replace("#X#", userdata?.userDetailsId);
           const requestErr = {
             code: WORKFLOW_CODES.USER.SESSION.LOAD,
             url: endpoint,
             method: "GET",
             status: 500,
-            message: `Sessions from user ${props?.loggedInUserID} could not be loaded. Please try again.`,
+            message: `Sessions from user ${userdata?.userDetailsId} could not be loaded. Please try again.`,
             diagnostics: err.toString(),
           };
           setRequestFailed(true);
@@ -317,6 +317,10 @@ function MacroProfile(props) {
   const getProfileAreaTitle = (area) => {
     let _area_title = area.title;
     _area_title = _area_title.replace("<#>", isItMe ? "me" : firstName);
+    if(area.id===7){
+       const numberOfSessions = lazySessionData?.length.toString() || "0"
+      _area_title=_area_title+`(${numberOfSessions})`
+    }
     return parse(_area_title);
   };
   const handleEvent = (event, component) => {
@@ -770,6 +774,7 @@ function MacroProfile(props) {
                                   <Sessions
                                     sessions={lazySessionData}
                                     owner={isItMe}
+                                    creator={firstName}
                                     consumeEvent={handleEvent}
                                   />
                                 </>
