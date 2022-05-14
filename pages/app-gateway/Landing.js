@@ -3,6 +3,7 @@ import Header from "../../components/Authorized/Shared/Header";
 import Footer from "../../components/shared/Footer";
 import Dashboard from "../../components/Authorized/Dashboard";
 import { useQuery } from "react-query";
+import { useQueryClient } from "react-query";
 import { KEYS } from "../../async/queries/keys/unique-keys";
 import UserDataService from "../api/users/data/UserDataService";
 import { asyncSubscriptions } from "../../async/subscriptions";
@@ -12,6 +13,7 @@ import { useState, useEffect } from "react";
 import RequestFailedDialog from "../../components/shared/modals/RequestFailedDialog";
 
 function Landing() {
+  const queryClient = useQueryClient();
   const [requestFailed, setRequestFailed] = useState(false);
   const [requestFailureDetail, setRequestFailureDetail] = useState(null);
   const layoutObj = {
@@ -35,18 +37,21 @@ function Landing() {
       asyncSubscriptions.LOGGED_IN_USER_INFO.enabled
         ? asyncSubscriptions.LOGGED_IN_USER_INFO.pollEvery
         : false,
+        
   });
   const TOP_SESSIONS = useQuery([KEYS.SESSION.TOP], getTopCourses);
-  const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary);
+  const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary,{});
   const USER_PROFILE_PERCENTAGE_COMPLETION = useQuery(
     [KEYS.PROFILE.COMPLETION],
-    getProfilePercentageCompletion
+    getProfilePercentageCompletion,
+    
   );
   const PROFILE_VISITS = useQuery([KEYS.PROFILE.VISITS], getProfileVisits, {
     refetchInterval: () =>
       asyncSubscriptions.PROFILE_VISITS.enabled
         ? asyncSubscriptions.PROFILE_VISITS.pollEvery
-        : false,
+        : false
+        
   });
   const SUGGESTED_FRIENDS = useQuery(
     [KEYS.NETWORK.PEOPLE.INTERESTING],
@@ -55,7 +60,8 @@ function Landing() {
       refetchInterval: () =>
         asyncSubscriptions.INTERESTING_CONNECTIONS.enabled
           ? asyncSubscriptions.INTERESTING_CONNECTIONS.pollEvery
-          : false,
+          : false
+           
     }
   );
 

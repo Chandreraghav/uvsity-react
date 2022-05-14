@@ -10,6 +10,7 @@ import {
 import React, { useState, useEffect, useRef } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import FaceIcon from "@mui/icons-material/Face";
+import { USER_PROFILE } from "../../../constants/userdata";
 function ChangeProfilePictureDialog({
   isOpen,
   data,
@@ -44,6 +45,7 @@ function ChangeProfilePictureDialog({
     if (reason && reason === "backdropClick") return;
     if (dialogCloseRequest) {
       if (saveInd) setProcessing(true);
+     
       dialogCloseRequest({
         save: saveInd,
         close: closeInd,
@@ -90,7 +92,7 @@ function ChangeProfilePictureDialog({
             >
               <Typography gutterBottom variant="h6" component="div">
                 <>
-                  <FaceIcon /> {title || "Change profile picture"}{" "}
+                  <FaceIcon /> {title || USER_PROFILE.CHANGE_PROFILE_PICTURE}{" "}
                 </>
               </Typography>
             </div>

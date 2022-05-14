@@ -4,7 +4,6 @@ import { useQuery } from "react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
 import { asyncSubscriptions } from "../../../../async/subscriptions";
 import PrivateRoute from "../../../../components/Auth/HOC/Routes/PrivateRoute";
-import MacroProfileShimmer from "../../../../components/Authorized/Profile/Shimmer/MacroProfileShimmer";
 import PhoneMenu from "../../../../components/Authorized/Shared/FireFighter/PhoneMenu";
 import Header from "../../../../components/Authorized/Shared/Header";
 import Layout from "../../../../components/Main/Layout";
@@ -16,8 +15,9 @@ import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import { formattedName } from "../../../../utils/utility";
 import UserDataService from "../../../api/users/data/UserDataService";
 import Profile from "./Profile";
-
+import { useQueryClient } from "react-query";
 const UserProfile = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { profileId } = router.query;
   const [isProfileOwner, setProfileOwner] = useState(false);
@@ -42,7 +42,7 @@ const UserProfile = () => {
    
  
   const { data, isError, isSuccess, isLoading,error } = useQuery(
-    [KEYS.PROFILE.VIEWS],
+    [KEYS.PROFILE.VIEWS+"_"+profileId],
     getProfileSummary,
     {
       refetchInterval: () =>
@@ -107,6 +107,7 @@ const UserProfile = () => {
       return () => {
         setRequestFailed(false)
         setLayoutObject(null);
+           
       };
     }
   }, [data]);
@@ -118,6 +119,9 @@ const UserProfile = () => {
       setLayoutObject(null);
       setRequestFailed(false)
       setChangeEventTriggered(false);
+     
+      
+      
     };
   }, []);
   const handleChangeEvent = (event) => {
@@ -145,8 +149,8 @@ const UserProfile = () => {
             hasChangeEventTriggered={hasChangeEventTriggered}
             changeEvent={handleChangeEvent}
             owner={isProfileOwner}
-            userdata={getData.PROFILE_SUMMARY.data}
-            loggedInUser={getData.LOGGED_IN_USER_SUMMARY.data}
+            userdata={getData.PROFILE_SUMMARY?.data}
+            loggedInUser={getData.LOGGED_IN_USER_SUMMARY?.data}
           />
         </>
       )}
