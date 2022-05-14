@@ -393,6 +393,13 @@ function MacroProfile(props) {
     }
 
     const image = selectedpicture?.target?.files[0];
+    if (image) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        setProfilePic(e.target.result);
+      };
+      reader.readAsDataURL(image);
+    }
     const formData = new FormData();
     formData.append("profilepic", image);
     if (image && typeof image === "object") {

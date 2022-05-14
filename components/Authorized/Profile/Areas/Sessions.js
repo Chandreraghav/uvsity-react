@@ -12,7 +12,7 @@ function Sessions(props) {
   const router = useRouter();
   const [dataSlice, setDataSlice] = useState(0);
   const [showShimmer, setShowShimmer] = useState(true);
-  const dataSliceIncrement = 3;
+  const dataSliceIncrement = 4;
   const [data, setData] = useState(null);
   const [slicedData, setSlicedData] = useState([]);
   useEffect(() => {
@@ -56,7 +56,7 @@ function Sessions(props) {
       {slicedData ? (
         <>
           <div
-            className={`m-auto lg:w-max md:w-max sm:m-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`}
+            className={`lg:m-auto sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 xl:grid xl:grid-cols-4 lg:grid lg:grid-cols-3 gap-4`}
           >
             {slicedData.map((_data) => (
               <SessionCard
@@ -68,16 +68,17 @@ function Sessions(props) {
                 origin="profile_timeline"
               />
             ))}
-            {data?.length > slicedData?.length && (
+           
+          </div>
+          {data?.length > slicedData?.length && (
               <Typography
                 onClick={handleSeeMore}
-                className="app__anchor__block cursor-pointer"
+                className="app__anchor__block cursor-pointer read-or-hide"
                 color="text.secondary"
               >
                 See more
               </Typography>
             )}
-          </div>
         </>
       ) : props?.sessions?.error ? (
         <>

@@ -71,7 +71,7 @@ function Profile(props) {
     gap-2 px-2 mx-auto xl:container md:gap-4 
     xl:grid-cols-8 2xl:px-5 "
       >
-        <div className=" col-span-12 md:pt-2 md:col-span-9 lg:col-span-9 xl:col-span-7">
+        <div className=" col-span-12 md:pt-2">
           {/* Main Content */}
           <MacroProfile
             loggedInUserID={props?.loggedInUser?.userDetailsId}
@@ -82,10 +82,7 @@ function Profile(props) {
           />
         </div>
 
-        <div className=" col-span-12 md:col-span-1 lg:col-span-1 py-2 xl:col-span-1">
-          {/* Any misc content on user profile such as ads, people you may know */}
-          Misc
-        </div>
+       
         <Spacer count={6} />
       </div>
     </>

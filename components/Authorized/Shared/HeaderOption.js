@@ -1,5 +1,5 @@
 import { Avatar } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderOptionsStyle from "../../../styles/HeaderOption.module.css";
 import { avatarToString } from "../../../utils/utility";
 import Tooltip from "@mui/material/Tooltip";
@@ -21,28 +21,52 @@ function HeaderOption({
   redirectTo,
   phoneMenu,
   errorOnRedirect,
+  
 }) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+  const [publicProfileCalendarIdentifier, setPublicProfileCalendarIdentifier] = useState(null)
   const handleClick = (event, remoteRequestReceived) => {
     if (event) setAnchorEl(event.currentTarget);
     else setAnchorEl(null);
     if (remoteRequestReceived !== undefined) setOpen(!remoteRequestReceived);
     else setOpen(!open);
   };
+  useEffect(()=>{
+    // get public calendar profile of user on load of header options.
+    UserDataService.getUserProfileBy(oid).then((res) =>{
+     if(res?.data && res?.data?.publicCalendarProfileIdentifier){
+      setPublicProfileCalendarIdentifier(res.data.publicCalendarProfileIdentifier)
+     }
+    }).catch(()=>{
+      setPublicProfileCalendarIdentifier(null)
+    })
+    return()=>{
+      setPublicProfileCalendarIdentifier(null)
+    }
+  },[])
   const handleRedirects = () => {
     if (redirectTo) {
       router.push(redirectTo);
       return;
     }
     if (title === "Calendar") {
+      if(publicProfileCalendarIdentifier){
+        openNewTab(
+          process.env.NEXT_PUBLIC_CALENDAR_APP_URL +
+          publicProfileCalendarIdentifier
+        );
+        return
+      }
+      // attempt to call service once again and refill the calendar profile of user.
       UserDataService.getUserProfileBy(oid)
         .then((res) => {
-          openNewTab(
-            process.env.NEXT_PUBLIC_CALENDAR_APP_URL +
-              res.data.publicCalendarProfileIdentifier
-          );
+          if(!publicProfileCalendarIdentifier){
+            if(res.data && res.data.publicCalendarProfileIdentifier){
+              setPublicProfileCalendarIdentifier(res.data.publicCalendarProfileIdentifier)
+            }
+          }
         })
         .catch((err) => {
           const requestErr = {

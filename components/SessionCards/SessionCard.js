@@ -120,7 +120,7 @@ export default function SessionCard({ data, shimmer, shimmerTime, authorized, or
   }
   return (
     
-      <Card
+      <Card  
         className={`${
           origin === "profile_timeline"
             ? SessionStyle.session__card__profile__timeline
@@ -133,7 +133,7 @@ export default function SessionCard({ data, shimmer, shimmerTime, authorized, or
       ${
         !authorized
           ? "mt-5 mb-5 ml-5 mr-5  max-w-lg"
-          : "mt-2 sm:w-48 md:w-72 lg:w-72"
+          : "mt-2 lg:max-w-lg sm:max-w-sm xl:max-w-xl xs:max-w-xs md:max-w-md"
       }
     shadow-3xl antialiased`}
       >

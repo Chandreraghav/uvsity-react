@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Paper from "@mui/material/Paper";
@@ -11,6 +11,10 @@ import { Grid, Stack } from "@mui/material";
 import convertToHTML from "markdown-to-html-converter";
 import NoData from "../../Shared/NoData";
 function WorkExperience(props) {
+  const [isReadMore, setIsReadMore] = useState(true);
+  const toggleReadMore = () => {
+    setIsReadMore(!isReadMore);
+  };
   const experiences = props?.experiences;
   const getDurationOfexperience = (exp) => {
     let end = exp?.projResearchEndDateForDisplay;
@@ -42,9 +46,16 @@ function WorkExperience(props) {
         )}
 
         {exp?.projectResearchDescription && (
-          <Typography className="line-clamp-3" variant="body2">
+          <>
+           
+            <Typography className={isReadMore && exp?.projectResearchDescription.length>150?'line-clamp-3':''} variant="body2">
             {parse(convertToHTML(exp?.projectResearchDescription))}
           </Typography>
+          <span onClick={toggleReadMore} className="read-or-hide">
+        {isReadMore && exp?.projectResearchDescription.length>150 ? "...read more" : exp?.projectResearchDescription.length>150?" show less":''}
+      </span>
+          </>
+        
         )}
       </CardContent>
     </React.Fragment>
@@ -55,7 +66,7 @@ function WorkExperience(props) {
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           {experiences?.map((experience, index) => (
             <Grid key={index} item xs={12} lg={6} md={6} sm={12}>
-              <Card sx={{minHeight:170, maxHeight:170, overflow: "auto"}} variant="outlined">{card(experience)}</Card>
+              <Card variant="outlined">{card(experience)}</Card>
             </Grid>
           ))}
         </Grid>
