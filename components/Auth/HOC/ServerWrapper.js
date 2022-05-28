@@ -35,6 +35,12 @@ function ServerWrapper(props) {
   const hasInternalServerError = () => {
     return getLocalStorageObject("uvsity-internal-error-response");
   };
+  const getDiagnostics = (internalError)=>{
+    return internalError?.data?.Uvsity_Errors_Stacktrace ?
+        internalError?.data?.Uvsity_Errors_Stacktrace[1] :
+        internalError?.data?.Uvsity_Errors? internalError?.data?.Uvsity_Errors[0]:null;
+  }
+  
   useEffect(async () => {
     if (unauthorizedResponseReceived()) {
       console.log("SERVER: Unauthorzed signal received. Logging off session.");
@@ -59,6 +65,7 @@ function ServerWrapper(props) {
     let internalError = hasInternalServerError();
     if (props.serverErrorEmitter && internalError) {
       internalError = JSON.parse(internalError);
+      
       const _error = {
         url: internalError.config.baseURL + internalError.config.url,
         message:internalError?.statusText
@@ -67,9 +74,9 @@ function ServerWrapper(props) {
         code: internalError.status,
         error: true,
         method:internalError?.config.method?.toUpperCase(),
-        diagnostics: internalError?.data?.Uvsity_Errors_Stacktrace?
-        internalError?.data?.Uvsity_Errors_Stacktrace[1]:
-        null,
+        diagnostics: getDiagnostics(internalError),
+
+         
       };
       console.error("SERVER: Internal server error.");
       props.serverErrorEmitter(_error);
