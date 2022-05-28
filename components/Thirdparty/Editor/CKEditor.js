@@ -1,6 +1,7 @@
 import { FormHelperText } from "@mui/material";
 
 import React, { useEffect, useState, useRef } from "react";
+import { LOADING_MESSAGE_DEFAULT } from "../../../constants/constants";
 import { JWT } from "../../../jwt/auth/JWT";
 import { timestamp } from "../../../utils/utility";
  
@@ -102,7 +103,7 @@ function CEditor(props) {
       </>
     );
   } else {
-    return <h2> Loading... </h2>;
+    return <h2> {LOADING_MESSAGE_DEFAULT} </h2>;
   }
 }
 

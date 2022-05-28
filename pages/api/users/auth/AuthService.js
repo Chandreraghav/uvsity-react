@@ -7,7 +7,6 @@ import { LOGIN_SOURCE } from "../../../../constants/constants";
 import { ENDPOINTS } from "../../../../async/endpoints";
 import { v4 as uuidv4 } from "uuid";
 import { JWT } from "../../../../jwt/auth/JWT";
-import { parseBoolean } from "../../../../utils/utility";
 import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 
 export class AuthService {
@@ -137,6 +136,8 @@ export class AuthService {
       removeLocalStorageObject("uvsity-authToken");
       removeLocalStorageObject("uvsity-loggedIn");
       removeLocalStorageObject("uvsity-loggedInSource");
+      removeLocalStorageObject("uvsity-unauthorized-response")
+      removeLocalStorageObject('uvsity-internal-error-response')
       this.cancelAppLayerSubscriptions(true);
 
       // we do not clear ip data on logout because of its global nature.
@@ -177,5 +178,13 @@ export class AuthService {
     if (token) {
       auth2.signOut().then(function () {});
     }
+  }
+
+  static setUnauthorizedResponseFromServer(unauthorizedResponse){
+    setLocalStorageObject("uvsity-unauthorized-response", unauthorizedResponse);
+  }
+
+  static setInternalServerError(errorResponse){
+    setLocalStorageObject("uvsity-internal-error-response", errorResponse);
   }
 }

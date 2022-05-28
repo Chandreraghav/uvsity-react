@@ -7,7 +7,7 @@ import NoData from "../../Shared/NoData";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/router";
 import SessionCard from "../../../SessionCards/SessionCard";
-import { SHIMMER_TIMEOUT_IN_MILLIS } from "../../../../constants/constants";
+import { LOADING_MESSAGE_DEFAULT, SEE_MORE, SHIMMER_TIMEOUT_IN_MILLIS } from "../../../../constants/constants";
 function Sessions(props) {
   const router = useRouter();
   const [dataSlice, setDataSlice] = useState(0);
@@ -76,7 +76,7 @@ function Sessions(props) {
                 className="app__anchor__block cursor-pointer read-or-hide"
                 color="text.secondary"
               >
-                See more
+                {SEE_MORE}
               </Typography>
             )}
         </>
@@ -91,7 +91,7 @@ function Sessions(props) {
           />
         </>
       ) : (
-        <>Loading...</>
+        <>{LOADING_MESSAGE_DEFAULT}</>
       )}
     </>
   ) : props?.sessions?.error ? (

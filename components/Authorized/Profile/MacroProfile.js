@@ -57,7 +57,6 @@ import Interests from "./Areas/Interests";
 import RecommendationsFeed from "./Areas/RecommendationsFeed";
 import { redirectToURI } from "../Shared/Navigator";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
-import RequestFailedDialog from "../../shared/modals/RequestFailedDialog";
 import Education from "./Areas/Education";
 import RecommendedSessions from "./Areas/RecommendedSessions";
 import Sessions from "./Areas/Sessions";
@@ -73,9 +72,7 @@ function MacroProfile(props) {
   const [selectedpicture, setSelectedPictureEvent] = useState(null);
   const [openProfilePictureModal, setProfilePictureModal] = useState(false);
   const [showChangeAvatarOption, setShowChangeAvatarOption] = useState(false);
-  const [requestFailed, setRequestFailed] = useState(false);
   const [lazySessionData, setLazySessionData] = useState(null);
-  const [requestFailureDetail, setRequestFailureDetail] = useState({});
   const [show, setShow] = useState(false);
   const [
     isConnectionAcceptRequestInProgress,
@@ -98,11 +95,10 @@ function MacroProfile(props) {
     });
     return () => {
       setShow(false);
-      setProfilePic(null)
+      setProfilePic(null);
     };
   }, []);
 
-  
   const isItMe = props?.data?.owner;
   const isConnected =
     isItMe === false &&
@@ -191,16 +187,6 @@ function MacroProfile(props) {
           setLazySessionData({ error: true });
           let endpoint = ENDPOINTS.USER.SESSION_BY_USER;
           endpoint = endpoint.replace("#X#", userdata?.userDetailsId);
-          const requestErr = {
-            code: WORKFLOW_CODES.USER.SESSION.LOAD,
-            url: endpoint,
-            method: "GET",
-            status: 500,
-            message: `Sessions from user ${userdata?.userDetailsId} could not be loaded. Please try again.`,
-            diagnostics: err.toString(),
-          };
-          setRequestFailed(true);
-          setRequestFailureDetail(requestErr);
         });
     }
     return () => setLazySessionData(null);
@@ -335,11 +321,6 @@ function MacroProfile(props) {
     return parse(_area_title);
   };
   const handleEvent = (event, component) => {
-    if (!component || !event) {
-      // generate a generic request failed error.
-      setRequestFailed(true);
-      return;
-    }
     switch (component) {
       case "RecommendationsFeed":
       case "RecommendedSessions":
@@ -351,12 +332,6 @@ function MacroProfile(props) {
           redirectToURI(getProfileViewURI(event));
         } else {
           // generate a custom request failed error.
-          const requestErr = {
-            code: WORKFLOW_CODES.PEOPLE.PROFILE_VIEW,
-            url: window.location.href,
-          };
-          setRequestFailed(true);
-          setRequestFailureDetail(requestErr);
         }
         break;
 
@@ -369,10 +344,7 @@ function MacroProfile(props) {
     currentHref = currentHref.substring(0, currentHref.lastIndexOf("/") + 1);
     return currentHref + event.id;
   };
-  const handleRequestFailedDialogCloseRequest = (obj) => {
-    setRequestFailed(false);
-    setRequestFailureDetail({});
-  };
+
   const showAvatarChangeOption = (event) => {
     setShowChangeAvatarOption(true);
   };
@@ -913,17 +885,6 @@ function MacroProfile(props) {
           </Box>
         </>
       )}
-
-      <RequestFailedDialog
-        theme
-        status={requestFailureDetail?.status}
-        method={requestFailureDetail?.method}
-        url={requestFailureDetail?.url}
-        message={requestFailureDetail?.message}
-        code={requestFailureDetail?.code}
-        dialogCloseRequest={handleRequestFailedDialogCloseRequest}
-        isOpen={requestFailed}
-      />
 
       <ChangeProfilePictureDialog
         data={selectedpicture}

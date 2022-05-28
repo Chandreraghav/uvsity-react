@@ -319,3 +319,7 @@ export const USER_PAGE_LEAVE_CONFIRM_MESSAGE="Are you sure want to leave this pa
 export const ERROR_DETAILS='Click to check error details'
 export const CONTACT_SUPPORT="Please contact support if the problem persists further."
 export const REQUEST_FAILED_HEADER="Request failed"
+export const READ_MORE_MAX_LENGTH=150
+export const READ_MORE='...read more';
+export const READ_LESS=' show less'
+export const SEE_MORE ='See more'

@@ -34,6 +34,14 @@ function IdleTimeOutDialog({ isOpen, dialogCloseRequest, title, theme, name }) {
         handleClose(true);
       }
     }, 1000);
+    return () => {
+      if (
+        window.idleTimeOut != undefined &&
+        window.idleTimeOut != "undefined"
+      ) {
+        window.clearInterval(window.idleTimeOut);
+      }
+    };
   }, []);
 
    
