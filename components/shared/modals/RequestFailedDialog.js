@@ -19,8 +19,14 @@ import {
   CONTACT_SUPPORT,
   ERROR_DETAILS,
   REQUEST_FAILED_HEADER,
+  RESPONSE_TYPES,
 } from "../../../constants/constants";
 import ReadMore from "../ReadMore";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { toast } from "react-toastify";
+import { handleResponse } from "../../../toastr-response-handler/handler";
+toast.configure();
 // A reusable component that is used to invoke in scenarios when a async request(invoked via user interaction) fails to serve to the user.
 // This is invoked only from component level.
 function RequestFailedDialog({
@@ -38,6 +44,7 @@ function RequestFailedDialog({
   method,
 }) {
   if (!isOpen) return "";
+  document.title = message ? message : REQUEST_FAILED_MESSAGE;
   const [expanded, setExpanded] = useState(false);
   const handleClose = (closeInd) => {
     if (dialogCloseRequest) {
@@ -46,6 +53,13 @@ function RequestFailedDialog({
   };
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
+  };
+  const copied = () => {
+    handleResponse(
+      "Copied",
+      RESPONSE_TYPES.SUCCESS,
+      toast.POSITION.BOTTOM_CENTER
+    );
   };
   return (
     <Dialog
@@ -192,9 +206,23 @@ function RequestFailedDialog({
                         <u>D</u>iagnostics:
                       </div>
                       {diagnostics ? (
-                        <div className=" overflow-auto max-w-xs max-h-28 text-gray-600">
-                          <ReadMore coded>{diagnostics}</ReadMore>
-                        </div>
+                        <>
+                          <CopyToClipboard
+                            options={{ message: "" }}
+                            text={diagnostics}
+                            onCopy={() => copied()}
+                          >
+                            <Tooltip title="Copy to clipboard">
+                              <ContentCopyIcon
+                                className=" cursor-pointer"
+                                fontSize="small"
+                              />
+                            </Tooltip>
+                          </CopyToClipboard>
+                          <div className=" overflow-auto max-w-xs max-h-28 text-gray-500 font-mono">
+                            <ReadMore coded={true}>{diagnostics}</ReadMore>
+                          </div>
+                        </>
                       ) : (
                         <>
                           <div className=" line-clamp-1">

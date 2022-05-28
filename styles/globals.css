@@ -402,6 +402,9 @@ button.danger {
   color: rgb(192,192,192);
   cursor: pointer;
 }
+.code{
+  font-family: 'Courier New', Courier, monospace!important;
+}
 
 
 /* Extra small devices (phones, 600px and down) */
