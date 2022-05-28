@@ -20,6 +20,7 @@ import {
   ERROR_DETAILS,
   REQUEST_FAILED_HEADER,
 } from "../../../constants/constants";
+import ReadMore from "../ReadMore";
 // A reusable component that is used to invoke in scenarios when a async request(invoked via user interaction) fails to serve to the user.
 // This is invoked only from component level.
 function RequestFailedDialog({
@@ -140,6 +141,7 @@ function RequestFailedDialog({
                             target="_blank"
                             className="app__anchor__block"
                             href={url ? url : window.location.href}
+                            rel="noreferrer"
                           >
                             {url ? url : window.location.href}
                           </a>
@@ -189,11 +191,19 @@ function RequestFailedDialog({
                       <div className=" text-gray-600">
                         <u>D</u>iagnostics:
                       </div>
-                      <div className=" line-clamp-1">
-                        <Typography sx={{ fontSize: "14px" }}>
-                          {diagnostics ? diagnostics : CONTACT_SUPPORT}
-                        </Typography>
-                      </div>
+                      {diagnostics ? (
+                        <div className=" overflow-auto max-w-xs max-h-28 text-gray-600">
+                          <ReadMore coded>{diagnostics}</ReadMore>
+                        </div>
+                      ) : (
+                        <>
+                          <div className=" line-clamp-1">
+                            <Typography sx={{ fontSize: "14px" }}>
+                              {CONTACT_SUPPORT}
+                            </Typography>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </>
                 </div>
@@ -210,6 +220,15 @@ function RequestFailedDialog({
           autoFocus
         >
           {actionButtonProps ? actionButtonProps.YES : "OK"}
+        </Button>
+
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={() => handleClose(true, false)}
+          autoFocus
+        >
+          Report Error
         </Button>
       </DialogActions>
     </Dialog>

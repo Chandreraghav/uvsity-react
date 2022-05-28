@@ -64,6 +64,22 @@ function TimeOutDialog({
       }, 1000);
     } else {
     }
+    return () => {
+      if (
+        window.sessionExpired != undefined &&
+        window.sessionExpired != "undefined"
+      ) {
+        window.clearInterval(window.sessionExpired);
+      }
+
+      if (
+        window.idleTimeOut != undefined &&
+        window.idleTimeOut != "undefined"
+      ) {
+        window.clearInterval(window.idleTimeOut);
+      }
+
+    };
   }, []);
 
   const _logoff = () => {

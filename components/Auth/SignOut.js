@@ -14,12 +14,27 @@ export const eraseContext = (unauthorize) => {
     user: null,
   });
 };
-export const SignOffUser = (queryClient, router, unauthorize) => {
-  handleResponse(
-    LOGOUT.INFO.IN_PROGRESS,
-    RESPONSE_TYPES.INFO,
-    toast.POSITION.TOP_CENTER
-  );
+export const SignOffUser = (
+  queryClient,
+  router,
+  unauthorize,
+  silentSignOff
+) => {
+  if (!silentSignOff) {
+    handleResponse(
+      LOGOUT.INFO.IN_PROGRESS,
+      RESPONSE_TYPES.INFO,
+      toast.POSITION.TOP_CENTER
+    );
+  }
+  if (silentSignOff) {
+    AuthService.logout();
+    eraseContext(unauthorize);
+    router.replace("/");
+    queryClient.removeQueries();
+    return;
+  }
+
   SignOutService.signout()
     .then(() => {
       AuthService.logout();

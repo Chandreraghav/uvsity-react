@@ -28,7 +28,7 @@ const IdleTimeOut = (props) => {
   };
 
   const { getRemainingTime, getLastActiveTime } = useIdleTimer({
-    timeout: 1000 * 60 * 30, // user will be shown a idle time out dialog with a grace time of 30 seconds after 30 mins of inactivity.
+    timeout:  1000 * 60 * 30, // user will be shown a idle time out dialog with a grace time of 30 seconds after 30 mins of inactivity.
     onIdle: handleOnIdle,
     onActive: handleOnActive,
     onAction: handleOnAction,

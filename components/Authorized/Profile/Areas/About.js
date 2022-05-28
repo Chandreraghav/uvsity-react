@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
 import React,{useState} from "react";
+import { READ_LESS, READ_MORE, READ_MORE_MAX_LENGTH } from "../../../../constants/constants";
 import NoData from "../../Shared/NoData";
 
 function About(props) {
@@ -11,9 +12,9 @@ function About(props) {
   return  aboutMe ? (
     <>
       <div className="  text-gray-700 text-sm lg:text-md xl:text-md    ">
-        <Typography className={isReadMore && aboutMe.length>150?'line-clamp-1':''} variant="div">{aboutMe}</Typography>
+        <Typography className={isReadMore && aboutMe.length>READ_MORE_MAX_LENGTH?'line-clamp-1':''} variant="div">{aboutMe}</Typography>
         <span onClick={toggleReadMore} className="read-or-hide">
-        {isReadMore && aboutMe.length>150 ? "...read more" : aboutMe.length>150?" show less":''}
+        {isReadMore && aboutMe.length>READ_MORE_MAX_LENGTH ? READ_MORE : aboutMe.length>READ_MORE_MAX_LENGTH?READ_LESS:''}
       </span>
       </div>
     </>

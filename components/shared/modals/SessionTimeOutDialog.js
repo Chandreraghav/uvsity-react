@@ -31,6 +31,14 @@ function SessionTimeOutDialog({
         handleClose(true);
       }
     }, 1000);
+    return () => {
+      if (
+        window.sessionExpired != undefined &&
+        window.sessionExpired != "undefined"
+      ) {
+        window.clearInterval(window.sessionExpired);
+      }
+    };
   }, []);
   const handleClose = (logoffind) => {
     if (dialogCloseRequest) {
