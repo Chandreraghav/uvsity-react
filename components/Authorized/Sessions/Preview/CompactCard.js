@@ -46,7 +46,7 @@ function CompactCard({ data, title }) {
           </div>
         </div>
       ) : (
-        <>
+        <div className=" mb-4">
           <EndOfFeed
             src={IMAGE_PATHS.NO_DATA.SESSION}
             title={TOOLTIPS.NO_POPULAR_SESSIONS}
@@ -54,7 +54,7 @@ function CompactCard({ data, title }) {
             color="text-gray-800"
             icon={InfoIcon}
           />
-        </>
+        </div>
       )}
     </div>
   );
