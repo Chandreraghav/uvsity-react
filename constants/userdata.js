@@ -328,12 +328,16 @@ export const TOOLTIPS = {
   NO_CONNECTIONS: "No connections",
   NO_INTERESTING_PROFILE: "No interesting profiles available",
   NO_PEOPLE_VIEWED_YOU: "No people viewed you yet",
+  NO_POPULAR_SESSIONS: "No popular sessions available.",
   PROBABLE_INTERESTING_CONNECTIONS:
     "View more people whom you might be interested on",
   PEOPLE_WHO_VIEWED_YOU: "View more people who viewed your profile",
   VIEW_MORE: "View more of such people",
   SESSION_SUBMIT_CONFIRMATION: "Do you want to create this session now?",
   CREATING_SESSION: "Hold tight...creating your session",
+  YOU_HAVE_REACHED_END:"You're all Caught Up.",
+  COME_BACK_AGAIN:'Come back again later.',
+  SEEN_ALL_FEEDS:"You've seen all new feeds."
 };
 
 export const GREETING = `${timeOfDay()} <user>`;
@@ -552,7 +556,9 @@ export const IMAGE_PATHS = {
     CONNECTIONS: "/static/images/nodata-illustrations/no-connections.jpg",
     PEOPLE: "/static/images/nodata-illustrations/no-interesting-people.jpg",
     PEOPLE_VIEWS: "/static/images/nodata-illustrations/no-views-on-profile.PNG",
-    SESSION: "/static/images/nodata-illustrations/no-session-illustration.jpg",
+    SESSION: "/static/images/nodata-illustrations/broken-bike-3488525-2922411.webp",
+
+    FEED:"/static/images/nodata-illustrations/all-done-illustration-woman-1-removebg-preview.png",
     EVENT_POSTER: "/static/images/session-poster-not-found.jpg",
   },
   NO_PROFILE_PICTURE: "profilebig.png",

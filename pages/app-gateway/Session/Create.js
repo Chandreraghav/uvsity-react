@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import { eraseFormContext } from "../../../components/Authorized/Sessions/Clean/cleanup";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import PhoneMenu from "../../../components/Authorized/Shared/FireFighter/PhoneMenu";
+import { standardStaleTime } from "../../../async/subscriptions";
 
 function Create() {
   const layoutObj = {
@@ -35,12 +36,15 @@ function Create() {
   const getSummary = async () => (await UserDataService.getSummary()).data;
   const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary, {
     refetchOnWindowFocus: false,
+    staleTime:standardStaleTime
   });
   const STATIC_META_DATA = useQuery([KEYS.METADATA.STATIC], getStaticMetaData, {
     refetchOnWindowFocus: false,
+    staleTime:standardStaleTime
   });
   const ROOT_META_DATA = useQuery([KEYS.METADATA.ROOT], getRootMetaData, {
     refetchOnWindowFocus: false,
+    staleTime:standardStaleTime
   });
   const getData = {
     USER_PROFILE_SUMMARY,

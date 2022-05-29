@@ -16,7 +16,12 @@ import {
   getTimezone,
   localTZDate,
 } from "../../../utils/utility";
-import { PLACEHOLDERS, TITLES, TOOLTIPS } from "../../../constants/userdata";
+import { PLACEHOLDERS, TITLES, TOOLTIPS,ME } from "../../../constants/userdata";
+import UserDataService from "../../../pages/api/users/data/UserDataService";
+import { useQuery } from "react-query";
+import { KEYS } from "../../../async/queries/keys/unique-keys";
+import { infinity, standardStaleTime } from "../../../async/subscriptions";
+ 
 
 toast.configure();
 
@@ -31,9 +36,21 @@ export default function CustomDialog({
   actions,
   theme,
 }) {
+  
   const [dataJsx, setDataJsx] = useState(null);
   const [titleJsx, setTitleJsx] = useState(null);
 
+  const getLoggedInInformation = async () =>
+    (await UserDataService.getLoggedInInformation()).data;
+  const USER_LOGIN_INFO = useQuery([KEYS.LOGIN.INFO], getLoggedInInformation, {
+    refetchOnWindowFocus: false,
+    staleTime: infinity
+  });
+
+  const isItMe = () => {
+    return data?.userDetailsId===USER_LOGIN_INFO.data.userDetailsId
+   
+  };
   useEffect(() => {
     let isSubscribed = true;
     let controller = new AbortController();
@@ -71,14 +88,18 @@ export default function CustomDialog({
           <div className="flex flex-col py-1 mb-1 gap-1">
             <div className="flex gap-1 text-sm">
               <div className="">by</div>
-              <div className="line-clamp-1">{profilePrimaryLine}</div>
-              {profileSecondaryLine && <div>|</div>}
+              <Tooltip title={
+                  isItMe()
+                    ? TOOLTIPS.GO_TO_PROFILE
+                    : TOOLTIPS.VIEW_PROFILE
+                } ><div className="line-clamp-1 cursor-pointer app__anchor__block">{profilePrimaryLine}{isItMe()&& (<>{ME}</>)}</div></Tooltip>
+              {profileSecondaryLine && <div className="-mt-0.3 text-gray-500">&#8739;</div>}
               <div className="line-clamp-1">{profileSecondaryLine}</div>
             </div>
 
             <div className="flex gap-1 text-gray-400 text-xs">
               <div className="">on</div>
-              <div className='line-clamp-1' title={`${profileTertiaryLine}(${getTimezone()})`}>
+              <div className='line-clamp-1 ' title={`${profileTertiaryLine}(${getTimezone()})`}>
                 {profileTertiaryLine}({getTimezone()})
               </div>
             </div>
@@ -110,6 +131,8 @@ export default function CustomDialog({
             instituition={user.educationalInstitute}
             metaData={user}
             origin={name}
+            userdata={USER_LOGIN_INFO?.data}
+           
           />
         );
       });

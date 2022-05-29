@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import TrendingSessionsStyle from "../../styles/TrendingSessions.module.css";
 import SessionCard from "../SessionCards/SessionCard";
@@ -6,6 +8,7 @@ import Loader from "../shared/Loader";
 import { SHIMMER_TIMEOUT_IN_MILLIS } from "../../constants/constants";
 import { useQuery } from "react-query";
 import { KEYS } from "../../async/queries/keys/unique-keys";
+import { standardStaleTime } from "../../async/subscriptions";
 
 const getTrendingSessions =async()=> {
 const res=  await SessionService.getPopularSessions();
@@ -15,7 +18,9 @@ function TrendingSessions() {
 
   const trendingSessions = useQuery(
     [KEYS.SESSION.PUBLIC.TOP],
-    getTrendingSessions
+    getTrendingSessions,{
+      staleTime:standardStaleTime
+    }
   );
   return (
     <div id="discover-popular-live-sessions">

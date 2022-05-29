@@ -2,17 +2,18 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
-import { asyncSubscriptions } from "../../../../async/subscriptions";
+import {
+  asyncSubscriptions,
+  standardStaleTime,
+} from "../../../../async/subscriptions";
 import PrivateRoute from "../../../../components/Auth/HOC/Routes/PrivateRoute";
 import PhoneMenu from "../../../../components/Authorized/Shared/FireFighter/PhoneMenu";
 import Header from "../../../../components/Authorized/Shared/Header";
 import Layout from "../../../../components/Main/Layout";
 import Footer from "../../../../components/shared/Footer";
-import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import { formattedName } from "../../../../utils/utility";
 import UserDataService from "../../../api/users/data/UserDataService";
 import Profile from "./Profile";
-import { useQueryClient } from "react-query";
 import { LOADING_MESSAGE_DEFAULT } from "../../../../constants/constants";
 const UserProfile = () => {
   const router = useRouter();
@@ -23,7 +24,6 @@ const UserProfile = () => {
     desc: null,
     poster: null,
   };
-  const [requestFailureDetail, setRequestFailureDetail] = useState(null);
   const [layoutObject, setLayoutObject] = useState(null);
   const [hasChangeEventTriggered, setChangeEventTriggered] = useState(false);
   const getLoggedInUserSummary = async () =>
@@ -33,7 +33,8 @@ const UserProfile = () => {
 
   const LOGGED_IN_USER_SUMMARY = useQuery(
     [KEYS.PROFILE.SUMMARY],
-    getLoggedInUserSummary
+    getLoggedInUserSummary,
+    { staleTime: standardStaleTime }
   );
 
   const { data, isError, isSuccess, isLoading } = useQuery(
@@ -44,6 +45,7 @@ const UserProfile = () => {
         asyncSubscriptions.PROFILE_VIEWS.enabled
           ? asyncSubscriptions.PROFILE_VIEWS.pollEvery
           : false,
+      staleTime: asyncSubscriptions.PROFILE_VIEWS.staleTime,
     }
   );
 

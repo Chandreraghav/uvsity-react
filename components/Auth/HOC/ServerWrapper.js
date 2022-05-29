@@ -27,6 +27,7 @@ function ServerWrapper(props) {
         asyncSubscriptions.SESSION_EXPIRY.enabled
           ? asyncSubscriptions.SESSION_EXPIRY.pollEvery
           : false,
+      
     }
   );
   const unauthorizedResponseReceived = () =>
