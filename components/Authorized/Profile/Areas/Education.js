@@ -42,7 +42,7 @@ function Education(props) {
                               <div>
                                 <div className="text-xs text-gray-700">
                                   <span>{education?.campus}</span>
-                                  &nbsp;|&nbsp;
+                                  &nbsp;&#8739;&nbsp;
                                   <span>
                                     {education.educationStartDateForDisplay} -&nbsp;
                                     {education.educationEndDateForDisplay}

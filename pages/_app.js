@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // DO NOT CHANGE THIS FILE IF NOT NEEDED UTMOST
 /***
  * GLOBAL APP CSS
@@ -34,7 +35,7 @@ function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  //MANDATORY PWA ENABLER ON TOP PF EVERY COMPONENT
+  //MANDATORY PWA ENABLER ON TOP OF EVERY COMPONENT
   useEffect(() => {
     let controller = new AbortController();
     // ENABLE PWA ABILITY

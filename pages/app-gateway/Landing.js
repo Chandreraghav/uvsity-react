@@ -5,10 +5,12 @@ import Dashboard from "../../components/Authorized/Dashboard";
 import { useQuery } from "react-query";
 import { KEYS } from "../../async/queries/keys/unique-keys";
 import UserDataService from "../api/users/data/UserDataService";
-import { asyncSubscriptions } from "../../async/subscriptions";
+import {
+  asyncSubscriptions,
+  standardStaleTime,
+} from "../../async/subscriptions";
 import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
 import PhoneMenu from "../../components/Authorized/Shared/FireFighter/PhoneMenu";
-import { useState } from "react";
 
 function Landing() {
   const layoutObj = {
@@ -32,18 +34,25 @@ function Landing() {
       asyncSubscriptions.LOGGED_IN_USER_INFO.enabled
         ? asyncSubscriptions.LOGGED_IN_USER_INFO.pollEvery
         : false,
+    staleTime: asyncSubscriptions.LOGGED_IN_USER_INFO.staleTime,
   });
-  const TOP_SESSIONS = useQuery([KEYS.SESSION.TOP], getTopCourses);
-  const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary, {});
+  const TOP_SESSIONS = useQuery([KEYS.SESSION.TOP], getTopCourses, {
+    staleTime: standardStaleTime,
+  });
+  const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary, {
+    staleTime: standardStaleTime,
+  });
   const USER_PROFILE_PERCENTAGE_COMPLETION = useQuery(
     [KEYS.PROFILE.COMPLETION],
-    getProfilePercentageCompletion
+    getProfilePercentageCompletion,
+    { staleTime: standardStaleTime }
   );
   const PROFILE_VISITS = useQuery([KEYS.PROFILE.VISITS], getProfileVisits, {
     refetchInterval: () =>
       asyncSubscriptions.PROFILE_VISITS.enabled
         ? asyncSubscriptions.PROFILE_VISITS.pollEvery
         : false,
+    staleTime: asyncSubscriptions.PROFILE_VISITS.staleTime,
   });
   const SUGGESTED_FRIENDS = useQuery(
     [KEYS.NETWORK.PEOPLE.INTERESTING],
@@ -53,6 +62,7 @@ function Landing() {
         asyncSubscriptions.INTERESTING_CONNECTIONS.enabled
           ? asyncSubscriptions.INTERESTING_CONNECTIONS.pollEvery
           : false,
+      staleTime: asyncSubscriptions.INTERESTING_CONNECTIONS.staleTime,
     }
   );
 
