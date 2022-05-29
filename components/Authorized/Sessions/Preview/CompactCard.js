@@ -12,7 +12,7 @@ import EndOfFeed from "./EndOfFeed";
 function CompactCard({ data, title }) {
   return (
     <div>
-      {data?.TOP_SESSIONS.data?.length == 0 ? (
+      {data?.TOP_SESSIONS.data?.length > 0 ? (
         <div className="flex flex-col">
           <h2 className="font-bold text-lg pr-8">{title}</h2>
           <Spacer />
