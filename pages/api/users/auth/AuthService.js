@@ -8,7 +8,7 @@ import { ENDPOINTS } from "../../../../async/endpoints";
 import { v4 as uuidv4 } from "uuid";
 import { JWT } from "../../../../jwt/auth/JWT";
 import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
-
+import jwt_decode from "jwt-decode";
 export class AuthService {
   static getCurrentUser() {
     return getLocalStorageObject("uvsity-user");
@@ -75,6 +75,11 @@ export class AuthService {
    */
   static setAuthorization(source, authData) {
     setLocalStorageObject("uvsity-user", authData);
+    const jwt= (authData?.data?.split(" ")[1])
+    const decoded = jwt_decode(jwt);
+    if(decoded){
+      setLocalStorageObject("uvsity-user-definition", decoded);
+    }
     setLocalStorageObject("uvsity-loggedIn", "true");
     if (source === LOGIN_SOURCE.GOOGLE) {
       setLocalStorageObject("uvsity-loggedInSource", LOGIN_SOURCE.GOOGLE);
@@ -138,6 +143,7 @@ export class AuthService {
       removeLocalStorageObject("uvsity-loggedInSource");
       removeLocalStorageObject("uvsity-unauthorized-response")
       removeLocalStorageObject('uvsity-internal-error-response')
+      removeLocalStorageObject('uvsity-user-definition')
       this.cancelAppLayerSubscriptions(true);
 
       // we do not clear ip data on logout because of its global nature.

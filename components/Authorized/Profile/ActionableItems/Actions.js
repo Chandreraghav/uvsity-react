@@ -6,6 +6,7 @@ import RecommendIcon from "@mui/icons-material/Recommend";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { green, pink, blue, purple } from "@mui/material/colors";
 import { openNewTab } from "../../Shared/Navigator";
+import { RECOMMENDATIONS } from "../../../../constants/userdata";
 function Actions(props) {
   const handleScheduleMeeting = () => {
     openNewTab(
@@ -13,6 +14,11 @@ function Actions(props) {
         props.userdata?.publicCalendarProfileIdentifier
     );
   };
+  const handleRequestRecommendation =(e)=>{
+    if(props?.onRequestRecommendation){
+      props.onRequestRecommendation(true)
+    }
+  }
   return (
     <div className=" send-message send-rating ask-recommendation ">
       <div></div>
@@ -36,9 +42,9 @@ function Actions(props) {
         </div>
         <div className="cursor-pointer ">
           <Tooltip
-            title={`Ask for a recommendation from ${props.userdata?.firstName}`}
+            title={`${ RECOMMENDATIONS.REQUEST_RECOMMENDATION_CUSTOM.replace('<#>',props.userdata?.firstName)}`}
           >
-            <IconButton aria-label="ask-recommendation" size="large">
+            <IconButton onClick={handleRequestRecommendation} aria-label="ask-recommendation" size="large">
               <RecommendIcon sx={{ color: pink[500] }} fontSize="inherit" />
             </IconButton>
           </Tooltip>

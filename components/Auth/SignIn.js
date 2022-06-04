@@ -17,7 +17,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { isStringEmpty } from "../../utils/utility";
 import { REGISTRATION_ERRORS, LOGIN_ERRORS } from "../../constants/error-messages";
 import HelpIcon from "@mui/icons-material/Help";
-import Loader from "../shared/Loader";
 import { loginValidationSchema } from '../../validation/services/auth/ValidationSchema'
 import { getWorkflowError } from "../../error-handler/handler";
 import { RESPONSE_TYPES } from "../../constants/constants";
@@ -31,6 +30,7 @@ import { useDataLayerContextValue } from '../../context/DataLayer'
 import { actionTypes } from "../../context/reducer";
 import {AUTHORIZED_ROUTES} from "../../constants/routes";
 import Overlay from "../shared/Overlay";
+
 toast.configure();
 
 function SignIn({ dialogCloseRequest, isOpen }) {
@@ -80,6 +80,7 @@ function SignIn({ dialogCloseRequest, isOpen }) {
           type: actionTypes.SET_USER,
           user: res, //bearer token response
         });
+
         AuthService.setAuthorization(LOGIN_SOURCE.UVSITY, res)
         AuthGuardService.isVerifiedLogin(true)?router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD):
         handleResponse(
