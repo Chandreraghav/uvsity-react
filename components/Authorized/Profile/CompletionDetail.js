@@ -27,9 +27,9 @@ function CompletionDetail({ data }) {
   const router = useRouter();
   const [suggestionShowed, setSuggestionShown] = useState(false);
   const [completionTextObject, setCompletionTextObject] = useState({});
-  const handleProfileEdit=()=>{
-    navigateToProfile(data?.USER_LOGIN_INFO?.data?.userDetailsId, router)
-  }
+  const handleProfileEdit = () => {
+    navigateToProfile(data?.USER_LOGIN_INFO?.data?.userDetailsId, router);
+  };
   const toggleSuggestions = (e) => {
     setSuggestionShown(!suggestionShowed);
   };
@@ -149,8 +149,9 @@ function CompletionDetail({ data }) {
                   </div>
 
                   {suggestionShowed &&
-                    completionTextObject?.recommendedSteps.map((reco) => (
+                    completionTextObject?.recommendedSteps.map((reco, _idx) => (
                       <div
+                        key={_idx}
                         className={
                           ProfileCompletionDetailStyle.profile__completion__detail__guidance__text
                         }
@@ -165,29 +166,23 @@ function CompletionDetail({ data }) {
             <div className="flex gap-2   items-baseline p-2">
               {COMPLETION_DETAIL_ACTION.map((action) => (
                 <div key={action.id}>
-                  {action.startIcon ? (
+                  {action.id === 1 ? (
                     <Tooltip title={action.tooltip}>
-                      <Button onClick={handleProfileEdit} startIcon={action.icon} size={action.size}>
+                      <Button
+                        onClick={handleProfileEdit}
+                        startIcon={action.icon}
+                        size={action.size}
+                      >
                         {action.title}
                       </Button>
                     </Tooltip>
                   ) : (
-                    <div>
-                      <div className="  hidden xl:flex inline md:flex inline lg:flex inline ">
-                        <Tooltip title={`${action.tooltip}`}>
-                          <Button endIcon={action.icon} size={action.size}>
-                            {action.title}
-                          </Button>
-                        </Tooltip>
-                      </div>
-
-                      <div className=" flex xl:hidden inline md:hidden inline lg:hidden inline sm:flex inline xs:flex inline">
-                        <div className=" text-blue-500 cursor-pointer ">
-                          <Tooltip title={`${action.tooltip}`}>
-                            {action.icon}
-                          </Tooltip>
-                        </div>
-                      </div>
+                    <div className="line-clamp-1">
+                    <Tooltip title={`${action.tooltip}`}>
+                      <Button endIcon={action.icon} size={action.size}>
+                        {action.title}
+                      </Button>
+                    </Tooltip>
                     </div>
                   )}
                 </div>

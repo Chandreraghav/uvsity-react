@@ -7,6 +7,7 @@ import { KEYS } from "../../async/queries/keys/unique-keys";
 import UserDataService from "../api/users/data/UserDataService";
 import {
   asyncSubscriptions,
+  infinity,
   standardStaleTime,
 } from "../../async/subscriptions";
 import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
@@ -34,7 +35,7 @@ function Landing() {
       asyncSubscriptions.LOGGED_IN_USER_INFO.enabled
         ? asyncSubscriptions.LOGGED_IN_USER_INFO.pollEvery
         : false,
-    staleTime: asyncSubscriptions.LOGGED_IN_USER_INFO.staleTime,
+    staleTime: infinity,
   });
   const TOP_SESSIONS = useQuery([KEYS.SESSION.TOP], getTopCourses, {
     staleTime: standardStaleTime,

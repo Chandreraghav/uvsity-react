@@ -5,6 +5,7 @@ import {
   IMAGE_PATHS,
   ME,
   NETWORK,
+  RECOMMENDATIONS,
   TITLES,
 } from "../../../../../constants/userdata";
 import { avatarToString } from "../../../../../utils/utility";
@@ -22,31 +23,11 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { navigateToProfile } from "../../../Shared/Navigator";
+
 toast.configure();
 function PeekProfile(props) {
   if (!props.isOpen) return <></>;
   const router = useRouter();
-  const invitedState =
-    props.metaData?.invitationAction?.invitationAction ===
-      NETWORK.CONNECTION_RELATION_STATE.CONNECT ||
-    props.metaData?.associatedUserData?.invitationAction ===
-      NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT ||
-    props.metaData?.associatedCoHostData?.invitationAction ===
-      NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT;
-  const acceptanceState =
-    props.metaData?.invitationAction?.invitationAction ===
-      NETWORK.CONNECTION_RELATION_STATE.ACCEPT_REQUEST ||
-    props.metaData?.associatedUserData?.invitationAction ===
-      NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST ||
-    props.metaData?.associatedCoHostData?.invitationAction ===
-      NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
-  const pendingState =
-    props.metaData?.invitationAction?.invitationAction ===
-      NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE ||
-    props.metaData?.associatedUserData?.invitationAction ===
-      NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE ||
-    props.metaData?.associatedCoHostData?.invitationAction ===
-      NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE;
   const isAConnection = () => {
     let metadata = props.metaData;
     if (metadata) {
@@ -88,6 +69,29 @@ function PeekProfile(props) {
   const [isInInvitedState, setInvitedState] = useState(invitedState);
 
   const [isInPendingState, setPendingState] = useState(pendingState);
+  const invitedState =
+    props.metaData?.invitationAction?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE.CONNECT ||
+    props.metaData?.associatedUserData?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT ||
+    props.metaData?.associatedCoHostData?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT;
+  const acceptanceState =
+    props.metaData?.invitationAction?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE.ACCEPT_REQUEST ||
+    props.metaData?.associatedUserData?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST ||
+    props.metaData?.associatedCoHostData?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
+  const pendingState =
+    props.metaData?.invitationAction?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE ||
+    props.metaData?.associatedUserData?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE ||
+    props.metaData?.associatedCoHostData?.invitationAction ===
+      NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE;
+  
+  
 
   const handleConnectRequest = () => {
     props?.addToNetwork();
@@ -105,6 +109,13 @@ function PeekProfile(props) {
   const handleProfileEdit=()=>{
     navigateToProfile(getUserID(), router)
   }
+  const handleRequestRecommendation = () => {
+    const requestedTo = getUserID();
+    if (requestedTo) {
+      const request = { requestedTo };
+      if (props.requestRecommendation) props?.requestRecommendation(request);
+    }
+  };
 
   return (
     <div
@@ -163,10 +174,7 @@ function PeekProfile(props) {
                 props?.isConnectionRequestSent && "control__disabled"
               }`}
               role="button"
-              // onTouchStart={props?.onHover}
-              // onTouchEnd={props?.onLeave}
-              // onMouseEnter={props?.onHover}
-              // onMouseLeave={props?.onLeave}
+            
             >
               <IconButton
                 className=" cursor-pointer inline-flex "
@@ -226,10 +234,7 @@ function PeekProfile(props) {
                     props?.isConnectionRequestSent && "control__disabled"
                   }`}
                   role="button"
-                  // onTouchStart={props?.onHover}
-                  // onTouchEnd={props?.onLeave}
-                  // onMouseEnter={props?.onHover}
-                  // onMouseLeave={props?.onLeave}
+                 
                 >
                   <IconButton
                     className=" cursor-pointer inline-flex "
@@ -291,10 +296,7 @@ function PeekProfile(props) {
                     props?.isConnectionAcceptRequestSent && "control__disabled"
                   }`}
                   role="button"
-                  // onTouchStart={props?.onHoverAccept}
-                  // onTouchEnd={props?.onLeaveAccept}
-                  // onMouseEnter={props?.onHoverAccept}
-                  // onMouseLeave={props?.onLeaveAccept}
+                  
                 >
                   <IconButton
                     className=" cursor-pointer inline-flex "
@@ -406,26 +408,15 @@ function PeekProfile(props) {
             <Button size="small" variant="contained" endIcon={<SendIcon />}>
               Message
             </Button>
-            <div className=" xl:flex inline md:flex inline lg:flex inline hidden">
+           
               <Button
+                onClick={handleRequestRecommendation}
                 size="small"
                 variant="contained"
                 endIcon={<RecommendOutlinedIcon />}
               >
-                Ask Recommendation
+                {RECOMMENDATIONS.REQUEST_RECOMMENDATION}
               </Button>
-            </div>
-            <div className="flex xl:hidden md:hidden inline lg:hidden sm:flex inline xs:flex inline">
-              <div className="text-blue-500 ml-auto cursor-pointer ">
-                <Tooltip
-                  title={`Ask a recommendation from ${
-                    props.data.primary.split(" ")[0]
-                  }`}
-                >
-                  <RecommendOutlinedIcon />
-                </Tooltip>
-              </div>
-            </div>
           </Stack>
         </div>
       )}
@@ -433,7 +424,7 @@ function PeekProfile(props) {
         <div className="text-md actions-on-peek ">
           <Stack direction="row" spacing={2}>
             {COMPLETION_DETAIL_ACTION.map((action, index) =>
-              action.startIcon ? (
+              action.id===1 ? (
                 <Button
                   key={index}
                   variant="contained"
@@ -444,25 +435,18 @@ function PeekProfile(props) {
                   {action.title}
                 </Button>
               ) : (
-                <div key={index}>
-                  <div className="  hidden xl:flex inline md:flex inline lg:flex inline ">
-                    <Button
+                <Tooltip title={action.tooltip}>
+                   <Button
+                      key={index}
                       variant="contained"
                       endIcon={action.icon}
                       size={action.size}
                     >
                       {action.title}
                     </Button>
-                  </div>
-
-                  <div className="flex xl:hidden inline md:hidden inline lg:hidden inline sm:flex inline xs:flex inline">
-                    <div className="ml-auto text-blue-500 cursor-pointer ">
-                      <Tooltip title={`${action.tooltip}`}>
-                        <RecommendOutlinedIcon />
-                      </Tooltip>
-                    </div>
-                  </div>
-                </div>
+                </Tooltip>
+                 
+                   
               )
             )}
           </Stack>

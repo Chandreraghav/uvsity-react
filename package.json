@@ -39,6 +39,7 @@
     "gapi-oauth-react-hooks": "^3.4.3",
     "google-auth-library": "^7.14.1",
     "html-react-parser": "^1.4.10",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "markdown-to-html-converter": "^1.0.4",
     "material-ui-popup-state": "^2.0.0",

@@ -43,7 +43,10 @@ export const ENDPOINTS = {
       SEARCH:{
         ATTENDEES:'universalsearch/attendees/'
       },
-      VIEW:'view/profile/'
+      VIEW:'view/profile/',
+      MESSAGING:{
+        SEND_RECOMMENDATION_REQUEST:'/inbox/send/recommendationRequest'
+      }
     },
     DETAILS: "/view/profile/",
     SESSION_BY_ID: "/courses/#X#",
@@ -67,6 +70,7 @@ export const ENDPOINTS = {
       ROOT: "/courses/metadata",
       STATIC: "/courses/staticmetadata",
     },
+    
   },
   
 

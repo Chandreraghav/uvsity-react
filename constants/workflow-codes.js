@@ -9,6 +9,7 @@ export const WORKFLOW_CODES = {
     PROFILE: {
       EDIT: "P_EDIT",
       REQUEST_RECOMMENDATION: "P_REQR",
+      VIEW_CONNECTIONS: "P_VIEW_CONNECTIONS",
     },
     SESSION: {
       REGISTER: "S_REG",

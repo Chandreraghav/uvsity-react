@@ -28,7 +28,7 @@ import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { RESPONSE_TYPES } from "./constants";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
-import RecommendOutlinedIcon from "@mui/icons-material/RecommendOutlined";
+
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
@@ -266,13 +266,13 @@ export const COMPLETION_DETAIL_ACTION = [
   },
   {
     id: 2,
-    title: "Get Recommended",
-    icon: <RecommendOutlinedIcon />,
+    title: "Connections",
+    icon: <SupervisorAccountIcon />,
     hidden: false,
     disabled: false,
     startIcon: false,
     size: "small",
-    tooltip: "Request a recommendation from your connections",
+    tooltip: "View people in your network and request for recommendations.",
     code: WORKFLOW_CODES.USER.PROFILE.REQUEST_RECOMMENDATION,
   },
 ];
@@ -1099,4 +1099,13 @@ export const PROFILE_AREAS = [
 ];
 export const USER_PROFILE={
   CHANGE_PROFILE_PICTURE:'Change profile picture'
+}
+
+export const RECOMMENDATIONS={
+  REQUEST_RECOMMENDATION:'Ask Recommendation',
+  REQUEST_SENT_TO:'Great, you just sent a recommendation request to ',
+  REQUEST_SENT_FAILED:'Uh, oh! there was an error sending the recommendation request to ',
+  REQUEST_RECOMMENDATION_CUSTOM:'Ask <#> for a recommendation',
+  SEND_RECOMMENDATION:'Send request for recommendation',
+  REQUEST_TYPE: "RECOMMENDATION_REQUEST",
 }

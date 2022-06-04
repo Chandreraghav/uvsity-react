@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Tooltip } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Divider from "@mui/material/Divider";

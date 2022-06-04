@@ -5,6 +5,7 @@ import {
   ME,
   NETWORK,
   PAYLOAD_DEFAULT_TEXTS,
+  RECOMMENDATIONS,
   TITLES,
   TOOLTIPS,
 } from "../../../../../constants/userdata";
@@ -34,6 +35,8 @@ import PeekProfile from "../Peek/Profile";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import { navigateToProfile } from "../../../Shared/Navigator";
+import AskRecommendationDialog from "../../../../shared/modals/AskRecommendationDialog";
+import RecommendationService from "../../../../../pages/api/people/Recommendation/RecommendationService";
 toast.configure();
 const useStyles = makeStyles((theme) => ({
   popover: {
@@ -74,6 +77,14 @@ function Profile({
   const classes = useStyles();
   const popoverAnchor = useRef(null);
   const [openedPopover, setOpenedPopover] = useState(false);
+  const _recommendation={
+    from: null,
+    to:null,
+    subject: null,
+    message: null,
+    dialogOpen:false
+  };
+  const [recommendations, setRecommendations] =useState(_recommendation)
   const handlePopoverOpen = (event) => {
     if(noCardOnHover) return
     setOpenedPopover(true);
@@ -254,6 +265,56 @@ function Profile({
     navigateToProfile(id, router);
   };
 
+  const handleRequestRecommendation=(request)=>{
+    const from=userdata?.userDetailsId
+    const to =request.requestedTo
+    const _recommendation={
+      from,
+      to,
+      subject: null,
+      message: null,
+      dialogOpen:true
+    };
+    setRecommendations(_recommendation)
+  }
+
+  const handleRequestRecommendationClose =(request)=>{
+if(request.close){
+  setRecommendations(_recommendation)
+  return
+}
+ 
+const payload = {
+  requestTo: {
+      userDetailsId: request.recommendation.to
+  },
+  requestFrom: {
+      userDetailsId: request.recommendation.from
+  },
+  userRequestText: request.recommendation.subject,
+  userRequestSubject:request.recommendation.message,
+  userRequestType: RECOMMENDATIONS.REQUEST_TYPE
+}
+
+RecommendationService.sendRecommendationRequest(payload)
+  .then((res) => {
+    setRecommendations(_recommendation);
+    handleResponse(
+      `${RECOMMENDATIONS.REQUEST_SENT_TO}${firstName}`,
+      RESPONSE_TYPES.SUCCESS,
+      toast.POSITION.BOTTOM_CENTER
+    );
+  })
+  .catch((err) => {
+    setRecommendations(_recommendation);
+    handleResponse(
+      `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${firstName}`,
+      RESPONSE_TYPES.ERROR,
+      toast.POSITION.BOTTOM_CENTER
+    );
+  });
+  }
+
   return (
     <div>
       <Popover
@@ -297,10 +358,6 @@ function Profile({
           isConnectionAcceptRequestSendError={
             isConnectionAcceptRequestSendError
           }
-          // onHover={onHover}
-          // onLeave={onLeave}
-          // onHoverAccept={onHoverAccept}
-          // onLeaveAccept={onLeaveAccept}
           dark
           data={{
             oid: oid,
@@ -310,6 +367,7 @@ function Profile({
             tertiary: profileTertiaryLine(),
             isItMe: isItMe(),
           }}
+          requestRecommendation={handleRequestRecommendation}
         />
       </Popover>
 
@@ -387,10 +445,7 @@ function Profile({
                   isConnectionRequestSent && "control__disabled"
                 }`}
                 role="button"
-                // onTouchStart={onHover}
-                // onTouchEnd={onLeave}
-                // onMouseEnter={onHover}
-                // onMouseLeave={onLeave}
+                
               >
                 <IconButton
                   className=" cursor-pointer inline-flex "
@@ -444,10 +499,6 @@ function Profile({
                       isConnectionRequestSent && "control__disabled"
                     }`}
                     role="button"
-                    // onTouchStart={onHover}
-                    // onTouchEnd={onLeave}
-                    // onMouseEnter={onHover}
-                    // onMouseLeave={onLeave}
                   >
                     <IconButton
                       className=" cursor-pointer inline-flex "
@@ -498,10 +549,7 @@ function Profile({
                       isConnectionAcceptRequestSent && "control__disabled"
                     }`}
                     role="button"
-                    // onTouchStart={onHoverAccept}
-                    // onTouchEnd={onLeaveAccept}
-                    // onMouseEnter={onHoverAccept}
-                    // onMouseLeave={onLeaveAccept}
+                  
                   >
                     <IconButton
                       className=" cursor-pointer inline-flex "
@@ -517,7 +565,7 @@ function Profile({
                             sx={{ color: "green" }}
                             fontSize="small"
                           />
-                          <small className="text-sm font-small text-green-600">
+                          <small className="md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
                             {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
                           </small>
                         </>
@@ -564,7 +612,7 @@ function Profile({
                       aria-label="connected-to-person"
                     >
                       <CheckCircleIcon fontSize="small" />
-                      <small className="text-sm font-small">
+                      <small className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
                         {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
                       </small>
                     </IconButton>
@@ -644,6 +692,7 @@ function Profile({
           )}
         </div>
       </div>
+      <AskRecommendationDialog title={`${firstName}`}  dialogCloseRequest={handleRequestRecommendationClose} data={recommendations} isOpen={recommendations.dialogOpen}></AskRecommendationDialog>
     </div>
   );
 }

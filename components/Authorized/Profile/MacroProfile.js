@@ -20,6 +20,7 @@ import {
   NETWORK,
   PAYLOAD_DEFAULT_TEXTS,
   PROFILE_AREAS,
+  RECOMMENDATIONS,
   TITLES,
 } from "../../../constants/userdata";
 import ProfileStyle from "../../../styles/Profile.module.css";
@@ -67,6 +68,8 @@ import MacroProfileShimmer from "./Shimmer/MacroProfileShimmer";
 import ChangeProfilePicture from "./ActionableItems/ChangeProfilePicture";
 
 import ChangeProfilePictureDialog from "../../shared/modals/ChangeProfilePictureModal";
+import AskRecommendationDialog from "../../shared/modals/AskRecommendationDialog";
+import RecommendationService from "../../../pages/api/people/Recommendation/RecommendationService";
 toast.configure();
 function MacroProfile(props) {
   const [selectedpicture, setSelectedPictureEvent] = useState(null);
@@ -85,6 +88,14 @@ function MacroProfile(props) {
     useState(false);
   const [isConnectionRequestSent, setConnectionRequestSent] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
+  const _recommendation={
+    from: null,
+    to:null,
+    subject: null,
+    message: null,
+    dialogOpen:false
+  };
+  const [__recommendations, setRecommendations] =useState(_recommendation)
   useEffect(() => {
     if (props?.hasChangeEventTriggered) {
       setShow(true);
@@ -409,6 +420,55 @@ function MacroProfile(props) {
     }
   };
 
+  const handleRequestRecommendation = (request)=>{
+    if(request){
+      const _recommendation={
+        from:props?.loggedInUserID,
+        to:userdata?.userDetailsId,
+        subject: null,
+        message: null,
+        dialogOpen:true
+      };
+      setRecommendations(_recommendation)
+    }
+  }
+
+  const handleRequestRecommendationClose =(request)=>{
+    if(request.close){
+      setRecommendations(_recommendation)
+      return
+    }
+    const payload = {
+      requestTo: {
+          userDetailsId: request.recommendation.to
+      },
+      requestFrom: {
+          userDetailsId: request.recommendation.from
+      },
+      userRequestText: request.recommendation.subject,
+      userRequestSubject:request.recommendation.message,
+      userRequestType: RECOMMENDATIONS.REQUEST_TYPE
+    }
+    
+    RecommendationService.sendRecommendationRequest(payload)
+      .then((res) => {
+        setRecommendations(_recommendation);
+        handleResponse(
+          `${RECOMMENDATIONS.REQUEST_SENT_TO}${firstName}`,
+          RESPONSE_TYPES.SUCCESS,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      })
+      .catch((err) => {
+        setRecommendations(_recommendation);
+        handleResponse(
+          `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${firstName}`,
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      });
+      }
+
   return (
     <>
       {!show ? (
@@ -517,7 +577,7 @@ function MacroProfile(props) {
               {/* INTER-USER COMMUNICATIVE ACTIONS */}
               <div className="ml-auto mr-0">
                 <div className="mt-12 xl:mt-32 lg:mt-32">
-                  {isConnected && <Actions userdata={userdata} />}
+                  {isConnected && <Actions onRequestRecommendation={handleRequestRecommendation} userdata={userdata} />}
                 </div>
               </div>
             </div>
@@ -893,6 +953,8 @@ function MacroProfile(props) {
         isOpen={openProfilePictureModal}
         consumeEvent={handleProfilePictureChange}
       />
+       <AskRecommendationDialog title={`${firstName}`}  dialogCloseRequest={handleRequestRecommendationClose} data={__recommendations} isOpen={__recommendations.dialogOpen}></AskRecommendationDialog>
+    
     </>
   );
 }

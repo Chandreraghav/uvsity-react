@@ -44,7 +44,7 @@ import { useRouter } from "next/router";
 import { actionTypes } from "../../../../../../context/reducer";
 import { AuthService } from "../../../../../../pages/api/users/auth/AuthService";
 import { SESSION } from "../../../../../../validation/services/auth/ValidationSchema";
-import { standardStaleTime } from "../../../../../../async/subscriptions";
+import { infinity, standardStaleTime } from "../../../../../../async/subscriptions";
 toast.configure();
 function Participant(props) {
   const Router = useRouter();
@@ -76,7 +76,7 @@ function Participant(props) {
     (await UserDataService.getLoggedInInformation()).data;
   const USER_LOGIN_INFO = useQuery([KEYS.LOGIN.INFO], getLoggedInInformation, {
     refetchOnWindowFocus: false,
-    staleTime: standardStaleTime
+    staleTime: infinity
   });
   const changeHandler = (event) => {
     setQuery(event.target.value);
