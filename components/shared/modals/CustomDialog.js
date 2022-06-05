@@ -14,14 +14,14 @@ import {
   formattedName,
   formattedProfileSubtitle,
   getTimezone,
+  isFullScreen,
   localTZDate,
 } from "../../../utils/utility";
 import { PLACEHOLDERS, TITLES, TOOLTIPS,ME } from "../../../constants/userdata";
 import UserDataService from "../../../pages/api/users/data/UserDataService";
 import { useQuery } from "react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
-import { infinity, standardStaleTime } from "../../../async/subscriptions";
- 
+import { infinity } from "../../../async/subscriptions";
 
 toast.configure();
 
@@ -39,7 +39,7 @@ export default function CustomDialog({
   
   const [dataJsx, setDataJsx] = useState(null);
   const [titleJsx, setTitleJsx] = useState(null);
-
+ 
   const getLoggedInInformation = async () =>
     (await UserDataService.getLoggedInInformation()).data;
   const USER_LOGIN_INFO = useQuery([KEYS.LOGIN.INFO], getLoggedInInformation, {
@@ -166,6 +166,7 @@ export default function CustomDialog({
   return (
     <>
       <Dialog
+        fullScreen={isFullScreen()}
         open={isOpen}
         aria-labelledby="responsive-dialog-title"
         onBackdropClick={handleClose}

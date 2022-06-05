@@ -13,6 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { INBOX, RECOMMENDATIONS } from "../../../constants/userdata";
 import SendIcon from "@mui/icons-material/Send";
 import TextField from "@mui/material/TextField";
+import { isFullScreen } from "../../../utils/utility";
 function PolyMessagingDialog(props) {
   if (!props.isOpen) return "";
   const getTitle = () => {
@@ -74,7 +75,7 @@ function PolyMessagingDialog(props) {
   };
   return (
     <Dialog
-    fullScreen
+    fullScreen={isFullScreen()}
       className={`${processing ? "control__disabled__opaque" : ""}`}
       open={props.isOpen}
       aria-labelledby="responsive-dialog-title"

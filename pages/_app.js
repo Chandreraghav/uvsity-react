@@ -21,15 +21,15 @@ import {
 import React, { useEffect, useState } from "react";
 import { AuthGuardService } from "../auth-guard/service/AuthGuardService";
 import { useRouter } from "next/router";
-import { asyncSubscriptions } from "../async/subscriptions";
-import { AuthService } from "./api/users/auth/AuthService";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import Layout from "../components/Main/Layout";
 import Splash from "../components/shared/Splash";
 import { BrowserRouter } from "react-router-dom";
-
+import ClientDeviceProvider from "../components/Device/HOC/ClientDeviceProvider";
 function MyApp({ Component, pageProps }) {
+  
+
   const [queryClient] = React.useState(() => new QueryClient());
   const [verified, setVerified] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -81,7 +81,9 @@ function MyApp({ Component, pageProps }) {
     // we will load gapi client and once that is done, render the page to client
     AuthGuardService.loadGAPIClient().then(() => {
       setLoading(false);
-    });
+    }).catch(() => {
+      setLoading(true);
+    })
 
     return () => {
       controller?.abort();
@@ -89,11 +91,11 @@ function MyApp({ Component, pageProps }) {
     };
   }, []);
   return loading ? (
-    <>
+    <ClientDeviceProvider>
       <Layout options={{ title: process.env.NEXT_PUBLIC_APP_TITLE }}>
         <Splash />
       </Layout>
-    </>
+    </ClientDeviceProvider>
   ) : (
     <>
       <QueryClientProvider client={queryClient}>
@@ -106,7 +108,9 @@ function MyApp({ Component, pageProps }) {
                 callback(allowTransition);
               }}
             >
-              <Component {...pageProps} />
+              <ClientDeviceProvider>
+                <Component {...pageProps} />
+              </ClientDeviceProvider>
             </BrowserRouter>
             <ReactQueryDevtools initialIsOpen={false} />
           </Hydrate>
