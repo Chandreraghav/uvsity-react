@@ -17,7 +17,7 @@ function Landing() {
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_TITLE}`,
   };
-
+  
   const getSummary = async () => (await UserDataService.getSummary()).data;
   const getProfilePercentageCompletion = async () =>
     (await UserDataService.getProfilePercentageCompletion()).data;
@@ -85,6 +85,7 @@ function Landing() {
         data={getData.USER_PROFILE_SUMMARY}
       />
       <Dashboard data={getData} />
+    
       <PhoneMenu data={getData.USER_PROFILE_SUMMARY} />
       <Footer minimizeOnSmallScreens />
     </Layout>

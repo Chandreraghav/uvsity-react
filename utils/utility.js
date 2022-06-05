@@ -311,3 +311,9 @@ export const timestamp = () => {
       .abbr(360)
   );
 };
+
+export const isFullScreen =()=>{
+  const mediaQuery= JSON.parse(getLocalStorageObject('media-query'))
+  if(mediaQuery.tabletOrMobile || mediaQuery.orientation==='portrait') return true;
+  return false
+ }
