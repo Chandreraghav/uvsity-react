@@ -301,7 +301,7 @@ button.danger {
   color: var(--blue);
 }
 .rectangular-md-card {
-  width: 400px;
+  width: 430px;
   z-index: 1000 !important;
   padding: 20px !important;
   overflow: hidden !important;

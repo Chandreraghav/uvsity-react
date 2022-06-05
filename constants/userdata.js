@@ -1108,4 +1108,19 @@ export const RECOMMENDATIONS={
   REQUEST_RECOMMENDATION_CUSTOM:'Ask <#> for a recommendation',
   SEND_RECOMMENDATION:'Send request for recommendation',
   REQUEST_TYPE: "RECOMMENDATION_REQUEST",
+  REQUEST_RECOMMENDATION_PLACEHOLDER :'Write a recommendation request...',
+  REQUEST_RECOMMENDATION_SUBJECT_LABEL :'Subject',
+  REQUEST_RECOMMENDATION_NOTE_LABEL :'Recommendation note'
+}
+
+export const INBOX={
+  SEND_MESSAGE:'Send message',
+  MESSAGE_SENT_TO:'Message sent to ',
+  MESSAGE_SENT_FAILED:'Uh, oh! there was an error sending this message to ',
+  
+  SEND_MESSAGE_CUSTOM:'Message <#>',
+  REQUEST_TYPE: "SEND_MESSAGE",
+  MESSAGE_TEXT_PLACEHOLDER :'Write your message...',
+  MESSAGE_SUBJECT_LABEL :'Subject',
+  MESSAGE_TEXT_LABEL :'Message'
 }

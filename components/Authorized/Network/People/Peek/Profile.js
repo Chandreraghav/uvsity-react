@@ -6,6 +6,7 @@ import {
   ME,
   NETWORK,
   RECOMMENDATIONS,
+  INBOX,
   TITLES,
 } from "../../../../../constants/userdata";
 import { avatarToString } from "../../../../../utils/utility";
@@ -112,10 +113,18 @@ function PeekProfile(props) {
   const handleRequestRecommendation = () => {
     const requestedTo = getUserID();
     if (requestedTo) {
-      const request = { requestedTo };
-      if (props.requestRecommendation) props?.requestRecommendation(request);
+      const request = { requestedTo, event:RECOMMENDATIONS.REQUEST_TYPE };
+      if (props.messageEvent) props?.messageEvent(request);
     }
   };
+
+  const handleSendMessage=()=>{
+    const requestedTo = getUserID();
+    if (requestedTo) {
+      const request = { requestedTo, event:INBOX.REQUEST_TYPE };
+      if (props.messageEvent) props?.messageEvent(request);
+    }
+  }
 
   return (
     <div
@@ -405,8 +414,8 @@ function PeekProfile(props) {
       {!props.data.isItMe && isConnected && (
         <div className="text-md actions-on-peek ">
           <Stack direction="row" spacing={2}>
-            <Button size="small" variant="contained" endIcon={<SendIcon />}>
-              Message
+            <Button onClick={handleSendMessage} size="small" variant="contained" endIcon={<SendIcon />}>
+            {INBOX.SEND_MESSAGE}
             </Button>
            
               <Button

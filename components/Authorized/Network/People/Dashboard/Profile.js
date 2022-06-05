@@ -2,6 +2,7 @@ import { Avatar, IconButton, Popover, Tooltip } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import {
   IMAGE_PATHS,
+  INBOX,
   ME,
   NETWORK,
   PAYLOAD_DEFAULT_TEXTS,
@@ -35,8 +36,9 @@ import PeekProfile from "../Peek/Profile";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import { navigateToProfile } from "../../../Shared/Navigator";
-import AskRecommendationDialog from "../../../../shared/modals/AskRecommendationDialog";
-import RecommendationService from "../../../../../pages/api/people/Recommendation/RecommendationService";
+import PolyMessagingDialog from "../../../../shared/modals/PolyMessagingDialog";
+import MessagingService from "../../../../../pages/api/people/Messaging/MessageService";
+import { WORKFLOW_CODES } from "../../../../../constants/workflow-codes";
 toast.configure();
 const useStyles = makeStyles((theme) => ({
   popover: {
@@ -69,7 +71,7 @@ function Profile({
   origin,
   sticky,
   userdata,
-  noCardOnHover
+  noCardOnHover,
 }) {
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
     useState(false);
@@ -77,16 +79,17 @@ function Profile({
   const classes = useStyles();
   const popoverAnchor = useRef(null);
   const [openedPopover, setOpenedPopover] = useState(false);
-  const _recommendation={
+  const _messageEvent = {
     from: null,
-    to:null,
+    to: null,
     subject: null,
     message: null,
-    dialogOpen:false
+    dialogOpen: false,
+    event:null
   };
-  const [recommendations, setRecommendations] =useState(_recommendation)
+  const [messageEvent, setMessageEvent] = useState(_messageEvent);
   const handlePopoverOpen = (event) => {
-    if(noCardOnHover) return
+    if (noCardOnHover) return;
     setOpenedPopover(true);
   };
 
@@ -265,60 +268,92 @@ function Profile({
     navigateToProfile(id, router);
   };
 
-  const handleRequestRecommendation=(request)=>{
-    const from=userdata?.userDetailsId
-    const to =request.requestedTo
-    const _recommendation={
+  const handleMessageEvent = (request) => {
+    const from = userdata?.userDetailsId;
+    const to = request.requestedTo;
+    const _messageEvent = {
       from,
       to,
       subject: null,
       message: null,
-      dialogOpen:true
+      dialogOpen: true,
+      event:request.event
     };
-    setRecommendations(_recommendation)
-  }
+    setMessageEvent(_messageEvent);
+  };
 
-  const handleRequestRecommendationClose =(request)=>{
-if(request.close){
-  setRecommendations(_recommendation)
-  return
-}
- 
-const payload = {
-  requestTo: {
-      userDetailsId: request.recommendation.to
-  },
-  requestFrom: {
-      userDetailsId: request.recommendation.from
-  },
-  userRequestText: request.recommendation.subject,
-  userRequestSubject:request.recommendation.message,
-  userRequestType: RECOMMENDATIONS.REQUEST_TYPE
-}
-
-RecommendationService.sendRecommendationRequest(payload)
-  .then((res) => {
-    setRecommendations(_recommendation);
-    handleResponse(
-      `${RECOMMENDATIONS.REQUEST_SENT_TO}${firstName}`,
-      RESPONSE_TYPES.SUCCESS,
-      toast.POSITION.BOTTOM_CENTER
-    );
-  })
-  .catch((err) => {
-    setRecommendations(_recommendation);
-    handleResponse(
-      `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${firstName}`,
-      RESPONSE_TYPES.ERROR,
-      toast.POSITION.BOTTOM_CENTER
-    );
-  });
-  }
+  const handleMessageEventClosure = (request) => {
+    if (request.close) {
+      setMessageEvent(_messageEvent);
+      return;
+    }
+    if(request.event===RECOMMENDATIONS.REQUEST_TYPE){
+      const payload = {
+        requestTo: {
+          userDetailsId: request.recommendation.to,
+        },
+        requestFrom: {
+          userDetailsId: request.recommendation.from,
+        },
+        userRequestText: request.recommendation.subject,
+        userRequestSubject: request.recommendation.message,
+        userRequestType: RECOMMENDATIONS.REQUEST_TYPE,
+      };
+      MessagingService.sendRecommendationRequest(payload)
+      .then((res) => {
+        setMessageEvent(_messageEvent);
+        handleResponse(
+          `${RECOMMENDATIONS.REQUEST_SENT_TO}${firstName}`,
+          RESPONSE_TYPES.SUCCESS,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      })
+      .catch((err) => {
+        setMessageEvent(_messageEvent);
+        handleResponse(
+          `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${firstName}`,
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      });
+    }
+    if(request.event===INBOX.REQUEST_TYPE){
+      const payload={
+        usersInTo: [
+          request.message.to,
+        ],
+        messageSubject: request.message.subject,
+        messageBody: request.message.message,
+        senderUserId: request.message.from,
+        htmlFormattedMessageBody: null,
+        isMessageBodyHTMLFormatted: false,
+        usersInCc: null
+    }
+    MessagingService.sendMessage(payload)
+      .then((res) => {
+        setMessageEvent(_messageEvent);
+        handleResponse(
+          `${INBOX.MESSAGE_SENT_TO}${firstName}`,
+          RESPONSE_TYPES.SUCCESS,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      })
+      .catch((err) => {
+        setMessageEvent(_messageEvent);
+        handleResponse(
+          `${INBOX.MESSAGE_SENT_FAILED}${firstName}`,
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      });
+    
+    }
+  };
 
   return (
     <div>
       <Popover
-        style={{ zoom: "0.85" }}
+        
         id="mouse-over-popover"
         className={classes.popover}
         classes={{
@@ -367,7 +402,7 @@ RecommendationService.sendRecommendationRequest(payload)
             tertiary: profileTertiaryLine(),
             isItMe: isItMe(),
           }}
-          requestRecommendation={handleRequestRecommendation}
+          messageEvent={handleMessageEvent}
         />
       </Popover>
 
@@ -389,7 +424,8 @@ RecommendationService.sendRecommendationRequest(payload)
               className={`${
                 isVisibleOnSessionCard
                   ? "avatar-sm"
-                  : (isVisibleAsCoHost || (origin && origin==='recommendation_feed'))
+                  : isVisibleAsCoHost ||
+                    (origin && origin === "recommendation_feed")
                   ? "avatar-xs"
                   : "avatar-dashboard"
               }`}
@@ -406,11 +442,11 @@ RecommendationService.sendRecommendationRequest(payload)
               className={`${
                 isVisibleOnSessionCard
                   ? "avatar-sm"
-                  : (isVisibleAsCoHost || (origin && origin==='recommendation_feed'))
+                  : isVisibleAsCoHost ||
+                    (origin && origin === "recommendation_feed")
                   ? "avatar-xs"
                   : "avatar-dashboard"
               }`}
-              
               {...avatarToString(`${profilePrimaryLine}`)}
             />
           )}
@@ -429,10 +465,7 @@ RecommendationService.sendRecommendationRequest(payload)
                     : TOOLTIPS.VIEW_PROFILE
                 }
               >
-                <span
-                  onClick={() => goToProfile(oid)}
-                  className="name"
-                >
+                <span onClick={() => goToProfile(oid)} className="name">
                   {profilePrimaryLine}
                   {isMePrefixOnProfileName ? <>{ME}</> : <></>}
                 </span>
@@ -445,7 +478,6 @@ RecommendationService.sendRecommendationRequest(payload)
                   isConnectionRequestSent && "control__disabled"
                 }`}
                 role="button"
-                
               >
                 <IconButton
                   className=" cursor-pointer inline-flex "
@@ -549,7 +581,6 @@ RecommendationService.sendRecommendationRequest(payload)
                       isConnectionAcceptRequestSent && "control__disabled"
                     }`}
                     role="button"
-                  
                   >
                     <IconButton
                       className=" cursor-pointer inline-flex "
@@ -692,7 +723,13 @@ RecommendationService.sendRecommendationRequest(payload)
           )}
         </div>
       </div>
-      <AskRecommendationDialog title={`${firstName}`}  dialogCloseRequest={handleRequestRecommendationClose} data={recommendations} isOpen={recommendations.dialogOpen}></AskRecommendationDialog>
+      <PolyMessagingDialog
+        workflow={messageEvent.event===RECOMMENDATIONS.REQUEST_TYPE?WORKFLOW_CODES.MESSAGING.RECOMMENDATIONS.SEND_RECOMMENDATION:WORKFLOW_CODES.MESSAGING.INBOX.SEND_MESSAGE}
+        title={`${firstName}`}
+        dialogCloseRequest={handleMessageEventClosure}
+        data={messageEvent}
+        isOpen={messageEvent.dialogOpen}
+      ></PolyMessagingDialog>
     </div>
   );
 }
