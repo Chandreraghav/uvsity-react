@@ -6,7 +6,7 @@ import RecommendIcon from "@mui/icons-material/Recommend";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { green, pink, blue, purple } from "@mui/material/colors";
 import { openNewTab } from "../../Shared/Navigator";
-import { RECOMMENDATIONS } from "../../../../constants/userdata";
+import { INBOX, RECOMMENDATIONS } from "../../../../constants/userdata";
 function Actions(props) {
   const handleScheduleMeeting = () => {
     openNewTab(
@@ -15,8 +15,13 @@ function Actions(props) {
     );
   };
   const handleRequestRecommendation =(e)=>{
-    if(props?.onRequestRecommendation){
-      props.onRequestRecommendation(true)
+    if(props?.messageEvent){
+      props.messageEvent({event:RECOMMENDATIONS.REQUEST_TYPE})
+    }
+  }
+  const handleMessageSendRequest =(e)=>{
+    if(props?.messageEvent){
+      props.messageEvent({event:INBOX.REQUEST_TYPE})
     }
   }
   return (
@@ -35,7 +40,7 @@ function Actions(props) {
 
         <div className=" cursor-pointer">
           <Tooltip title={`Send a message to ${props.userdata?.firstName}`}>
-            <IconButton aria-label="send-message" size="large">
+            <IconButton onClick={handleMessageSendRequest}  aria-label="send-message" size="large">
               <MessageIcon sx={{ color: green[500] }} fontSize="inherit" />
             </IconButton>
           </Tooltip>

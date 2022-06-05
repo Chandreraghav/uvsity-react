@@ -16,6 +16,7 @@ import React, { useState, useEffect } from "react";
 import {
   DEFAULT_COVER_IMAGE,
   IMAGE_PATHS,
+  INBOX,
   ME,
   NETWORK,
   PAYLOAD_DEFAULT_TEXTS,
@@ -68,8 +69,8 @@ import MacroProfileShimmer from "./Shimmer/MacroProfileShimmer";
 import ChangeProfilePicture from "./ActionableItems/ChangeProfilePicture";
 
 import ChangeProfilePictureDialog from "../../shared/modals/ChangeProfilePictureModal";
-import AskRecommendationDialog from "../../shared/modals/AskRecommendationDialog";
-import RecommendationService from "../../../pages/api/people/Recommendation/RecommendationService";
+import MessagingService from "../../../pages/api/people/Messaging/MessageService";
+import PolyMessagingDialog from "../../shared/modals/PolyMessagingDialog";
 toast.configure();
 function MacroProfile(props) {
   const [selectedpicture, setSelectedPictureEvent] = useState(null);
@@ -88,14 +89,15 @@ function MacroProfile(props) {
     useState(false);
   const [isConnectionRequestSent, setConnectionRequestSent] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
-  const _recommendation={
+  const _messageEvent = {
     from: null,
-    to:null,
+    to: null,
     subject: null,
     message: null,
-    dialogOpen:false
+    dialogOpen: false,
+    event: null,
   };
-  const [__recommendations, setRecommendations] =useState(_recommendation)
+  const [messageEvent, setMessageEvent] = useState(_messageEvent);
   useEffect(() => {
     if (props?.hasChangeEventTriggered) {
       setShow(true);
@@ -420,54 +422,89 @@ function MacroProfile(props) {
     }
   };
 
-  const handleRequestRecommendation = (request)=>{
-    if(request){
-      const _recommendation={
-        from:props?.loggedInUserID,
-        to:userdata?.userDetailsId,
+  const handleMessageEvent = (request) => {
+    if (request) {
+      const _messageEvent = {
+        from: props?.loggedInUserID,
+        to: userdata?.userDetailsId,
         subject: null,
         message: null,
-        dialogOpen:true
+        dialogOpen: true,
+        event: request.event,
       };
-      setRecommendations(_recommendation)
+      setMessageEvent(_messageEvent);
     }
-  }
+  };
 
-  const handleRequestRecommendationClose =(request)=>{
-    if(request.close){
-      setRecommendations(_recommendation)
-      return
+  const handleMessageEventClosure = (request) => {
+    if (request.close) {
+      setMessageEvent(_messageEvent);
+      return;
     }
-    const payload = {
-      requestTo: {
-          userDetailsId: request.recommendation.to
-      },
-      requestFrom: {
-          userDetailsId: request.recommendation.from
-      },
-      userRequestText: request.recommendation.subject,
-      userRequestSubject:request.recommendation.message,
-      userRequestType: RECOMMENDATIONS.REQUEST_TYPE
+    if (request.event === RECOMMENDATIONS.REQUEST_TYPE) {
+      const payload = {
+        requestTo: {
+          userDetailsId: request.recommendation.to,
+        },
+        requestFrom: {
+          userDetailsId: request.recommendation.from,
+        },
+        userRequestText: request.recommendation.subject,
+        userRequestSubject: request.recommendation.message,
+        userRequestType: RECOMMENDATIONS.REQUEST_TYPE,
+      };
+
+      MessagingService.sendRecommendationRequest(payload)
+        .then((res) => {
+          setMessageEvent(_messageEvent);
+          handleResponse(
+            `${RECOMMENDATIONS.REQUEST_SENT_TO}${firstName}`,
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        })
+        .catch((err) => {
+          setMessageEvent(_messageEvent);
+          handleResponse(
+            `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${firstName}`,
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
     }
-    
-    RecommendationService.sendRecommendationRequest(payload)
+    if(request.event===INBOX.REQUEST_TYPE){
+      const payload={
+        usersInTo: [
+          request.message.to,
+        ],
+        messageSubject: request.message.subject,
+        messageBody: request.message.message,
+        senderUserId: request.message.from,
+        htmlFormattedMessageBody: null,
+        isMessageBodyHTMLFormatted: false,
+        usersInCc: null
+    }
+    MessagingService.sendMessage(payload)
       .then((res) => {
-        setRecommendations(_recommendation);
+        setMessageEvent(_messageEvent);
         handleResponse(
-          `${RECOMMENDATIONS.REQUEST_SENT_TO}${firstName}`,
+          `${INBOX.MESSAGE_SENT_TO}${firstName}`,
           RESPONSE_TYPES.SUCCESS,
           toast.POSITION.BOTTOM_CENTER
         );
       })
       .catch((err) => {
-        setRecommendations(_recommendation);
+        setMessageEvent(_messageEvent);
         handleResponse(
-          `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${firstName}`,
+          `${INBOX.MESSAGE_SENT_FAILED}${firstName}`,
           RESPONSE_TYPES.ERROR,
           toast.POSITION.BOTTOM_CENTER
         );
       });
-      }
+    
+    }
+
+  };
 
   return (
     <>
@@ -577,7 +614,12 @@ function MacroProfile(props) {
               {/* INTER-USER COMMUNICATIVE ACTIONS */}
               <div className="ml-auto mr-0">
                 <div className="mt-12 xl:mt-32 lg:mt-32">
-                  {isConnected && <Actions onRequestRecommendation={handleRequestRecommendation} userdata={userdata} />}
+                  {isConnected && (
+                    <Actions
+                      messageEvent={handleMessageEvent}
+                      userdata={userdata}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -775,7 +817,11 @@ function MacroProfile(props) {
                             >
                               {profile.in.url && profile.in.display && (
                                 <Tooltip title={profile.in.tooltip}>
-                                  <a href={profile.in.url} target="_blank">
+                                  <a
+                                    href={profile.in.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
                                     {profile.in.icon}
                                   </a>
                                 </Tooltip>
@@ -953,8 +999,17 @@ function MacroProfile(props) {
         isOpen={openProfilePictureModal}
         consumeEvent={handleProfilePictureChange}
       />
-       <AskRecommendationDialog title={`${firstName}`}  dialogCloseRequest={handleRequestRecommendationClose} data={__recommendations} isOpen={__recommendations.dialogOpen}></AskRecommendationDialog>
-    
+      <PolyMessagingDialog
+        workflow={
+          messageEvent.event === RECOMMENDATIONS.REQUEST_TYPE
+            ? WORKFLOW_CODES.MESSAGING.RECOMMENDATIONS.SEND_RECOMMENDATION
+            : WORKFLOW_CODES.MESSAGING.INBOX.SEND_MESSAGE
+        }
+        title={`${firstName}`}
+        dialogCloseRequest={handleMessageEventClosure}
+        data={messageEvent}
+        isOpen={messageEvent.dialogOpen}
+      ></PolyMessagingDialog>
     </>
   );
 }

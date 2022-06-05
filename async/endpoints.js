@@ -45,7 +45,8 @@ export const ENDPOINTS = {
       },
       VIEW:'view/profile/',
       MESSAGING:{
-        SEND_RECOMMENDATION_REQUEST:'/inbox/send/recommendationRequest'
+        SEND_RECOMMENDATION_REQUEST:'/inbox/send/recommendationRequest',
+        SEND_MESSAGE:'/inbox/send/message'
       }
     },
     DETAILS: "/view/profile/",

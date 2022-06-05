@@ -163,7 +163,7 @@ function CompletionDetail({ data }) {
                 </>
               )}
             </div>
-            <div className="flex gap-2   items-baseline p-2">
+            <div className=" lg:flex xl:flex sm:flex xs:flex md:block  gap-2   items-baseline p-2">
               {COMPLETION_DETAIL_ACTION.map((action) => (
                 <div key={action.id}>
                   {action.id === 1 ? (

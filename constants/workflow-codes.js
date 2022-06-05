@@ -17,19 +17,19 @@ export const WORKFLOW_CODES = {
       VIEW: "S_VIE",
       FEED: "S_FEE",
       CREATE: "S_CRE",
-      SUBMITTED:'Submitted',
-      VISIBILITY:{
-        PUBLIC:'Public',
-        PRIVATE:'Private'
+      SUBMITTED: "Submitted",
+      VISIBILITY: {
+        PUBLIC: "Public",
+        PRIVATE: "Private",
       },
-      FEE:{
-        PAID:'Paid',
-        FREE:'Free'
-       },
-       SEVERITY:{
-         GREEN:"green"
-       },
-      LOAD:'SESS_LOAD',
+      FEE: {
+        PAID: "Paid",
+        FREE: "Free",
+      },
+      SEVERITY: {
+        GREEN: "green",
+      },
+      LOAD: "SESS_LOAD",
     },
     SPONSORSHIP: {
       EDITS: {
@@ -40,10 +40,9 @@ export const WORKFLOW_CODES = {
         },
       },
     },
-    ADHOC_LINKS_OPENER:{
-        CALENDAR:'ADHOC_CAL_OPEN'
+    ADHOC_LINKS_OPENER: {
+      CALENDAR: "ADHOC_CAL_OPEN",
     },
-    
 
     CONNECTION_TYPES: {
       STUDENT: "CT_STUD",
@@ -60,5 +59,13 @@ export const WORKFLOW_CODES = {
     WHO_ARE_INTERESTING: "P_WHOI",
     PROFILE_VIEW: "P_PROV",
     ATTENDING_SESSION: "P_ATTS",
+  },
+  MESSAGING: {
+    RECOMMENDATIONS: {
+      SEND_RECOMMENDATION: "RECOMMENDATION_REQUEST",
+    },
+    INBOX: {
+      SEND_MESSAGE: "SEND_MESSAGE",
+    },
   },
 };
