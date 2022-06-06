@@ -76,7 +76,7 @@ function PolyMessagingDialog(props) {
   return (
     <Dialog
     fullScreen={isFullScreen()}
-      className={`${processing ? "control__disabled__opaque" : ""}`}
+      className={`${processing ? "control__disabled" : ""}`}
       open={props.isOpen}
       aria-labelledby="responsive-dialog-title"
       onClose={() => handleClose(false, true)}
@@ -157,7 +157,7 @@ function PolyMessagingDialog(props) {
       </div>
       <DialogActions
         className={`${props?.theme ? "dark-dialog" : ""} ${
-          processing ? "control__disabled__opaque" : ""
+          processing ? "control__disabled" : ""
         }`}
       >
         <Tooltip
