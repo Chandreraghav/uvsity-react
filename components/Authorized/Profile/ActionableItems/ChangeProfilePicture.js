@@ -44,8 +44,8 @@ function ChangeProfilePicture(props) {
         </>
       ) : (
         <>
-          <div className=" absolute mt-12 z-50  ml-2 place-content-center justify-center items-center flex ">
-            <div className="cursor-pointer py-1 px-3  border-0  border-r-8 border-separate outline-none flex gap-1 bg-white opacity-60 h-8 w-24">
+          <div className=" absolute mt-16 z-50  ml-4 place-content-center justify-center items-center flex ">
+            <div className="cursor-pointer py-1 px-3  border-0  border-r-8 border-separate outline-none flex gap-1 bg-white opacity-60 h-8 w-28">
               <Tooltip title={USER_PROFILE.CHANGE_PROFILE_PICTURE}>
                 <div
                   htmlFor="picture"

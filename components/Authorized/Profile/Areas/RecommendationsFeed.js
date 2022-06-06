@@ -4,6 +4,7 @@ import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import SnapProfile from "../../Network/People/Listing/Snap/Profile";
 import NoData from "../../Shared/NoData";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import ReadMore from "../../../shared/ReadMore";
 function RecommendationsFeed(props) {
   const handleOnProfileView = (obj) => {
     if (props.consumeEvent) {
@@ -35,9 +36,10 @@ function RecommendationsFeed(props) {
                   />
                 </div>
                 <div className=" ml-10 text-sm">
-                  <Typography variant="div" color="text.secondary">
-                   <QuestionAnswerIcon sx={{color:'blueviolet', fontSize:14}}/> {_recommendation.recommendation}
-                  </Typography>
+               
+                   
+                   <QuestionAnswerIcon sx={{color:'blueviolet', fontSize:14}}/>  <ReadMore color='text.secondary'>{_recommendation.recommendation}</ReadMore>
+                  
                 </div>
               </div>
             </Grid>

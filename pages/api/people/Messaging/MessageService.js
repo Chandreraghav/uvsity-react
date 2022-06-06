@@ -16,4 +16,11 @@ export default class MessagingService {
       payload
     );
   }
+
+  static async sendRating(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.PEOPLE.MESSAGING.SEND_RATING,
+      payload
+    );
+  }
 }
