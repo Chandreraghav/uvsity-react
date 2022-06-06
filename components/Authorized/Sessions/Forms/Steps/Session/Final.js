@@ -37,11 +37,11 @@ import {
   getRandomArrayElement,
   getTimezone,
   HTMLUnderlineByCharacterIndex,
+  parseMarkdownToHTML,
 } from "../../../../../../utils/utility";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import ReactPlayer from "react-player";
 import AttachmentIcon from "@mui/icons-material/Attachment";
-import ArticleIcon from "@mui/icons-material/Article";
 import CoPresentIcon from "@mui/icons-material/CoPresent";
 import PublicIcon from "@mui/icons-material/Public";
 import SnapProfile from "../../../../Network/People/Listing/Snap/Profile";
@@ -72,7 +72,6 @@ import WarningIcon from "@mui/icons-material/Warning";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre";
-import convertToHTML from "markdown-to-html-converter";
 function Final(props) {
   const [data, dispatch] = useDataLayerContextValue();
 
@@ -428,7 +427,8 @@ function Final(props) {
                           variant="div"
                           className="  font-normal line-clamp-3 text-sm mb-3  leading-snug text-black-600"
                         >
-                          {parse(convertToHTML(data?.basic?.summary?.html))}
+                          {parseMarkdownToHTML(data?.basic?.summary?.html)}
+                         
                         </Typography>
                       </div>
                     )}

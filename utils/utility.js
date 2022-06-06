@@ -1,7 +1,8 @@
 import moment from "moment";
 import { TIME_OF_DAY_GREETING } from "../constants/constants";
 import { getLocalStorageObject } from "../localStorage/local-storage";
-
+import parse from "html-react-parser"
+import convertToHTML from "markdown-to-html-converter";
 export const truncate = (str, n) => {
   try {
     return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -316,4 +317,12 @@ export const isFullScreen =()=>{
   const mediaQuery= JSON.parse(getLocalStorageObject('media-query'))
   if(mediaQuery.tabletOrMobile || mediaQuery.orientation==='portrait') return true;
   return false
+ }
+
+ export const parseMarkdownToHTML=(data)=>{
+   try {
+     return parse(convertToHTML(data))
+   } catch (error) {
+     return data
+   }
  }
