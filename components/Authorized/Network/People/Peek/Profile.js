@@ -105,7 +105,11 @@ function PeekProfile(props) {
     if (props?.data?.oid) return props?.data?.oid;
     if (props?.metaData?.creator?.userDetailsId)
       return props?.metaData?.creator?.userDetailsId;
+      if(props?.metaData?.associatedCoHostData?.userDetailsId)
+      return props?.metaData?.associatedCoHostData?.userDetailsId;
     return props?.metaData?.associatedUserData?.userDetailsId;
+    
+
   };
   const handleProfileEdit=()=>{
     navigateToProfile(getUserID(), router)
