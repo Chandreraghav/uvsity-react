@@ -4,9 +4,9 @@ import MessageIcon from "@mui/icons-material/Message";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import RecommendIcon from "@mui/icons-material/Recommend";
 import DateRangeIcon from "@mui/icons-material/DateRange";
-import { green, pink, blue, purple } from "@mui/material/colors";
+import { green, pink, blue, purple, grey } from "@mui/material/colors";
 import { openNewTab } from "../../Shared/Navigator";
-import { INBOX, RECOMMENDATIONS } from "../../../../constants/userdata";
+import { INBOX, RATING, RECOMMENDATIONS } from "../../../../constants/userdata";
 function Actions(props) {
   const handleScheduleMeeting = () => {
     openNewTab(
@@ -22,6 +22,11 @@ function Actions(props) {
   const handleMessageSendRequest =(e)=>{
     if(props?.messageEvent){
       props.messageEvent({event:INBOX.REQUEST_TYPE})
+    }
+  }
+  const handleRatingRequest=(e)=>{
+    if(props?.ratingEvent){
+      props.ratingEvent({event:RATING.REQUEST_TYPE})
     }
   }
   return (
@@ -54,13 +59,24 @@ function Actions(props) {
             </IconButton>
           </Tooltip>
         </div>
-        <div className="cursor-pointer ">
+        {!props?.isRated ?(<>
+          <div className={`cursor-pointer `}>
           <Tooltip title={`Rate ${props.userdata?.firstName}`}>
-            <IconButton aria-label="send-review" size="large">
-              <ThumbsUpDownIcon sx={{ color: blue[500] }} fontSize="inherit" />
+            <IconButton  onClick={handleRatingRequest} aria-label="send-review" size="large">
+              <ThumbsUpDownIcon sx={{ color:blue[500] }} fontSize="inherit" />
             </IconButton>
           </Tooltip>
         </div>
+        </>):(
+        <div className={`cursor-pointer `}>
+          <Tooltip title={`You have rated ${props.userdata?.firstName}`}>
+            <IconButton  aria-label="already-rated" size="large">
+              <ThumbsUpDownIcon sx={{ color:green[500] }} fontSize="inherit" />
+            </IconButton>
+          </Tooltip>
+        </div>
+      )}
+      
       </div>
     </div>
   );

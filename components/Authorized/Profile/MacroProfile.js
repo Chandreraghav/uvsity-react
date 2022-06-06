@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   Avatar,
   Box,
@@ -21,6 +22,7 @@ import {
   NETWORK,
   PAYLOAD_DEFAULT_TEXTS,
   PROFILE_AREAS,
+  RATING,
   RECOMMENDATIONS,
   TITLES,
 } from "../../../constants/userdata";
@@ -71,6 +73,7 @@ import ChangeProfilePicture from "./ActionableItems/ChangeProfilePicture";
 import ChangeProfilePictureDialog from "../../shared/modals/ChangeProfilePictureModal";
 import MessagingService from "../../../pages/api/people/Messaging/MessageService";
 import PolyMessagingDialog from "../../shared/modals/PolyMessagingDialog";
+import UserRatingDialog from "../../shared/modals/UserRatingDialog";
 toast.configure();
 function MacroProfile(props) {
   const [selectedpicture, setSelectedPictureEvent] = useState(null);
@@ -98,6 +101,15 @@ function MacroProfile(props) {
     event: null,
   };
   const [messageEvent, setMessageEvent] = useState(_messageEvent);
+  const _ratingEvent = {
+    from: null,
+    to: null,
+    rating:null,
+    dialogOpen: false,
+    event: null,
+  };
+  const [ratingEvent, setRatingEvent] = useState(_ratingEvent);
+  const [userRated, setUserRated] = useState(false);
   useEffect(() => {
     if (props?.hasChangeEventTriggered) {
       setShow(true);
@@ -112,6 +124,7 @@ function MacroProfile(props) {
     };
   }, []);
 
+  
   const isItMe = props?.data?.owner;
   const isConnected =
     isItMe === false &&
@@ -131,6 +144,7 @@ function MacroProfile(props) {
       NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
 
   const userdata = props?.data?.userdata;
+  const isRated= userdata.ratingAction===RATING.RATING_ALREADY_SENT?true:false
   const aboutMe = userdata?.aboutMe;
   const userSkillsets = userdata?.userSkillsets;
   const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
@@ -436,6 +450,20 @@ function MacroProfile(props) {
     }
   };
 
+  const handleRatingEvent =(request)=>{
+    if (request) {
+      const _ratingEvent = {
+        from: props?.loggedInUserID,
+        to: userdata?.userDetailsId,
+        rating: null,
+        dialogOpen: true,
+        event: request.event,
+        
+      };
+      setRatingEvent(_ratingEvent);
+    }
+  }
+
   const handleMessageEventClosure = (request) => {
     if (request.close) {
       setMessageEvent(_messageEvent);
@@ -505,6 +533,45 @@ function MacroProfile(props) {
     }
 
   };
+  const handleRatingEventClosure=(request)=>{
+    if (request.close) {
+      setRatingEvent(_ratingEvent);
+      return;
+    } 
+     
+    const payload= {
+      responseTo: {
+          userDetailsId: request.message.to
+      },
+      responseFrom: {
+          userDetailsId: request.message.from
+      },
+      rating: {
+          ratingText: request.message.rating
+      },
+      userResponseType: request.message.event
+  }
+  MessagingService.sendRating(payload)
+  .then((res) => {
+    setRatingEvent(_ratingEvent);
+    handleResponse(
+      `${RATING.RATING_SENT_TO}${firstName} as ${payload.rating.ratingText.toLowerCase()}`,
+      RESPONSE_TYPES.SUCCESS,
+      toast.POSITION.BOTTOM_CENTER
+    );
+    setUserRated(true)
+
+  })
+  .catch((err) => {
+    setRatingEvent(_ratingEvent);
+    setUserRated(false)
+    handleResponse(
+      `${RATING.RATING_FAILED}${firstName}`,
+      RESPONSE_TYPES.ERROR,
+      toast.POSITION.BOTTOM_CENTER
+    );
+  });
+  }
 
   return (
     <>
@@ -522,7 +589,7 @@ function MacroProfile(props) {
             <div className="lg:hidden xl:hidden flex ">
               <img
                 className={`${
-                  !isConnected ? "-mb-10" : "  -mb-10"
+                  !isConnected ? "-mb-12" : "  -mb-12"
                 } w-screen h-28 lg:h-52 xl:h-52 md:h-48 `}
                 src={DEFAULT_COVER_IMAGE}
                 alt="profile-cover-image"
@@ -571,7 +638,7 @@ function MacroProfile(props) {
                     )}
                     <Avatar
                       alt={`${firstName}'s photo`}
-                      className={` cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                      className={`avatar-md  cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                       src={profilePic || profileImage}
                     />
                   </div>
@@ -605,7 +672,7 @@ function MacroProfile(props) {
                     )}
                     <Avatar
                       alt={`${firstName}'s photo`}
-                      className={` hidden lg:block xl:block    ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                      className={` hidden lg:block xl:block  avatar-md  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                       {...avatarToString(`${profileName}`)}
                     />
                   </div>
@@ -617,6 +684,8 @@ function MacroProfile(props) {
                   {isConnected && (
                     <Actions
                       messageEvent={handleMessageEvent}
+                      ratingEvent={handleRatingEvent}
+                      isRated={isRated || userRated}
                       userdata={userdata}
                     />
                   )}
@@ -641,7 +710,7 @@ function MacroProfile(props) {
                   <div className="mb-2 lg:hidden xl:hidden inline-block">
                     <Typography
                       className={`${ProfileStyle.profile__macro__profile__name} mb-1 leading-snug line-clamp-1`}
-                      variant="h4"
+                      variant="h5"
                       gutterBottom
                     >
                       {profileName} {isItMe ? ME : <></>}
@@ -1010,6 +1079,13 @@ function MacroProfile(props) {
         data={messageEvent}
         isOpen={messageEvent.dialogOpen}
       ></PolyMessagingDialog>
+
+      <UserRatingDialog
+        title={`${firstName}`}
+        dialogCloseRequest={handleRatingEventClosure}
+        data={ratingEvent}
+        isOpen={ratingEvent.dialogOpen}
+      ></UserRatingDialog>
     </>
   );
 }

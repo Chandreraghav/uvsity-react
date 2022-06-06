@@ -1,18 +1,18 @@
 import HomeIcon from "@mui/icons-material/Home";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import ScienceIcon from '@mui/icons-material/Science';
-import StarsIcon from '@mui/icons-material/Stars';
-import SchoolIcon from '@mui/icons-material/School';
+import ScienceIcon from "@mui/icons-material/Science";
+import StarsIcon from "@mui/icons-material/Stars";
+import SchoolIcon from "@mui/icons-material/School";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
 import AutoGraphOutlinedIcon from "@mui/icons-material/AutoGraphOutlined";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import UpgradeIcon from "@mui/icons-material/Upgrade";
-import InterestsIcon from '@mui/icons-material/Interests';
-import AssistantPhotoIcon from '@mui/icons-material/AssistantPhoto';
+import InterestsIcon from "@mui/icons-material/Interests";
+import AssistantPhotoIcon from "@mui/icons-material/AssistantPhoto";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import PersonIcon from "@mui/icons-material/Person";
@@ -22,7 +22,7 @@ import CreateIcon from "@mui/icons-material/Create";
 import { WORKFLOW_CODES } from "./workflow-codes";
 import { HTMLUnderlineByCharacterIndex, timeOfDay } from "../utils/utility";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
@@ -60,7 +60,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
-import { blue, green, red, purple, orange, pink,  brown} from "@mui/material/colors";
+import {
+  blue,
+  green,
+  red,
+  purple,
+  orange,
+  pink,
+  brown,
+} from "@mui/material/colors";
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -211,7 +219,7 @@ export const CONNECTIONS = [
     title: "Students",
     hidden: false,
     tooltip: "Connections who are students",
-    icon:'',
+    icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.STUDENT,
   },
   {
@@ -219,7 +227,7 @@ export const CONNECTIONS = [
     title: "Professors",
     hidden: false,
     tooltip: "Connections who are professors",
-    icon:'',
+    icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.PROFESSOR,
   },
   {
@@ -227,7 +235,7 @@ export const CONNECTIONS = [
     title: "Alumni",
     hidden: false,
     tooltip: "Connections who are alumni",
-    icon:'',
+    icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.ALUMNI,
   },
 ];
@@ -335,9 +343,9 @@ export const TOOLTIPS = {
   VIEW_MORE: "View more of such people",
   SESSION_SUBMIT_CONFIRMATION: "Do you want to create this session now?",
   CREATING_SESSION: "Hold tight...creating your session",
-  YOU_HAVE_REACHED_END:"You're all Caught Up.",
-  COME_BACK_AGAIN:'Come back again later.',
-  SEEN_ALL_FEEDS:"You've seen all new feeds."
+  YOU_HAVE_REACHED_END: "You're all Caught Up.",
+  COME_BACK_AGAIN: "Come back again later.",
+  SEEN_ALL_FEEDS: "You've seen all new feeds.",
 };
 
 export const GREETING = `${timeOfDay()} <user>`;
@@ -556,9 +564,10 @@ export const IMAGE_PATHS = {
     CONNECTIONS: "/static/images/nodata-illustrations/no-connections.jpg",
     PEOPLE: "/static/images/nodata-illustrations/no-interesting-people.jpg",
     PEOPLE_VIEWS: "/static/images/nodata-illustrations/no-views-on-profile.PNG",
-    SESSION: "/static/images/nodata-illustrations/broken-bike-3488525-2922411.webp",
+    SESSION:
+      "/static/images/nodata-illustrations/broken-bike-3488525-2922411.webp",
 
-    FEED:"/static/images/nodata-illustrations/all-done-illustration-woman-1-removebg-preview.png",
+    FEED: "/static/images/nodata-illustrations/all-done-illustration-woman-1-removebg-preview.png",
     EVENT_POSTER: "/static/images/session-poster-not-found.jpg",
   },
   NO_PROFILE_PICTURE: "profilebig.png",
@@ -588,11 +597,11 @@ export const NETWORK = {
     CONNECTED: "connected",
     ACCEPT: "Accept",
   },
-  COLOR_VARIANTS:{
+  COLOR_VARIANTS: {
     PENDING: "#EF107D",
     CONNECTED: "green!important",
-    ACCEPT: ""
-  }
+    ACCEPT: "",
+  },
 };
 
 export const SESSION_ACTIONS = [
@@ -713,9 +722,10 @@ export const PARTICIPANT_QUESTIONAIRRES = {
   UPDATED: "Questionairre updated successfully",
   DELETED: "Questionairre deleted successfully",
 };
-export const PARTICIPANT_VISIBILITY={
-  ON_PRIVATE_SESSION:'You are going to create a private session. This means your session will not appear in session search and viewable by the public users.'
-}
+export const PARTICIPANT_VISIBILITY = {
+  ON_PRIVATE_SESSION:
+    "You are going to create a private session. This means your session will not appear in session search and viewable by the public users.",
+};
 
 export const FEE = {
   PROMO_CODES: {
@@ -927,16 +937,13 @@ export const APP = {
 
       FINAL_STEP_COMPLETION_FAILED:
         "Hey <user>, something happened on our side. It's not you but us. Please try again in a while.",
-    
-      
-      },
+    },
     INFO: {
       TERMS_ACCEPT_TEXT: "By clicking on submit you agree to our ",
       TnC: "terms and conditions.",
       FINAL_STEP_COMPLETED: ` <user>, now that you are almost done, review your changes and submit this session.`,
       FINAL_STEP_EDITS_HELP_TEXT:
         "To make any changes, click on the pencil icon.",
-     
     },
   },
   SESSION: {
@@ -1026,101 +1033,128 @@ export const AUTH_TOKENS = {
   SESSION_MONITOR: "SESSION_MONITOR",
   IDLE_MONITOR: "IDLE_MONITOR",
 };
-export const SESSION={
-  CREATED:'<user>, your session has been created successfully',
-  EDITED:'<user>, your session has been modified successfully',
-  DELETED:'<user>, your session has been deleted permanently',
-}
-export const VALIDATING_REQUEST= 'Please wait, we are validating your request...'
+export const SESSION = {
+  CREATED: "<user>, your session has been created successfully",
+  EDITED: "<user>, your session has been modified successfully",
+  DELETED: "<user>, your session has been deleted permanently",
+};
+export const VALIDATING_REQUEST =
+  "Please wait, we are validating your request...";
 
 export const PROFILE_AREAS = [
   {
     id: 1,
-    title: HTMLUnderlineByCharacterIndex("About <#>",0),
+    title: HTMLUnderlineByCharacterIndex("About <#>", 0),
     icon: InfoIcon,
     hidden: false,
-    color:'#111'
+    color: "#111",
   },
   {
     id: 8,
-    title: HTMLUnderlineByCharacterIndex("Education",0),
+    title: HTMLUnderlineByCharacterIndex("Education", 0),
     icon: SchoolIcon,
     hidden: false,
-    color:brown[500]
+    color: brown[500],
   },
   {
     id: 2,
-    title: HTMLUnderlineByCharacterIndex("Specialities &amp; Skills",0),
+    title: HTMLUnderlineByCharacterIndex("Specialities &amp; Skills", 0),
     icon: StarsIcon,
     hidden: false,
-    color:pink[500]
+    color: pink[500],
   },
 
   {
     id: 3,
-    title: HTMLUnderlineByCharacterIndex("Project/Research/Work Experience",0),
+    title: HTMLUnderlineByCharacterIndex("Project/Research/Work Experience", 0),
     icon: ScienceIcon,
     hidden: false,
-    color:purple[500]
+    color: purple[500],
   },
 
   {
     id: 4,
-    title: HTMLUnderlineByCharacterIndex("Recommended sessions by <#>",0),
+    title: HTMLUnderlineByCharacterIndex("Recommended sessions by <#>", 0),
     icon: AssistantPhotoIcon,
     hidden: false,
-    color:green[500]
+    color: green[500],
   },
   {
     id: 5,
-    title: HTMLUnderlineByCharacterIndex("Interests",0),
+    title: HTMLUnderlineByCharacterIndex("Interests", 0),
     icon: InterestsIcon,
     hidden: false,
-    color:red[500]
+    color: red[500],
   },
 
   {
     id: 6,
-    title: HTMLUnderlineByCharacterIndex("Recommendations received",0),
+    title: HTMLUnderlineByCharacterIndex("Recommendations received", 0),
     icon: ThumbUpIcon,
     hidden: false,
-    color:orange[500]
+    color: orange[500],
   },
 
   {
     id: 7,
-    title: HTMLUnderlineByCharacterIndex("Sessions by <#>",0),
+    title: HTMLUnderlineByCharacterIndex("Sessions by <#>", 0),
     icon: EventNoteOutlinedIcon,
     hidden: false,
-    color:blue[500]
+    color: blue[500],
   },
-
- 
 ];
-export const USER_PROFILE={
-  CHANGE_PROFILE_PICTURE:'Change profile picture'
-}
+export const USER_PROFILE = {
+  CHANGE_PROFILE_PICTURE: "Change profile picture",
+};
 
-export const RECOMMENDATIONS={
-  REQUEST_RECOMMENDATION:'Ask Recommendation',
-  REQUEST_SENT_TO:'Great, you just sent a recommendation request to ',
-  REQUEST_SENT_FAILED:'Uh, oh! there was an error sending the recommendation request to ',
-  REQUEST_RECOMMENDATION_CUSTOM:'Ask <#> for a recommendation',
-  SEND_RECOMMENDATION:'Send request for recommendation',
+export const RECOMMENDATIONS = {
+  REQUEST_RECOMMENDATION: "Ask Recommendation",
+  REQUEST_SENT_TO: "Great, you just sent a recommendation request to ",
+  REQUEST_SENT_FAILED:
+    "Uh, oh! there was an error sending the recommendation request to ",
+  REQUEST_RECOMMENDATION_CUSTOM: "Ask <#> for a recommendation",
+  SEND_RECOMMENDATION: "Send request for recommendation",
   REQUEST_TYPE: "RECOMMENDATION_REQUEST",
-  REQUEST_RECOMMENDATION_PLACEHOLDER :'Write a recommendation request...',
-  REQUEST_RECOMMENDATION_SUBJECT_LABEL :'Subject',
-  REQUEST_RECOMMENDATION_NOTE_LABEL :'Recommendation note'
-}
+  REQUEST_RECOMMENDATION_PLACEHOLDER: "Write a recommendation request...",
+  REQUEST_RECOMMENDATION_SUBJECT_LABEL: "Subject",
+  REQUEST_RECOMMENDATION_NOTE_LABEL: "Recommendation note",
+};
 
-export const INBOX={
-  SEND_MESSAGE:'Send message',
-  MESSAGE_SENT_TO:'Message sent to ',
-  MESSAGE_SENT_FAILED:'Uh, oh! there was an error sending this message to ',
-  
-  SEND_MESSAGE_CUSTOM:'Message <#>',
+export const INBOX = {
+  SEND_MESSAGE: "Send message",
+  MESSAGE_SENT_TO: "Message sent to ",
+  MESSAGE_SENT_FAILED: "Uh, oh! there was an error sending this message to ",
+
+  SEND_MESSAGE_CUSTOM: "Message <#>",
   REQUEST_TYPE: "SEND_MESSAGE",
-  MESSAGE_TEXT_PLACEHOLDER :'Write your message...',
-  MESSAGE_SUBJECT_LABEL :'Subject',
-  MESSAGE_TEXT_LABEL :'Message'
-}
+  MESSAGE_TEXT_PLACEHOLDER: "Write your message...",
+  MESSAGE_SUBJECT_LABEL: "Subject",
+  MESSAGE_TEXT_LABEL: "Message",
+};
+export const RATING = {
+  TYPES: [
+    {
+      id: 1,
+      code: "fair",
+      alias: "Fair",
+      value:'FAIR'
+    },
+    {
+      id: 2,
+      code: "good",
+      alias: "Good",
+      value:'GOOD'
+    },
+    {
+      id: 3,
+      code: "best",
+      alias: "Best",
+      value:'BEST'
+    },
+  ],
+ 
+  RATING_SENT_TO: "Yay! you just rated ",
+  RATING_FAILED: "Uh, oh! there was an error rating your review to ",
+  REQUEST_TYPE: "RATING_RESPONSE",
+  RATING_ALREADY_SENT:'RATING_ALREADY_SENT'
+};

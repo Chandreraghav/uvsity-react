@@ -46,8 +46,10 @@ export const ENDPOINTS = {
       VIEW:'view/profile/',
       MESSAGING:{
         SEND_RECOMMENDATION_REQUEST:'/inbox/send/recommendationRequest',
-        SEND_MESSAGE:'/inbox/send/message'
-      }
+        SEND_MESSAGE:'/inbox/send/message',
+        SEND_RATING:'inbox/send/rating'
+      },
+      
     },
     DETAILS: "/view/profile/",
     SESSION_BY_ID: "/courses/#X#",
