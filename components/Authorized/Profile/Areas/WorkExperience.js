@@ -1,13 +1,12 @@
 import React,{useState} from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import parse from "html-react-parser";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { Grid } from "@mui/material";
-import convertToHTML from "markdown-to-html-converter";
 import NoData from "../../Shared/NoData";
 import { READ_LESS, READ_MORE, READ_MORE_MAX_LENGTH } from "../../../../constants/constants";
+import { parseMarkdownToHTML } from "../../../../utils/utility";
 function WorkExperience(props) {
   const [isReadMore, setIsReadMore] = useState(true);
   const toggleReadMore = () => {
@@ -47,7 +46,8 @@ function WorkExperience(props) {
           <>
            
             <Typography className={isReadMore && exp?.projectResearchDescription.length>READ_MORE_MAX_LENGTH?'line-clamp-3':''} variant="body2">
-            {parse(convertToHTML(exp?.projectResearchDescription))}
+            {parseMarkdownToHTML(exp?.projectResearchDescription)}
+           
           </Typography>
           <span onClick={toggleReadMore} className="read-or-hide">
         {isReadMore && exp?.projectResearchDescription.length>READ_MORE_MAX_LENGTH ? READ_MORE : exp?.projectResearchDescription.length>READ_MORE_MAX_LENGTH?READ_LESS:''}

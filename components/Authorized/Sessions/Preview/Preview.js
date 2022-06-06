@@ -3,7 +3,6 @@ import { Tooltip } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import convertToHTML from "markdown-to-html-converter";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
@@ -15,8 +14,8 @@ import Spacer from "../../../shared/Spacer";
 import CustomDialog from "../../../shared/modals/CustomDialog";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import UserDataService from "../../../../pages/api/users/data/UserDataService";
-import parse from "html-react-parser";
 import Actions from "../ActionableItems/Actions";
+import { parseMarkdownToHTML } from "../../../../utils/utility";
 
 function Preview({ data, authorized,userdata }) {
   if (!data) return "";
@@ -239,9 +238,9 @@ function Preview({ data, authorized,userdata }) {
               userdata={userdata}
               options={{ connect: false, mixedMode: true }}
             />
-            <div className={` ${SessionStyle.session__description__clamp} line-clamp-3 text-gray-700 py-1 mb-1 leading-snug`}>
+            <div className={` line-clamp-3  text-gray-700 py-1 mb-1 leading-snug`}>
+             {parseMarkdownToHTML(data?.courseSummary)}
              
-              {parse(convertToHTML(data?.courseSummary))}
             </div>
           </div>
         </div>
