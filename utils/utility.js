@@ -313,9 +313,13 @@ export const timestamp = () => {
   );
 };
 
-export const isFullScreen =()=>{
+export const shouldDialogAppearInFullScreen =()=>{
+  return isSmallScreen()
+ }
+
+ export const isSmallScreen=()=>{
   const mediaQuery= JSON.parse(getLocalStorageObject('media-query'))
-  if(mediaQuery.tabletOrMobile || mediaQuery.orientation==='portrait') return true;
+  if(mediaQuery.tabletOrMobile) return true;
   return false
  }
 
@@ -326,3 +330,7 @@ export const isFullScreen =()=>{
      return data
    }
  }
+
+ export const classNames=(...classes) =>{
+  return classes.filter(Boolean).join(" ");
+}

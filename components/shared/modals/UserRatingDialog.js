@@ -13,7 +13,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { isFullScreen } from "../../../utils/utility";
+import { isFullScreen, isSmallScreen } from "../../../utils/utility";
 import { RATING } from "../../../constants/userdata";
 function UserRatingDialog(props) {
   if (!props.isOpen) return "";
@@ -41,6 +41,7 @@ function UserRatingDialog(props) {
   const handleRatingChange=(e)=>{
       setRating(e.target.value)
   }
+  const _isSmallScreen= isSmallScreen()
   return (
     <Dialog
       fullScreen={isFullScreen()}
@@ -59,7 +60,7 @@ function UserRatingDialog(props) {
             <Typography
               className="line-clamp-1"
               gutterBottom
-              variant="h6"
+              variant={_isSmallScreen?'subtitle1':'h6'}
               component="div"
             >
               <>

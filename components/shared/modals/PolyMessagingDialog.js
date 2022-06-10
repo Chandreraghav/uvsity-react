@@ -13,7 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { INBOX, RECOMMENDATIONS } from "../../../constants/userdata";
 import SendIcon from "@mui/icons-material/Send";
 import TextField from "@mui/material/TextField";
-import { isFullScreen } from "../../../utils/utility";
+import { isSmallScreen, shouldDialogAppearInFullScreen } from "../../../utils/utility";
 function PolyMessagingDialog(props) {
   if (!props.isOpen) return "";
   const getTitle = () => {
@@ -73,9 +73,10 @@ function PolyMessagingDialog(props) {
   const handleRecommendationRequestMessage = (e) => {
     setMessage(e.target.value);
   };
+  const _isSmallScreen= isSmallScreen()
   return (
     <Dialog
-    fullScreen={isFullScreen()}
+    fullScreen={shouldDialogAppearInFullScreen()}
       className={`${processing ? "control__disabled" : ""}`}
       open={props.isOpen}
       aria-labelledby="responsive-dialog-title"
@@ -86,12 +87,12 @@ function PolyMessagingDialog(props) {
       <div className={`${props?.theme ? "dark-dialog" : ""}`}>
         <div className="flex justify-between">
           <div
-            className={` px-4 py-3 leading-tight  text-left font-bold flex-col `}
+            className={` px-4 py-3 leading-tight   text-left font-bold flex-col `}
           >
             <Typography
               className="line-clamp-1"
               gutterBottom
-              variant="h6"
+              variant={_isSmallScreen?'subtitle1':'h6'}
               component="div"
             >
               <>

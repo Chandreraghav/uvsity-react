@@ -14,7 +14,7 @@ import {
   formattedName,
   formattedProfileSubtitle,
   getTimezone,
-  isFullScreen,
+  shouldDialogAppearInFullScreen,
   localTZDate,
 } from "../../../utils/utility";
 import { PLACEHOLDERS, TITLES, TOOLTIPS,ME } from "../../../constants/userdata";
@@ -48,7 +48,7 @@ export default function CustomDialog({
   });
 
   const isItMe = () => {
-    return data?.userDetailsId===USER_LOGIN_INFO.data.userDetailsId
+    return data?.userDetailsId===USER_LOGIN_INFO?.data?.userDetailsId
    
   };
   useEffect(() => {
@@ -166,7 +166,7 @@ export default function CustomDialog({
   return (
     <>
       <Dialog
-        fullScreen={isFullScreen()}
+        fullScreen={shouldDialogAppearInFullScreen()}
         open={isOpen}
         aria-labelledby="responsive-dialog-title"
         onBackdropClick={handleClose}
