@@ -66,9 +66,12 @@ export const ENDPOINTS = {
        
       },
       PROFILE:{
-        PICTURE:'/edit/profile/profilepic'
+        PICTURE:'/edit/profile/profilepic',
       }
       
+    },
+    EDITS:{
+      ABOUT:'edit/profile/aboutMe'
     },
     METADATA: {
       ROOT: "/courses/metadata",
