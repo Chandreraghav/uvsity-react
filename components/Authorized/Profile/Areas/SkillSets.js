@@ -6,7 +6,13 @@ import NoData from "../../Shared/NoData";
 function SkillSets(props) {
   const userSkillsets = props?.userSkillsets;
   const ownerName = props?.skillSetOwnerFirstName;
-  const handleSessionRequestBasedOnSkill = () => {};
+  const handleSessionRequestBasedOnSkill = (skillSet) => {
+    if(skillSet){
+      if(props.consumeEvent){
+        props.consumeEvent(skillSet, "SessionRequest");
+      }
+    }
+  };
   return (
     <div>
       {userSkillsets && userSkillsets.length > 0 ? (
@@ -35,7 +41,7 @@ function SkillSets(props) {
                     >
                       <Chip
                         variant="outlined"
-                        onClick={handleSessionRequestBasedOnSkill}
+                        onClick={()=>handleSessionRequestBasedOnSkill(skillset)}
                         className="app__anchor__block "
                         label={skillset.userSkillSetName}
                         color="primary"

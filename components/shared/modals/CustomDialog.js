@@ -22,7 +22,8 @@ import UserDataService from "../../../pages/api/users/data/UserDataService";
 import { useQuery } from "react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import { infinity } from "../../../async/subscriptions";
-
+import { navigateToProfile } from "../../Authorized/Shared/Navigator";
+import { useRouter } from "next/router";
 toast.configure();
 
 export default function CustomDialog({
@@ -39,7 +40,7 @@ export default function CustomDialog({
   
   const [dataJsx, setDataJsx] = useState(null);
   const [titleJsx, setTitleJsx] = useState(null);
- 
+  const router = useRouter();
   const getLoggedInInformation = async () =>
     (await UserDataService.getLoggedInInformation()).data;
   const USER_LOGIN_INFO = useQuery([KEYS.LOGIN.INFO], getLoggedInInformation, {
@@ -48,7 +49,8 @@ export default function CustomDialog({
   });
 
   const isItMe = () => {
-    return data?.userDetailsId===USER_LOGIN_INFO?.data?.userDetailsId
+    const user_id=data?.userDetailsId || data?.creator?.userDetailsId
+    return user_id===USER_LOGIN_INFO?.data?.userDetailsId
    
   };
   useEffect(() => {
@@ -69,6 +71,10 @@ export default function CustomDialog({
   });
   const handleClose = () => {
     if (dialogCloseRequest) dialogCloseRequest();
+  };
+  const goToProfile = () => {
+    const user_id=data?.userDetailsId || data?.creator?.userDetailsId
+    navigateToProfile(user_id, router);
   };
 
   const populateDialogTitle = () => {
@@ -92,7 +98,7 @@ export default function CustomDialog({
                   isItMe()
                     ? TOOLTIPS.GO_TO_PROFILE
                     : TOOLTIPS.VIEW_PROFILE
-                } ><div className="line-clamp-1 cursor-pointer app__anchor__block">{profilePrimaryLine}{isItMe()&& (<>{ME}</>)}</div></Tooltip>
+                } ><div onClick={() => goToProfile()} className="line-clamp-1 cursor-pointer app__anchor__block">{profilePrimaryLine}{isItMe()&& (<>{ME}</>)}</div></Tooltip>
               {profileSecondaryLine && <div className="-mt-0.3 text-gray-500">&#8739;</div>}
               <div className="line-clamp-1">{profileSecondaryLine}</div>
             </div>

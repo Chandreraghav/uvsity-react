@@ -47,7 +47,8 @@ export const ENDPOINTS = {
       MESSAGING:{
         SEND_RECOMMENDATION_REQUEST:'/inbox/send/recommendationRequest',
         SEND_MESSAGE:'/inbox/send/message',
-        SEND_RATING:'inbox/send/rating'
+        SEND_RATING:'inbox/send/rating',
+        SEND_SESSION_REQUEST:'inbox/send/courseRequest'
       },
       
     },
