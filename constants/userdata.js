@@ -1158,3 +1158,10 @@ export const RATING = {
   REQUEST_TYPE: "RATING_RESPONSE",
   RATING_ALREADY_SENT:'RATING_ALREADY_SENT'
 };
+
+
+export const SESSION_REQUEST = {
+  SEND_SESSION_REQUEST: "Send session request",
+  MESSAGE_SENT_TO: "Superb! Session request for <#X#> has been sent to <#Y#>",
+  MESSAGE_SENT_FAILED: "Uh, oh! there was an error sending this session request to ",
+};

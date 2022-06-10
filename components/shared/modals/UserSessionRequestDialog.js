@@ -1,47 +1,42 @@
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import {
   Button,
   Dialog,
   DialogActions,
-  FormControl,
-  FormControlLabel,
   IconButton,
-  Radio,
-  RadioGroup,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { shouldDialogAppearInFullScreen, isSmallScreen } from "../../../utils/utility";
-import { RATING } from "../../../constants/userdata";
-function UserRatingDialog(props) {
+import {
+  shouldDialogAppearInFullScreen,
+  isSmallScreen,
+} from "../../../utils/utility";
+function UserSessionRequestDialog(props) {
   if (!props.isOpen) return "";
   const [processing, setProcessing] = useState(false);
-  const [rating, setRating] = useState(null);
-  
-  const handleClose = (ratingObject, closeInd) => {
+  const [sessionRequest, setSessionRequest] = useState(props?.data);
+
+  const handleClose = (sessionRequestObject, closeInd) => {
     if (props?.dialogCloseRequest) {
       if (!closeInd) {
-        if (!ratingObject || !rating) {
+        if (!sessionRequestObject || !sessionRequest) {
           return;
         }
 
-        if (ratingObject) {
+        if (sessionRequestObject) {
           setProcessing(true);
-          ratingObject.rating = rating;
         }
       }
       props.dialogCloseRequest({
-        message: ratingObject,
+        message: sessionRequestObject,
         close: closeInd,
       });
     }
   };
-  const handleRatingChange=(e)=>{
-      setRating(e.target.value)
-  }
-  const _isSmallScreen= isSmallScreen()
+
+  const _isSmallScreen = isSmallScreen();
   return (
     <Dialog
       fullScreen={shouldDialogAppearInFullScreen()}
@@ -60,12 +55,12 @@ function UserRatingDialog(props) {
             <Typography
               className="line-clamp-1"
               gutterBottom
-              variant={_isSmallScreen?'subtitle1':'h6'}
+              variant={_isSmallScreen ? "subtitle1" : "h6"}
               component="div"
             >
               <>
-                <ThumbsUpDownIcon />
-                &nbsp; Rate {props?.title}
+                <CalendarTodayIcon />
+                &nbsp;{props?.title}
               </>
             </Typography>
           </div>
@@ -86,32 +81,14 @@ function UserRatingDialog(props) {
             </div>
           </Tooltip>
         </div>
-        <div className="flex flex-col px-4 mb-2 gap-3 -mt-3 text-gray-600">
-          <FormControl>
-            <RadioGroup
-              className="text-gray-600 text-xs font-normal"
-              aria-labelledby="radio-buttons"
-              name="row-radio-buttons-group"
-              value={rating}
-              onChange={handleRatingChange}
-            >
-              <div className="flex">
-                {RATING.TYPES.map((option) => (
-                  <div
-                    className="text-gray-700 leading-snug text-xs font-normal "
-                    key={option.id}
-                  >
-                    <FormControlLabel
-                      value={option.value}
-                      control={<Radio />}
-                      label={<>{option.alias}</>}
-                    />
-                  </div>
-                ))}
-              </div>
-            </RadioGroup>
-          </FormControl>
-        </div>
+        {props?.subtitle && (
+          <>
+            {" "}
+            <div className="flex flex-col px-4 mb-2 gap-3 -mt-3 text-gray-600">
+              {props?.subtitle}
+            </div>
+          </>
+        )}
       </div>
       <DialogActions
         className={`${props?.theme ? "dark-dialog" : ""} ${
@@ -124,7 +101,7 @@ function UserRatingDialog(props) {
           onClick={() => handleClose(props.data, false)}
           autoFocus
         >
-          {!processing ? "Rate now" : "Rating..."}
+          {!processing ? "Send" : "Sending..."}
         </Button>
 
         <Button
@@ -139,4 +116,4 @@ function UserRatingDialog(props) {
   );
 }
 
-export default UserRatingDialog;
+export default UserSessionRequestDialog;

@@ -23,4 +23,11 @@ export default class MessagingService {
       payload
     );
   }
+
+  static async sendSessionRequest(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.PEOPLE.MESSAGING.SEND_SESSION_REQUEST,
+      payload
+    );
+  }
 }

@@ -67,5 +67,8 @@ export const WORKFLOW_CODES = {
     INBOX: {
       SEND_MESSAGE: "SEND_MESSAGE",
     },
+    SESSION_REQUEST:{
+      CREATE:'CREATE_COURSE_REQUEST'
+    }
   },
 };

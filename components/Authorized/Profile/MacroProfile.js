@@ -24,6 +24,7 @@ import {
   PROFILE_AREAS,
   RATING,
   RECOMMENDATIONS,
+  SESSION_REQUEST,
   TITLES,
 } from "../../../constants/userdata";
 import ProfileStyle from "../../../styles/Profile.module.css";
@@ -74,6 +75,7 @@ import ChangeProfilePictureDialog from "../../shared/modals/ChangeProfilePicture
 import MessagingService from "../../../pages/api/people/Messaging/MessageService";
 import PolyMessagingDialog from "../../shared/modals/PolyMessagingDialog";
 import UserRatingDialog from "../../shared/modals/UserRatingDialog";
+import UserSessionRequestDialog from "../../shared/modals/UserSessionRequestDialog";
 toast.configure();
 function MacroProfile(props) {
   const [selectedpicture, setSelectedPictureEvent] = useState(null);
@@ -110,6 +112,15 @@ function MacroProfile(props) {
   };
   const [ratingEvent, setRatingEvent] = useState(_ratingEvent);
   const [userRated, setUserRated] = useState(false);
+
+  const _sessionRequest = {
+    from: null,
+    to: null,
+    request:null,
+    dialogOpen: false,
+    event: null,
+  };
+  const [sessionRequest, setSessionRequest] = useState(_sessionRequest);
   useEffect(() => {
     if (props?.hasChangeEventTriggered) {
       setShow(true);
@@ -361,7 +372,19 @@ function MacroProfile(props) {
           // generate a custom request failed error.
         }
         break;
-
+      case "SessionRequest":
+        const _request= event
+        _request.event=WORKFLOW_CODES.MESSAGING.SESSION_REQUEST.CREATE
+        const _sessionRequest = {
+          from: props?.loggedInUserID,
+          to: userdata?.userDetailsId,
+          request: _request,
+          dialogOpen: true,
+          event: _request.event,
+        };
+        
+        setSessionRequest(_sessionRequest)
+        break;
       default:
         break;
     }
@@ -567,6 +590,47 @@ function MacroProfile(props) {
     setUserRated(false)
     handleResponse(
       `${RATING.RATING_FAILED}${firstName}`,
+      RESPONSE_TYPES.ERROR,
+      toast.POSITION.BOTTOM_CENTER
+    );
+  });
+  }
+  const handleUserSessionRequestClosure=(request)=>{
+    
+    if (request.close) {
+      setSessionRequest(_sessionRequest);
+      return;
+    } 
+
+    const payload={
+      requestTo: {
+          userDetailsId: request.message.to
+      },
+      requestFrom: {
+        userDetailsId: request.message.from
+      },
+      skillSet: {
+          skillSetId: request.message.request.skillSetId
+      },
+      userRequestType: request.message.event
+  }
+  
+  MessagingService.sendSessionRequest(payload)
+  .then((res) => {
+    let message = SESSION_REQUEST.MESSAGE_SENT_TO
+    message= message.replace('<#X#>',request.message.request?.userSkillSetName)
+    message=message.replace('<#Y#>',firstName)
+    setSessionRequest(_sessionRequest);
+    handleResponse(
+      `${message}`,
+      RESPONSE_TYPES.SUCCESS,
+      toast.POSITION.BOTTOM_CENTER
+    );
+  })
+  .catch((err) => {
+    setSessionRequest(_sessionRequest);
+    handleResponse(
+      `${SESSION_REQUEST.MESSAGE_SENT_FAILED}${firstName}`,
       RESPONSE_TYPES.ERROR,
       toast.POSITION.BOTTOM_CENTER
     );
@@ -987,6 +1051,8 @@ function MacroProfile(props) {
                                     owner={isItMe}
                                     skillSetOwnerFirstName={firstName}
                                     userSkillsets={userSkillsets}
+                                    consumeEvent={handleEvent}
+                                   
                                   />
                                 </>
                               )}
@@ -1086,6 +1152,15 @@ function MacroProfile(props) {
         data={ratingEvent}
         isOpen={ratingEvent.dialogOpen}
       ></UserRatingDialog>
+
+      <UserSessionRequestDialog
+      theme
+       title={`Send session request`}
+       subtitle={`Request ${firstName} for a session on ${sessionRequest?.request?.userSkillSetName}`}
+       dialogCloseRequest={handleUserSessionRequestClosure}
+       data={sessionRequest}
+       isOpen={sessionRequest.dialogOpen}
+      ></UserSessionRequestDialog>
     </>
   );
 }

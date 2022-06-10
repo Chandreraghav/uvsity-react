@@ -59,7 +59,7 @@ function Actions(props) {
             </IconButton>
           </Tooltip>
         </div>
-        {!props?.isRated ?(<>
+        {!props?.isRated &&(<>
           <div className={`cursor-pointer `}>
           <Tooltip title={`Rate ${props.userdata?.firstName}`}>
             <IconButton  onClick={handleRatingRequest} aria-label="send-review" size="large">
@@ -67,15 +67,7 @@ function Actions(props) {
             </IconButton>
           </Tooltip>
         </div>
-        </>):(
-        <div className={`cursor-pointer `}>
-          <Tooltip title={`You have rated ${props.userdata?.firstName}`}>
-            <IconButton  aria-label="already-rated" size="large">
-              <ThumbsUpDownIcon sx={{ color:green[500] }} fontSize="inherit" />
-            </IconButton>
-          </Tooltip>
-        </div>
-      )}
+        </>)}
       
       </div>
     </div>

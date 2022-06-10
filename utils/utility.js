@@ -1,7 +1,7 @@
 import moment from "moment";
 import { TIME_OF_DAY_GREETING } from "../constants/constants";
 import { getLocalStorageObject } from "../localStorage/local-storage";
-import parse from "html-react-parser"
+import parse from "html-react-parser";
 import convertToHTML from "markdown-to-html-converter";
 export const truncate = (str, n) => {
   try {
@@ -313,24 +313,24 @@ export const timestamp = () => {
   );
 };
 
-export const shouldDialogAppearInFullScreen =()=>{
-  return isSmallScreen()
- }
+export const shouldDialogAppearInFullScreen = () => {
+  return isSmallScreen(); // if small screen then only dialog should appear in full screen, otherwise the dialog appears in normal screen.
+};
 
- export const isSmallScreen=()=>{
-  const mediaQuery= JSON.parse(getLocalStorageObject('media-query'))
-  if(mediaQuery.tabletOrMobile) return true;
-  return false
- }
+export const isSmallScreen = () => {
+  const mediaQuery = JSON.parse(getLocalStorageObject("media-query"));
+  if (mediaQuery.tabletOrMobile) return true;
+  return false;
+};
 
- export const parseMarkdownToHTML=(data)=>{
-   try {
-     return parse(convertToHTML(data))
-   } catch (error) {
-     return data
-   }
- }
+export const parseMarkdownToHTML = (data) => {
+  try {
+    return parse(convertToHTML(data));
+  } catch (error) {
+    return data;
+  }
+};
 
- export const classNames=(...classes) =>{
+export const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");
-}
+};
