@@ -26,6 +26,7 @@ import {
   RECOMMENDATIONS,
   SESSION_REQUEST,
   TITLES,
+  USER_PROFILE,
 } from "../../../constants/userdata";
 import ProfileStyle from "../../../styles/Profile.module.css";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -76,6 +77,7 @@ import MessagingService from "../../../pages/api/people/Messaging/MessageService
 import PolyMessagingDialog from "../../shared/modals/PolyMessagingDialog";
 import UserRatingDialog from "../../shared/modals/UserRatingDialog";
 import UserSessionRequestDialog from "../../shared/modals/UserSessionRequestDialog";
+import ChangeAboutInformationDialog from "../../shared/modals/ChangeAboutInformationModal";
 toast.configure();
 function MacroProfile(props) {
   const [selectedpicture, setSelectedPictureEvent] = useState(null);
@@ -106,7 +108,7 @@ function MacroProfile(props) {
   const _ratingEvent = {
     from: null,
     to: null,
-    rating:null,
+    rating: null,
     dialogOpen: false,
     event: null,
   };
@@ -116,11 +118,12 @@ function MacroProfile(props) {
   const _sessionRequest = {
     from: null,
     to: null,
-    request:null,
+    request: null,
     dialogOpen: false,
     event: null,
   };
   const [sessionRequest, setSessionRequest] = useState(_sessionRequest);
+
   useEffect(() => {
     if (props?.hasChangeEventTriggered) {
       setShow(true);
@@ -135,7 +138,6 @@ function MacroProfile(props) {
     };
   }, []);
 
-  
   const isItMe = props?.data?.owner;
   const isConnected =
     isItMe === false &&
@@ -155,8 +157,15 @@ function MacroProfile(props) {
       NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
 
   const userdata = props?.data?.userdata;
-  const isRated= userdata.ratingAction===RATING.RATING_ALREADY_SENT?true:false
+  const isRated =
+    userdata.ratingAction === RATING.RATING_ALREADY_SENT ? true : false;
   const aboutMe = userdata?.aboutMe;
+
+  const _aboutInfo = {
+    dialogOpen: false,
+    aboutMe,
+  };
+  const [aboutInfo, setAboutInfo] = useState(_aboutInfo);
   const userSkillsets = userdata?.userSkillsets;
   const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
   const interests = userdata?.myInterests;
@@ -373,8 +382,8 @@ function MacroProfile(props) {
         }
         break;
       case "SessionRequest":
-        const _request= event
-        _request.event=WORKFLOW_CODES.MESSAGING.SESSION_REQUEST.CREATE
+        const _request = event;
+        _request.event = WORKFLOW_CODES.MESSAGING.SESSION_REQUEST.CREATE;
         const _sessionRequest = {
           from: props?.loggedInUserID,
           to: userdata?.userDetailsId,
@@ -382,8 +391,8 @@ function MacroProfile(props) {
           dialogOpen: true,
           event: _request.event,
         };
-        
-        setSessionRequest(_sessionRequest)
+
+        setSessionRequest(_sessionRequest);
         break;
       default:
         break;
@@ -473,7 +482,7 @@ function MacroProfile(props) {
     }
   };
 
-  const handleRatingEvent =(request)=>{
+  const handleRatingEvent = (request) => {
     if (request) {
       const _ratingEvent = {
         from: props?.loggedInUserID,
@@ -481,11 +490,10 @@ function MacroProfile(props) {
         rating: null,
         dialogOpen: true,
         event: request.event,
-        
       };
       setRatingEvent(_ratingEvent);
     }
-  }
+  };
 
   const handleMessageEventClosure = (request) => {
     if (request.close) {
@@ -523,119 +531,156 @@ function MacroProfile(props) {
           );
         });
     }
-    if(request.event===INBOX.REQUEST_TYPE){
-      const payload={
-        usersInTo: [
-          request.message.to,
-        ],
+    if (request.event === INBOX.REQUEST_TYPE) {
+      const payload = {
+        usersInTo: [request.message.to],
         messageSubject: request.message.subject,
         messageBody: request.message.message,
         senderUserId: request.message.from,
         htmlFormattedMessageBody: null,
         isMessageBodyHTMLFormatted: false,
-        usersInCc: null
+        usersInCc: null,
+      };
+      MessagingService.sendMessage(payload)
+        .then((res) => {
+          setMessageEvent(_messageEvent);
+          handleResponse(
+            `${INBOX.MESSAGE_SENT_TO}${firstName}`,
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        })
+        .catch((err) => {
+          setMessageEvent(_messageEvent);
+          handleResponse(
+            `${INBOX.MESSAGE_SENT_FAILED}${firstName}`,
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
     }
-    MessagingService.sendMessage(payload)
+  };
+  const handleRatingEventClosure = (request) => {
+    if (request.close) {
+      setRatingEvent(_ratingEvent);
+      return;
+    }
+
+    const payload = {
+      responseTo: {
+        userDetailsId: request.message.to,
+      },
+      responseFrom: {
+        userDetailsId: request.message.from,
+      },
+      rating: {
+        ratingText: request.message.rating,
+      },
+      userResponseType: request.message.event,
+    };
+    MessagingService.sendRating(payload)
       .then((res) => {
-        setMessageEvent(_messageEvent);
+        setRatingEvent(_ratingEvent);
         handleResponse(
-          `${INBOX.MESSAGE_SENT_TO}${firstName}`,
+          `${
+            RATING.RATING_SENT_TO
+          }${firstName} as ${payload.rating.ratingText.toLowerCase()}`,
+          RESPONSE_TYPES.SUCCESS,
+          toast.POSITION.BOTTOM_CENTER
+        );
+        setUserRated(true);
+      })
+      .catch((err) => {
+        setRatingEvent(_ratingEvent);
+        setUserRated(false);
+        handleResponse(
+          `${RATING.RATING_FAILED}${firstName}`,
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      });
+  };
+  const handleUserSessionRequestClosure = (request) => {
+    if (request.close) {
+      setSessionRequest(_sessionRequest);
+      return;
+    }
+
+    const payload = {
+      requestTo: {
+        userDetailsId: request.message.to,
+      },
+      requestFrom: {
+        userDetailsId: request.message.from,
+      },
+      skillSet: {
+        skillSetId: request.message.request.skillSetId,
+      },
+      userRequestType: request.message.event,
+    };
+
+    MessagingService.sendSessionRequest(payload)
+      .then((res) => {
+        let message = SESSION_REQUEST.MESSAGE_SENT_TO;
+        message = message.replace(
+          "<#X#>",
+          request.message.request?.userSkillSetName
+        );
+        message = message.replace("<#Y#>", firstName);
+        setSessionRequest(_sessionRequest);
+        handleResponse(
+          `${message}`,
           RESPONSE_TYPES.SUCCESS,
           toast.POSITION.BOTTOM_CENTER
         );
       })
       .catch((err) => {
-        setMessageEvent(_messageEvent);
+        setSessionRequest(_sessionRequest);
         handleResponse(
-          `${INBOX.MESSAGE_SENT_FAILED}${firstName}`,
+          `${SESSION_REQUEST.MESSAGE_SENT_FAILED}${firstName}`,
           RESPONSE_TYPES.ERROR,
           toast.POSITION.BOTTOM_CENTER
         );
       });
-    
-    }
-
   };
-  const handleRatingEventClosure=(request)=>{
-    if (request.close) {
-      setRatingEvent(_ratingEvent);
-      return;
-    } 
-     
-    const payload= {
-      responseTo: {
-          userDetailsId: request.message.to
-      },
-      responseFrom: {
-          userDetailsId: request.message.from
-      },
-      rating: {
-          ratingText: request.message.rating
-      },
-      userResponseType: request.message.event
-  }
-  MessagingService.sendRating(payload)
-  .then((res) => {
-    setRatingEvent(_ratingEvent);
-    handleResponse(
-      `${RATING.RATING_SENT_TO}${firstName} as ${payload.rating.ratingText.toLowerCase()}`,
-      RESPONSE_TYPES.SUCCESS,
-      toast.POSITION.BOTTOM_CENTER
-    );
-    setUserRated(true)
 
-  })
-  .catch((err) => {
-    setRatingEvent(_ratingEvent);
-    setUserRated(false)
-    handleResponse(
-      `${RATING.RATING_FAILED}${firstName}`,
-      RESPONSE_TYPES.ERROR,
-      toast.POSITION.BOTTOM_CENTER
-    );
-  });
-  }
-  const handleUserSessionRequestClosure=(request)=>{
-    
-    if (request.close) {
-      setSessionRequest(_sessionRequest);
-      return;
-    } 
-
-    const payload={
-      requestTo: {
-          userDetailsId: request.message.to
-      },
-      requestFrom: {
-        userDetailsId: request.message.from
-      },
-      skillSet: {
-          skillSetId: request.message.request.skillSetId
-      },
-      userRequestType: request.message.event
-  }
-  
-  MessagingService.sendSessionRequest(payload)
-  .then((res) => {
-    let message = SESSION_REQUEST.MESSAGE_SENT_TO
-    message= message.replace('<#X#>',request.message.request?.userSkillSetName)
-    message=message.replace('<#Y#>',firstName)
-    setSessionRequest(_sessionRequest);
-    handleResponse(
-      `${message}`,
-      RESPONSE_TYPES.SUCCESS,
-      toast.POSITION.BOTTOM_CENTER
-    );
-  })
-  .catch((err) => {
-    setSessionRequest(_sessionRequest);
-    handleResponse(
-      `${SESSION_REQUEST.MESSAGE_SENT_FAILED}${firstName}`,
-      RESPONSE_TYPES.ERROR,
-      toast.POSITION.BOTTOM_CENTER
-    );
-  });
-  }
+  const handleProfileUpdateEvent = (obj) => {
+    if(obj && obj.id==1){
+      if(obj.event==='init_edit'){
+        const _aboutInfo = {
+          dialogOpen: true,
+          aboutMe:aboutInfo.aboutMe,
+        };
+        setAboutInfo(_aboutInfo);
+        return
+      }
+      if(obj.event==='edit'){
+        UserDataService.editUserBio({aboutMe:obj.edits}).then((res)=>{
+          handleResponse(
+            `${USER_PROFILE.BIO_UPDATED}`,
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.BOTTOM_CENTER
+          );
+          _aboutInfo.aboutMe=obj.edits
+          setAboutInfo(_aboutInfo)
+        }).catch((err)=>{
+          setAboutInfo(_aboutInfo)
+          handleResponse(
+            `${USER_PROFILE.BIO_UPDATE_FAILED}`,
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        })
+        return
+      }
+      const __aboutInfo = {
+        dialogOpen: false,
+        aboutMe:aboutInfo.aboutMe,
+      };
+      setAboutInfo(__aboutInfo)
+    }
+   
+  };
 
   return (
     <>
@@ -1041,7 +1086,11 @@ function MacroProfile(props) {
                             <div className="mb-1">
                               {area.id === 1 && (
                                 <>
-                                  <About owner={isItMe} aboutMe={aboutMe} />
+                                  <About
+                                    consumeEvent={handleProfileUpdateEvent}
+                                    owner={isItMe}
+                                    aboutMe={aboutInfo.aboutMe}
+                                  />
                                 </>
                               )}
 
@@ -1052,7 +1101,6 @@ function MacroProfile(props) {
                                     skillSetOwnerFirstName={firstName}
                                     userSkillsets={userSkillsets}
                                     consumeEvent={handleEvent}
-                                   
                                   />
                                 </>
                               )}
@@ -1154,13 +1202,21 @@ function MacroProfile(props) {
       ></UserRatingDialog>
 
       <UserSessionRequestDialog
-      theme
-       title={`Send session request`}
-       subtitle={`Request ${firstName} for a session on ${sessionRequest?.request?.userSkillSetName}`}
-       dialogCloseRequest={handleUserSessionRequestClosure}
-       data={sessionRequest}
-       isOpen={sessionRequest.dialogOpen}
+        theme
+        title={`Send session request`}
+        subtitle={`Request ${firstName} for a session on ${sessionRequest?.request?.userSkillSetName}`}
+        dialogCloseRequest={handleUserSessionRequestClosure}
+        data={sessionRequest}
+        isOpen={sessionRequest.dialogOpen}
       ></UserSessionRequestDialog>
+
+      <ChangeAboutInformationDialog
+        title={`Edit bio`}
+        theme
+        dialogCloseRequest={handleProfileUpdateEvent}
+        data={aboutInfo.aboutMe}
+        isOpen={aboutInfo.dialogOpen}
+      ></ChangeAboutInformationDialog>
     </>
   );
 }

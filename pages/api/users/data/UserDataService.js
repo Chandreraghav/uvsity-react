@@ -66,4 +66,12 @@ export default class UserDataService {
       }
     );
   }
+
+  static async editUserBio(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.EDITS.ABOUT,
+      payload,
+       
+    );
+  }
 }

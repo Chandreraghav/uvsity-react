@@ -1105,6 +1105,13 @@ export const PROFILE_AREAS = [
 ];
 export const USER_PROFILE = {
   CHANGE_PROFILE_PICTURE: "Change profile picture",
+  CHANGE_ABOUT_INFO: "Update your About or bio information",
+  BIO_UPDATED:'🚀Awesome!! Bio updated successfully',
+  BIO_UPDATE_FAILED:'Oops, there encountered an error while updating your bio, please try again.',
+  PLACEHOLDERS: {
+    WRITE_BIO: "Write something about yourself here...",
+    ABOUT_INFO: "About",
+  },
 };
 
 export const RECOMMENDATIONS = {
@@ -1137,31 +1144,31 @@ export const RATING = {
       id: 1,
       code: "fair",
       alias: "Fair",
-      value:'FAIR'
+      value: "FAIR",
     },
     {
       id: 2,
       code: "good",
       alias: "Good",
-      value:'GOOD'
+      value: "GOOD",
     },
     {
       id: 3,
       code: "best",
       alias: "Best",
-      value:'BEST'
+      value: "BEST",
     },
   ],
- 
+
   RATING_SENT_TO: "Yay! you just rated ",
   RATING_FAILED: "Uh, oh! there was an error rating your review to ",
   REQUEST_TYPE: "RATING_RESPONSE",
-  RATING_ALREADY_SENT:'RATING_ALREADY_SENT'
+  RATING_ALREADY_SENT: "RATING_ALREADY_SENT",
 };
-
 
 export const SESSION_REQUEST = {
   SEND_SESSION_REQUEST: "Send session request",
   MESSAGE_SENT_TO: "Superb! Session request for <#X#> has been sent to <#Y#>",
-  MESSAGE_SENT_FAILED: "Uh, oh! there was an error sending this session request to ",
+  MESSAGE_SENT_FAILED:
+    "Uh, oh! there was an error sending this session request to ",
 };
