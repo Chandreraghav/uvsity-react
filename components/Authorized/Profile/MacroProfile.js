@@ -2,6 +2,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Divider,
   Grid,
   IconButton,
@@ -78,7 +79,11 @@ import PolyMessagingDialog from "../../shared/modals/PolyMessagingDialog";
 import UserRatingDialog from "../../shared/modals/UserRatingDialog";
 import UserSessionRequestDialog from "../../shared/modals/UserSessionRequestDialog";
 import ChangeAboutInformationDialog from "../../shared/modals/ChangeAboutInformationModal";
+import ChangeProfileHeadlineDialog from "../../shared/modals/ChangeProfileHeadlineDialog"
+import EditIcon from "@mui/icons-material/Edit";
+import { getLocalStorageObject } from "../../../localStorage/local-storage";
 toast.configure();
+
 function MacroProfile(props) {
   const [selectedpicture, setSelectedPictureEvent] = useState(null);
   const [openProfilePictureModal, setProfilePictureModal] = useState(false);
@@ -223,6 +228,23 @@ function MacroProfile(props) {
     metaData?.city,
     metaData?.country
   );
+
+  console.log(userdata)
+
+  const _profileHighlight = {
+    dialogOpen: false,
+    designation:null,
+    institution:null,
+    city:null,
+    country:null,
+    social:null,
+    education:null,
+    specialization:null
+   
+  };
+  const [profileHighlight, setProfileHighlight] = useState(_profileHighlight);
+
+
 
   useEffect(() => {
     if (props?.lazyAPI && userdata?.userDetailsId) {
@@ -645,42 +667,61 @@ function MacroProfile(props) {
   };
 
   const handleProfileUpdateEvent = (obj) => {
-    if(obj && obj.id==1){
-      if(obj.event==='init_edit'){
+    if (obj && obj.id == 1) {
+      if (obj.event === "init_edit") {
         const _aboutInfo = {
           dialogOpen: true,
-          aboutMe:aboutInfo.aboutMe,
+          aboutMe: aboutInfo.aboutMe,
         };
         setAboutInfo(_aboutInfo);
-        return
+        return;
       }
-      if(obj.event==='edit'){
-        UserDataService.editUserBio({aboutMe:obj.edits}).then((res)=>{
-          handleResponse(
-            `${USER_PROFILE.BIO_UPDATED}`,
-            RESPONSE_TYPES.SUCCESS,
-            toast.POSITION.BOTTOM_CENTER
-          );
-          _aboutInfo.aboutMe=obj.edits
-          setAboutInfo(_aboutInfo)
-        }).catch((err)=>{
-          setAboutInfo(_aboutInfo)
-          handleResponse(
-            `${USER_PROFILE.BIO_UPDATE_FAILED}`,
-            RESPONSE_TYPES.ERROR,
-            toast.POSITION.BOTTOM_CENTER
-          );
-        })
-        return
+      if (obj.event === "edit") {
+        UserDataService.editUserBio({ aboutMe: obj.edits })
+          .then((res) => {
+            handleResponse(
+              `${USER_PROFILE.BIO_UPDATED}`,
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.BOTTOM_CENTER
+            );
+            _aboutInfo.aboutMe = obj.edits;
+            setAboutInfo(_aboutInfo);
+          })
+          .catch((err) => {
+            setAboutInfo(_aboutInfo);
+            handleResponse(
+              `${USER_PROFILE.BIO_UPDATE_FAILED}`,
+              RESPONSE_TYPES.ERROR,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          });
+        return;
       }
       const __aboutInfo = {
         dialogOpen: false,
-        aboutMe:aboutInfo.aboutMe,
+        aboutMe: aboutInfo.aboutMe,
       };
-      setAboutInfo(__aboutInfo)
+      setAboutInfo(__aboutInfo);
     }
-   
   };
+
+  const handleEditHeadline=()=>{
+
+    const _profileHighlight = {
+      dialogOpen: true,
+      designation:userType,
+      institution:metaData?.eduIns,
+      city:metaData?.city,
+      country:metaData?.country,
+      social:metaData?.social_profiles,
+      education,
+      specialization:userdata?.subject
+    
+    };
+    setProfileHighlight(_profileHighlight);
+  }
+
+
 
   return (
     <>
@@ -695,7 +736,7 @@ function MacroProfile(props) {
             className={`Profile-Name-Image-Cover-Picture-Secondary-Information-Connection-Status-social-profile-reference-Star-Rating actionable-items-on-connected-state schedule-calendar Connection stats uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__macro}`}
           >
             {/* COVER IMAGE */}
-            <div className="lg:hidden xl:hidden flex ">
+            <div className="lg:hidden xl:hidden flex relative ">
               <img
                 className={`${
                   !isConnected ? "-mb-12" : "  -mb-12"
@@ -703,9 +744,22 @@ function MacroProfile(props) {
                 src={DEFAULT_COVER_IMAGE}
                 alt="profile-cover-image"
               />
+              {isItMe && (
+                <Tooltip title={`${USER_PROFILE.CHANGE_PROFILE_HEADLINE}`}>
+                  <div className="absolute md:top-36 top-16 right-4">
+                    <Button
+                      onClick={ handleEditHeadline}
+                      variant="contained"
+                      startIcon={<EditIcon />}
+                    >
+                      Edit Headline
+                    </Button>
+                  </div>
+                </Tooltip>
+              )}
             </div>
 
-            <div className="hidden lg:inline-block xl:inline-block">
+            <div className="hidden lg:inline-block xl:inline-block relative">
               <img
                 className={`${
                   !isConnected ? "-mb-28" : "  -mb-28"
@@ -713,6 +767,19 @@ function MacroProfile(props) {
                 src={DEFAULT_COVER_IMAGE}
                 alt="profile-cover-image"
               />
+              {isItMe && (
+                <Tooltip title={`${USER_PROFILE.CHANGE_PROFILE_HEADLINE}`}>
+                  <div className="absolute top-40 right-4">
+                    <Button
+                      onClick={handleEditHeadline}
+                      variant="contained"
+                      startIcon={<EditIcon />}
+                    >
+                      Edit Headline
+                    </Button>
+                  </div>
+                </Tooltip>
+              )}
             </div>
 
             {/* AVATAR */}
@@ -994,15 +1061,17 @@ function MacroProfile(props) {
                               }`}
                             >
                               {profile.in.url && profile.in.display && (
-                                <Tooltip title={profile.in.tooltip}>
-                                  <a
-                                    href={profile.in.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    {profile.in.icon}
-                                  </a>
-                                </Tooltip>
+                                <>
+                                  <Tooltip title={profile.in.tooltip}>
+                                    <a
+                                      href={profile.in.url}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      {profile.in.icon}
+                                    </a>
+                                  </Tooltip>
+                                </>
                               )}
                             </div>
                           ))}
@@ -1217,6 +1286,14 @@ function MacroProfile(props) {
         data={aboutInfo.aboutMe}
         isOpen={aboutInfo.dialogOpen}
       ></ChangeAboutInformationDialog>
+
+      <ChangeProfileHeadlineDialog
+        title={`Edit profile headlines`}
+        
+        dialogCloseRequest={handleProfileUpdateEvent}
+        data={profileHighlight}
+        isOpen={profileHighlight.dialogOpen}
+      ></ChangeProfileHeadlineDialog>
     </>
   );
 }
