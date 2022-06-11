@@ -66,6 +66,7 @@ function MyApp({ Component, pageProps }) {
         });
     }
     // GET COUNTRIES
+    
     if (getLocalStorageObject("uvsity-countries")==="null" || !getLocalStorageObject("uvsity-countries")) {
       await CountryService.getCountries()
         .then((response) => {

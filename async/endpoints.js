@@ -79,10 +79,13 @@ export const ENDPOINTS = {
     },
     
   },
-  
+  METADATA:{
+    GET_COUNTRIES:'/data/countries'
+  }
 
 };
 export const EXTERNAL_FULLY_QUALIFIED_ENDPOINTS = {
   IP_DATA: process.env.NEXT_PUBLIC_IP_INFO_ENDPOINT,
   GET_COUNTRIES:process.env.NEXT_PUBLIC_COUNTRIES_INFO_ENDPOINT
 };
+

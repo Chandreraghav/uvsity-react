@@ -18,11 +18,9 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  shouldDialogAppearInFullScreen,
   isSmallScreen,
 } from "../../../utils/utility";
 import { USER_PROFILE } from "../../../constants/userdata";
-import PersonIcon from "@mui/icons-material/Person";
 import { makeStyles } from "@material-ui/core/styles";
 import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
 import { useForm } from "react-hook-form";
@@ -33,21 +31,22 @@ import {
 import { getLocalStorageObject } from "../../../localStorage/local-storage";
 function ChangeProfileHeadlineDialog(props) {
   if (!props.isOpen) return "";
-  console.log(props.data )
+ 
   const countries = JSON.parse(getLocalStorageObject('uvsity-countries'))
+  const selected_country = countries.find((country=>country.countryFullName.toLowerCase() ===props?.data?.country.toLowerCase()))
   const useStyles = makeStyles({
     input: {
       color: props?.theme ? "darkgrey" : "",
     },
   });
-  const classes = useStyles(); 
+  const classes = useStyles();  
   const [processing, setProcessing] = useState(false);
   const [request, setRequest] = useState(props?.data);
   const [designation, setDesignation] = useState(props.data.designation);
   const [specialization, setSpecialization] = useState(props?.data.specialization);
   const [instituition, setInstituation] = useState(props.data.institution);
   const [highestDegree, setHighestDegree] = useState(props.data.education.highestLevel);
-  const [countryId, setCountryId] = useState(null);
+  const [countryId, setCountryId] = useState(selected_country.countryId.toString() || "0");
   const [city, setCity] = useState(props.data.city);
 
   const handleClose = (closeInd) => {
@@ -55,10 +54,9 @@ function ChangeProfileHeadlineDialog(props) {
       if (!closeInd) {
         setProcessing(true);
       }
-      if (closeInd) setRequest(null);
+     // if (closeInd) setRequest(null);
       props.dialogCloseRequest({
-        id: 1,
-        edits: request,
+        id: 0,
         event: !closeInd ? "edit" : null,
         close: closeInd,
       });
@@ -298,10 +296,10 @@ function ChangeProfileHeadlineDialog(props) {
                       {countries?.map((country) => (
                         <MenuItem
                           className=" block p-2"
-                          key={country.ccn3}
-                          value={country.ccn3}
+                          key={country.countryId}
+                          value={country.countryId}
                         >
-                          {country.name.common}
+                          {country.countryFullName}
                         </MenuItem>
                       ))}
                     </Select>
