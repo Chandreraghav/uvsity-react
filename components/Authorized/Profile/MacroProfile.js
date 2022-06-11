@@ -667,6 +667,21 @@ function MacroProfile(props) {
   };
 
   const handleProfileUpdateEvent = (obj) => {
+    if(obj && obj.id==0){
+      const _profileHighlight = {
+        dialogOpen: false,
+        designation:null,
+        institution:null,
+        city:null,
+        country:null,
+        social:null,
+        education:null,
+        specialization:null
+       
+      };
+      setProfileHighlight(_profileHighlight)
+       
+    }
     if (obj && obj.id == 1) {
       if (obj.event === "init_edit") {
         const _aboutInfo = {
@@ -1289,7 +1304,6 @@ function MacroProfile(props) {
 
       <ChangeProfileHeadlineDialog
         title={`Edit profile headlines`}
-        
         dialogCloseRequest={handleProfileUpdateEvent}
         data={profileHighlight}
         isOpen={profileHighlight.dialogOpen}
