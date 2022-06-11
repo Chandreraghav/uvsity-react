@@ -152,3 +152,41 @@
 .profile__macro__review__star {
   color: gold;
 }
+.profile__headline__edit {
+  margin: 15% 5% 5% 70%;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .profile__headline__edit {
+    margin: 15% 5% 5% 70%
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .profile__headline__edit {
+    margin: 11% 5% 5% 80%;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .profile__headline__edit {
+    margin: 18% 5% 5% 80%
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .profile__headline__edit {
+    margin: 5% 10% 5% 70%
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .profile__headline__edit {
+    margin: 13% 10% 5% 90%
+  }
+}

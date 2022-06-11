@@ -38,7 +38,7 @@ function ProfileStats(props) {
         </div>
       </Tooltip>
       <>
-        <div className="flex gap-x-2 sm:gap-x-1 lg:gap-x-8 xl:gap-x-8  md:gap-x-4 ">
+        <div className="flex gap-x-3 sm:gap-x-3 lg:gap-x-8 xl:gap-x-8  md:gap-x-4 ">
           {CONNECTIONS.filter((hidden) => hidden !== true).map(
             (connection) =>
               getCount(connection.code) > 0 && (
@@ -49,7 +49,7 @@ function ProfileStats(props) {
                     )} ${connection.title.toLowerCase()}`}
                   >
                     <div
-                      className={`flex gap-x-1 sm:gap-x-1 lg:gap-x-2 xl:gap-x-2  md:gap-x-2 cursor-pointer text-sm items-center justify-center`}
+                      className={`flex gap-x-2 sm:gap-x-3 lg:gap-x-2 xl:gap-x-2  md:gap-x-2 cursor-pointer text-sm items-center justify-center`}
                     >
                       <Avatar
                         sx={{ bgcolor: blue[500] }}

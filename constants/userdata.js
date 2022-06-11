@@ -1106,6 +1106,7 @@ export const PROFILE_AREAS = [
 export const USER_PROFILE = {
   CHANGE_PROFILE_PICTURE: "Change profile picture",
   CHANGE_ABOUT_INFO: "Update your About or bio information",
+  CHANGE_PROFILE_HEADLINE:'Update prime highlights to your profile such as designation, organization, location...',
   BIO_UPDATED:'🚀Awesome!! Bio updated successfully',
   BIO_UPDATE_FAILED:'Oops, there encountered an error while updating your bio, please try again.',
   PLACEHOLDERS: {

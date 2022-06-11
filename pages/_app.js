@@ -27,6 +27,7 @@ import Layout from "../components/Main/Layout";
 import Splash from "../components/shared/Splash";
 import { BrowserRouter } from "react-router-dom";
 import ClientDeviceProvider from "../components/Device/HOC/ClientDeviceProvider";
+import CountryService from "./api/countries/CountryService";
 function MyApp({ Component, pageProps }) {
   
 
@@ -62,6 +63,16 @@ function MyApp({ Component, pageProps }) {
         .catch(() => {
           const ipDummyData = new IPService().getFakeIPData();
           setLocalStorageObject("uvsity-ipData", ipDummyData);
+        });
+    }
+    // GET COUNTRIES
+    if (getLocalStorageObject("uvsity-countries")==="null" || !getLocalStorageObject("uvsity-countries")) {
+      await CountryService.getCountries()
+        .then((response) => {
+          setLocalStorageObject("uvsity-countries", response.data);
+        })
+        .catch(() => {
+          setLocalStorageObject("uvsity-countries", null);
         });
     }
   }, []);
