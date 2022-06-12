@@ -46,7 +46,7 @@ function Shimmer({ visible, animation }) {
         <div className="">
           <div id="stepper" className="flex justify-evenly ">
             {[1, 2, 3, 4, 5].map((_, index) => (
-              <>
+               
                 <Skeleton1 key={index}>
                   <Skeleton
                     animation={animation ? animation : "wave"}
@@ -55,7 +55,7 @@ function Shimmer({ visible, animation }) {
                     width={60}
                   />
                 </Skeleton1>
-              </>
+               
             ))}
           </div>
 

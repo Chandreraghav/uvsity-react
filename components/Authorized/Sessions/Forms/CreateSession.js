@@ -59,7 +59,8 @@ function CreateSession(props) {
   const [imgUpload, setImgUpload] = useState(null);
   const [docUpload, setDocUpload] = useState(null);
   const [dirty, toggleDirty] = useToggle(false);
-  const [allowSessionCreationAPIComplete,setAllowSessionCreationAPIComplete]=useState(false)
+  const [allowSessionCreationAPIComplete, setAllowSessionCreationAPIComplete] =
+    useState(false);
   useLeavePageConfirm(dirty);
   const participantFormListener = () => {
     if (activeStep === 2) {
@@ -271,7 +272,112 @@ function CreateSession(props) {
     const completedSteps = steps.filter((step) => step.complete).length;
     return completedSteps === totalSteps() - 1;
   };
+  const handleStep = (index, label) => {
+    console.log(hasErrors, index, label);
+    if (hasErrors) return;
+    console.log("up here");
+    if (allStepsCompletedExceptFinalStep() && !sessionSubmitted) {
+      setAllowSessionCreationAPIComplete(false);
+      // this is the final step entry
+      setActiveStep(index);
+      setShowCompletionMessage(true);
+      // payload creation for sending to api.
+      const plans = formdata?.sponsor?.plans;
+      plans.map((plan) => {
+        plan.sponsorshipLevel = plan.alias;
+        plan.benefits = plan.current.featured.text
+          ? plan.current.featured.text
+          : plan.defaults.featured.text;
+        plan.amount = plan.current.price.text
+          ? plan.current.price.text
+          : plan.defaults.price.text;
+        plan.show = true;
+      });
+      const payload = getInitialPayload(plans);
 
+      SessionService.isSessionCreationAllowed(payload)
+        .then((res) => {
+          if (res.data.allowed) {
+            if (!payload.courseToSave.imageURL) {
+              // call fileupload
+              const image = formdata?.basic?.binary?.images?.data?.binary;
+              const formData = new FormData();
+              formData.append("file", image);
+              if (image && typeof image === "object") {
+                // call image upload
+                SessionService.uploadImage(formData)
+                  .then((res) => {
+                    setImgUpload(res);
+                  })
+                  .catch(() => {
+                    hasErrors = true;
+                  });
+              }
+            }
+            const document = formdata?.basic?.binary?.documents?.data?.binary;
+
+            if (document && typeof document === "object") {
+              // call doc upload
+              const docFormData = new FormData();
+              docFormData.append("file", document);
+              SessionService.uploadDoc(docFormData)
+                .then((res) => {
+                  setDocUpload(res);
+                })
+                .catch(() => {
+                  hasErrors = true;
+                });
+            }
+            const questionairreIdentifier = Number(
+              formdata?.participant?.questions
+            );
+            if (
+              formdata?.participant?.questions &&
+              questionairreIdentifier > 0
+            ) {
+              QuestionairreService.getQuestionairre(
+                questionairreIdentifier
+              ).then((res) => {
+                APP.SESSION.DTO.PARTICIPANTS.questionairre = res.data;
+                dispatch({
+                  type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
+                  participant: APP.SESSION.DTO.PARTICIPANTS,
+                });
+              });
+            }
+          } else {
+            setHasErrors(true);
+          }
+          setAllowSessionCreationAPIComplete(true);
+        })
+        .catch((err) => {
+          setAllowSessionCreationAPIComplete(true);
+          handleError(
+            APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED,
+            true,
+            true
+          );
+          return;
+        });
+
+      if (!hasErrors) {
+        undirtyDTO();
+        setSessionSubmitted(true);
+        handleComplete();
+      }
+    } else {
+      if (allStepsCompletedExceptFinalStep()) {
+        const finalStepIdx = getFinalStepIndex();
+        if (sessionSubmitted && index === finalStepIdx) {
+          setActiveStep(index);
+          return;
+        }
+        navigateToStep(label, index);
+        return;
+      }
+      navigateToStep(label, index);
+    }
+  };
   const handleNext = () => {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
@@ -279,7 +385,7 @@ function CreateSession(props) {
           // find the first step that has been completed
           steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
-    setActiveStep(newActiveStep);
+    handleStep(newActiveStep, steps[newActiveStep]); 
   };
 
   const handleBack = () => {
@@ -461,110 +567,7 @@ function CreateSession(props) {
       },
     };
   };
-  const handleStep = (index, label) => () => {
-    if (hasErrors) return;
-    if (allStepsCompletedExceptFinalStep() && !sessionSubmitted) {
-      setAllowSessionCreationAPIComplete(false)
-      // this is the final step entry
-      setActiveStep(index);
-      setShowCompletionMessage(true);
-      // payload creation for sending to api.
-      const plans = formdata?.sponsor?.plans;
-      plans.map((plan) => {
-        plan.sponsorshipLevel = plan.alias;
-        plan.benefits = plan.current.featured.text
-          ? plan.current.featured.text
-          : plan.defaults.featured.text;
-        plan.amount = plan.current.price.text
-          ? plan.current.price.text
-          : plan.defaults.price.text;
-        plan.show = true;
-      });
-      const payload = getInitialPayload(plans);
 
-      SessionService.isSessionCreationAllowed(payload)
-        .then((res) => {
-          if (res.data.allowed) {
-            if (!payload.courseToSave.imageURL) {
-              // call fileupload
-              const image = formdata?.basic?.binary?.images?.data?.binary;
-              const formData = new FormData();
-              formData.append("file", image);
-              if (image && typeof image === "object") {
-                // call image upload
-                SessionService.uploadImage(formData)
-                  .then((res) => {
-                    setImgUpload(res);
-                  })
-                  .catch(() => {
-                    hasErrors = true;
-                  });
-              }
-            }
-            const document = formdata?.basic?.binary?.documents?.data?.binary;
-
-            if (document && typeof document === "object") {
-              // call doc upload
-              const docFormData = new FormData();
-              docFormData.append("file", document);
-              SessionService.uploadDoc(docFormData)
-                .then((res) => {
-                  setDocUpload(res);
-                })
-                .catch(() => {
-                  hasErrors = true;
-                });
-            }
-            const questionairreIdentifier = Number(
-              formdata?.participant?.questions
-            );
-            if (
-              formdata?.participant?.questions &&
-              questionairreIdentifier > 0
-            ) {
-              QuestionairreService.getQuestionairre(
-                questionairreIdentifier
-              ).then((res) => {
-                APP.SESSION.DTO.PARTICIPANTS.questionairre = res.data;
-                dispatch({
-                  type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
-                  participant: APP.SESSION.DTO.PARTICIPANTS,
-                });
-              });
-            }
-          } else {
-            setHasErrors(true);
-          }
-          setAllowSessionCreationAPIComplete(true)
-        })
-        .catch((err) => {
-          setAllowSessionCreationAPIComplete(true)
-          handleError(
-            APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED,
-            true,
-            true
-          );
-          return;
-        });
-
-      if (!hasErrors) {
-        undirtyDTO();
-        setSessionSubmitted(true);
-        handleComplete();
-      }
-    } else {
-      if (allStepsCompletedExceptFinalStep()) {
-        const finalStepIdx = getFinalStepIndex();
-        if (sessionSubmitted && index === finalStepIdx) {
-          setActiveStep(index);
-          return;
-        }
-        navigateToStep(label, index);
-        return;
-      }
-      navigateToStep(label, index);
-    }
-  };
   const handleError = (msg, showToast, setStates) => {
     if (setStates) {
       setHasErrors(true);
@@ -655,14 +658,13 @@ function CreateSession(props) {
   }, [formdata]);
 
   useEffect(() => {
-      setAllowSessionCreationAPIComplete(false)
-      setHasErrors(false);
-      toggleDirty(false);
-       _delay(2000).then(()=>{
-         setShimmer(false)
-       })
+    setAllowSessionCreationAPIComplete(false);
+    setHasErrors(false);
+    toggleDirty(false);
+    _delay(2000).then(() => {
+      setShimmer(false);
+    });
   }, []);
-
 
   const QontoConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -946,11 +948,13 @@ function CreateSession(props) {
           ? true
           : false,
       cohostUser: cohost,
-      sessionCoHostData:formdata?.participant?.cohost? {
-        sessionCoHostId: formdata?.participant?.cohost
-          ? formdata?.participant?.cohost?.userDetailsId
-          : null,
-      }:null,
+      sessionCoHostData: formdata?.participant?.cohost
+        ? {
+            sessionCoHostId: formdata?.participant?.cohost
+              ? formdata?.participant?.cohost?.userDetailsId
+              : null,
+          }
+        : null,
       registrationQuestionnaireId: formdata?.participant?.questions,
       sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
       sponsorshipLevels: sponsorshipLevels,
@@ -979,8 +983,12 @@ function CreateSession(props) {
         : null,
       cost: Number(formdata?.fees.amount),
       imageURL: getImageURL(true),
-      slideDeckFileName:formdata?.basic?.binary.documents.consent? formdata?.basic?.binary?.documents?.data?.binary?.name:null,
-      slideDeckFileNameOriginal: formdata?.basic?.binary.documents.consent?formdata?.basic?.binary?.documents?.data?.binary?.name:null,
+      slideDeckFileName: formdata?.basic?.binary.documents.consent
+        ? formdata?.basic?.binary?.documents?.data?.binary?.name
+        : null,
+      slideDeckFileNameOriginal: formdata?.basic?.binary.documents.consent
+        ? formdata?.basic?.binary?.documents?.data?.binary?.name
+        : null,
       fee: formdata?.fees?.paidInd
         ? WORKFLOW_CODES.USER.SESSION.FEE.PAID
         : WORKFLOW_CODES.USER.SESSION.FEE.FREE,
@@ -1083,14 +1091,14 @@ function CreateSession(props) {
       });
   };
 
-  const handleRetry=(obj)=>{
-    toggleDirty(false)
-    handleNavigate(obj)
-    setHasErrors(false)
+  const handleRetry = (obj) => {
+    toggleDirty(false);
+    handleNavigate(obj);
+    setHasErrors(false);
     setTimeout(() => {
       scrollDivToTop();
     }, 100);
-  }
+  };
   ColorlibStepIcon.propTypes = {
     /**
      * Whether this step is active.
@@ -1125,111 +1133,121 @@ function CreateSession(props) {
       <Typography variant="h6" component="div">
         {props.data.workflow.workflow.alias}
       </Typography>
-      <Shimmer visible={shimmer}/>
+      <Shimmer visible={shimmer} />
       {!shimmer && (
-      <>
-        <Slide direction="up" in={true}>
-        <Box sx={{ width: "100%" }} className="py-4">
-          <Stepper
-            alternativeLabel
-            activeStep={activeStep}
-            nonLinear
-            connector={<QontoConnector />}
-          >
-            {steps.map((label, index) => (
-              <Step
-                className={hasErrors ? "opacity-40" : ""}
-                key={label.id}
-                completed={label.complete}
+        <>
+          <Slide direction="up" in={true}>
+            <Box sx={{ width: "100%" }} className="py-4">
+              <Stepper
+                alternativeLabel
+                activeStep={activeStep}
+                nonLinear
+                connector={<QontoConnector />}
               >
-                <StepButton color="inherit" onClick={handleStep(index, label)}>
-                  <StepLabel
-                    StepIconComponent={ColorlibStepIcon}
-                    error={label.validationError}
+                {steps.map((label, index) => (
+                  <Step
+                    className={hasErrors ? "opacity-40" : ""}
+                    key={label.id}
+                    completed={label.complete}
                   >
-                    <div
-                      className={` flex justify-center items-start mx-auto  gap-1 ${
-                        label.complete ? "font-semibold" : "font-normal"
-                      }`}
+                    <StepButton
+                      color="inherit"
+                      onClick={()=>handleStep(index, label)}
                     >
-                      <div
-                        className={`  ${
-                          index === activeStep ? "italic" : "normal"
-                        }`}
+                      <StepLabel
+                        StepIconComponent={ColorlibStepIcon}
+                        error={label.validationError}
                       >
-                        {label.title}
-                      </div>
-                    </div>
-                  </StepLabel>
-                </StepButton>
-              </Step>
-            ))}
-          </Stepper>
-          <div>
-            <React.Fragment>
-              {activeStep === 0 && <Basic data={props.data} />}
-              {activeStep === 1 && <Schedule data={props.data} />}
-              {activeStep === 2 && <Participant data={props.data} />}
-              {activeStep === 3 && <Fee data={props.data} />}
-              {activeStep === 4 && (
-                <Final
-                  showCompletionMessage={showCompletionMessage}
-                  onNavigate={handleNavigate}
-                  allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()}
-                  hasErrors={hasErrors}
-                  errorMessage={errorMessage}
-                  preRequisiteSessionAPIComplete={allowSessionCreationAPIComplete}
-                  data={props.data}
-                  onRetry={handleRetry}
-                />
-              )}
+                        <div
+                          className={` flex justify-center items-start mx-auto  gap-1 ${
+                            label.complete ? "font-semibold" : "font-normal"
+                          }`}
+                        >
+                          <div
+                            className={`  ${
+                              index === activeStep ? "italic" : "normal"
+                            }`}
+                          >
+                            {label.title}
+                          </div>
+                        </div>
+                      </StepLabel>
+                    </StepButton>
+                  </Step>
+                ))}
+              </Stepper>
+              <div>
+                <React.Fragment>
+                  {activeStep === 0 && <Basic data={props.data} />}
+                  {activeStep === 1 && <Schedule data={props.data} />}
+                  {activeStep === 2 && <Participant data={props.data} />}
+                  {activeStep === 3 && <Fee data={props.data} />}
+                  {activeStep === 4 && (
+                    <Final
+                      showCompletionMessage={showCompletionMessage}
+                      onNavigate={handleNavigate}
+                      allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()}
+                      hasErrors={hasErrors}
+                      errorMessage={errorMessage}
+                      preRequisiteSessionAPIComplete={
+                        allowSessionCreationAPIComplete
+                      }
+                      data={props.data}
+                      onRetry={handleRetry}
+                    />
+                  )}
 
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}>
-                <Button
-                  color="inherit"
-                  disabled={activeStep === 0 || hasErrors}
-                  onClick={handleBack}
-                  sx={{ mr: 1 }}
-                >
-                  Back
-                </Button>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button
-                  disabled={
-                    !steps[activeStep].complete ||
-                    (activeStep === 3 && !allStepsCompletedExceptFinalStep())
-                  }
-                  onClick={handleNext}
-                  sx={{ mr: 1 }}
-                >
-                  Next
-                </Button>
-                <Button
-                  disabled={!allStepsCompletedExceptFinalStep() || hasErrors}
-                  sx={{ mr: 1 }}
-                  onClick={openConfirmSessionSubmitDialog}
-                >
-                  Submit
-                </Button>
-              </Box>
-            </React.Fragment>
-          </div>
-        </Box>
-      </Slide>
-      <ConfirmDialog
-        actionButtonProps={{ YES: "Yes", NO: "Not now" }}
-        dialogCloseRequest={handleSessionSubmit}
-        isOpen={confirmSessionDialogOpened}
-        theme="dark"
-        confirmMessage={TOOLTIPS.SESSION_SUBMIT_CONFIRMATION}
-      />
-      <Overlay
-        icon={<RocketLaunchIcon />}
-        message={TOOLTIPS.CREATING_SESSION}
-        open={processing}
-      />
-      </>)}
-      
+                  <Box
+                    sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}
+                  >
+                    <Button
+                      color="inherit"
+                      disabled={activeStep === 0 || hasErrors}
+                      onClick={handleBack}
+                      sx={{ mr: 1 }}
+                    >
+                      Back
+                    </Button>
+                    <Box sx={{ flex: "1 1 auto" }} />
+                    <Button
+                      disabled={
+                        !steps[activeStep].complete ||
+                        (activeStep === 3 &&
+                          !allStepsCompletedExceptFinalStep())
+                      }
+                      onClick={handleNext}
+                      sx={{ mr: 1 }}
+                    >
+                      Next
+                    </Button>
+                    <Button
+                      disabled={
+                        !allStepsCompletedExceptFinalStep() || hasErrors
+                      }
+                      sx={{ mr: 1 }}
+                      onClick={openConfirmSessionSubmitDialog}
+                    >
+                      Submit
+                    </Button>
+                  </Box>
+                </React.Fragment>
+              </div>
+            </Box>
+          </Slide>
+          <ConfirmDialog
+            actionButtonProps={{ YES: "Yes", NO: "Not now" }}
+            dialogCloseRequest={handleSessionSubmit}
+            isOpen={confirmSessionDialogOpened}
+            theme="dark"
+            confirmMessage={TOOLTIPS.SESSION_SUBMIT_CONFIRMATION}
+          />
+          <Overlay
+            icon={<RocketLaunchIcon />}
+            message={TOOLTIPS.CREATING_SESSION}
+            open={processing}
+          />
+        </>
+      )}
     </div>
   );
 }
