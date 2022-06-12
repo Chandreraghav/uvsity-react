@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import MacroProfile from "../../../../components/Authorized/Profile/MacroProfile";
-import Spacer from "../../../../components/shared/Spacer";
 import ProfileStyle from "../../../../styles/Profile.module.css";
 import {
   formattedName,
@@ -37,12 +36,12 @@ function Profile(props) {
   const eduIns = props?.userdata?.eduIns;
   const profileSecondaryLine = formattedProfileSubtitle(userType, eduIns);
   return (
-    <>
+    <div className=" min-h-screen">
       {props?.userdata && (
         <>
           {/* Top Fixed Header */}
           <div
-            className={`${ProfileStyle.profile__macro__top__fixed__header} ${
+            className={` lg:w-3/4 xl:w-3/4 w-full xs:w-full ${ProfileStyle.profile__macro__top__fixed__header} ${
               show ? ProfileStyle.profile__macro__header__show : "hidden"
             }`}
           >
@@ -71,7 +70,7 @@ function Profile(props) {
     gap-2 px-2 mx-auto xl:container md:gap-4 
     xl:grid-cols-8 2xl:px-5 "
       >
-        <div className=" col-span-12 md:pt-2">
+        <div className="   col-span-12 md:pt-2">
           {/* Main Content */}
           <MacroProfile
             loggedInUserID={props?.loggedInUser?.userDetailsId}
@@ -83,9 +82,9 @@ function Profile(props) {
         </div>
 
        
-        <Spacer count={6} />
+         
       </div>
-    </>
+    </div>
   );
 }
 

@@ -229,7 +229,7 @@ function MacroProfile(props) {
     metaData?.country
   );
 
-  console.log(userdata)
+   
 
   const _profileHighlight = {
     dialogOpen: false,
@@ -931,7 +931,7 @@ function MacroProfile(props) {
                                 aria-label="awaiting-connection-response-from-person"
                               >
                                 <PendingIcon fontSize="small" />
-                                <small className={`text-sm font-small`}>
+                                <small className={`font-small text-sm`}>
                                   {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
                                 </small>
                               </IconButton>
@@ -1050,7 +1050,7 @@ function MacroProfile(props) {
                                     fontSize="small"
                                   />
                                   <small
-                                    className={`mt-0.5 text-sm font-small text-green-700`}
+                                    className={`mt-0.5   font-small text-green-700 text-sm`}
                                   >
                                     {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
                                   </small>

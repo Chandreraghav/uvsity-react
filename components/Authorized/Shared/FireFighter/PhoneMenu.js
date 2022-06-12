@@ -11,7 +11,7 @@ function PhoneMenu(props) {
     }
   };
   return (
-    <div className=" bg-gradient-to-r from-blue-200 via-green-100 to-blue-500  flex md:hidden  mt-auto clear-both bottom-0 left-0 z-50 text-center justify-center items-center  p-4 w-screen    fixed">
+    <div className=" max-h-10 bg-gradient-to-r from-blue-200 via-green-100 to-blue-500  flex md:hidden  mt-auto clear-both bottom-0 left-0 z-50 text-center justify-center items-center  p-4 w-screen    fixed">
       {props?.data?.isLoading ? (
         <>
           <div className={` hidden md:flex items-center`}>
@@ -20,8 +20,9 @@ function PhoneMenu(props) {
         </>
       ) : (
         HEADER_OPTIONS.map((data) => (
+          <div className="zoom-9" key={data.id}>
           <HeaderOption
-            key={data.id}
+            
             oid={props?.data?.data.userDetailsId}
             isAuthorizedProfile={data.hasAvatar}
             hidden={data.hidden}
@@ -37,6 +38,7 @@ function PhoneMenu(props) {
             phoneMenu
             errorOnRedirect={handleErrorOnRedirect}
           />
+          </div>
         ))
       )}
     </div>
