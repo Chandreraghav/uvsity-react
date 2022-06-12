@@ -115,7 +115,7 @@ const UserProfile = () => {
         data={getData.LOGGED_IN_USER_SUMMARY}
       />
       {isSuccess && (
-        <div className="main">
+        <div className="main xl:w-3/4 xl:mx-auto lg:w-3/4 lg:mx-auto">
           <Profile
             hasChangeEventTriggered={hasChangeEventTriggered}
             changeEvent={handleChangeEvent}
@@ -125,7 +125,7 @@ const UserProfile = () => {
           />
         </div>
       )}
-      {isLoading && <div className=" bg-white">{LOADING_MESSAGE_DEFAULT}</div>}
+      {isLoading && <div className="  min-h-screen bg-white">{LOADING_MESSAGE_DEFAULT}</div>}
       <PhoneMenu data={getData.LOGGED_IN_USER_SUMMARY} />
       <Footer minimizeOnSmallScreens />
     </Layout>

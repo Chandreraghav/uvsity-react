@@ -134,7 +134,7 @@ export default function SessionCard({
       } ${
         !authorized
           ? SessionStyle.session__card__lightblue__variant
-          : SessionStyle.session__card__white__variant
+          : SessionStyle.session__card__lightblue__variant
       } 
       ${
         !authorized

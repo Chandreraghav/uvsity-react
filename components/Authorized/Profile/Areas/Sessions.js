@@ -12,7 +12,7 @@ function Sessions(props) {
   const router = useRouter();
   const [dataSlice, setDataSlice] = useState(0);
   const [showShimmer, setShowShimmer] = useState(true);
-  const dataSliceIncrement = 4;
+  const dataSliceIncrement = 3;
   const [data, setData] = useState(null);
   const [slicedData, setSlicedData] = useState([]);
   useEffect(() => {
@@ -52,11 +52,11 @@ function Sessions(props) {
     }
   };
   return data && data.length > 0 ? (
-    <>
+    <div className="  mb-8 lg:mb-0 xl:mb-0 md:mb-0 ">
       {slicedData ? (
         <>
           <div
-            className={`lg:m-auto sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 xl:grid xl:grid-cols-4 lg:grid lg:grid-cols-3 gap-4`}
+            className={`lg:m-auto sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 xl:grid xl:grid-cols-3 lg:grid lg:grid-cols-2 gap-4`}
           >
             {slicedData.map((_data) => (
               <SessionCard
@@ -93,9 +93,9 @@ function Sessions(props) {
       ) : (
         <>{LOADING_MESSAGE_DEFAULT}</>
       )}
-    </>
+    </div>
   ) : props?.sessions?.error ? (
-    <>
+    <div className="min-h-screen mb-12 lg:mb-0 xl:mb-0">
       <NoData
         message={`${
           props?.owner
@@ -103,9 +103,9 @@ function Sessions(props) {
             : "Some internal error occured while loading this feed."
         }`}
       />
-    </>
+    </div>
   ) : (
-    <div className="flex flex-col space-y-2 mb-1">
+    <div className="min-h-screen mb-12 lg:mb-0 xl:mb-0 flex flex-col space-y-2 mb-1">
       <NoData
         message={`${
           props?.owner
