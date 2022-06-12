@@ -65,7 +65,7 @@ function Profile(props) {
       )}
 
       <div
-        className=" bg-white p-2
+        className="  p-2
     grid items-stretch grid-cols-12  
     gap-2 px-2 mx-auto xl:container md:gap-4 
     xl:grid-cols-8 2xl:px-5 "

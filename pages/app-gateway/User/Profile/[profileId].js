@@ -15,6 +15,7 @@ import { formattedName } from "../../../../utils/utility";
 import UserDataService from "../../../api/users/data/UserDataService";
 import Profile from "./Profile";
 import { LOADING_MESSAGE_DEFAULT } from "../../../../constants/constants";
+import Spacer from "../../../../components/shared/Spacer";
 const UserProfile = () => {
   const router = useRouter();
   const { profileId } = router.query;
@@ -123,6 +124,7 @@ const UserProfile = () => {
             userdata={getData.PROFILE_SUMMARY?.data}
             loggedInUser={getData.LOGGED_IN_USER_SUMMARY?.data}
           />
+           
         </div>
       )}
       {isLoading && <div className="  min-h-screen bg-white">{LOADING_MESSAGE_DEFAULT}</div>}

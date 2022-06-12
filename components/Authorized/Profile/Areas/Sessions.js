@@ -52,11 +52,11 @@ function Sessions(props) {
     }
   };
   return data && data.length > 0 ? (
-    <div className="  mb-8 lg:mb-0 xl:mb-0 md:mb-0 ">
+    <div className=" sm:mb-8 mb-9 md:mb-0  lg:mb-0 xl:mb-0  ">
       {slicedData ? (
         <>
           <div
-            className={`lg:m-auto sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 xl:grid xl:grid-cols-3 lg:grid lg:grid-cols-2 gap-4`}
+            className={`lg:m-auto xs:grid xs:grid-cols-1 sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 xl:grid xl:grid-cols-3 lg:grid lg:grid-cols-2 gap-4`}
           >
             {slicedData.map((_data) => (
               <SessionCard
@@ -73,7 +73,7 @@ function Sessions(props) {
           {data?.length > slicedData?.length && (
               <Typography
                 onClick={handleSeeMore}
-                className="app__anchor__block cursor-pointer read-or-hide"
+                className="  app__anchor__block cursor-pointer read-or-hide"
                 color="text.secondary"
               >
                 {SEE_MORE}
@@ -95,7 +95,7 @@ function Sessions(props) {
       )}
     </div>
   ) : props?.sessions?.error ? (
-    <div className="min-h-screen mb-12 lg:mb-0 xl:mb-0">
+    <div className="min-h-screen mb-12  lg:mb-0 xl:mb-0">
       <NoData
         message={`${
           props?.owner
