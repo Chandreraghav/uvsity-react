@@ -1167,7 +1167,7 @@ function MacroProfile(props) {
                             </div>
                             <Divider />
                             <Spacer />
-                            <div className="mb-1">
+                            <div className="">
                               {area.id === 1 && (
                                 <>
                                   <About
