@@ -84,7 +84,10 @@ function Landing() {
         onHeaderNavigationError={handleNavigationError}
         data={getData.USER_PROFILE_SUMMARY}
       />
+      <div className="main">
       <Dashboard data={getData} />
+      </div>
+      
     
       <PhoneMenu data={getData.USER_PROFILE_SUMMARY} />
       <Footer minimizeOnSmallScreens />

@@ -115,7 +115,7 @@ const UserProfile = () => {
         data={getData.LOGGED_IN_USER_SUMMARY}
       />
       {isSuccess && (
-        <>
+        <div className="main">
           <Profile
             hasChangeEventTriggered={hasChangeEventTriggered}
             changeEvent={handleChangeEvent}
@@ -123,7 +123,7 @@ const UserProfile = () => {
             userdata={getData.PROFILE_SUMMARY?.data}
             loggedInUser={getData.LOGGED_IN_USER_SUMMARY?.data}
           />
-        </>
+        </div>
       )}
       {isLoading && <div className=" bg-white">{LOADING_MESSAGE_DEFAULT}</div>}
       <PhoneMenu data={getData.LOGGED_IN_USER_SUMMARY} />

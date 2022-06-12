@@ -3,10 +3,14 @@
 @tailwind utilities;
 
 .app {
-  display: flex;
-  flex-direction: column;
+
   background-color: #f0f0f0 !important;
 }
+
+.main {
+  flex-grow: 1;
+}
+
 html,
 body {
   padding: 0;
@@ -14,9 +18,10 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   --blue: #0081cb;
-  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
-
 a {
   color: inherit;
   text-decoration: none;
@@ -31,10 +36,12 @@ a {
   padding-bottom: 100px;
   position: relative;
 }
+
 .uvsity-section {
   padding-top: 0;
   padding-bottom: 0;
 }
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 
 ::-webkit-scrollbar {
@@ -44,10 +51,12 @@ a {
   background: transparent;
   /* Optional: just make scrollbar invisible */
 }
+
 .MuiCardMedia-img {
   height: 200px;
   object-fit: cover !important;
 }
+
 .ellipsis {
   white-space: nowrap !important;
   width: 50% !important;
@@ -55,34 +64,41 @@ a {
   text-overflow: ellipsis !important;
   border: none;
 }
+
 .app__anchor {
   text-decoration: none;
   color: #f8ac41;
 }
+
 .app__anchor__footer:hover {
   text-decoration: underline !important;
   transition-timing-function: ease-in;
   transition: all 0.8s;
   color: #111 !important;
 }
+
 .app__anchor:hover {
   text-decoration: underline !important;
   transition-timing-function: ease-in;
   transition: all 0.8s;
   color: #5271ff !important;
 }
+
 .app__anchor__block {
   text-decoration: none;
 }
+
 .app__anchor__block:hover {
   text-decoration: underline !important;
   transition-timing-function: ease-in;
   transition: all 0.8s;
   color: #5271ff !important;
 }
+
 button.success {
   background-color: #5271ff !important;
 }
+
 button.danger {
   background-color: #111 !important;
 }
@@ -90,16 +106,16 @@ button.danger {
 .fadeBottom {
   height: 50px;
 
-  background-image: linear-gradient(
-    180deg,
-    transparent,
-    rgba(37, 37, 37, 0.61),
-    #262626
-  );
+  background-image: linear-gradient(180deg,
+      transparent,
+      rgba(37, 37, 37, 0.61),
+      #262626);
 }
+
 .red__border__input {
   border: 2px solid red !important;
 }
+
 .app__toast {
   font-size: 0.8rem !important;
 }
@@ -114,6 +130,7 @@ button.danger {
   cursor: not-allowed !important;
   opacity: 0.6 !important;
 }
+
 .control__muted {
   color: lightgrey !important;
 }
@@ -122,6 +139,7 @@ button.danger {
   color: darkgrey !important;
   margin-top: 1px !important;
 }
+
 .app__workflow__loader__sm {
   width: 20px !important;
   height: 20px !important;
@@ -135,24 +153,30 @@ button.danger {
 .evening {
   background-image: linear-gradient(to right, #fff, #3b3b8a) !important;
 }
+
 .afternoon {
   background-image: linear-gradient(to right, #fff, #f7b31c) !important;
 }
+
 .morning {
   background-image: linear-gradient(to right, #fff, #48a74f) !important;
 }
+
 .uvsity-card {
   border-radius: 0.5rem;
   border-width: 1px;
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
 }
+
 .lg-icon {
   font-size: 4rem !important;
 }
+
 .md-icon {
   font-size: 3rem !important;
 }
+
 .sticky__sidebar {
   transform: translateZ(0px);
   top: 30px;
@@ -167,21 +191,26 @@ button.danger {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
 }
+
 .uvsity__card__border__theme {
   border-bottom: 5px solid var(--blue);
 }
+
 .uvsity__card__border__disabled {
   border-bottom: 5px solid darkgrey;
 }
+
 .uvsity__card__top {
   border: 1px solid lightgray;
   background-color: #fff;
   border-radius: 10px;
   border-bottom: 5px solid var(--blue);
 }
+
 .spacer {
   padding: 5px;
 }
+
 .divider {
   width: 100%;
   color: #ebebeb !important;
@@ -196,28 +225,32 @@ button.danger {
   border-radius: 10px;
   margin-top: 10px;
 }
-.uvsity__card__bottom > p {
+
+.uvsity__card__bottom>p {
   font-size: 13px;
   padding-bottom: 10px;
 }
+
 .avatar-sm {
   width: 56px !important;
   height: 56px !important;
 }
+
 .avatar-dashboard {
   width: 48px !important;
   height: 48px !important;
 }
-.avatar-lg{
+
+.avatar-lg {
   width: 200px !important;
   height: 200px !important;
-  font-size: 52px!important;
+  font-size: 52px !important;
 }
 
-.avatar-md{
+.avatar-md {
   width: 100px !important;
   height: 100px !important;
-  font-size: 26px!important;
+  font-size: 26px !important;
 }
 
 .avatar-xs {
@@ -230,16 +263,20 @@ button.danger {
   height: 30px !important;
   font-size: smaller !important;
 }
-.avatar-3xs{
+
+.avatar-3xs {
   width: 30px !important;
   height: 30px !important;
   font-size: smaller !important;
 }
+
 .usticky {
-  position: -webkit-sticky; /* for Safari */
+  position: -webkit-sticky;
+  /* for Safari */
   position: sticky;
 
-  align-self: flex-start; /* <-- this is the fix */
+  align-self: flex-start;
+  /* <-- this is the fix */
 }
 
 .usticky-card {
@@ -256,41 +293,52 @@ button.danger {
   font-weight: 400 !important;
   color: gray !important;
 }
+
 .font-small {
   font-size: 0.6rem !important;
 }
+
 .mt-3-5 {
-  margin-top: 14px !important ;
+  margin-top: 14px !important;
 }
+
 .slow-transition {
   transition-property: width;
   transition-duration: 5s;
   transition-delay: 2s;
 }
+
 .-mt-2-5 {
   margin-top: -4px !important;
 }
+
 .-mt-2-px {
   margin-top: -2px !important;
 }
+
 .dialog-subtitle {
   border-bottom: 1px solid #e2e2e2 !important;
 }
+
 .dialog-dark-subtitle {
   border-bottom: 1px solid dimgrey !important;
 }
+
 .dark-dialog {
   background-color: #111 !important;
   color: #fff !important;
 }
+
 .dark-dialog-variant {
   background-color: #18191a !important;
   color: #fff !important;
 }
+
 .default-dialog-variant {
   background-color: #fff !important;
   color: #111 !important;
 }
+
 .dialog-title:hover {
   cursor: pointer !important;
   text-decoration: underline;
@@ -303,15 +351,18 @@ button.danger {
   border-right: 1px solid #e2e2e2;
   padding: 4px;
 }
+
 .theme-color {
   color: var(--blue);
 }
+
 .rectangular-md-card {
   width: 430px;
   z-index: 1000 !important;
   padding: 20px !important;
   overflow: hidden !important;
 }
+
 .rectangular-md-card-fixed-height {
   height: 200px !important;
 }
@@ -321,6 +372,7 @@ button.danger {
     zoom: 0.9;
   }
 }
+
 .border-white-override {
   border-color: #fff !important;
 }
@@ -328,31 +380,39 @@ button.danger {
 .MuiInputLabel-root.Mui-focused {
   margin-top: 8px !important;
 }
+
 .MuiFormLabel-filled {
   margin-top: 8px !important;
 }
+
 .MuiPickersDay-daySelected {
   text-align: center;
   place-content: center;
   align-items: center;
 }
+
 .MuiPickersDay-day {
   text-align: center;
   place-content: center;
   align-items: center;
 }
+
 .block {
   display: block !important;
 }
+
 .blue-text {
   color: #3f51b5 !important;
 }
+
 .red-text {
   color: rgba(185, 28, 28, var(--tw-text-opacity)) !important;
 }
+
 .small-text {
   font-size: 14px !important;
 }
+
 .parent-grid {
   grid-template-columns: 100px 1fr;
 }
@@ -360,6 +420,7 @@ button.danger {
 .zoom-9 {
   zoom: 0.9;
 }
+
 .grayscale-filter {
   filter: grayscale(50%);
 }
@@ -370,6 +431,7 @@ button.danger {
   scale: 2;
   background-image: linear-gradient(to right, #558ee1, #000) !important;
 }
+
 .app__button {
   outline: none;
   right: 160px;
@@ -381,42 +443,46 @@ button.danger {
   background: #5271ff;
   font-weight: 500;
 }
+
 .app__button__block:hover {
   text-decoration: underline !important;
   transition-timing-function: ease-in;
   transition: all 0.8s;
   background: #000;
 }
+
 .zoom-80 {
   zoom: 0.8;
 }
+
 .ck-editor__editable_inline {
   min-height: 200px;
   max-height: 250px;
 }
-.w-30vw{
+
+.w-30vw {
   width: 30vw !important;
 }
- 
-  
-.text{
+
+
+.text {
   display: inline;
   width: 100%;
 }
-  
-.read-or-hide{
-  color: rgb(192,192,192);
+
+.read-or-hide {
+  color: rgb(192, 192, 192);
   cursor: pointer;
 }
-.code{
-  font-family: 'Courier New', Courier, monospace!important;
+
+.code {
+  font-family: 'Courier New', Courier, monospace !important;
 }
 
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
-  .app__body {
-  }
+  .app__body {}
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -446,10 +512,10 @@ button.danger {
     zoom: 0.85;
   }
 }
+
 @media (max-width: 425px) {
-  body .ck.ck-toolbar-dropdown .ck.ck-toolbar .ck.ck-toolbar__items
-  {
+  body .ck.ck-toolbar-dropdown .ck.ck-toolbar .ck.ck-toolbar__items {
     flex-wrap: wrap;
     min-width: 70vw;
-  }  
+  }
 }
