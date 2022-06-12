@@ -478,6 +478,24 @@ button.danger {
 .code {
   font-family: 'Courier New', Courier, monospace !important;
 }
+.danger{
+  background-color: #ef5350!important;
+  color: #FFF;
+}  
+.primary{
+  background-color: #007bff!important;
+  color: #FFF;
+}
+
+.success{
+  background-color: #66bb6a!important;
+  color: #FFF;
+}  
+
+.info{
+  background-color: #26c6da!important;
+  color: #FFF;
+} 
 
 
 /* Extra small devices (phones, 600px and down) */
