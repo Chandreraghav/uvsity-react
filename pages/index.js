@@ -18,22 +18,22 @@ const Home = () => {
   const handleSignInDialogClose = () => {
     setOpenSignInDialog(false);
   };
-  
-   
+
   // PUBLIC ROUTE
   return (
     <Layout options={layoutObj}>
-      <Header
-        setSignInDialogOpen={handleSignInDialogOpen}
-      />
-      <Hero
-        setSignInDialogClose={handleSignInDialogClose}
-        signedInDialogOpened={openSignInDialog}
-      />
-      <Feature/>
-      <TrendingSessions />
-      {/* Stats will be replaced by About us section in the future */}
-      <Stats />
+      <Header setSignInDialogOpen={handleSignInDialogOpen} />
+      <div className="main">
+        <Hero
+          setSignInDialogClose={handleSignInDialogClose}
+          signedInDialogOpened={openSignInDialog}
+        />
+        <Feature />
+        <TrendingSessions />
+        {/* Stats will be replaced by About us section in the future */}
+        <Stats />
+      </div>
+
       <Footer />
     </Layout>
   );

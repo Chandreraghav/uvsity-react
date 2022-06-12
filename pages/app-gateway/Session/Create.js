@@ -65,7 +65,7 @@ function Create() {
     <Layout private options={layoutObj}>
       <Header onHeaderNavigationError={handleNavigationError} data={getData.USER_PROFILE_SUMMARY} />
       {oldContextErased && (
-        <>
+         
           <CreateSession
             data={{
               static: getData.STATIC_META_DATA.data,
@@ -74,10 +74,10 @@ function Create() {
               user: getData.USER_PROFILE_SUMMARY,
             }}
           />
-        </>
+         
       )}
       <PhoneMenu data={getData.USER_PROFILE_SUMMARY} />
-      <Footer minimizeOnSmallScreens />
+      
     </Layout>
   );
 }

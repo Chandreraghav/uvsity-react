@@ -273,9 +273,7 @@ function CreateSession(props) {
     return completedSteps === totalSteps() - 1;
   };
   const handleStep = (index, label) => {
-    console.log(hasErrors, index, label);
     if (hasErrors) return;
-    console.log("up here");
     if (allStepsCompletedExceptFinalStep() && !sessionSubmitted) {
       setAllowSessionCreationAPIComplete(false);
       // this is the final step entry
@@ -386,13 +384,19 @@ function CreateSession(props) {
           steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     handleStep(newActiveStep, steps[newActiveStep]); 
+    setTimeout(() => {
+      scrollDivToTop();
+    }, 100);
   };
 
   const handleBack = () => {
-    if (hasErrors()) {
+    if (hasErrors) {
       return;
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setTimeout(() => {
+      scrollDivToTop();
+    }, 100);
   };
 
   const getFinalStepIndex = () => {
@@ -1116,7 +1120,7 @@ function CreateSession(props) {
      */
     icon: PropTypes.node,
   };
-  const scrollDivToTop = () => {
+  const scrollDivToTop = (obj) => {
     window.scrollTo(0, 0);
   };
   const handleNavigate = (navigationObject) => {
@@ -1197,8 +1201,8 @@ function CreateSession(props) {
                     />
                   )}
 
-                  <Box
-                    sx={{ display: "flex", flexDirection: "row", pt: 2, pb: 6 }}
+                  <Box className=" mb-14 lg:mb-0 xl:mb-0 md:mb-0" 
+                    sx={{ display: "flex", flexDirection: "row" }}
                   >
                     <Button
                       color="inherit"

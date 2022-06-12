@@ -289,7 +289,7 @@ function Final(props) {
   };
   return (
     <Slide direction="left" in={true}>
-      <div className={`p-4`}>
+      <div className={`p-4 min-h-screen`}>
         {props.hasErrors ? (
           <>
             <div className="mb-2 flex gap-1 text-sm text-md justify-center items-center text-gray-600 font-normal">
