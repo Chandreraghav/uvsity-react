@@ -17,6 +17,7 @@ function CommonMetaInfo(props) {
       />
       <link rel="stylesheet" href="/styles/external/animate.min.css" />
       <meta name="keywords" content={process.env.NEXT_PUBLIC_APP_KEYWORDS} />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
       {/* Social Sharing Meta Tags */}
       <meta
         property="og:site_name"

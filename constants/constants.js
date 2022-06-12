@@ -270,18 +270,24 @@ export const LANDING_PAGE_STATS_DETAIL = [
     text: "Live Sessions",
     count: 100,
     icon: <DynamicFeedIcon />,
+    altIcon:'fa fa-television',
+    className:'primary'
   },
   {
     id: 2,
     text: "Meetings",
     count: 600,
     icon: <VideocamIcon />,
+    altIcon:'fa fa-video-camera',
+    className:'danger'
   },
   {
     id: 3,
     text: "Countries",
     count: 47,
     icon: <PublicIcon />,
+    altIcon:'fa fa-group',
+    className:'success'
   },
 ];
 export const MIN_LENGTH_PASSWORD = 8;
