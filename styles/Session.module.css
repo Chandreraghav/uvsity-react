@@ -24,11 +24,13 @@
 }
 
 .session__card__lightblue__variant {
-  background-image: linear-gradient(to right, #000, #558ee1);
+  background:linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(40,179,32,1) 0%, rgba(120,142,114,0.8804564061952906) 0%, rgba(25,118,210,1) 100%, rgba(0,0,0,1) 100%);
+  
+  /* background-image: linear-gradient(to right, #000, #558ee1); */
   color: #fff !important;
 }
 .session__card:hover {
-  transform: scale(1.08);
+  transform: scale(1.02);
   opacity: 1;
   box-shadow: 0 0 15px rgba(0, 0, 0, 1) !important;
 }
@@ -36,27 +38,26 @@
   background: #5271ff;
   border: none;
   outline: none;
-  width: 100rem;
-  margin-left: 8px;
+  width:100%;
   font-weight: 500;
   padding: 8px;
-  font-size: 0.7rem;
-  color: darkgrey;
+  font-size: 0.8rem;
+  color: #dadada;
 }
 .session__card__event__time__subtitle {
   background: #111;
   border: none;
   outline: none;
   /* border-radius: 7px; */
-  width: 45rem;
-  margin-left: 60px;
-  margin-top: -8px;
+  
+   width:100%;
+   
   font-weight: 500;
   display: inline-block;
   padding: 8px;
-  font-size: 0.5rem;
-  color: darkgrey;
-  margin-bottom: 2px;
+  font-size: 0.7rem;
+  color: #dadada;
+  
 }
 
 .session__card__event__time__subtitle__profile__timeline {
@@ -99,8 +100,9 @@
   color: #fff;
 }
 .session__card__attendance__text {
-  margin-left: 2px;
-  font-size: 11px;
+  
+  font-size: 0.7rem !important;
+  color: #dadada !important;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   vertical-align: middle;
   margin-top: 5px;

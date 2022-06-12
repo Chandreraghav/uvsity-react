@@ -247,6 +247,11 @@ button.danger {
   font-size: 52px !important;
 }
 
+.avatar-text-sm {
+  
+  font-size: 26px !important;
+}
+
 .avatar-md {
   width: 100px !important;
   height: 100px !important;
