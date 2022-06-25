@@ -23,7 +23,7 @@ function Profile(props) {
       handleShow(false);
     }
 
-    if (window.scrollY > 200) {
+    if (window.scrollY > 150) {
       setSessionsByAPI(true);
     }
   };
