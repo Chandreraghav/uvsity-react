@@ -13,6 +13,8 @@ import { SignOffUser } from "../SignOut";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
+import { isUvsityLogicalError } from "../../../utils/utility";
+
 function ServerWrapper(props) {
   const queryClient = useQueryClient();
   const Router = useRouter();
@@ -27,7 +29,7 @@ function ServerWrapper(props) {
         asyncSubscriptions.SESSION_EXPIRY.enabled
           ? asyncSubscriptions.SESSION_EXPIRY.pollEvery
           : false,
-      
+      refetchIntervalInBackground:true
     }
   );
   const unauthorizedResponseReceived = () =>
@@ -66,26 +68,54 @@ function ServerWrapper(props) {
     let internalError = hasInternalServerError();
     if (props.serverErrorEmitter && internalError) {
       internalError = JSON.parse(internalError);
-      
-      const _error = {
-        url: internalError.config.baseURL + internalError.config.url,
-        message:internalError?.statusText
-        ? internalError?.statusText?.toString()
-        :  "There occured an internal server error.",
-        code: internalError.status,
-        error: true,
-        method:internalError?.config.method?.toUpperCase(),
-        diagnostics: getDiagnostics(internalError),
+      if(isUvsityLogicalError(internalError)) {
+        console.info("SERVER: Internal server logic error encountered. Error will be handled gracefully with a toast message from client in the respective business workflow.");
+        removeLocalStorageObject("uvsity-internal-error-response"); 
+        return;
+      }
+      else {
+        const _error = {
+          url: internalError.config.baseURL + internalError.config.url,
+          message:internalError?.statusText
+          ? internalError?.statusText?.toString()
+          :  "There occured an internal server error.",
+          code: internalError.status,
+          error: true,
+          method:internalError?.config.method?.toUpperCase(),
+          diagnostics: getDiagnostics(internalError), 
+        };
+        console.error("SERVER: Internal server error.");
+        props.serverErrorEmitter(_error);
+        removeLocalStorageObject("uvsity-internal-error-response"); 
+        //pop out error state on error emit.
+      }
 
-         
-      };
-      console.error("SERVER: Internal server error.");
-      props.serverErrorEmitter(_error);
-      removeLocalStorageObject("uvsity-internal-error-response"); //pop out error state on error emit.
     }
-    
+     
   }, [SESSION_EXPIRY]);
 
+  useEffect(() => {
+    const cancelRunningQueries = () => {
+      queryClient.cancelQueries(
+        [
+          KEYS.LOGIN.INFO,
+          KEYS.SESSION.PUBLIC.TOP,
+          KEYS.SESSION.TOP,
+          KEYS.PROFILE.SUMMARY,
+          KEYS.PROFILE.VISITS,
+          KEYS.METADATA.STATIC,
+          KEYS.METADATA.ROOT,
+          KEYS.NETWORK.PEOPLE.INTERESTING,
+        ],
+        { exact: true, fetching: true }
+      );
+    };
+    Router.events.on("routeChangeStart", cancelRunningQueries);
+
+    return () => {
+      Router.events.off("routeChangeStart", cancelRunningQueries);
+    };
+  }, []);
   return <div>{props.children}</div>;
 }
 

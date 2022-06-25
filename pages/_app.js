@@ -20,7 +20,6 @@ import {
 } from "../localStorage/local-storage";
 import React, { useEffect, useState } from "react";
 import { AuthGuardService } from "../auth-guard/service/AuthGuardService";
-import { useRouter } from "next/router";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import Layout from "../components/Main/Layout";
@@ -34,7 +33,6 @@ function MyApp({ Component, pageProps }) {
   const [queryClient] = React.useState(() => new QueryClient());
   const [verified, setVerified] = useState(true);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   //MANDATORY PWA ENABLER ON TOP OF EVERY COMPONENT
   useEffect(() => {
@@ -43,8 +41,8 @@ function MyApp({ Component, pageProps }) {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("./serviceworker.js")
-        .then((reg) => {})
-        .catch((err) => {});
+        .then(() => {})
+        .catch(() => {});
     }
     return () => {
       controller?.abort();
@@ -78,15 +76,8 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  // MANDATORY SESSION CHECK SUBSCRIPTION ON TOP OF EVERY PRIVATE LAYER(SUPER HOC).
-  // THIS IS NEEDED BECAUSE THROUGHOUT THE LIFECYCLE OF THE APPLICATION
-  // WE NEED TO CHECK FROM SERVER SIDE IF SESSION IS VALID.
-  // HERE WE ARE DEPENDENT ON SERVER TO CHECK SESSION EXPIRATION
-  // AND THEREFORE WE USE SET INTERVAL INSTEAD OF SET TIMEOUT
-  // WE SECURE AUTHORIZED/PRIVATE ROUTES USING A HIGHER ORDER COMPONENT PrivateRoute
-  // WE CONTINUE TO CHECK FOR USER IDLE TIME ON APPLICATION WITH A HIGHER ORDER COMPONENT IdleTimeout post login.
-  // USER IDLE TIME(CLIENT SIDE), SESSION EXPIRY(SERVER SIDE), PRIVATE ROUTE CHECKS(CLIENT SIDE) SHOULD NOT BE CONFUSED WHILE WORKING WITH. ALL ARE DIFFERENT THINGS.
-  useEffect(() => {
+  // MANDATORY GOOGLE API CLIENT LOAD FOR FACILITATING GOOGLE LOGIN.
+   useEffect(() => {
     let controller = new AbortController();
     let isSubscribed = true;
     if (isSubscribed) setLoading(false);
