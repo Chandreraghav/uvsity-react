@@ -73,6 +73,7 @@ function Profile({
   userdata,
   noCardOnHover,
 }) {
+  
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
     useState(false);
   const router = useRouter();

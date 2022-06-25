@@ -37,6 +37,7 @@ import {
   avatarToString,
   formattedName,
   formattedProfileSubtitle,
+  isUvsityLogicalError,
   _delay,
 } from "../../../utils/utility";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -81,7 +82,9 @@ import UserSessionRequestDialog from "../../shared/modals/UserSessionRequestDial
 import ChangeAboutInformationDialog from "../../shared/modals/ChangeAboutInformationModal";
 import ChangeProfileHeadlineDialog from "../../shared/modals/ChangeProfileHeadlineDialog"
 import EditIcon from "@mui/icons-material/Edit";
-import { getLocalStorageObject } from "../../../localStorage/local-storage";
+import {
+  getLocalStorageObject,
+} from "../../../localStorage/local-storage";
 toast.configure();
 
 function MacroProfile(props) {
@@ -243,7 +246,6 @@ function MacroProfile(props) {
    
   };
   const [profileHighlight, setProfileHighlight] = useState(_profileHighlight);
-
 
 
   useEffect(() => {
@@ -657,12 +659,17 @@ function MacroProfile(props) {
         );
       })
       .catch((err) => {
-        setSessionRequest(_sessionRequest);
+        const error = JSON.parse(
+          getLocalStorageObject("uvsity-internal-error-response")
+        );
         handleResponse(
-          `${SESSION_REQUEST.MESSAGE_SENT_FAILED}${firstName}`,
+          isUvsityLogicalError(error)
+            ? getWorkflowError(error)
+            : `${SESSION_REQUEST.MESSAGE_SENT_FAILED}${firstName}`,
           RESPONSE_TYPES.ERROR,
           toast.POSITION.BOTTOM_CENTER
         );
+        setSessionRequest(_sessionRequest);
       });
   };
 

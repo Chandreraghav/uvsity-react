@@ -1,13 +1,18 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import { Tooltip } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarRateIcon from "@mui/icons-material/StarRate";
-import CoPresentIcon from '@mui/icons-material/CoPresent';
+import CoPresentIcon from "@mui/icons-material/CoPresent";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { SESSION_REVIEW_MAX_STAR_COUNT } from "../../../../constants/constants";
-import { IMAGE_PATHS, PLACEHOLDERS, TOOLTIPS } from "../../../../constants/userdata";
+import {
+  IMAGE_PATHS,
+  PLACEHOLDERS,
+  TOOLTIPS,
+} from "../../../../constants/userdata";
 import SessionStyle from "../../../../styles/Session.module.css";
 import Profile from "../../Network/People/Dashboard/Profile";
 import Spacer from "../../../shared/Spacer";
@@ -17,30 +22,22 @@ import UserDataService from "../../../../pages/api/users/data/UserDataService";
 import Actions from "../ActionableItems/Actions";
 import { parseMarkdownToHTML } from "../../../../utils/utility";
 
-function Preview({ data, authorized,userdata }) {
-  if (!data) return "";
+function Preview({ data, authorized, userdata }) {
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
   const [attendees, setAttendees] = useState([]);
   const [sessionDetail, setSessionDetail] = useState({});
   const [sessionCreatorDetail, setSessionCreatorDetail] = useState({});
   const [cohostDetail, setCoHostDetail] = useState({});
-    
- 
-  const getEventPoster = () => {
-    if (data.imageURL) {
-      return data.imageURL;
-    }
-    return IMAGE_PATHS.NO_DATA.EVENT_POSTER;
-  };
-  const [eventPosterSrc, setEventPosterSrc] = useState(getEventPoster());
-  // THE NEEDFUL OR DEPENDENT DATA FOR EACH SESSION PREVIEW 
-  // ARE BEING CALLED VIA USE EFFECT AND NOT WITH REACT QUERY BECAUSE WE CANNOT DO 
+  const [eventPosterSrc, setEventPosterSrc] = useState(data.imageURL?data.imageURL:IMAGE_PATHS.NO_DATA.EVENT_POSTER);
+  
+  // THE NEEDFUL OR DEPENDENT DATA FOR EACH SESSION PREVIEW
+  // ARE BEING CALLED VIA USE EFFECT AND NOT WITH REACT QUERY BECAUSE WE CANNOT DO
   // THAT AND IF DONE WILL HAVE SLOWNESS AND ENORMOUS PERFORMANCE IMPACT.
 
   // Reason of Using UseEffect over UseQuery:
-  // THE TOP LEVEL DATA(data) THAT IS COMING IN HERE IS BEING FETCHED FROM REACT QUERY AND 
-  // AS A RESULT THIS USE-EFFECT TAKES CARE OF REFETCHING/CACHING THE DEPENDENT DATA 
-  // AS THE MASTER DATA IS CACHED/FETCHED VIA REACT QUERY. 
+  // THE TOP LEVEL DATA(data) THAT IS COMING IN HERE IS BEING FETCHED FROM REACT QUERY AND
+  // AS A RESULT THIS USE-EFFECT TAKES CARE OF REFETCHING/CACHING THE DEPENDENT DATA
+  // AS THE MASTER DATA IS CACHED/FETCHED VIA REACT QUERY.
   // THIS IS A TRANSITIVE REACT QUERY IMPLEMENTATION FOR A ITERATIVE COMPONENT RENDER.
   useEffect(() => {
     let isSubscribed = true;
@@ -51,6 +48,7 @@ function Preview({ data, authorized,userdata }) {
       });
     }
     return () => {
+      setAttendees([])
       controller?.abort();
       isSubscribed = false;
     };
@@ -67,6 +65,7 @@ function Preview({ data, authorized,userdata }) {
       );
     }
     return () => {
+      setSessionDetail({})
       controller?.abort();
       isSubscribed = false;
     };
@@ -84,6 +83,7 @@ function Preview({ data, authorized,userdata }) {
       );
     }
     return () => {
+      setSessionCreatorDetail({})
       controller?.abort();
       isSubscribed = false;
     };
@@ -92,7 +92,7 @@ function Preview({ data, authorized,userdata }) {
   useEffect(() => {
     let isSubscribed = true;
     let controller = new AbortController();
-    if (isSubscribed && data.coHosts.length===1) {
+    if (isSubscribed && data.coHosts.length === 1) {
       UserDataService.getUserById(data.coHosts[0].userDetailsId).then(
         (response) => {
           setCoHostDetail(response?.data);
@@ -100,10 +100,14 @@ function Preview({ data, authorized,userdata }) {
       );
     }
     return () => {
+      setCoHostDetail({})
       controller?.abort();
       isSubscribed = false;
     };
   }, [data.coHosts]);
+  if (!data) return "";
+
+  
 
   const amIAttending = () => {
     const index = attendees?.findIndex((x) => {
@@ -164,6 +168,7 @@ function Preview({ data, authorized,userdata }) {
     ) {
       return (
         <img
+          alt={`logo`}
           className={SessionStyle.session__card__review__star__replacement}
           src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE_SHORTHAND}
         />
@@ -210,7 +215,6 @@ function Preview({ data, authorized,userdata }) {
     );
   };
 
-
   return (
     <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg px-2">
       {/* EVENT/SESSION/AUTHOR NAME */}
@@ -238,9 +242,10 @@ function Preview({ data, authorized,userdata }) {
               userdata={userdata}
               options={{ connect: false, mixedMode: true }}
             />
-            <div className={` line-clamp-3  text-gray-700 py-1 mb-1 leading-snug`}>
-             {parseMarkdownToHTML(data?.courseSummary)}
-             
+            <div
+              className={` line-clamp-3  text-gray-700 py-1 mb-1 leading-snug`}
+            >
+              {parseMarkdownToHTML(data?.courseSummary)}
             </div>
           </div>
         </div>
@@ -253,31 +258,29 @@ function Preview({ data, authorized,userdata }) {
               src={eventPosterSrc}
               alt={data?.courseFullName}
             />
-              {data.coHosts.length > 0 && (
-            <div>
-              <div className="text-md flex gap-1 text-gray-700 font-medium py-2 px-2">
-                <CoPresentIcon/>
-                <div>Co-Host</div>
+            {data.coHosts.length > 0 && (
+              <div>
+                <div className="text-md flex gap-1 text-gray-700 font-medium py-2 px-2">
+                  <CoPresentIcon />
+                  <div>Co-Host</div>
+                </div>
+                <Divider />
+                <div className=" transform scale-100 flex flex-row flex-wrap flex-grow-0 px-2 py-2">
+                  <Profile
+                    firstName={data.coHosts[0]?.firstName}
+                    lastName={data.coHosts[0]?.lastName}
+                    avatar={data.coHosts[0]?.profilePicName}
+                    userType={data.coHosts[0]?.userBaseType}
+                    instituition={data.coHosts[0]?.educationalInstitution}
+                    isVisibleAsCoHost
+                    metaData={{ associatedCoHostData: cohostDetail }}
+                    options={{ connect: false, mixedMode: true }}
+                    userdata={userdata}
+                  />
+                </div>
               </div>
-              <Divider />
-              <div className=" transform scale-100 flex flex-row flex-wrap flex-grow-0 px-2 py-2">
-                <Profile
-                  firstName={data.coHosts[0]?.firstName}
-                  lastName={data.coHosts[0]?.lastName}
-                  avatar={data.coHosts[0]?.profilePicName}
-                  userType={data.coHosts[0]?.userBaseType}
-                  instituition={data.coHosts[0]?.educationalInstitution}
-                  isVisibleAsCoHost
-                  metaData={{associatedCoHostData:cohostDetail}}
-                  options={{ connect: false, mixedMode: true }}
-                  userdata={userdata}
-                />
-              </div>
-            </div>
-          )}
-             
+            )}
           </div>
-        
         </div>
       </div>
 
