@@ -24,7 +24,7 @@ export class User {
     user.firstName = capitalizeFirstLetter(formData.firstname);
     user.lastName = capitalizeFirstLetter(formData.lastname);
     user.recaptchaToken = formData.reCaptcha;
-    user.timeZone = ipData?.time_zone.name;
+    user.timeZone = ipData?.time_zone?.name;
     userCredentials.plainTextPassword = formData.password;
     user.userCredentials = {
       plainTextPassword: userCredentials.plainTextPassword,

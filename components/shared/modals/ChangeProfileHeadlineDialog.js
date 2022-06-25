@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,9 +18,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import {
-  isSmallScreen,
-} from "../../../utils/utility";
+import { isEmptyObject, isSmallScreen } from "../../../utils/utility";
 import { USER_PROFILE } from "../../../constants/userdata";
 import { makeStyles } from "@material-ui/core/styles";
 import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
@@ -31,43 +30,67 @@ import {
 import { getLocalStorageObject } from "../../../localStorage/local-storage";
 function ChangeProfileHeadlineDialog(props) {
   if (!props.isOpen) return "";
- 
-  const countries = JSON.parse(getLocalStorageObject('uvsity-countries'))
-  const selected_country = countries.find((country=>country.countryFullName.toLowerCase() ===props?.data?.country.toLowerCase()))
+  const [processing, setProcessing] = useState(false);
+  const [request, setRequest] = useState(null);
+  const [designation, setDesignation] = useState(props.data.designation);
+  const [specialization, setSpecialization] = useState(
+    props?.data.specialization
+  );
+  const [instituition, setInstituation] = useState(props.data.institution);
+  const [highestDegree, setHighestDegree] = useState(
+    props.data.education.highestLevel
+  );
+  const countries = JSON.parse(getLocalStorageObject("uvsity-countries"));
+  const selected_country = countries.find(
+    (country) =>
+      country.countryFullName.toLowerCase() ===
+      props?.data?.country.toLowerCase()
+  );
   const useStyles = makeStyles({
     input: {
       color: props?.theme ? "darkgrey" : "",
     },
   });
-  const classes = useStyles();  
-  const [processing, setProcessing] = useState(false);
-  const [request, setRequest] = useState(props?.data);
-  const [designation, setDesignation] = useState(props.data.designation);
-  const [specialization, setSpecialization] = useState(props?.data.specialization);
-  const [instituition, setInstituation] = useState(props.data.institution);
-  const [highestDegree, setHighestDegree] = useState(props.data.education.highestLevel);
-  const [countryId, setCountryId] = useState(selected_country.countryId.toString() || "0");
+  const classes = useStyles();
+  const [countryId, setCountryId] = useState(
+    selected_country.countryId.toString() || "0"
+  );
   const [city, setCity] = useState(props.data.city);
-
-  const handleClose = (closeInd) => {
-    if (props?.dialogCloseRequest) {
-      if (!closeInd) {
-        setProcessing(true);
-      }
-     // if (closeInd) setRequest(null);
-      props.dialogCloseRequest({
-        id: 0,
-        event: !closeInd ? "edit" : null,
-        close: closeInd,
-      });
-    }
-  };
   const formOptions = {
     resolver: yupResolver(USER.PROFILE.EDIT.HIGHLIGHTS),
     mode: "all",
   };
   const { register, formState, watch, reset } = useForm(formOptions);
   const { errors } = formState;
+
+  const handleClose = (closeInd) => {
+    if (props?.dialogCloseRequest) {
+      if (!closeInd) {
+        setProcessing(true);
+
+        if (!isEmptyObject(errors)) {
+          // if the profile headline form contains errors
+          setProcessing(false);
+          return;
+        }
+      }
+      props.dialogCloseRequest({
+        id: 0,
+        event: !closeInd ? "edit" : null,
+        data: !closeInd
+          ? {
+              designation,
+              specialization,
+              instituition,
+              highestDegree,
+              countryId,
+              city,
+            }
+          : null,
+        close: closeInd,
+      });
+    }
+  };
 
   const handleDesignationChange = (e) => {
     setDesignation(e.target.value);
@@ -86,9 +109,9 @@ function ChangeProfileHeadlineDialog(props) {
   const handleCountryChange = (e) => {
     setCountryId(e.target.value);
   };
-  const handleCityChange=(e)=>{
-    setCity(e.target.value)
-  }
+  const handleCityChange = (e) => {
+    setCity(e.target.value);
+  };
   const debounce = (func, delay) => {
     let debounceTimer;
     return function () {
@@ -103,7 +126,7 @@ function ChangeProfileHeadlineDialog(props) {
   return (
     <Dialog
       fullWidth
-      fullScreen
+      fullScreen={props?.fullScreen}
       className={`${processing ? "control__disabled" : ""} h-screen ${
         props?.theme ? "dark-dialog" : ""
       }`}
@@ -177,9 +200,7 @@ function ChangeProfileHeadlineDialog(props) {
                       required
                       label="Title"
                       id="designation"
-                      
                     />
-                     
                   </FormControl>
                 </Grid>
 
@@ -205,7 +226,6 @@ function ChangeProfileHeadlineDialog(props) {
                       label="Specialization"
                       id="specialization"
                     />
-                     
                   </FormControl>
                 </Grid>
 
@@ -231,7 +251,6 @@ function ChangeProfileHeadlineDialog(props) {
                       label="Instituition of highest degree"
                       id="instituition"
                     />
-                    
                   </FormControl>
                 </Grid>
 
@@ -257,7 +276,6 @@ function ChangeProfileHeadlineDialog(props) {
                       label="Highest degree"
                       id="highestDegree"
                     />
-                    
                   </FormControl>
                 </Grid>
                 <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -335,7 +353,6 @@ function ChangeProfileHeadlineDialog(props) {
                       label="City"
                       id="city"
                     />
-                     
                   </FormControl>
                 </Grid>
               </Grid>

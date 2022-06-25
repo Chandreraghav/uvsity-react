@@ -80,11 +80,9 @@ import PolyMessagingDialog from "../../shared/modals/PolyMessagingDialog";
 import UserRatingDialog from "../../shared/modals/UserRatingDialog";
 import UserSessionRequestDialog from "../../shared/modals/UserSessionRequestDialog";
 import ChangeAboutInformationDialog from "../../shared/modals/ChangeAboutInformationModal";
-import ChangeProfileHeadlineDialog from "../../shared/modals/ChangeProfileHeadlineDialog"
+import ChangeProfileHeadlineDialog from "../../shared/modals/ChangeProfileHeadlineDialog";
 import EditIcon from "@mui/icons-material/Edit";
-import {
-  getLocalStorageObject,
-} from "../../../localStorage/local-storage";
+import { getLocalStorageObject } from "../../../localStorage/local-storage";
 toast.configure();
 
 function MacroProfile(props) {
@@ -232,24 +230,22 @@ function MacroProfile(props) {
     metaData?.country
   );
 
-   
-
   const _profileHighlight = {
     dialogOpen: false,
-    designation:null,
-    institution:null,
-    city:null,
-    country:null,
-    social:null,
-    education:null,
-    specialization:null
-   
+    designation: null,
+    institution: null,
+    city: null,
+    country: null,
+    social: null,
+    education: null,
+    specialization: null,
   };
   const [profileHighlight, setProfileHighlight] = useState(_profileHighlight);
-
-
+   
+  
   useEffect(() => {
     if (props?.lazyAPI && userdata?.userDetailsId) {
+      
       SessionService.getSessionsByUserID(userdata?.userDetailsId)
         .then((res) => {
           setLazySessionData(res.data?.courses);
@@ -674,20 +670,23 @@ function MacroProfile(props) {
   };
 
   const handleProfileUpdateEvent = (obj) => {
-    if(obj && obj.id==0){
+    if (obj && obj.id == 0) {
+      if (obj.event === "edit"){
+        console.log(obj.data)
+        return;
+      }
+    
       const _profileHighlight = {
         dialogOpen: false,
-        designation:null,
-        institution:null,
-        city:null,
-        country:null,
-        social:null,
-        education:null,
-        specialization:null
-       
+        designation: null,
+        institution: null,
+        city: null,
+        country: null,
+        social: null,
+        education: null,
+        specialization: null,
       };
-      setProfileHighlight(_profileHighlight)
-       
+      setProfileHighlight(_profileHighlight);
     }
     if (obj && obj.id == 1) {
       if (obj.event === "init_edit") {
@@ -727,23 +726,19 @@ function MacroProfile(props) {
     }
   };
 
-  const handleEditHeadline=()=>{
-
+  const handleEditHeadline = () => {
     const _profileHighlight = {
       dialogOpen: true,
-      designation:userType,
-      institution:metaData?.eduIns,
-      city:metaData?.city,
-      country:metaData?.country,
-      social:metaData?.social_profiles,
+      designation: userType,
+      institution: metaData?.eduIns,
+      city: metaData?.city,
+      country: metaData?.country,
+      social: metaData?.social_profiles,
       education,
-      specialization:userdata?.subject
-    
+      specialization: userdata?.subject,
     };
     setProfileHighlight(_profileHighlight);
-  }
-
-
+  };
 
   return (
     <>
@@ -770,7 +765,7 @@ function MacroProfile(props) {
                 <Tooltip title={`${USER_PROFILE.CHANGE_PROFILE_HEADLINE}`}>
                   <div className="absolute md:top-36 top-16 right-4">
                     <Button
-                      onClick={ handleEditHeadline}
+                      onClick={handleEditHeadline}
                       variant="contained"
                       startIcon={<EditIcon />}
                     >
@@ -1310,7 +1305,8 @@ function MacroProfile(props) {
       ></ChangeAboutInformationDialog>
 
       <ChangeProfileHeadlineDialog
-        title={`Edit profile headlines`}
+        fullScreen
+        title={`Edit profile headline`}
         dialogCloseRequest={handleProfileUpdateEvent}
         data={profileHighlight}
         isOpen={profileHighlight.dialogOpen}

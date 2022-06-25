@@ -77,7 +77,7 @@ export default function SessionCard({
         );
       else
         design.push(
-          <StarRateIcon className={SessionStyle.session__card__review__star} />
+          <StarRateIcon className={`${SessionStyle.session__card__review__star} `} />
         );
       _rc--;
     }

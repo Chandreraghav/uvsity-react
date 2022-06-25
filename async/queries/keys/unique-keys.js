@@ -19,7 +19,7 @@ export const KEYS = {
     ATTENDEES: {
       PER_COURSE: "attendees-per-course",
     },
-    BY_USER: "by-user",
+    BY_USER: "session-by-user",
     DETAIL: { PER_COURSE: "detail-per-course" },
     COHOST:{
       USER:{

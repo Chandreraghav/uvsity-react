@@ -124,7 +124,15 @@
 }
 .session__card__review__star {
   color: gold;
-  font-size: 30px !important;
+  font-size: 30px!important;
+}
+
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .session__card__review__star {
+    font-size: 25px!important;
+  }
 }
 .session__card__review__unstar {
   margin-top: 3px;
