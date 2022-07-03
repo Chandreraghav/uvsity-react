@@ -493,7 +493,7 @@ function Profile({
                       <DoneIcon fontSize="small" />
                       <small
                         title={`${TITLES.CONNECTION_REQUEST_SENT_TO_LATENT}${firstName}`}
-                        className="text-sm font-small"
+                        className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline"
                       >
                         {TITLES.CONNECTION_REQUEST_SENT}
                       </small>
@@ -544,7 +544,7 @@ function Profile({
                       ) : isConnectionRequestSent ? (
                         <>
                           <DoneIcon fontSize="small" />
-                          <small className="text-sm font-small">
+                          <small className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
                             {TITLES.CONNECTION_REQUEST_SENT}
                           </small>
                         </>
@@ -664,7 +664,7 @@ function Profile({
                       aria-label="awaiting-connection-response-from-person"
                     >
                       <PendingIcon fontSize="small" />
-                      <small className="text-sm font-small">
+                      <small className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
                         {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
                       </small>
                     </IconButton>

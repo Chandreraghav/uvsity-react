@@ -202,7 +202,7 @@ function PeekProfile(props) {
                     <DoneIcon fontSize="small" />
                     <small
                       title={`${TITLES.CONNECTION_REQUEST_SENT_TO_LATENT}${props.metaData.firstName}`}
-                      className={`text-sm font-small ${
+                      className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline ${
                         props.dark ? "text-gray-400" : ""
                       }`}
                     >
@@ -264,7 +264,7 @@ function PeekProfile(props) {
                       <>
                         <DoneIcon fontSize="small" />
                         <small
-                          className={`text-sm font-small ${
+                          className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline ${
                             props.dark ? "text-gray-400" : ""
                           }`}
                         >
@@ -328,7 +328,7 @@ function PeekProfile(props) {
                           sx={{ color: "green" }}
                           fontSize="small"
                         />
-                        <small className={`text-sm font-small text-green-600`}>
+                        <small className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline text-green-600`}>
                           {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
                         </small>
                       </>
@@ -380,7 +380,7 @@ function PeekProfile(props) {
                     aria-label="connected-to-person"
                   >
                     <CheckCircleIcon fontSize="small" />
-                    <small className={`text-sm font-small`}>
+                    <small className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline`}>
                       {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
                     </small>
                   </IconButton>
@@ -404,7 +404,7 @@ function PeekProfile(props) {
                     aria-label="awaiting-connection-response-from-person"
                   >
                     <PendingIcon fontSize="small" />
-                    <small className={`text-sm font-small`}>
+                    <small className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline`}>
                       {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
                     </small>
                   </IconButton>

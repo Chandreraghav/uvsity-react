@@ -959,7 +959,7 @@ function MacroProfile(props) {
                               aria-label="connected-to-person"
                             >
                               <CheckCircleIcon fontSize="small" />
-                              <small className={`text-sm font-small`}>
+                              <small className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline `}>
                                 {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
                               </small>
                             </IconButton>

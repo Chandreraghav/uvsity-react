@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useRef, useState } from "react";
 import {
   avatarToString,
@@ -134,7 +135,7 @@ function MiniProfile({
 
           <div className={ProfileStyle.profile__mini__information}>
             <Tooltip title={TOOLTIPS.GO_TO_PROFILE}>
-              <h2
+              <h2 className={`dark:text-gray-100 text-gray-900`}
                 onClick={() =>
                   goToProfile(masterData, router)
                 }
@@ -145,7 +146,7 @@ function MiniProfile({
             <div
               className={`text-center ${ProfileStyle.profile__mini__secondary__information}`}
             >
-              {title ? <h4>{title}</h4> : <span>Add title</span>}
+              {title ? <h4>{title}</h4> : <h4></h4>}
               {metaData && (
                 <h3>
                   {formattedProfileSubtitle(

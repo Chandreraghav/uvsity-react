@@ -127,10 +127,10 @@ function CompletionDetail({ data }) {
               <div className=" flex">
                 <Typography
                   className={
-                    ProfileCompletionDetailStyle.profile__completion__detail__explanation__text
+                    `${ProfileCompletionDetailStyle.profile__completion__detail__explanation__text} dark:text-gray-500 text-gray-600`
                   }
                   variant="body2"
-                  color="text.secondary"
+                   
                 >
                   {completionTextObject.icon}{" "}
                   {completionTextObject.guidanceText}
@@ -153,7 +153,7 @@ function CompletionDetail({ data }) {
                       <div
                         key={_idx}
                         className={
-                          ProfileCompletionDetailStyle.profile__completion__detail__guidance__text
+                          `${ProfileCompletionDetailStyle.profile__completion__detail__guidance__text} dark:text-gray-100 text-gray-600`
                         }
                       >
                         <DoubleArrowOutlinedIcon />
