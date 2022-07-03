@@ -127,7 +127,7 @@
   transition: all 0.8s;
 }
 .signin__Dialog__cancel {
-  color: #fff !important;
+  
   font-size: small;
 }
 .signin__Dialog__cancelButtonRoot {
@@ -143,7 +143,6 @@
 }
 .signin__Dialog__acceptance__disclosure {
   font-size: 0.7rem !important;
-  color: #e2e2e2 !important;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-style: normal !important;
   text-align: justify;
@@ -161,7 +160,7 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-weight: 400;
   font-style: italic;
-  color: lightgrey;
+ 
   vertical-align: middle;
   padding: 8px;
   margin-top: 14px !important;

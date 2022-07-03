@@ -149,7 +149,6 @@
 }
 .signup__Dialog__acceptance__disclosure {
   font-size: 0.7rem !important;
-  color: #e2e2e2 !important;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-style: normal !important;
   text-align: justify;
@@ -187,7 +186,6 @@
   font-weight: 400;
   margin-top: 0px !important;
   font-style: italic;
-  color: lightgrey;
   vertical-align: middle;
   
 }
@@ -220,7 +218,7 @@
     width: 50% !important;
 }
 .signup__Dialog__back__icon{
-  font-size: 0.7rem;
+  font-size: 1rem;
 }
 .signupDialog__error__message{
   text-overflow: ellipsis !important;

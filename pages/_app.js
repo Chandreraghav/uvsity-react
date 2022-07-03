@@ -27,9 +27,8 @@ import Splash from "../components/shared/Splash";
 import { BrowserRouter } from "react-router-dom";
 import ClientDeviceProvider from "../components/Device/HOC/ClientDeviceProvider";
 import CountryService from "./api/countries/CountryService";
+import ThemeProvider from "../theme/ThemeProvider";
 function MyApp({ Component, pageProps }) {
-  
-
   const [queryClient] = React.useState(() => new QueryClient());
   const [verified, setVerified] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -64,8 +63,11 @@ function MyApp({ Component, pageProps }) {
         });
     }
     // GET COUNTRIES
-    
-    if (getLocalStorageObject("uvsity-countries")==="null" || !getLocalStorageObject("uvsity-countries")) {
+
+    if (
+      getLocalStorageObject("uvsity-countries") === "null" ||
+      !getLocalStorageObject("uvsity-countries")
+    ) {
       await CountryService.getCountries()
         .then((response) => {
           setLocalStorageObject("uvsity-countries", response.data);
@@ -77,16 +79,18 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   // MANDATORY GOOGLE API CLIENT LOAD FOR FACILITATING GOOGLE LOGIN.
-   useEffect(() => {
+  useEffect(() => {
     let controller = new AbortController();
     let isSubscribed = true;
     if (isSubscribed) setLoading(false);
     // we will load gapi client and once that is done, render the page to client
-    AuthGuardService.loadGAPIClient().then(() => {
-      setLoading(false);
-    }).catch(() => {
-      setLoading(true);
-    })
+    AuthGuardService.loadGAPIClient()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(true);
+      });
 
     return () => {
       controller?.abort();
@@ -94,31 +98,35 @@ function MyApp({ Component, pageProps }) {
     };
   }, []);
   return loading ? (
-    <ClientDeviceProvider>
-      <Layout options={{ title: process.env.NEXT_PUBLIC_APP_TITLE }}>
-        <Splash />
-      </Layout>
-    </ClientDeviceProvider>
+    <ThemeProvider>
+      <ClientDeviceProvider>
+        <Layout options={{ title: process.env.NEXT_PUBLIC_APP_TITLE }}>
+          <Splash />
+        </Layout>
+      </ClientDeviceProvider>
+    </ThemeProvider>
   ) : (
     <>
-      <QueryClientProvider client={queryClient}>
-        <DataLayer initialState={initialState} reducer={reducer}>
-          <Hydrate state={pageProps.dehydratedState}>
-            <BrowserRouter
-              getUserConfirmation={(message, callback) => {
-                // this is the default behavior
-                const allowTransition = window.confirm(message);
-                callback(allowTransition);
-              }}
-            >
-              <ClientDeviceProvider>
-                <Component {...pageProps} />
-              </ClientDeviceProvider>
-            </BrowserRouter>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </Hydrate>
-        </DataLayer>
-      </QueryClientProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <DataLayer initialState={initialState} reducer={reducer}>
+            <Hydrate state={pageProps.dehydratedState}>
+              <BrowserRouter
+                getUserConfirmation={(message, callback) => {
+                  // this is the default behavior
+                  const allowTransition = window.confirm(message);
+                  callback(allowTransition);
+                }}
+              >
+                <ClientDeviceProvider>
+                  <Component {...pageProps} />
+                </ClientDeviceProvider>
+              </BrowserRouter>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </Hydrate>
+          </DataLayer>
+        </QueryClientProvider>
+      </ThemeProvider>
     </>
   );
 }

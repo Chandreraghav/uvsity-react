@@ -3,13 +3,13 @@ import CountUp from "react-countup";
 import CounterStyle from "../../styles/Counter.module.css";
 import VisibilitySensor from "react-visibility-sensor";
 import Spacer from "../shared/Spacer";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { LANDING_PAGE_STATS_DETAIL } from "../../constants/constants";
 function Stats() {
   const nodeRef = useRef(null);
 
   return (
-    <div id="aboutus" className={CounterStyle.root}>
+    <div id="aboutus" >
       <div className="">
         <h1 className={`${CounterStyle.stats__title} text-center`}>
           Know more about us
