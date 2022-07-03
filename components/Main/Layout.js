@@ -11,7 +11,7 @@ const Layout = (props) => {
   return props?.private ? (
     <>
       <RootChain>
-        <div className={`${props.lowZoom ? "app__body" : ""} app`}>
+        <div className={`${props.lowZoom ? "app__body" : ""} dark:bg-gray-950 dark:text-gray-300`}>
           <CommonMetaInfo options={options} />
           <div>{props.children}</div>
         </div>
@@ -19,7 +19,7 @@ const Layout = (props) => {
     </>
   ) : (
     <>
-      <div className={`app`}>
+      <div className={`dark:bg-gray-950 dark:text-gray-300`}>
         <CommonMetaInfo options={options} />
         <div>{props.children}</div>
       </div>

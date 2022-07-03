@@ -1,9 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
 import HeaderStyle from "../../styles/Header.module.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PreAuthSignUpMessageBar from "./PreAuthSignUpMessageBar";
 import { AuthService } from "../../pages/api/users/auth/AuthService";
+import ThemeSwitcher from "../../theme/theme";
 toast.configure();
 function Nav({ setSignInDialogOpen }) {
   const [show, handleShow] = useState(false);
@@ -24,6 +26,7 @@ function Nav({ setSignInDialogOpen }) {
       handleShow(false);
     }
   };
+  
 
   return (
     <div>
@@ -33,9 +36,11 @@ function Nav({ setSignInDialogOpen }) {
         />
       )}
       <div
-        className={`${HeaderStyle.nav} ${show && HeaderStyle.nav__black} ${
-          (isPreAuthMessagePanelClosed || loggedIn) &&
-          HeaderStyle.nav__original
+        className={`${HeaderStyle.nav} ${
+          show &&
+          `  text-gray-100 bg-gray-950  dark:text-gray-dark dark:bg-yellow-100 dark:opacity-90`
+        } ${
+          (isPreAuthMessagePanelClosed || loggedIn) && HeaderStyle.nav__original
         }`}
       >
         <div className={`flex`}>
@@ -48,6 +53,9 @@ function Nav({ setSignInDialogOpen }) {
             alt="uvsity-Logo"
           />
           <div className="ml-auto flex gap-4">
+           
+            <ThemeSwitcher/>
+
             <a href="#aboutus">
               <button className={` ${HeaderStyle.nav__button__sm}`}>
                 About us

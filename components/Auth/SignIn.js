@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import * as React from "react";
 import {useState} from "react"
 import { useForm } from "react-hook-form";
@@ -109,7 +111,7 @@ function SignIn({ dialogCloseRequest, isOpen }) {
   return (
     <div className={`${SignInStyle.signin__root} `}>
       <Dialog
-        fullScreen={fullScreen}
+         
         open={isOpen}
         onClose={handleIsolatedComponentInvocation}
         disableEscapeKeyDown
@@ -117,7 +119,7 @@ function SignIn({ dialogCloseRequest, isOpen }) {
         aria-labelledby="responsive-dialog-title"
       >
         
-        <div className={SignInStyle.signin__Dialog__blue__variant}>
+        <div className={` bg-gradient-to-r dark:from-gray-900  dark:to-gray-900`}>
           <Tooltip
             className={`${SignInStyle.signin__Dialog__cancelButtonRoot} `}
             title="Close"
@@ -131,7 +133,7 @@ function SignIn({ dialogCloseRequest, isOpen }) {
             >
               <CancelIcon
                 onClick={handleDirectClose}
-                className={`${SignInStyle.signin__Dialog__cancel}`}
+                className={`${SignInStyle.signin__Dialog__cancel} dark:text-gray-400  text-gray-600`}
               />
             </div>
           </Tooltip>
@@ -140,7 +142,7 @@ function SignIn({ dialogCloseRequest, isOpen }) {
           <SignUp stayInRegistrationForm={setSignUpButtonPressed} />
         ) : (
           <div
-            className={`${SignInStyle.signin__Dialog} ${SignInStyle.signin__Dialog__blue__variant}`}
+            className={`${SignInStyle.signin__Dialog} bg-gradient-to-r dark:from-gray-900  dark:to-gray-900`}
           >
             <form
               className={`form ${
@@ -161,13 +163,13 @@ function SignIn({ dialogCloseRequest, isOpen }) {
               <div className="flex space-x-4 space-y-2">
                 <div>
                   <h2
-                    className={`${SignInStyle.signin__Dialog__signin__explicit__header}`}
+                    className={`${SignInStyle.signin__Dialog__signin__explicit__header} dark:text-gray-400  text-gray-600`}
                   >
                     Sign In
                   </h2>
                 </div>
                 <div
-                  className={`${SignInStyle.signin__Dialog__alternative__or}`}
+                  className={`${SignInStyle.signin__Dialog__alternative__or} dark:text-gray-400 text-gray-500`}
                 >
                   or
                 </div>
@@ -276,8 +278,8 @@ function SignIn({ dialogCloseRequest, isOpen }) {
               </button>
               <div className="flex flex-col">
                 <div
-                  className={
-                    SignInStyle.signin__Dialog__footer__forgotpassword__option
+                  className={`
+                    ${SignInStyle.signin__Dialog__footer__forgotpassword__option} dark:text-gray-400  text-gray-600`
                   }
                 >
                   Forgot Password
@@ -294,7 +296,7 @@ function SignIn({ dialogCloseRequest, isOpen }) {
                       onClick={switchToSignUp}
                       className={`${SignInStyle.signin__Dialog__link} ${
                         signInButtonPressed && SignInStyle.disabled
-                      }`}
+                      } dark:text-gray-400  text-gray-900`}
                     >
                       Sign Up now.
                     </span>
@@ -302,8 +304,8 @@ function SignIn({ dialogCloseRequest, isOpen }) {
                 </div>
               </div>
             </form>
-            <hr className="mt-2 text-gray-500" />
-            <div className={SignInStyle.signin__Dialog__acceptance__disclosure}>
+            <hr className="mt-2   text-gray-500 " />
+            <div className={`${SignInStyle.signin__Dialog__acceptance__disclosure} dark:text-gray-400  text-gray-600`}>
               {parse(LOGIN_POLICY_ACCEPTANCE)}
             </div>
           </div>
