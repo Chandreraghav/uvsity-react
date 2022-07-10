@@ -17,6 +17,7 @@ function CompletionDetailShimmer({ visible, animation }) {
           }
         >
           <Skeleton
+          className='dark:bg-gray-600'
             animation={animation ? animation : "wave"}
             variant="circular"
             width={300}
@@ -27,18 +28,21 @@ function CompletionDetailShimmer({ visible, animation }) {
         <div>
           <div className=" flex flex-col items-center place-content-center justify-center">
             <Skeleton
+             className='dark:bg-gray-600'
               animation={animation ? animation : "wave"}
               variant="text"
               width={250}
               height={30}
             />
             <Skeleton
+             className='dark:bg-gray-600'
               animation={animation ? animation : "wave"}
               variant="text"
               width={250}
               height={30}
             />
             <Skeleton
+             className='dark:bg-gray-600'
               animation={animation ? animation : "wave"}
               variant="text"
               width={250}
@@ -48,12 +52,14 @@ function CompletionDetailShimmer({ visible, animation }) {
         </div>
         <div className=" items-baseline p-2 flex gap-2">
           <Skeleton
+           className='dark:bg-gray-600'
             animation={animation ? animation : "wave"}
             variant="rectangular"
             width={200}
             height={30}
           />
           <Skeleton
+           className='dark:bg-gray-600'
             animation={animation ? animation : "wave"}
             variant="rectangular"
             width={200}

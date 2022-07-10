@@ -10,8 +10,10 @@ import { toast } from "react-toastify";
 import { useQueryClient } from "react-query";
 import ConfirmDialog from "../../../shared/modals/ConfirmDialog";
 import { SignOffUser } from "../../../Auth/SignOut";
+import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 toast.configure();
 function AccountMenu({ onClose, isOpen, anchor }) {
+  const bg = getMode() === THEME_MODES.DARK?'#111':'#fff'
   // Get QueryClient from the context
   const queryClient = useQueryClient();
   const [{}, unauthorize] = useDataLayerContextValue();
@@ -59,6 +61,7 @@ function AccountMenu({ onClose, isOpen, anchor }) {
           elevation: 0,
           sx: {
             color: "darkgrey",
+            background:bg,
             overflow: "visible",
             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
             mt: 1.5,
@@ -76,7 +79,7 @@ function AccountMenu({ onClose, isOpen, anchor }) {
               right: 14,
               width: 10,
               height: 10,
-              bgcolor: "background.paper",
+              bgcolor: bg,
               transform: "translateY(-50%) rotate(45deg)",
               zIndex: 0,
               fontSize: "14",
@@ -89,11 +92,12 @@ function AccountMenu({ onClose, isOpen, anchor }) {
       >
         {ACCOUNT_SETTINGS.map((data) => (
           <MenuItem
+          className={' dark:hover:bg-gray-400 dark:hover:text-gray-800'}
             onClick={(e) => handleMenuAction(data.code)}
             sx={{ fontSize: "12px", color: "gray" }}
             key={data.id}
           >
-            <ListItemIcon sx={{ fontSize: "12px", color: "gray" }}>
+            <ListItemIcon   sx={{ fontSize: "12px", color: "gray" }}>
               {data.icon}
             </ListItemIcon>
             {data.title}
@@ -101,7 +105,7 @@ function AccountMenu({ onClose, isOpen, anchor }) {
         ))}
       </Menu>
       <ConfirmDialog
-        theme="dark"
+        theme={getMode()}
         isOpen={logoutRequested}
         confirmMessage="Do you want to log out?"
         dialogCloseRequest={handleConfirmDialogRequest}

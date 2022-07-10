@@ -15,7 +15,8 @@ function MiniProfileShimmer({ visible, animation }) {
        
 
         <Skeleton
-          className=" -mt-10"
+        className={'dark:bg-gray-600 -mt-10 '}
+          
           animation={animation ? animation : "wave"}
           variant="circular"
           width={80}
@@ -24,7 +25,7 @@ function MiniProfileShimmer({ visible, animation }) {
 
         <div className={`text-center items-center place-content-center`}>
           <Skeleton
-            className=""
+            className="dark:bg-gray-600"
             animation={animation ? animation : "wave"}
             variant="text"
             width={200}
@@ -33,7 +34,7 @@ function MiniProfileShimmer({ visible, animation }) {
         </div>
         <div className={`text-center`}>
           <Skeleton
-            className=""
+            className="dark:bg-gray-600"
             animation={animation ? animation : "wave"}
             variant="text"
             width={250}
