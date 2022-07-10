@@ -6,11 +6,11 @@ function Shimmer({ visible, animation }) {
   return (
     <div>
       <div className="flex gap-3 mr-4">
+          <Skeleton animation={animation ? animation : "wave"} variant="circular"  width={40} height={40} />
+          <Skeleton animation={animation ? animation : "wave"} variant="circular"  width={40} height={40} />
+          <Skeleton animation={animation ? animation : "wave"} variant="circular"  width={40} height={40} />
           <Skeleton animation={animation ? animation : "wave"} variant="circular" width={40} height={40} />
-          <Skeleton animation={animation ? animation : "wave"} variant="circular" width={40} height={40} />
-          <Skeleton animation={animation ? animation : "wave"} variant="circular" width={40} height={40} />
-          <Skeleton animation={animation ? animation : "wave"} variant="circular" width={40} height={40} />
-          <Skeleton animation={animation ? animation : "wave"} variant="circular" width={40} height={40} />
+          <Skeleton animation={animation ? animation : "wave"} variant="circular"  width={40} height={40} />
           <Skeleton animation={animation ? animation : "wave"} variant="circular" width={40} height={40} />
         </div>
     </div>

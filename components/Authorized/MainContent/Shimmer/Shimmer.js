@@ -11,6 +11,7 @@ function Shimmer({ visible, animation }) {
         variant="text"
         width={280}
         height={40}
+        
       />
     </div>
   );

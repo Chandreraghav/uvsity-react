@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import MiniProfileShimmer from "./Shimmer/MiniProfileShimmer";
 import { useRouter } from "next/router";
 import { navigateToProfile } from "../Shared/Navigator";
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 const useStyles = makeStyles((theme) => ({
   popover: {
     pointerEvents: "none",
@@ -79,7 +80,7 @@ function MiniProfile({
       >
         <PeekProfile
           isOpen={openedPopover}
-          dark
+          dark={getMode()===THEME_MODES.DARK?true:false}
           data={{
             avatar: profileImage,
             primary: name,

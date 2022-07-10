@@ -39,6 +39,7 @@ import { navigateToProfile } from "../../../Shared/Navigator";
 import PolyMessagingDialog from "../../../../shared/modals/PolyMessagingDialog";
 import MessagingService from "../../../../../pages/api/people/Messaging/MessageService";
 import { WORKFLOW_CODES } from "../../../../../constants/workflow-codes";
+import { getMode, THEME_MODES } from "../../../../../theme/ThemeProvider";
 toast.configure();
 const useStyles = makeStyles((theme) => ({
   popover: {
@@ -72,6 +73,7 @@ function Profile({
   sticky,
   userdata,
   noCardOnHover,
+  dark
 }) {
   
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
@@ -394,7 +396,7 @@ function Profile({
           isConnectionAcceptRequestSendError={
             isConnectionAcceptRequestSendError
           }
-          dark
+          dark={getMode()===THEME_MODES.DARK?true:false}
           data={{
             oid: oid,
             avatar: avatar,
@@ -487,7 +489,7 @@ function Profile({
                   aria-label="connect-to-person"
                 >
                   {isConnectionRequestInProgress ? (
-                    <ClipLoader className=" text-gray-600" size={20} />
+                    <ClipLoader color={`${dark ? "#fff" : "#111"}`} size={20} />
                   ) : isConnectionRequestSent ? (
                     <>
                       <DoneIcon fontSize="small" />
@@ -540,7 +542,7 @@ function Profile({
                       aria-label="connect-to-person"
                     >
                       {isConnectionRequestInProgress ? (
-                        <ClipLoader className=" text-gray-600" size={20} />
+                        <ClipLoader  color={`${dark ? "#fff" : "#111"}`} size={20} />
                       ) : isConnectionRequestSent ? (
                         <>
                           <DoneIcon fontSize="small" />
@@ -590,7 +592,7 @@ function Profile({
                       aria-label="accept-connection-request-from-person"
                     >
                       {isConnectionAcceptRequestInProgress ? (
-                        <ClipLoader className=" text-gray-600" size={20} />
+                        <ClipLoader color={`${dark ? "#fff" : "#111"}`} size={20} />
                       ) : isConnectionAcceptRequestSent ? (
                         <>
                           <CheckCircleIcon

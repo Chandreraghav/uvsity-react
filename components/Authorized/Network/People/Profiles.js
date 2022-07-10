@@ -9,6 +9,7 @@ import ProfileStyle from "../../../../styles/DashboardProfile.module.css";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { IMAGE_PATHS, PLACEHOLDERS } from "../../../../constants/userdata";
 import Shimmer from '../Shimmers/Shimmer'
+import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 
 function Profiles({
   options,
@@ -92,7 +93,7 @@ function Profiles({
         >
           <div
             className={`flex flex-row items-center px-2 pt-2 pb-2  gap-1
-         text-gray-600 font-medium leading-snug  ${workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING ? 'text-sm':''}  ${
+         text-gray-600 dark:hover:text-gray-100 hover:text-gray-900 font-medium leading-snug  ${workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING ? 'text-sm':''}  ${
            bo.length > 0 ? ProfileStyle.profiles__header__text : ""
          }`}
           >
@@ -138,6 +139,7 @@ function Profiles({
                 instituition={value.educationalInstitution}
                 metaData={value}
                 sticky
+                dark={getMode()===THEME_MODES.DARK?true:false}
                 userdata={data?.USER_LOGIN_INFO?.data}
               />
             ))}

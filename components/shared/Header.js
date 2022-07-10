@@ -54,7 +54,7 @@ function Nav({ setSignInDialogOpen }) {
           />
           <div className="ml-auto flex gap-4">
            
-            <ThemeSwitcher/>
+           
 
             <a href="#aboutus">
               <button className={` ${HeaderStyle.nav__button__sm}`}>

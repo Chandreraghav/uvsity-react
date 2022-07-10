@@ -6,9 +6,7 @@
    cursor: pointer;
    color:gray
 }
-.headerOption:hover{
-    color:#111;
-}
+
 .headerOption  h3{
     font-size:12px;
     font-weight:400

@@ -41,7 +41,7 @@ function Shimmer({ visible, animation }) {
   }));
  
   return (
-      <div className=" uvsity__card__border__disabled bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg px-2">
+      <div className=" uvsity__card__border__disabled  w-full bg-gray-100 dark:bg-gray-950 rounded-bl-lg rounded-br-lg px-2">
         <div className="flex flex-row flex-wrap flex-grow-0">
           <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5 px-2 py-2">
             <Skeleton1>
@@ -49,6 +49,7 @@ function Shimmer({ visible, animation }) {
                 animation={animation ? animation : "wave"}
                 variant="text"
                 height={30}
+                className={'dark:bg-gray-600 '}
               />
             </Skeleton1>
 
@@ -58,7 +59,7 @@ function Shimmer({ visible, animation }) {
             <div className="flex flex-col px-2 py-2">
               <div>
                 <div className="flex flex-row items-center flex-1 mb-4 gap-2 pt-2">
-                  <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
+                  <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 ">
                     <div>
                       {" "}
                       <Skeleton
@@ -66,6 +67,7 @@ function Shimmer({ visible, animation }) {
                         variant="circular"
                         height={70}
                         width={70}
+                        className={'dark:bg-gray-600 '}
                       />
                     </div>
                   </div>
@@ -79,6 +81,7 @@ function Shimmer({ visible, animation }) {
                             variant="text"
                             height={20}
                             width={160}
+                            className={'dark:bg-gray-600 '}
                           />
                         </span>
                       </div>
@@ -89,6 +92,7 @@ function Shimmer({ visible, animation }) {
                         variant="text"
                         height={20}
                         width={200}
+                        className={'dark:bg-gray-600 '}
                       />
                     </div>
                     <div
@@ -102,6 +106,7 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
                             variant="text"
                             height={20}
                             width={160}
+                            className={'dark:bg-gray-600 '}
                           />
                         </div>
                       </div>
@@ -112,18 +117,21 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
                           variant="circular"
                           height={20}
                           width={20}
+                          className={'dark:bg-gray-600 '}
                         />
                         <Skeleton
                           animation={animation ? animation : "wave"}
                           variant="circular"
                           height={20}
                           width={20}
+                          className={'dark:bg-gray-600 '}
                         />
                         <Skeleton
                           animation={animation ? animation : "wave"}
                           variant="circular"
                           height={20}
                           width={20}
+                          className={'dark:bg-gray-600 '}
                         />
                       </div>
                     </div>
@@ -136,12 +144,14 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
                   variant="text"
                   height={20}
                   width={200}
+                  className={'dark:bg-gray-600 '}
                 />
                 <Skeleton
                   animation={animation ? animation : "wave"}
                   variant="text"
                   height={20}
                   width={160}
+                  className={'dark:bg-gray-600 '}
                 />
               </div>
             </div>
@@ -151,10 +161,11 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
             <div className="w-full h-auto pt-2 xl:w-56">
               <Skeleton2>
                 <Skeleton
-                  className="block w-full overflow-hidden bg-cover rounded post-cover dark:bg-brand-grey-800 dark:border-brand-grey-800"
+                  className="block w-full dark:bg-gray-600  overflow-hidden bg-cover rounded post-cover dark:bg-brand-grey-800 dark:border-brand-grey-800"
                   animation={animation ? animation : "wave"}
                   variant="rectangular"
                   height={200}
+                  
                 />
               </Skeleton2>
             </div>
@@ -171,6 +182,7 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
                 variant="circular"
                 height={20}
                 width={20}
+                className='dark:bg-gray-600 '
               />
             </div>
             <div className="flex flex-row cursor-pointer leading-slug px-2 py-2">
@@ -180,6 +192,7 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
                   variant="text"
                   height={20}
                   width={60}
+                  className='dark:bg-gray-600 '
                 />
               </div>
             </div>
@@ -198,6 +211,7 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
               variant="text"
               height={20}
               width={80}
+              className='dark:bg-gray-600 '
             />
           </div>
           <div className=" flex text-sm px-2 py-2 gap-2">
@@ -208,6 +222,7 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
                   variant="text"
                   height={20}
                   width={90}
+                  className='dark:bg-gray-600 '
                 />
               </div>
             </div>
@@ -219,6 +234,7 @@ sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500"
                   variant="text"
                   height={20}
                   width={90}
+                  className='dark:bg-gray-600 '
                 />
               </div>
             </div>
