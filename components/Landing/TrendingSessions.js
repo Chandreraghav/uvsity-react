@@ -22,18 +22,18 @@ function TrendingSessions() {
       staleTime: standardStaleTime,
     }
   );
-  console.log(trendingSessions);
+  
   return (
     <div id="discover-popular-live-sessions">
       {trendingSessions.data  && typeof trendingSessions.data!=='string' && (
         <>
           <div
-            className={`flex  flex-col ${TrendingSessionsStyle.trending__sessions__wrapper__white__variant} ${TrendingSessionsStyle.trending__sessions__text} 
+            className={`flex  flex-col  ${TrendingSessionsStyle.trending__sessions__text} 
       justify-center text-center font-medium lg:text-2xl md:text-2xl sm:text-xl mt-10`}
           >
             <div className="">
               <h1
-                className={`${TrendingSessionsStyle.trending__sessions__title} text-center`}
+                className={`${TrendingSessionsStyle.trending__sessions__title} text-center dark:text-gray-300`}
               >
                 Discover Popular Live Sessions
               </h1>
@@ -54,7 +54,7 @@ function TrendingSessions() {
 
           <div
             id="sessionsPreview"
-            className={`${TrendingSessionsStyle.trending__sessions__wrapper__white__variant} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  bg-yellow-300`}
+            className={` grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  bg-yellow-300`}
           >
             {trendingSessions?.isSuccess &&
               trendingSessions &&
