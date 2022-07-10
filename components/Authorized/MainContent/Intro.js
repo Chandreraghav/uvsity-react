@@ -83,8 +83,8 @@ function Intro(props) {
         )}
         {userdata.isSuccess && (
           <p
-            className=" text-lg font-semibold  
-              leading-none xl:block dark:text-brand-grey-200"
+            className=" text-lg mt-1.5 place-content-center font-semibold  
+              leading-none xl:block text-gray-700 dark:text-gray-800"
           >
             👋 {GREETING.replace("<user>", userdata.data?.firstName)}
           </p>
@@ -109,12 +109,12 @@ function Intro(props) {
       >
         <div className={IntroStyles.intro__contents}>
           <div className={IntroStyles.intro__title}>
-            <h3 className="text-left px-2 text-black">{introHeader}</h3>
+            <h3 className="text-left px-2 text-gray-900 dark:text-gray-100">{introHeader}</h3>
           </div>
 
           <div className={IntroStyles.intro__buttons}>
             <Stack direction="row" spacing={2}>
-              {INTRO_ACTIONS.map((action) =>
+              {INTRO_ACTIONS.filter((action)=>!action.hidden).map((action) =>
                 action.disabled ? (
                   <Button
                     key={action.id}

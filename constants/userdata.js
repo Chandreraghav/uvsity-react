@@ -253,7 +253,7 @@ export const INTRO_ACTIONS = [
     id: 2,
     title: "Discussion",
     icon: <CreateIcon />,
-    hidden: false,
+    hidden: true,
     disabled: true,
     tooltip: "Post a new session",
     code: WORKFLOW_CODES.USER.INTRO_PATHS.TOPIC,

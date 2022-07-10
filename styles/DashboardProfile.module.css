@@ -24,7 +24,7 @@
   text-decoration: underline!important;
   transition-timing-function: ease-in!important;
   transition: all 0.8s!important;
-  color: #111!important;
+  
 }
 .profile__connect__request__text:hover{
   text-decoration: underline!important;

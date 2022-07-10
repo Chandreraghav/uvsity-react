@@ -196,7 +196,7 @@ function PeekProfile(props) {
                 aria-label="connect-to-person"
               >
                 {props?.isConnectionRequestInProgress ? (
-                  <ClipLoader color={`${props.dark ? "#fff" : ""}`} size={20} />
+                  <ClipLoader color={`${props.dark ? "#fff" : "#111"}`} size={20} />
                 ) : props?.isConnectionRequestSent ? (
                   <>
                     <DoneIcon fontSize="small" />
@@ -257,7 +257,7 @@ function PeekProfile(props) {
                   >
                     {props?.isConnectionRequestInProgress ? (
                       <ClipLoader
-                        color={`${props.dark ? "#fff" : ""}`}
+                        color={`${props.dark ? "#fff" : "#111"}`}
                         size={20}
                       />
                     ) : props?.isConnectionRequestSent ? (
@@ -319,7 +319,7 @@ function PeekProfile(props) {
                   >
                     {props?.isConnectionAcceptRequestInProgress ? (
                       <ClipLoader
-                        color={`${props.dark ? "#fff" : ""}`}
+                      color={`${props.dark ? "#fff" : "#111"}`}
                         size={20}
                       />
                     ) : props?.isConnectionAcceptRequestSent ? (

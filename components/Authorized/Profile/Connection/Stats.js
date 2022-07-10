@@ -58,8 +58,9 @@ function Stats({ data }) {
         <Spacer />
         <Tooltip title={tooltip ? tooltip : ""}>
           <div className={StatStyle.stat__legend}>
-            {Icon && <Icon />}
-            <div>
+            
+            <div className="flex gap-1 dark:hover:text-gray-100 hover:text-gray-900">
+            {Icon && <Icon className="dark:hover:text-gray-100 hover:text-gray-900" />}
               {title}({getTotalStatCount()})
             </div>
           </div>

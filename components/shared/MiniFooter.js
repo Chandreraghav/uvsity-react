@@ -9,27 +9,27 @@ function MiniFooter(props) {
       <div className="px-2 py-2  uvsity__card uvsity__card__border__theme bg-transparent">
         <div className="flex justify-center flex-wrap gap-2">
           <a
-            className={`text-xs  text-gray-600  app__anchor__footer`}
+            className={`text-xs  text-gray-600  app__anchor__mini__footer`}
             href="/browse/subtitles"
           >
             User Agreement
           </a>
 
           <a
-            className={`text-xs  text-gray-600 app__anchor__footer`}
+            className={`text-xs  text-gray-600 app__anchor__mini__footer`}
             href="/browse/subtitles"
           >
             Privacy Policy
           </a>
 
           <a
-            className={` text-xs text-gray-600  app__anchor__footer`}
+            className={` text-xs text-gray-600  app__anchor__mini__footer`}
             href="/browse/subtitles"
           >
             Help Center
           </a>
           <a
-            className={`text-xs text-gray-600  app__anchor__footer`}
+            className={`text-xs text-gray-600  app__anchor__mini__footer`}
             href="/browse/subtitles"
           >
             Contact us

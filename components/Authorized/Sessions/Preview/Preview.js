@@ -21,7 +21,7 @@ import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import UserDataService from "../../../../pages/api/users/data/UserDataService";
 import Actions from "../ActionableItems/Actions";
 import { parseMarkdownToHTML } from "../../../../utils/utility";
-
+import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 function Preview({ data, authorized, userdata }) {
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
   const [attendees, setAttendees] = useState([]);
@@ -29,7 +29,7 @@ function Preview({ data, authorized, userdata }) {
   const [sessionCreatorDetail, setSessionCreatorDetail] = useState({});
   const [cohostDetail, setCoHostDetail] = useState({});
   const [eventPosterSrc, setEventPosterSrc] = useState(data.imageURL?data.imageURL:IMAGE_PATHS.NO_DATA.EVENT_POSTER);
-  
+ 
   // THE NEEDFUL OR DEPENDENT DATA FOR EACH SESSION PREVIEW
   // ARE BEING CALLED VIA USE EFFECT AND NOT WITH REACT QUERY BECAUSE WE CANNOT DO
   // THAT AND IF DONE WILL HAVE SLOWNESS AND ENORMOUS PERFORMANCE IMPACT.
@@ -53,6 +53,27 @@ function Preview({ data, authorized, userdata }) {
       isSubscribed = false;
     };
   }, [data]);
+
+  useEffect( () => {
+    let isSubscribed = true;
+    let controller = new AbortController();
+    
+    async function evalAttendees(){
+      if (openAttendeesDialog===true && data.numberOfAttendees > 0 && isSubscribed) {
+        await UserDataService.getAttendeesPerCourse(data.courseId).then((response) => {
+         setAttendees(response?.data?.users);
+       });
+     }
+    }
+    evalAttendees()
+    return () => {
+      setAttendees([])
+      controller?.abort();
+      isSubscribed = false;
+    };
+  }, [openAttendeesDialog]);
+
+
 
   useEffect(() => {
     let isSubscribed = true;
@@ -125,6 +146,7 @@ function Preview({ data, authorized, userdata }) {
     if (amITheOnlyOneAttending) {
       return;
     }
+
     setOpenAttendeesDialog(true);
   };
   const getAttendanceJSX = () => {
@@ -216,13 +238,13 @@ function Preview({ data, authorized, userdata }) {
   };
 
   return (
-    <div className=" uvsity__card__border__theme bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg px-2">
+    <div className=" uvsity__card__border__theme bg-gray-100 dark:bg-gray-950 w-full rounded-bl-lg rounded-br-lg px-2">
       {/* EVENT/SESSION/AUTHOR NAME */}
       <div className="flex flex-row flex-wrap flex-grow-0">
         <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5 px-2 py-2">
           <Tooltip title={data?.courseFullName}>
             <h1
-              className={`${SessionStyle.preview__session__title} line-clamp-2 mb-1 text-3xl font-semibold leading-tight tracking-tight text-brand-black dark:text-brand-grey-100`}
+              className={`${SessionStyle.preview__session__title} line-clamp-2 mb-1 text-3xl font-semibold leading-tight tracking-tight text-gray-900 dark:text-gray-100`}
             >
               {data?.courseFullName}
             </h1>
@@ -240,10 +262,11 @@ function Preview({ data, authorized, userdata }) {
               isVisibleOnSessionCard
               metaData={data}
               userdata={userdata}
+              dark={getMode()===THEME_MODES.DARK?true:false}
               options={{ connect: false, mixedMode: true }}
             />
             <div
-              className={` line-clamp-3  text-gray-700 py-1 mb-1 leading-snug`}
+              className={` line-clamp-3  text-gray-700 dark:text-gray-300 py-1 mb-1 leading-snug`}
             >
               {parseMarkdownToHTML(data?.courseSummary)}
             </div>
@@ -276,6 +299,7 @@ function Preview({ data, authorized, userdata }) {
                     metaData={{ associatedCoHostData: cohostDetail }}
                     options={{ connect: false, mixedMode: true }}
                     userdata={userdata}
+                    dark={getMode()===THEME_MODES.DARK?true:false}
                   />
                 </div>
               </div>
@@ -310,6 +334,7 @@ function Preview({ data, authorized, userdata }) {
         {generateMonetizationAmountOnCard(data.cost)}
 
         <Actions data={sessionDetail} />
+        
       </div>
 
       <CustomDialog
@@ -319,8 +344,8 @@ function Preview({ data, authorized, userdata }) {
         data={data}
         secondaryData={attendees}
         workflow_code={WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION}
-        name="Attendees-Dialog"
-        theme="dark"
+        name="Attendees-Dialog"         
+        dark={getMode()===THEME_MODES.DARK?true:false}
       />
     </div>
   );
