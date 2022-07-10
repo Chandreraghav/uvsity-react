@@ -14,6 +14,7 @@ import { eraseFormContext } from "../../../components/Authorized/Sessions/Clean/
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import PhoneMenu from "../../../components/Authorized/Shared/FireFighter/PhoneMenu";
 import { standardStaleTime } from "../../../async/subscriptions";
+import { setMode } from "../../../theme/ThemeProvider";
 
 function Create() {
   const layoutObj = {
@@ -53,6 +54,7 @@ function Create() {
   };
 
   useEffect(() => {
+    setMode('light')
     eraseFormContext(formdata, dispatch).then(() => {
       setOldContextErased(true);
     });

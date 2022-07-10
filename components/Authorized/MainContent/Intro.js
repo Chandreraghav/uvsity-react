@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 import Shimmer from "./Shimmer/Shimmer";
 import IntroShimmer from "./Shimmer/IntroShimmer";
 import ThemeSwitcher from "../../../theme/theme";
+import { setMode } from "../../../theme/ThemeProvider";
 
 function Intro(props) {
   const userdata = props.data;
@@ -66,6 +67,7 @@ function Intro(props) {
 
   const invokeIntroAction = (code) => {
     if (code === WORKFLOW_CODES.USER.INTRO_PATHS.SESSION) {
+      
       router.push({
         pathname: AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
         query: { token: uuidv4() },
