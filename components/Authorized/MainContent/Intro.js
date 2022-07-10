@@ -17,6 +17,7 @@ import { AUTHORIZED_ROUTES } from "../../../constants/routes";
 import { v4 as uuidv4 } from "uuid";
 import Shimmer from "./Shimmer/Shimmer";
 import IntroShimmer from "./Shimmer/IntroShimmer";
+import ThemeSwitcher from "../../../theme/theme";
 
 function Intro(props) {
   const userdata = props.data;
@@ -74,7 +75,7 @@ function Intro(props) {
   return (
     <div className={` mt-2 px-1 py-1 `}>
       <div
-        className={`flex flex-row items-center justify-between h-10 flex-1 overflow-auto ${introMoodColor}`}
+        className={`flex flex-row items-center h-10 overflow-auto ${introMoodColor}`}
       >
         {userdata.isLoading && (
           <div className="px-2">
@@ -83,12 +84,13 @@ function Intro(props) {
         )}
         {userdata.isSuccess && (
           <p
-            className=" text-lg mt-1.5 place-content-center font-semibold  
+            className=" text-lg  place-content-center font-semibold  
               leading-none xl:block text-gray-700 dark:text-gray-800"
           >
             👋 {GREETING.replace("<user>", userdata.data?.firstName)}
           </p>
         )}
+       <div className='ml-auto mr-4'><ThemeSwitcher/></div> 
       </div>
 
       <Spacer />

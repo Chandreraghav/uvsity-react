@@ -9,6 +9,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InfoIcon from "@mui/icons-material/Info";
 import { IMAGE_PATHS, TITLES, TOOLTIPS } from "../../../../constants/userdata";
 import EndOfFeed from "./EndOfFeed";
+import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 function CompactCard({ data, title }) {
   return (
     <div>
@@ -51,7 +52,7 @@ function CompactCard({ data, title }) {
             src={IMAGE_PATHS.NO_DATA.SESSION}
             title={TOOLTIPS.NO_POPULAR_SESSIONS}
             subtitle={TOOLTIPS.COME_BACK_AGAIN}
-            color="text-gray-800"
+            color={getMode()===THEME_MODES.DARK?' text-gray-600':'text-gray-800'}
             icon={InfoIcon}
           />
         </div>

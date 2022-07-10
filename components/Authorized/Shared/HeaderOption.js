@@ -84,7 +84,7 @@ function HeaderOption({
   };
   if (hidden) return null;
   return (
-    <div onClick={handleRedirects} className={HeaderOptionsStyle.headerOption}>
+    <div onClick={handleRedirects} className={`${HeaderOptionsStyle.headerOption} dark:hover:text-gray-300 hover:text-gray-950`}>
       {Icon && (
         <Tooltip title={title}>
           <Icon className={HeaderOptionsStyle.headerOption__icon} />

@@ -11,7 +11,7 @@ function EndOfFeed(props) {
         src={props.src}
       />
       <div className="flex justify-center">
-        <Typography className={props.color} variant="h5">
+        <Typography className={`dark:text-gray-600 text-gray-800`} variant="h5">
           <props.icon/> {props.title}
         </Typography>
       </div>

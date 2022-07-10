@@ -15,11 +15,11 @@ function Header(props) {
     }
   };
   return (
-    <div className={`${HeaderStyle.header} dark:bg-gray-950 bg-gray-100`}>
+    <div className={`${HeaderStyle.header} dark:bg-gray-dark bg-gray-100`}>
       <div className={HeaderStyle.header__left}>
         <img src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE} alt="uvsity-Logo" />
         <Search />
-        <ThemeSwitcher/>
+       
       </div>
 
       {userdata.isLoading && (

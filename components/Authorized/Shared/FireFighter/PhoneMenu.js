@@ -11,7 +11,7 @@ function PhoneMenu(props) {
     }
   };
   return (
-    <div className=" max-h-10  dark:bg-gray-dark bg-gray-400  flex md:hidden  mt-auto clear-both bottom-0 left-0 z-50 text-center justify-center items-center  
+    <div className=" max-h-10  dark:bg-gray-dark bg-gray-100 border-t-2  flex md:hidden  mt-auto clear-both bottom-0 left-0 z-50 text-center justify-center items-center  
     p-4 w-screen    fixed">
       {props?.data?.isLoading ? (
         <>

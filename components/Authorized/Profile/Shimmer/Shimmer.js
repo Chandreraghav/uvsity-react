@@ -23,18 +23,20 @@ function Shimmer({ visible, animation }) {
    
   if (!visible) return "";
   return (
-        <div className="flex justify-between gap-2">
+        <div className="flex justify-between gap-2 ">
           <Skeleton1>
             <Skeleton
               animation={animation ? animation : "wave"}
               variant="text"
               height={20}
+              className={'dark:bg-gray-600 '}
             />
           </Skeleton1>
           <Skeleton
             animation={animation ? animation : "wave"}
             variant="circular"
             width={20}
+            className={'dark:bg-gray-600 '}
             height={20}
           />
       </div>
