@@ -23,9 +23,12 @@ function ChangeProfilePictureDialog({
 }) {
   if (!isOpen) return "";
   const isDark = getMode() === THEME_MODES.DARK;
+  const picture = useRef(null);
+  const [processing, setProcessing] = useState(false);
+  const [displayedPicture, setDisplayedPicture] = useState(null);
   let target = data?.target;
   let newTarget = null;
-  const [displayedPicture, setDisplayedPicture] = useState(null);
+  
   useEffect(() => {
     readURLFromMultiMediaObject(target);
     return () => {
@@ -36,13 +39,13 @@ function ChangeProfilePictureDialog({
   const readURLFromMultiMediaObject = (input) => {
     if (input.files && input.files[0]) {
       var reader = new FileReader();
-      reader.onload = function (e) {
+      reader.onload =  (e)=> {
         setDisplayedPicture(e.target.result);
       };
       reader.readAsDataURL(input.files[0]);
     }
   };
-  const [processing, setProcessing] = useState(false);
+ 
   const handleClose = (saveInd, closeInd, event, reason) => {
     if (reason && reason === "backdropClick") return;
     if (dialogCloseRequest) {
@@ -58,7 +61,7 @@ function ChangeProfilePictureDialog({
   const handleChooseAnotherImage = () => {
     picture.current.click();
   };
-  const picture = useRef(null);
+  
   const onPictureChange = (event) => {
     newTarget = event;
     readURLFromMultiMediaObject(event.target);
@@ -115,7 +118,7 @@ function ChangeProfilePictureDialog({
             className="flex justify-center items-center flex-col px-4 mb-2 -mt-3 text-gray-600"
           >
             <Avatar
-              className={` hidden avatar-lg cursor-pointer  opacity-100`}
+              className={`  avatar-lg cursor-pointer  opacity-100`}
               src={displayedPicture}
             />
           </div>
