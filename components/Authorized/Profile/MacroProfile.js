@@ -88,7 +88,7 @@ toast.configure();
 function MacroProfile(props) {
   const [selectedpicture, setSelectedPictureEvent] = useState(null);
   const [openProfilePictureModal, setProfilePictureModal] = useState(false);
-  const [showChangeAvatarOption, setShowChangeAvatarOption] = useState(false);
+  const [showChangeAvatarOption, setShowChangeAvatarOption] = useState(true);
   const [lazySessionData, setLazySessionData] = useState(null);
   const [show, setShow] = useState(false);
   const [
@@ -424,12 +424,7 @@ function MacroProfile(props) {
     return currentHref + event.id;
   };
 
-  const showAvatarChangeOption = (event) => {
-    setShowChangeAvatarOption(true);
-  };
-  const hideAvatarChangeOption = () => {
-    setShowChangeAvatarOption(false);
-  };
+ 
   const handleProfilePictureChange = (obj) => {
     if (obj) {
       if (!openProfilePictureModal) setProfilePictureModal(true);
@@ -804,11 +799,10 @@ function MacroProfile(props) {
               {profileImage &&
               !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
                 <div
-                  onMouseLeave={hideAvatarChangeOption}
-                  onMouseEnter={showAvatarChangeOption}
+                   
                 >
                   {/* AVATAR SAMPLE 1 */}
-                  <div className=" hidden lg:inline-block xl:inline-block">
+                  <div className="  lg:inline-block xl:inline-block">
                     {isItMe && showChangeAvatarOption && (
                       <ChangeProfilePicture
                         consumeEvent={handleProfilePictureChange}
@@ -838,8 +832,7 @@ function MacroProfile(props) {
                 </div>
               ) : (
                 <div
-                  onMouseLeave={hideAvatarChangeOption}
-                  onMouseEnter={showAvatarChangeOption}
+                   
                 >
                   {/* AVATAR SAMPLE 3 */}
                   <div className=" hidden lg:inline-block xl:inline-block">

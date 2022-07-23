@@ -24,8 +24,18 @@ function ChangeAboutInformationDialog(props) {
   if (!props.isOpen) return "";
   const isDark = getMode() === THEME_MODES.DARK;
   const useStyles = makeStyles({
+    root: {
+      "& .MuiFormLabel-root": {
+        color: isDark ? "#e2e2e2" : "", // or black
+      },
+     
+    },
     input: {
-      color: isDark?'darkgrey':''
+      color: isDark?'#e2e2e2':'',
+      borderBottom: `1px solid ${isDark ? "#e2e2e2" : "none"}`,
+      "&:focus":{
+        borderBottom:'none'
+      }
     }
   });
   const classes = useStyles();
@@ -121,6 +131,7 @@ function ChangeAboutInformationDialog(props) {
             rows={4}
             variant="standard"
             defaultValue=""
+            className={classes.root}
             inputProps={{ className: classes.input }}
             value={request}
             onChange={(event) => debounce(handleAboutInfoChange(event), 500)}

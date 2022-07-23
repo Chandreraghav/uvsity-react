@@ -1,7 +1,8 @@
 import { Tooltip } from "@material-ui/core";
 import React, { useRef } from "react";
-import EditIcon from "@mui/icons-material/Edit";
 import { USER_PROFILE } from "../../../../constants/userdata";
+import { IconButton } from "@mui/material";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 function ChangeProfilePicture(props) {
   const picture = useRef(null);
@@ -28,32 +29,36 @@ function ChangeProfilePicture(props) {
       />
       {props?.large ? (
         <>
-          <div className=" absolute mt-36 z-50  ml-2 place-content-center justify-center items-center flex ">
-            <div className="cursor-pointer py-3  justify-center border-0  border-r-8 border-separate outline-none flex gap-1 bg-white opacity-60 h-16 w-48">
+          <div className=" absolute mt-36 z-50  flex">
+            <div className=" rounded-xl bg-pink ml-40  ">
               <Tooltip title={USER_PROFILE.CHANGE_PROFILE_PICTURE}>
-                <div
-                  htmlFor="picture"
+                <IconButton
                   onClick={handleFileOnChange}
-                  className="flex justify-center text-sm gap-1 app__anchor__block font-semibold text-gray-600"
+                  color="primary"
+                  aria-label="upload picture"
+                  component="label"
                 >
-                  <EditIcon className="mt-1" sx={{ fontSize: 16 }} /> Change
-                </div>
+                  
+                  <PhotoCamera fontSize="large" />
+                </IconButton>
               </Tooltip>
             </div>
           </div>
         </>
       ) : (
         <>
-          <div className=" absolute mt-16 z-50  ml-4 place-content-center justify-center items-center flex ">
-            <div className="cursor-pointer py-1 px-3  border-0  border-r-8 border-separate outline-none flex gap-1 bg-white opacity-60 h-8 w-28">
+        <div className=" absolute mt-16 z-50  flex">
+            <div className=" rounded-2xl bg-pink ml-20  ">
               <Tooltip title={USER_PROFILE.CHANGE_PROFILE_PICTURE}>
-                <div
-                  htmlFor="picture"
+                <IconButton
                   onClick={handleFileOnChange}
-                  className="flex justify-center text-xs app__anchor__block text-gray-600"
+                  color="primary"
+                  aria-label="upload picture"
+                  component="label"
                 >
-                  <EditIcon className="mt-0.5" sx={{ fontSize: 12 }} /> Change
-                </div>
+                  
+                  <PhotoCamera fontSize="small" />
+                </IconButton>
               </Tooltip>
             </div>
           </div>
