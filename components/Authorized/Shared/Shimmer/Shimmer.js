@@ -12,6 +12,7 @@ function Shimmer({ visible, animation }) {
           <Skeleton animation={animation ? animation : "wave"} variant="circular" width={40} height={40} />
           <Skeleton animation={animation ? animation : "wave"} variant="circular"  width={40} height={40} />
           <Skeleton animation={animation ? animation : "wave"} variant="circular" width={40} height={40} />
+          <Skeleton animation={animation ? animation : "wave"} variant="circular" width={40} height={40} />
         </div>
     </div>
   );

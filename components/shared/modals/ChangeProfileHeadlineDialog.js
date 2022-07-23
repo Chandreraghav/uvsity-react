@@ -28,8 +28,11 @@ import {
   USER,
 } from "../../../validation/services/auth/ValidationSchema";
 import { getLocalStorageObject } from "../../../localStorage/local-storage";
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
+
 function ChangeProfileHeadlineDialog(props) {
   if (!props.isOpen) return "";
+  const isDark = getMode() === THEME_MODES.DARK;
   const [processing, setProcessing] = useState(false);
   const [request, setRequest] = useState(null);
   const [designation, setDesignation] = useState(props.data.designation);
@@ -48,7 +51,7 @@ function ChangeProfileHeadlineDialog(props) {
   );
   const useStyles = makeStyles({
     input: {
-      color: props?.theme ? "darkgrey" : "",
+      color: isDark ? "darkgrey" : "",
     },
   });
   const classes = useStyles();
@@ -128,7 +131,7 @@ function ChangeProfileHeadlineDialog(props) {
       fullWidth
       fullScreen={props?.fullScreen}
       className={`${processing ? "control__disabled" : ""} h-screen ${
-        props?.theme ? "dark-dialog" : ""
+        isDark ? "dark-dialog" : ""
       }`}
       open={props.isOpen}
       aria-labelledby="responsive-dialog-title"
@@ -136,7 +139,7 @@ function ChangeProfileHeadlineDialog(props) {
       disableEscapeKeyDown
       onBackdropClick={() => handleClose(true)}
     >
-      <div className={`${props?.theme ? "dark-dialog" : ""} h-screen`}>
+      <div className={`${isDark ? "dark-dialog" : ""} h-screen`}>
         <div className="flex justify-between">
           <div
             className={` px-4 py-3 leading-tight  text-left font-bold flex-col `}
@@ -161,7 +164,7 @@ function ChangeProfileHeadlineDialog(props) {
                   onClick={() => handleClose(true)}
                   sx={{
                     marginTop: 2,
-                    color: `${props?.theme ? "#e2e2e2" : ""}`,
+                    color: `${isDark ? "#e2e2e2" : ""}`,
                   }}
                 >
                   <CloseIcon fontSize="small" />
@@ -361,7 +364,7 @@ function ChangeProfileHeadlineDialog(props) {
         </div>
       </div>
       <DialogActions
-        className={`${props?.theme ? "dark-dialog" : ""} ${
+        className={`${isDark ? "dark-dialog" : ""} ${
           processing ? "control__disabled" : ""
         }`}
       >

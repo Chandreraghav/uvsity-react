@@ -73,7 +73,9 @@ function Intro(props) {
     }
   };
   return (
-    <div className={` mt-2 px-1 py-1 `}>
+    <div
+      className={` mt-2 px-1 py-1 rounded-2xl border-b-4  border-b-blue-800  `}
+    >
       <div
         className={`flex flex-row items-center h-10 overflow-auto ${introMoodColor}`}
       >
@@ -90,7 +92,9 @@ function Intro(props) {
             👋 {GREETING.replace("<user>", userdata.data?.firstName)}
           </p>
         )}
-       <div className='ml-auto mr-4'><ThemeSwitcher/></div> 
+        <div className="hidden ml-auto mr-4">
+          <ThemeSwitcher />
+        </div>
       </div>
 
       <Spacer />
@@ -111,12 +115,14 @@ function Intro(props) {
       >
         <div className={IntroStyles.intro__contents}>
           <div className={IntroStyles.intro__title}>
-            <h3 className="text-left px-2 text-gray-900 dark:text-gray-100">{introHeader}</h3>
+            <h3 className="text-left px-2 text-gray-900 dark:text-gray-100">
+              {introHeader}
+            </h3>
           </div>
 
           <div className={IntroStyles.intro__buttons}>
             <Stack direction="row" spacing={2}>
-              {INTRO_ACTIONS.filter((action)=>!action.hidden).map((action) =>
+              {INTRO_ACTIONS.filter((action) => !action.hidden).map((action) =>
                 action.disabled ? (
                   <Button
                     key={action.id}

@@ -1,5 +1,6 @@
 import React from "react";
 import { HEADER_OPTIONS } from "../../../../constants/userdata";
+import ThemeSwitcher from "../../../../theme/theme";
 import { formattedName } from "../../../../utils/utility";
 import HeaderOption from "../HeaderOption";
 import Shimmer from "../Shimmer/Shimmer";
@@ -11,7 +12,7 @@ function PhoneMenu(props) {
     }
   };
   return (
-    <div className=" max-h-10  dark:bg-gray-dark bg-gray-100 border-t-2  flex md:hidden  mt-auto clear-both bottom-0 left-0 z-50 text-center justify-center items-center  
+    <div className=" max-h-10  dark:bg-gray-dark bg-gray-100 border-t-1  flex md:hidden  mt-auto clear-both bottom-0 left-0 z-50 text-center justify-center items-center  
     p-4 w-screen    fixed">
       {props?.data?.isLoading ? (
         <>
@@ -42,6 +43,7 @@ function PhoneMenu(props) {
           </div>
         ))
       )}
+      <div className="-mt-3 ml-2"><ThemeSwitcher/></div> 
     </div>
   );
 }

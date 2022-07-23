@@ -17,12 +17,15 @@ import {
 import { USER_PROFILE } from "../../../constants/userdata";
 import PersonIcon from '@mui/icons-material/Person';
 import { makeStyles } from "@material-ui/core/styles"
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 
 function ChangeAboutInformationDialog(props) {
+  
   if (!props.isOpen) return "";
+  const isDark = getMode() === THEME_MODES.DARK;
   const useStyles = makeStyles({
     input: {
-      color: props?.theme?'darkgrey':''
+      color: isDark?'darkgrey':''
     }
   });
   const classes = useStyles();
@@ -71,7 +74,7 @@ function ChangeAboutInformationDialog(props) {
       disableEscapeKeyDown
       onBackdropClick={() => handleClose(true)}
     >
-      <div className={`${props?.theme ? "dark-dialog" : ""}`}>
+      <div className={`${isDark ? "dark-dialog" : ""}`}>
         <div className="flex justify-between">
           <div
             className={` px-4 py-3 leading-tight  text-left font-bold flex-col `}
@@ -96,7 +99,7 @@ function ChangeAboutInformationDialog(props) {
                   onClick={() => handleClose(true)}
                   sx={{
                     marginTop: 2,
-                    color: `${props?.theme ? "#e2e2e2" : ""}`,
+                    color: `${isDark ? "#e2e2e2" : ""}`,
                   }}
                 >
                   <CloseIcon fontSize="small" />
@@ -126,7 +129,7 @@ function ChangeAboutInformationDialog(props) {
         </div>
       </div>
       <DialogActions
-        className={`${props?.theme ? "dark-dialog" : ""} ${
+        className={`${isDark ? "dark-dialog" : ""} ${
           processing ? "control__disabled" : ""
         }`}
       >

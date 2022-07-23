@@ -146,7 +146,7 @@ export class AuthService {
       removeLocalStorageObject('uvsity-user-definition')
       this.cancelAppLayerSubscriptions(true);
 
-      // we do not clear ip data on logout because of its global nature.
+      // we do not clear ip data and theme on logout because of its global nature.
     } catch (error) {}
   }
 

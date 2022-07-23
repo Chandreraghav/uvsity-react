@@ -17,7 +17,7 @@ function SkillSets(props) {
     <div>
       {userSkillsets && userSkillsets.length > 0 ? (
         <>
-          <div className="skillsets flex gap-2 flex-wrap">
+          <div className="skillsets flex gap-2 flex-wrap dark:text-gray-500 text-gray-700">
             {userSkillsets?.map((skillset) => (
               <Stack
                 key={skillset.skillSetId}

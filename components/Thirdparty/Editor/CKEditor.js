@@ -75,7 +75,7 @@ function CEditor(props) {
               // https://ckeditor.com/docs/ckeditor5/latest/features/image-upload/simple-upload-adapter.html
               simpleUpload: {
                 // The URL that the images are uploaded to.
-                uploadUrl: `${process.env.NEXT_PUBLIC_API_URL}session/inlineimage?timestamp=${timestamp()}&jwtToken=${JWT.authHeader().Authorization}`,
+                uploadUrl: `${process.env.NEXT_PUBLIC_API_URL}session/inlineimage?timestamp=${timestamp()}&jwtToken=${JWT.authHeader()?.Authorization}`,
                  
                  // Enable the XMLHttpRequest.withCredentials property.
               //  withCredentials: true,

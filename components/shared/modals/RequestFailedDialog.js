@@ -26,7 +26,9 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 import { handleResponse } from "../../../toastr-response-handler/handler";
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 toast.configure();
+
 // A reusable component that is used to invoke in scenarios when a async request(invoked via user interaction) fails to serve to the user.
 // This is invoked only from component level.
 function RequestFailedDialog({
@@ -44,6 +46,7 @@ function RequestFailedDialog({
   method,
 }) {
   if (!isOpen) return "";
+  const isDark = getMode() === THEME_MODES.DARK;
   document.title = message ? message : REQUEST_FAILED_MESSAGE;
   const [expanded, setExpanded] = useState(false);
   const handleClose = (closeInd) => {
@@ -69,7 +72,7 @@ function RequestFailedDialog({
       disableEscapeKeyDown
       onBackdropClick={() => handleClose(false, true)}
     >
-      <div className={`${theme ? "dark-dialog" : ""}`}>
+      <div className={`${isDark ? "dark-dialog" : ""}`}>
         <div className="flex justify-between">
           <div
             className={` px-4 py-3 leading-tight  text-left font-bold flex-col`}
@@ -86,7 +89,7 @@ function RequestFailedDialog({
                 <IconButton
                   aria-label="close"
                   onClick={() => handleClose(false, true)}
-                  sx={{ marginTop: 2, color: `${theme ? "#e2e2e2" : ""}` }}
+                  sx={{ marginTop: 2, color: `${isDark ? "#e2e2e2" : ""}` }}
                 >
                   <CloseIcon fontSize="small" />
                 </IconButton>
@@ -103,7 +106,7 @@ function RequestFailedDialog({
               fontWeight: 400,
             }}
             variant="div"
-            color={theme ? "#e2e2e2" : ""}
+            color={isDark ? "#e2e2e2" : ""}
           >
             {message ? message : REQUEST_FAILED_MESSAGE}
           </Typography>
@@ -120,7 +123,7 @@ function RequestFailedDialog({
             >
               <AccordionSummary
                 expandIcon={
-                  <ExpandMoreIcon className={`${theme ? "dark-dialog" : ""}`} />
+                  <ExpandMoreIcon className={`${isDark ? "dark-dialog" : ""}`} />
                 }
                 aria-controls="panel1bh-content"
                 id="panel1bh-header"
@@ -240,7 +243,7 @@ function RequestFailedDialog({
           </div>
         </div>
       </div>
-      <DialogActions className={`${theme ? "dark-dialog" : ""}`}>
+      <DialogActions className={`${isDark ? "dark-dialog" : ""}`}>
         <Button
           color="primary"
           variant="outlined"

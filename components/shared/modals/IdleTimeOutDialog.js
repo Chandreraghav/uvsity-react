@@ -6,11 +6,12 @@ import { useQueryClient } from "react-query";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { toast } from "react-toastify";
 import { SignOffUser } from "../../Auth/SignOut";
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 toast.configure();
 
 function IdleTimeOutDialog({ isOpen, dialogCloseRequest, title, theme, name }) {
   if (!isOpen) return "";
-
+  const isDark = getMode() === THEME_MODES.DARK;
   const [gracePeriodToDecision, setGracePeriod] = useState(30);
   let timeLeft = 0;
   const Router = useRouter();
@@ -56,7 +57,7 @@ function IdleTimeOutDialog({ isOpen, dialogCloseRequest, title, theme, name }) {
         disableBackdropClick 
         onBackdropClick={()=>handleClose(false)}
       >
-        <div className={`${theme ? "dark-dialog" : ""}`}>
+        <div className={`${isDark ? "dark-dialog" : ""}`}>
           <div className="flex justify-between">
             <div
               className={` px-4 py-3 leading-tight  text-left font-bold flex-col`}
@@ -73,7 +74,7 @@ function IdleTimeOutDialog({ isOpen, dialogCloseRequest, title, theme, name }) {
             stay?
           </div>
         </div>
-        <DialogActions className={`${theme ? "dark-dialog" : ""}`}>
+        <DialogActions className={`${isDark ? "dark-dialog" : ""}`}>
           <Button onClick={() => handleClose(false)} autoFocus>
             Stay
           </Button>

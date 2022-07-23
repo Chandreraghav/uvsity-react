@@ -13,9 +13,32 @@ import CloseIcon from "@mui/icons-material/Close";
 import { INBOX, RECOMMENDATIONS } from "../../../constants/userdata";
 import SendIcon from "@mui/icons-material/Send";
 import TextField from "@mui/material/TextField";
-import { isSmallScreen, shouldDialogAppearInFullScreen } from "../../../utils/utility";
+import {
+  isSmallScreen,
+  shouldDialogAppearInFullScreen,
+} from "../../../utils/utility";
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
+import { makeStyles } from "@material-ui/core/styles";
 function PolyMessagingDialog(props) {
   if (!props.isOpen) return "";
+  const isDark = getMode() === THEME_MODES.DARK;
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      "& .MuiFormLabel-root": {
+        color: isDark ? "#e2e2e2" : "", // or black
+      },
+     
+    },
+    input: {
+      color: isDark ? "#e2e2e2" : "",
+      borderBottom: `1px solid ${isDark ? "#e2e2e2" : "none"}`,
+      "&:focus":{
+        borderBottom:'none'
+      }
+    },
+  }));
+  const classes = useStyles();
+
   const getTitle = () => {
     if (props.workflow === RECOMMENDATIONS.REQUEST_TYPE) {
       return props.title
@@ -53,9 +76,18 @@ function PolyMessagingDialog(props) {
           messageObject.message = message.trim();
         }
       }
-      if(workflow === RECOMMENDATIONS.REQUEST_TYPE)
-      props.dialogCloseRequest({ recommendation:messageObject, close: closeInd, event:workflow });
-      else  props.dialogCloseRequest({ message:messageObject, close: closeInd, event:workflow });
+      if (workflow === RECOMMENDATIONS.REQUEST_TYPE)
+        props.dialogCloseRequest({
+          recommendation: messageObject,
+          close: closeInd,
+          event: workflow,
+        });
+      else
+        props.dialogCloseRequest({
+          message: messageObject,
+          close: closeInd,
+          event: workflow,
+        });
     }
   };
   const debounce = (func, delay) => {
@@ -73,10 +105,11 @@ function PolyMessagingDialog(props) {
   const handleRecommendationRequestMessage = (e) => {
     setMessage(e.target.value);
   };
-  const _isSmallScreen= isSmallScreen()
+  const _isSmallScreen = isSmallScreen();
   return (
     <Dialog
-    fullScreen={shouldDialogAppearInFullScreen()}
+      fullWidth
+      fullScreen={shouldDialogAppearInFullScreen()}
       className={`${processing ? "control__disabled" : ""}`}
       open={props.isOpen}
       aria-labelledby="responsive-dialog-title"
@@ -84,7 +117,7 @@ function PolyMessagingDialog(props) {
       disableEscapeKeyDown
       onBackdropClick={() => handleClose(false, true)}
     >
-      <div className={`${props?.theme ? "dark-dialog" : ""}`}>
+      <div className={`${isDark ? "dark-dialog" : ""}`}>
         <div className="flex justify-between">
           <div
             className={` px-4 py-3 leading-tight   text-left font-bold flex-col `}
@@ -92,7 +125,7 @@ function PolyMessagingDialog(props) {
             <Typography
               className="line-clamp-1"
               gutterBottom
-              variant={_isSmallScreen?'subtitle1':'h6'}
+              variant={_isSmallScreen ? "subtitle1" : "h6"}
               component="div"
             >
               <>
@@ -110,7 +143,7 @@ function PolyMessagingDialog(props) {
                   onClick={() => handleClose(false, true)}
                   sx={{
                     marginTop: 2,
-                    color: `${props?.theme ? "#e2e2e2" : ""}`,
+                    color: `${isDark ? "#e2e2e2" : ""}`,
                   }}
                 >
                   <CloseIcon fontSize="small" />
@@ -124,10 +157,14 @@ function PolyMessagingDialog(props) {
             fullWidth
             id="standard-basic-subject"
             label={
-              workflow === RECOMMENDATIONS.REQUEST_TYPE
-                ? RECOMMENDATIONS.REQUEST_RECOMMENDATION_SUBJECT_LABEL
-                : INBOX.MESSAGE_SUBJECT_LABEL
+              <>
+                {workflow === RECOMMENDATIONS.REQUEST_TYPE
+                  ? RECOMMENDATIONS.REQUEST_RECOMMENDATION_SUBJECT_LABEL
+                  : INBOX.MESSAGE_SUBJECT_LABEL}
+              </>
             }
+            inputProps={{ className: classes.input }}
+            className={classes.root}
             variant="standard"
             value={subject}
             onChange={(event) => debounce(handleSubjectChange(event), 500)}
@@ -135,6 +172,9 @@ function PolyMessagingDialog(props) {
 
           <TextField
             fullWidth
+            inputProps={{ className: classes.input }}
+            
+            className={classes.root}
             id="outlined-multiline-static"
             label={
               workflow === RECOMMENDATIONS.REQUEST_TYPE
@@ -157,7 +197,7 @@ function PolyMessagingDialog(props) {
         </div>
       </div>
       <DialogActions
-        className={`${props?.theme ? "dark-dialog" : ""} ${
+        className={`${isDark ? "dark-dialog" : ""} ${
           processing ? "control__disabled" : ""
         }`}
       >
