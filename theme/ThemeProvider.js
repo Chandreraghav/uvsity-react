@@ -16,12 +16,14 @@ export const THEME_MODES = {
   LIGHT: "light",
 };
 export const setMode = (mode) => {
-  localStorage.theme = mode || THEME_MODES.LIGHT;
-  setTheme();
+    localStorage.theme = mode || THEME_MODES.LIGHT;
+    setTheme();
 };
 
 export const getMode = () => {
-  return localStorage.theme || THEME_MODES.LIGHT;
+  try {
+    return localStorage.theme || THEME_MODES.LIGHT;
+  } catch (error) {}
 };
 
 export const removeThemePreference = () => {

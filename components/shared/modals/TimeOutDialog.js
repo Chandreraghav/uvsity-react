@@ -9,6 +9,7 @@ import { AuthService } from "../../../pages/api/users/auth/AuthService";
 import { toast } from "react-toastify";
 import { AUTH_TOKENS } from "../../../constants/userdata";
 import { eraseContext, SignOffUser } from "../../Auth/SignOut";
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 toast.configure();
 
 function TimeOutDialog({
@@ -22,6 +23,7 @@ function TimeOutDialog({
   graceTime,
 }) {
   if (!type || !isOpen) return "";
+  const isDark = getMode() === THEME_MODES.DARK;
   const [gracePeriod, setGracePeriod] = useState(graceTime || 30);
   let timeLeft = 0;
   const Router = useRouter();
@@ -107,7 +109,7 @@ function TimeOutDialog({
           handleClose(type === AUTH_TOKENS.IDLE_MONITOR ? false : true)
         }
       >
-        <div className={`${theme ? "dark-dialog" : ""}`}>
+        <div className={`${isDark ? "dark-dialog" : ""}`}>
           <div className="flex justify-between">
             <div
               className={` px-4 py-3 leading-tight  text-left font-bold flex-col`}
@@ -141,7 +143,7 @@ function TimeOutDialog({
             )}
           </div>
         </div>
-        <DialogActions className={`${theme ? "dark-dialog" : ""}`}>
+        <DialogActions className={`${isDark ? "dark-dialog" : ""}`}>
           {type === AUTH_TOKENS.IDLE_MONITOR && (
             <>
               <Button onClick={() => handleClose(false)} autoFocus>

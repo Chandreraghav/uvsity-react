@@ -50,6 +50,7 @@ function Header(props) {
                 errorOnRedirect={handleErrorOnRedirect}
               />
             ))}
+          <div className="-mt-3 mr-1"><ThemeSwitcher/></div> 
           </div>
         </>
       )}

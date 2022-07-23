@@ -69,6 +69,7 @@ import {
   pink,
   brown,
 } from "@mui/material/colors";
+import { getMode, THEME_MODES } from "../theme/ThemeProvider";
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -1048,7 +1049,7 @@ export const PROFILE_AREAS = [
     title: HTMLUnderlineByCharacterIndex("About <#>", 0),
     icon: InfoIcon,
     hidden: false,
-    color: "#111",
+    color: '#0081CB',
   },
   {
     id: 8,

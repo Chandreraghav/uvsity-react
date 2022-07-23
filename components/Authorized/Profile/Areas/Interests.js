@@ -10,7 +10,7 @@ function Interests(props) {
     setIsReadMore(!isReadMore);
   };
   return interest ? (
-    <div className="   text-gray-700 text-sm lg:text-md xl:text-md    ">
+    <div className=" dark:text-gray-500 text-gray-700  text-sm lg:text-md xl:text-md    ">
     <Typography className={isReadMore && interest.length>READ_MORE_MAX_LENGTH?'line-clamp-1':''} variant="div">{interest}</Typography>
     <span onClick={toggleReadMore} className="read-or-hide">
         {isReadMore && interest.length>READ_MORE_MAX_LENGTH ? READ_MORE : interest.length>READ_MORE_MAX_LENGTH?READ_LESS:''}

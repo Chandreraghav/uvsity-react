@@ -1,6 +1,11 @@
 const path = require("path");
 module.exports = {
-  purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  
+  //purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    // Example content paths...
+    "./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}",
+  ],
   darkMode: "class", //  'media' or 'class or false'
   variants: {
     extend: {},
@@ -78,6 +83,9 @@ module.exports = {
           900: "#1a202c",
           950: "#111",
         },
+        white:{
+          100:'#fff'
+        }
       },
       lineHeight: {
         hero: "4.5rem",

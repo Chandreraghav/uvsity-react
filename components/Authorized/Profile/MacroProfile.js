@@ -1154,14 +1154,14 @@ function MacroProfile(props) {
             >
               {PROFILE_AREAS.filter((hidden) => hidden !== true).map((area) => (
                 <React.Fragment key={area.id}>
-                  <Grid item xs={12} lg={12} md={12} sm={12}>
-                    <Paper elevation={1}>
+                  <Grid  item xs={12} lg={12} md={12} sm={12}>
+                    <Paper className=" dark:bg-gray-900 bg-white-100" elevation={1}>
                       <div className="profile__section__wrapper mb-1 py-2">
                         <Container className="profile__section__container">
                           <div className="flex flex-column">
                             <div className="flex gap-1 mb-1">
                               <area.icon sx={{ color: area.color }} />
-                              <div className="line-clamp-1 text-gray-700 font-normal">
+                              <div className="line-clamp-1 dark:text-gray-100 text-gray-700 font-normal">
                                 <Typography variant="div">
                                   {getProfileAreaTitle(area)}
                                 </Typography>
@@ -1169,7 +1169,7 @@ function MacroProfile(props) {
                             </div>
                             <Divider />
                             <Spacer />
-                            <div className="">
+                            <div className=" ">
                               {area.id === 1 && (
                                 <>
                                   <About

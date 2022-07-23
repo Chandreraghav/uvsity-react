@@ -53,7 +53,6 @@ export default function CustomDialog({
     staleTime: infinity,
   });
   const handleContentScroll = (o) => {
-    return console.log(o);
   };
   useEffect(() => {
     // document.getElementById('dialog-content').addEventListener("scroll", () => {

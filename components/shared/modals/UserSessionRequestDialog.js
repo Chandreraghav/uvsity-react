@@ -13,7 +13,10 @@ import {
   shouldDialogAppearInFullScreen,
   isSmallScreen,
 } from "../../../utils/utility";
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
+
 function UserSessionRequestDialog(props) {
+  const isDark = getMode() === THEME_MODES.DARK;
   if (!props.isOpen) return "";
   const [processing, setProcessing] = useState(false);
   const [sessionRequest, setSessionRequest] = useState(props?.data);
@@ -47,7 +50,7 @@ function UserSessionRequestDialog(props) {
       disableEscapeKeyDown
       onBackdropClick={() => handleClose(false, true)}
     >
-      <div className={`${props?.theme ? "dark-dialog" : ""}`}>
+      <div className={`${isDark ? "dark-dialog" : ""}`}>
         <div className="flex justify-between">
           <div
             className={` px-4 py-3 leading-tight  text-left font-bold flex-col `}
@@ -72,7 +75,7 @@ function UserSessionRequestDialog(props) {
                   onClick={() => handleClose(false, true)}
                   sx={{
                     marginTop: 2,
-                    color: `${props?.theme ? "#e2e2e2" : ""}`,
+                    color: `${isDark ? "#e2e2e2" : ""}`,
                   }}
                 >
                   <CloseIcon fontSize="small" />
@@ -91,7 +94,7 @@ function UserSessionRequestDialog(props) {
         )}
       </div>
       <DialogActions
-        className={`${props?.theme ? "dark-dialog" : ""} ${
+        className={`${isDark ? "dark-dialog" : ""} ${
           processing ? "control__disabled" : ""
         }`}
       >

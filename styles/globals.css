@@ -507,6 +507,10 @@ button.danger {
   color: #FFF;
 } 
 
+ button[class*='MuiButton-containedPrimary'] {
+  background-color: #0081cb!important;
+}
+
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {

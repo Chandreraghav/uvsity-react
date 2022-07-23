@@ -5,6 +5,7 @@ import SnapProfile from "../../Network/People/Listing/Snap/Profile";
 import NoData from "../../Shared/NoData";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import ReadMore from "../../../shared/ReadMore";
+import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 function RecommendationsFeed(props) {
   const handleOnProfileView = (obj) => {
     if (props.consumeEvent) {
@@ -21,7 +22,7 @@ function RecommendationsFeed(props) {
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           {recommendations?.map((_recommendation, index) => (
             <Grid key={index} item xs={12}>
-              <div className="flex flex-col gap-2 mb-1">
+              <div className="dark:text-gray-500  flex flex-col gap-2 mb-1">
                 <div>
                   <SnapProfile
                     onProfileViewRequest={handleOnProfileView}
@@ -35,10 +36,10 @@ function RecommendationsFeed(props) {
                     }
                   />
                 </div>
-                <div className=" ml-10 text-sm">
+                <div className="dark:text-gray-500 text-gray-700   ml-10 text-sm">
                
                    
-                   <QuestionAnswerIcon sx={{color:'blueviolet', fontSize:14}}/>  <ReadMore color='text.secondary'>{_recommendation.recommendation}</ReadMore>
+                   <QuestionAnswerIcon sx={{color:'blueviolet', fontSize:14}}/>  <ReadMore color={`${getMode()===THEME_MODES.DARK ? '':'text.secondary'}`}>{_recommendation.recommendation}</ReadMore>
                   
                 </div>
               </div>

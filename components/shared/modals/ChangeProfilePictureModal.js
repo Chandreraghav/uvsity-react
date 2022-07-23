@@ -11,6 +11,7 @@ import React, { useState, useEffect, useRef } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import FaceIcon from "@mui/icons-material/Face";
 import { USER_PROFILE } from "../../../constants/userdata";
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 function ChangeProfilePictureDialog({
   isOpen,
   data,
@@ -21,6 +22,7 @@ function ChangeProfilePictureDialog({
   actionButtonProps,
 }) {
   if (!isOpen) return "";
+  const isDark = getMode() === THEME_MODES.DARK;
   let target = data?.target;
   let newTarget = null;
   const [displayedPicture, setDisplayedPicture] = useState(null);
@@ -82,7 +84,7 @@ function ChangeProfilePictureDialog({
         disableEscapeKeyDown
       >
         <div
-          className={`${theme ? "dark-dialog" : ""} ${
+          className={`${isDark ? "dark-dialog" : ""} ${
             processing ? "control__disabled__opaque" : ""
           }`}
         >
@@ -101,7 +103,7 @@ function ChangeProfilePictureDialog({
                 <IconButton
                   aria-label="close"
                   onClick={() => handleClose(false, true)}
-                  sx={{ marginTop: 2, color: `${theme ? "#e2e2e2" : ""}` }}
+                  sx={{ marginTop: 2, color: `${isDark ? "#e2e2e2" : ""}` }}
                 >
                   <CloseIcon fontSize="small" />
                 </IconButton>
@@ -119,7 +121,7 @@ function ChangeProfilePictureDialog({
           </div>
         </div>
         <DialogActions
-          className={`${theme ? "dark-dialog" : ""} ${
+          className={`${isDark ? "dark-dialog" : ""} ${
             processing ? "control__disabled__opaque" : ""
           }`}
         >

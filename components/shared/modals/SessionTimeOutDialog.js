@@ -6,6 +6,7 @@ import { useQueryClient } from "react-query";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { toast } from "react-toastify";
 import { SignOffUser } from "../../Auth/SignOut";
+import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 toast.configure();
 
 function SessionTimeOutDialog({
@@ -16,6 +17,7 @@ function SessionTimeOutDialog({
   name,
 }) {
   if (!isOpen) return "";
+  const isDark = getMode() === THEME_MODES.DARK;
   const [gracePeriodToLogOff, setGracePeriod] = useState(5);
   let timeLeft = 0;
   const Router = useRouter();
@@ -60,7 +62,7 @@ function SessionTimeOutDialog({
         disableBackdropClick
         onBackdropClick={() => handleClose(true)}
       >
-        <div className={`${theme ? "dark-dialog" : ""}`}>
+        <div className={`${isDark ? "dark-dialog" : ""}`}>
           <div className="flex justify-between">
             <div
               className={` px-4 py-3 leading-tight  text-left font-bold flex-col`}
@@ -77,7 +79,7 @@ function SessionTimeOutDialog({
             {gracePeriodToLogOff} seconds.
           </div>
         </div>
-        <DialogActions className={`${theme ? "dark-dialog" : ""}`}>
+        <DialogActions className={`${isDark ? "dark-dialog" : ""}`}>
           <Button onClick={() => handleClose(true)} autoFocus>
             OK
           </Button>

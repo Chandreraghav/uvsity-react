@@ -8,7 +8,7 @@ function Education(props) {
   return props.education?.highestLevel && props.education?.pastEducation ? (
     <>
       {props.education?.highestLevel && (
-        <div className="flex gap-2">
+        <div className="flex gap-2 ">
           <Typography variant="div" sx={{ fontSize: 15, color: "#7393B3" }}>
             <u>H</u>ighest Education:
           </Typography>
@@ -35,12 +35,12 @@ function Education(props) {
                           <div className="flex   text-xs lg:text-sm xl:text-sm mb-2">
                             <DoubleArrowIcon sx={{ color: "#60A5FA" }} />
                             <div className="flex flex-col">
-                              <div className="text-blue-400 font-semibold line-clamp-1">
+                              <div className=" dark:text-gray-500 text-blue-400 font-semibold line-clamp-1">
                                 {education.degreeCourse} from &nbsp;
                                 {education.educationInstitution}
                               </div>
                               <div>
-                                <div className="text-xs text-gray-700">
+                                <div className="text-xs dark:font-semibold dark:text-gray-500  text-gray-700">
                                   <span>{education?.campus}</span>
                                   &nbsp;&#8739;&nbsp;
                                   <span>
