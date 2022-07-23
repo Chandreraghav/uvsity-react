@@ -127,7 +127,7 @@ const UserProfile = () => {
            
         </div>
       )}
-      {isLoading && <div className="  min-h-screen bg-white">{LOADING_MESSAGE_DEFAULT}</div>}
+      {isLoading && <div className="  min-h-screen dark:bg-gray-dark bg-gray-100"></div>}
       <PhoneMenu data={getData.LOGGED_IN_USER_SUMMARY} />
       <Footer minimizeOnSmallScreens />
     </Layout>
