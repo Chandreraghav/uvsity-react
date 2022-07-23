@@ -1,8 +1,9 @@
 import { Typography } from "@mui/material";
 import React, { useState } from "react";
 import { READ_LESS, READ_MORE } from "../../constants/constants";
-const ReadMore = ({ children, coded, color, initialReadLimit }) => {
-  const text = children;
+import { parseMarkdownToHTML } from "../../utils/utility";
+const ReadMore = ({ children, coded, color, initialReadLimit,parseHtml }) => {
+  const text =children;
   const [isReadMore, setIsReadMore] = useState(true);
   const limit= initialReadLimit || 50
   const toggleReadMore = () => {
@@ -14,10 +15,15 @@ const ReadMore = ({ children, coded, color, initialReadLimit }) => {
         className={coded ? "code" : "text"}
         variant={coded ? "caption" : "inherit"}
         color={color ? color : "inherit"}
-      >
-        {isReadMore
+      >{
+        parseHtml ? isReadMore
+        ? parseMarkdownToHTML(text.substring(0, limit))
+        : parseMarkdownToHTML(text):
+        isReadMore
           ? text.slice(0, limit)
-          : text}
+          : text
+      }
+        
       </Typography>
       {coded ? (
          <>
