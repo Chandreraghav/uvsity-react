@@ -24,11 +24,11 @@ import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import CastForEducationOutlinedIcon from "@mui/icons-material/CastForEducationOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import GroupWorkOutlinedIcon from '@mui/icons-material/GroupWorkOutlined';
-import VideoCameraFrontOutlinedIcon from '@mui/icons-material/VideoCameraFrontOutlined';
-import StreamOutlinedIcon from '@mui/icons-material/StreamOutlined';
-import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
-import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
+import GroupWorkOutlinedIcon from "@mui/icons-material/GroupWorkOutlined";
+import VideoCameraFrontOutlinedIcon from "@mui/icons-material/VideoCameraFrontOutlined";
+import StreamOutlinedIcon from "@mui/icons-material/StreamOutlined";
+import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
+import StarOutlinedIcon from "@mui/icons-material/StarOutlined";
 
 export const LANDING_PAGE_APP_FEATURES = [
   {
@@ -119,123 +119,123 @@ export const LANDING_PAGE_HERO_KEYWORDS = [
   {
     id: 1,
     phrase: "Create your free session today",
-    icon: <AddOutlinedIcon className='lg-icon' />,
+    icon: <AddOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
   {
     id: 2,
     phrase: "Hassle free online conferencing",
-    icon: <LanguageOutlinedIcon className='lg-icon'/>,
+    icon: <LanguageOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
   {
     id: 3,
     phrase: "Learn from industry experts",
-    icon: <SupervisedUserCircleOutlinedIcon className='lg-icon'/>,
+    icon: <SupervisedUserCircleOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 4,
     phrase: "Connect, learn & grow",
-    icon:<GroupWorkOutlinedIcon className='lg-icon'/>,
+    icon: <GroupWorkOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 5,
     phrase: "Mobilize your knowledge to empower",
-    icon: <LightbulbOutlinedIcon className='lg-icon'/>,
+    icon: <LightbulbOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 6,
     phrase: "Get paid for holding an online event",
-    icon: <MonetizationOnOutlinedIcon className='lg-icon' />,
+    icon: <MonetizationOnOutlinedIcon className="lg-icon" />,
     strength: 2,
   },
 
   {
     id: 7,
     phrase: "Evaluate your worth as a presenter",
-    icon: <EjectOutlinedIcon className='lg-icon' />,
+    icon: <EjectOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 8,
     phrase: "Sponsor a session",
-    icon: <AutoGraphOutlinedIcon className='lg-icon' />,
+    icon: <AutoGraphOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 9,
     phrase: "Join the changemaker of online conferencing",
-    icon: <ThumbUpOutlinedIcon className='lg-icon' />,
+    icon: <ThumbUpOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 10,
     phrase: "Get your account pre-configured with zoom",
-    icon: <VideoCameraFrontOutlinedIcon className='lg-icon'/>,
+    icon: <VideoCameraFrontOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 11,
     phrase: "Host your own private session today",
-    icon: <StreamOutlinedIcon className='lg-icon'/>,
+    icon: <StreamOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 12,
     phrase: "Invite speakers from industry",
-    icon: <SupervisedUserCircleOutlinedIcon className='lg-icon' />,
+    icon: <SupervisedUserCircleOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 13,
     phrase: "Share your availability with peers",
-    icon: <ShareOutlinedIcon className='lg-icon' />,
+    icon: <ShareOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 14,
     phrase: "Get access to educational events",
-    icon: <CastForEducationOutlinedIcon className='lg-icon' />,
+    icon: <CastForEducationOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 15,
     phrase: "Hold your business meetings here for free",
-    icon: <WorkOutlineIcon className='lg-icon' />,
+    icon: <WorkOutlineIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 16,
     phrase: "Get access to healthcare seminars",
-    icon: <FavoriteBorderOutlinedIcon  className='lg-icon'/>,
+    icon: <FavoriteBorderOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
 
   {
     id: 17,
     phrase: "Earn from your own online sessions",
-    icon: <MonetizationOnOutlinedIcon className='lg-icon'/>,
+    icon: <MonetizationOnOutlinedIcon className="lg-icon" />,
     strength: 1,
   },
   {
     id: 18,
     phrase: "Become a member and enjoy premium benefits",
-    icon: <StarOutlinedIcon className='lg-icon'/>,
+    icon: <StarOutlinedIcon className="lg-icon" />,
     strength: 2,
   },
 ];
@@ -270,24 +270,24 @@ export const LANDING_PAGE_STATS_DETAIL = [
     text: "Live Sessions",
     count: 100,
     icon: <DynamicFeedIcon />,
-    altIcon:'fa fa-television',
-    className:'primary'
+    altIcon: "fa fa-television",
+    className: "primary",
   },
   {
     id: 2,
     text: "Meetings",
     count: 600,
     icon: <VideocamIcon />,
-    altIcon:'fa fa-video-camera',
-    className:'danger'
+    altIcon: "fa fa-video-camera",
+    className: "danger",
   },
   {
     id: 3,
     text: "Countries",
     count: 47,
     icon: <PublicIcon />,
-    altIcon:'fa fa-group',
-    className:'success'
+    altIcon: "fa fa-group",
+    className: "success",
   },
 ];
 export const MIN_LENGTH_PASSWORD = 8;
@@ -318,14 +318,45 @@ export const TIME_OF_DAY_GREETING = {
   AFTERNOON: "Good afternoon",
   EVENING: "Good evening",
 };
-export const USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION=['all-done-illustration-woman.jpg','all-done-illustration-woman-1.jpg' ,'all-done-illustration-woman-2.jpg', 'all-done-illustration-man.jpg', 'all-done-illustration.jpg','all-done-man-illustration.png','all-done-woman-illustration.webp' ]
+export const USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION = [
+  "all-done-illustration-woman.jpg",
+  "all-done-illustration-woman-1.jpg",
+  "all-done-illustration-woman-2.jpg",
+  "all-done-illustration-man.jpg",
+  "all-done-illustration.jpg",
+  "all-done-man-illustration.png",
+  "all-done-woman-illustration.webp",
+];
 
-export const USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION=['Great job.','Superb!','Yay!!','Nailed it!!','Awesome.','You did it.',"That's it." ]
-export const USER_PAGE_LEAVE_CONFIRM_MESSAGE="Are you sure want to leave this page?"
-export const ERROR_DETAILS='Click to check error details'
-export const CONTACT_SUPPORT="Please contact support if the problem persists further."
-export const REQUEST_FAILED_HEADER="Request failed"
-export const READ_MORE_MAX_LENGTH=200
-export const READ_MORE='...read more';
-export const READ_LESS=' show less'
-export const SEE_MORE ='See more'
+export const USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION = [
+  "Great job.",
+  "Superb!",
+  "Yay!!",
+  "Nailed it!!",
+  "Awesome.",
+  "You did it.",
+  "That's it.",
+];
+export const USER_PAGE_LEAVE_CONFIRM_MESSAGE =
+  "Are you sure want to leave this page?";
+export const ERROR_DETAILS = "Click to check error details";
+export const CONTACT_SUPPORT =
+  "Please contact support if the problem persists further.";
+export const REQUEST_FAILED_HEADER = "Request failed";
+export const READ_MORE_MAX_LENGTH = 200;
+export const READ_MORE = "...read more";
+export const READ_LESS = " show less";
+export const SEE_MORE = "See more";
+export const COLOR_CODES = {
+  GRAY: {
+    LIGHT: "dimgray",
+    DEEP: "#e2e2e2",
+  },
+  BLUE: {
+    LIGHT: "#029BFE",
+    DARK: "#4100BC",
+  },
+  BLACK: {
+    DARK: "#111",
+  },
+};

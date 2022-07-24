@@ -37,6 +37,7 @@ import {
   avatarToString,
   formattedName,
   formattedProfileSubtitle,
+  getTimezone,
   isUvsityLogicalError,
   _delay,
 } from "../../../utils/utility";
@@ -83,6 +84,7 @@ import ChangeAboutInformationDialog from "../../shared/modals/ChangeAboutInforma
 import ChangeProfileHeadlineDialog from "../../shared/modals/ChangeProfileHeadlineDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import { getLocalStorageObject } from "../../../localStorage/local-storage";
+import ChangeInterests from "../../shared/modals/ChangeInterests";
 toast.configure();
 
 function MacroProfile(props) {
@@ -175,6 +177,11 @@ function MacroProfile(props) {
   const userSkillsets = userdata?.userSkillsets;
   const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
   const interests = userdata?.myInterests;
+  const _interests ={
+    dialogOpen: false,
+    interests,
+  }
+  const [interestData, setInterestData] = useState(_interests);
   const recommendedSessions = userdata?.coursesIRecommend;
   const recommendations = userdata?.recommendationsReceived;
   const education = {
@@ -184,7 +191,7 @@ function MacroProfile(props) {
   const firstName = userdata?.firstName;
   const profileImage = userdata?.profilepicName;
   const profileName = formattedName(userdata?.firstName, userdata?.lastName);
-  const userType = userdata?.userType;
+  let userType = userdata?.userType;
   const starRating = Number(userdata?.noOfRatingStars);
   const hasRatings = starRating > 0;
   const metaData = {
@@ -223,14 +230,15 @@ function MacroProfile(props) {
   const profileSecondaryLine = formattedProfileSubtitle(
     userType,
     metaData.eduIns
-  );
+  )
 
   const profileTertiaryLine = formattedProfileSubtitle(
     metaData?.city,
     metaData?.country
-  );
+  )
 
   const _profileHighlight = {
+    hasData:false,
     dialogOpen: false,
     designation: null,
     institution: null,
@@ -667,19 +675,75 @@ function MacroProfile(props) {
   const handleProfileUpdateEvent = (obj) => {
     if (obj && obj.id == 0) {
       if (obj.event === "edit"){
-        console.log(obj.data)
+        const updateObj = {
+          isPresent: true,
+          timeZone: getTimezone(),
+          userEducation: {
+            userEducationEducationInstitution: obj.data.organization,
+          },
+          userSubType: { userSubTypeMaster: obj.data.designation },
+          userAddresses: [
+            {
+              countryTO: { countryId: obj.data.countryId },
+              city: obj.data.city,
+            },
+          ],
+        };
+        UserDataService.editUserHeadline(updateObj).then((res)=>{
+          
+          const _profileHighlight = {
+            hasData:true,
+            dialogOpen: false,
+            designation: obj.data.designation,
+            institution: obj.data.organization,
+            city: obj.data.city,
+            country: obj.data.country,
+            social: metaData?.social_profiles,
+            education,
+            specialization: userdata?.subject,
+          };
+          
+            metaData.eduIns=_profileHighlight.institution;
+            metaData.city=_profileHighlight.city;
+            metaData.country=_profileHighlight.country
+            userType=_profileHighlight.designation
+            setProfileHighlight(_profileHighlight);
+            handleResponse(
+              `${USER_PROFILE.HEADLINE_UPDATED}`,
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          
+            }).catch(()=>{
+          const _profileHighlight = {
+            hasData:false,
+            dialogOpen: false,
+            designation: userType,
+            institution: metaData?.eduIns,
+            city: metaData?.city,
+            country: metaData?.country,
+            social: metaData?.social_profiles,
+            education,
+            specialization: userdata?.subject,
+          };
+          setProfileHighlight(_profileHighlight);
+          handleResponse(
+            `${USER_PROFILE.HEADLINE_UPDATE_FAILED}`,
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        })
         return;
       }
-    
       const _profileHighlight = {
         dialogOpen: false,
-        designation: null,
-        institution: null,
-        city: null,
-        country: null,
-        social: null,
-        education: null,
-        specialization: null,
+        designation: profileHighlight.designation?profileHighlight.designation:userType,
+        institution: profileHighlight.institution?profileHighlight.institution:metaData?.eduIns,
+        city: profileHighlight.city?profileHighlight.city:metaData?.city,
+        country:profileHighlight.country?profileHighlight.country: metaData?.country,
+        social: metaData?.social_profiles,
+        education,
+        specialization: userdata?.subject,
       };
       setProfileHighlight(_profileHighlight);
     }
@@ -719,21 +783,44 @@ function MacroProfile(props) {
       };
       setAboutInfo(__aboutInfo);
     }
+    if(obj && obj.id== 5){
+     if (obj.event === "init_edit") {
+      const _interests ={
+        dialogOpen: true,
+        interests,
+      }
+      setInterestData(_interests)
+      return;
+    }
+    }
   };
 
   const handleEditHeadline = () => {
     const _profileHighlight = {
+      hasData: false,
       dialogOpen: true,
-      designation: userType,
-      institution: metaData?.eduIns,
-      city: metaData?.city,
-      country: metaData?.country,
+      designation: profileHighlight.designation?profileHighlight.designation:userType,
+      institution: profileHighlight.institution?profileHighlight.institution:metaData?.eduIns,
+      city: profileHighlight.city?profileHighlight.city:metaData?.city,
+      country:profileHighlight.country?profileHighlight.country: metaData?.country,
       social: metaData?.social_profiles,
       education,
       specialization: userdata?.subject,
     };
     setProfileHighlight(_profileHighlight);
   };
+  const getSecondaryLine =()=>{
+    if(profileHighlight.hasData || (profileHighlight.designation && profileHighlight.institution)) 
+    return formattedProfileSubtitle(profileHighlight.designation,profileHighlight.institution)
+             
+      return profileSecondaryLine
+  }
+  const getTertiaryLine=()=>{
+    if(profileHighlight.hasData || (profileHighlight.city && profileHighlight.country)) 
+    return formattedProfileSubtitle(profileHighlight.city,profileHighlight.country)
+             
+      return profileTertiaryLine
+  }
 
   return (
     <>
@@ -1102,7 +1189,9 @@ function MacroProfile(props) {
                         <div className="flex gap-1">
                           <WorkIcon />
                           <div className="-mt-0.5 lg:-mt-1 xl:-mt-1">
-                            {profileSecondaryLine}
+                         
+                         {getSecondaryLine()}
+                          
                           </div>
                         </div>
                       </Typography>
@@ -1117,7 +1206,8 @@ function MacroProfile(props) {
                           <div className="flex gap-1">
                             <LocationOnIcon className="" fontSize="small" />
                             <div className="ml-1 -mt-0.5 lg:-mt-1 xl:-mt-1">
-                              {profileTertiaryLine}
+                             {getTertiaryLine() } 
+                               
                             </div>
                           </div>
                         </Typography>
@@ -1206,6 +1296,7 @@ function MacroProfile(props) {
                               {area.id === 5 && (
                                 <>
                                   <Interests
+                                  consumeEvent={handleProfileUpdateEvent}
                                     owner={isItMe}
                                     interests={interests}
                                   />
@@ -1296,6 +1387,13 @@ function MacroProfile(props) {
         data={aboutInfo.aboutMe}
         isOpen={aboutInfo.dialogOpen}
       ></ChangeAboutInformationDialog>
+
+      <ChangeInterests  
+        title={`Edit interests`}
+        theme
+        dialogCloseRequest={handleProfileUpdateEvent}
+        data={interestData.interests}
+        isOpen={interestData.dialogOpen}/>
 
       <ChangeProfileHeadlineDialog
         fullScreen

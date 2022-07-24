@@ -136,11 +136,8 @@ export const USER = {
   PROFILE: {
     EDIT: {
       HIGHLIGHTS: Yup.object().shape({
-     
-        designation: Yup.string().trim().required("Please enter a type of user that describes you best from the choices available."),
-        specialization: Yup.string().trim().required("Please enter the area of your specialization."),
-        instituition: Yup.string().trim().required("Please enter the name of your instituition."),
-        highestDegree: Yup.string().trim().required("Please enter your highest degree."),
+        designation: Yup.string().trim().required("Please enter a title or designation that describes you best from the choices available."),
+        organization: Yup.string().trim().required("Please enter the name of your company or organization."),
         country:Yup.string().nullable().required("Please select your country."),
         city:Yup.string().trim().required("Please enter your city name."),
       }),

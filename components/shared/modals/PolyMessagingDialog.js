@@ -19,19 +19,21 @@ import {
 } from "../../../utils/utility";
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 import { makeStyles } from "@material-ui/core/styles";
+import { COLOR_CODES } from "../../../constants/constants";
 function PolyMessagingDialog(props) {
   if (!props.isOpen) return "";
   const isDark = getMode() === THEME_MODES.DARK;
+  const deepGray= COLOR_CODES.GRAY.DEEP
   const useStyles = makeStyles((theme) => ({
     root: {
       "& .MuiFormLabel-root": {
-        color: isDark ? "#e2e2e2" : "", // or black
+        color: isDark ?deepGray : "", // or black
       },
      
     },
     input: {
-      color: isDark ? "#e2e2e2" : "",
-      borderBottom: `1px solid ${isDark ? "#e2e2e2" : "none"}`,
+      color: isDark ? deepGray : "",
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
       "&:focus":{
         borderBottom:'none'
       }
@@ -143,7 +145,7 @@ function PolyMessagingDialog(props) {
                   onClick={() => handleClose(false, true)}
                   sx={{
                     marginTop: 2,
-                    color: `${isDark ? "#e2e2e2" : ""}`,
+                    color: `${isDark ? deepGray : ""}`,
                   }}
                 >
                   <CloseIcon fontSize="small" />

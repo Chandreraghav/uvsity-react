@@ -21,6 +21,14 @@ export const ENDPOINTS = {
       DELETE:'questionnaire/delete/'
     }
   },
+  SEARCH:{
+    COMMON:{
+      DATA:{
+        USERTYPE:'data/filteredUserTypes?queryUsertype=',
+        EDUINS:'data/filteredEducationalInstitutions?queryEduins='
+      }
+    }
+  },
 
   USER: {
     LOGGED_IN_INFO: "/poll/getLoggedInUser",
@@ -41,7 +49,7 @@ export const ENDPOINTS = {
       },
       ATTENDEES: "/course/#X#/attendees",
       SEARCH:{
-        ATTENDEES:'universalsearch/attendees/'
+        ATTENDEES:'universalsearch/attendees/',
       },
       VIEW:'view/profile/',
       MESSAGING:{
@@ -71,12 +79,15 @@ export const ENDPOINTS = {
       
     },
     EDITS:{
-      ABOUT:'edit/profile/aboutMe'
+      ABOUT:'edit/profile/aboutMe',
+      HEADLINE:'view/profile/secondaryData'
     },
     METADATA: {
       ROOT: "/courses/metadata",
       STATIC: "/courses/staticmetadata",
     },
+    
+    
     
   },
   METADATA:{

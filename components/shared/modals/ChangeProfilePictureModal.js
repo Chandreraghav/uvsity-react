@@ -12,6 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import FaceIcon from "@mui/icons-material/Face";
 import { USER_PROFILE } from "../../../constants/userdata";
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
+import { COLOR_CODES } from "../../../constants/constants";
 function ChangeProfilePictureDialog({
   isOpen,
   data,
@@ -106,7 +107,7 @@ function ChangeProfilePictureDialog({
                 <IconButton
                   aria-label="close"
                   onClick={() => handleClose(false, true)}
-                  sx={{ marginTop: 2, color: `${isDark ? "#e2e2e2" : ""}` }}
+                  sx={{ marginTop: 2, color: `${isDark ? COLOR_CODES.GRAY.DEEP : ""}` }}
                 >
                   <CloseIcon fontSize="small" />
                 </IconButton>

@@ -29,32 +29,88 @@ import {
 } from "../../../validation/services/auth/ValidationSchema";
 import { getLocalStorageObject } from "../../../localStorage/local-storage";
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
-
+import { COLOR_CODES } from "../../../constants/constants";
+import CommonSearchService from "../../../pages/api/search/CommonSearchService";
 function ChangeProfileHeadlineDialog(props) {
   if (!props.isOpen) return "";
+  const deepGray= COLOR_CODES.GRAY.DEEP
+  const lightGray= COLOR_CODES.GRAY.LIGHT
   const isDark = getMode() === THEME_MODES.DARK;
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      "& .MuiInputBase-root": {
+        "&:hover": {
+          borderBottom: `${isDark ? `1px solid ${deepGray}` : "none"}`,
+        },
+        "&.Mui-focused": {
+          borderBottom: "none",
+        },
+      },
+
+      "& .MuiFormLabel-root": {
+        color: isDark ? deepGray : "inherit", // or black
+      },
+
+      "&:focus": {
+        borderBottom: "none",
+      },
+    },
+    input: {
+      color: isDark ? deepGray : "inherit",
+      borderBottom: ` ${isDark ? `1px solid ${deepGray}` : "none"}`,
+      "&:focus": {
+        borderBottom: "none",
+      },
+    },
+    formControl: {
+      "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
+        borderBottom: `${isDark ? `1px solid ${deepGray}` : ""}`,
+      },
+    },
+    select: {
+      color: isDark ? deepGray : "",
+
+      "&:before": {
+        borderBottom: ` ${isDark ? `1px solid ${lightGray}` : ""}`,
+      },
+    },
+    icon: {
+      fill: isDark ?deepGray : "inherit",
+    },
+    menuItem: {
+      backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      color: isDark ? `${deepGray}` : "",
+      "&.Mui-selected": {
+        backgroundColor: `${isDark ? COLOR_CODES.BLUE.DARK : ""}`,
+        color: isDark ? `${deepGray}` : "",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: isDark ? `${COLOR_CODES.BLUE.LIGHT}!important` : "",
+        
+      },
+    },
+  }));
+  const classes = useStyles();
   const [processing, setProcessing] = useState(false);
   const [request, setRequest] = useState(null);
   const [designation, setDesignation] = useState(props.data.designation);
-  const [specialization, setSpecialization] = useState(
-    props?.data.specialization
-  );
-  const [instituition, setInstituation] = useState(props.data.institution);
-  const [highestDegree, setHighestDegree] = useState(
-    props.data.education.highestLevel
-  );
+  const [filteredDesignationList, setFilteredDesignationList] = useState([])
+
+  const [organization, setOrganization] = useState(props.data.institution);
+  const [filteredOrgzList, setFilteredOrgzList] = useState([])
+
   const countries = JSON.parse(getLocalStorageObject("uvsity-countries"));
   const selected_country = countries.find(
     (country) =>
       country.countryFullName.toLowerCase() ===
       props?.data?.country.toLowerCase()
   );
-  const useStyles = makeStyles({
-    input: {
-      color: isDark ? "darkgrey" : "",
-    },
-  });
-  const classes = useStyles();
+
+  const [country, setCountry] = useState(
+    selected_country.countryFullName
+  );
+
   const [countryId, setCountryId] = useState(
     selected_country.countryId.toString() || "0"
   );
@@ -65,7 +121,6 @@ function ChangeProfileHeadlineDialog(props) {
   };
   const { register, formState, watch, reset } = useForm(formOptions);
   const { errors } = formState;
-
   const handleClose = (closeInd) => {
     if (props?.dialogCloseRequest) {
       if (!closeInd) {
@@ -83,9 +138,8 @@ function ChangeProfileHeadlineDialog(props) {
         data: !closeInd
           ? {
               designation,
-              specialization,
-              instituition,
-              highestDegree,
+              organization,
+              country,
               countryId,
               city,
             }
@@ -94,23 +148,57 @@ function ChangeProfileHeadlineDialog(props) {
       });
     }
   };
-
-  const handleDesignationChange = (e) => {
-    setDesignation(e.target.value);
+  let filterTimeout
+  const handleDesignationChange = (e) => { 
+    setDesignation(e.target.value)
+    clearTimeout(filterTimeout)
+    if(!e.target.value){
+      setFilteredDesignationList([])
+     return 
+    }
+    // debounce filter for designation by 1 second
+    if(e.target.value){
+      filterTimeout = setTimeout(() => {
+        CommonSearchService.searchUserType(e.target.value).then((res)=>{
+          if(res.data)
+          setFilteredDesignationList(res.data)
+          else setFilteredDesignationList([])
+        }).catch(()=>{
+          setFilteredDesignationList([])
+        })
+      }, 1000)
+    }
+    
   };
 
-  const handleSpecializationChange = (e) => {
-    setSpecialization(e.target.value);
+  const handleOrgzChange = (e) => {
+    setOrganization(e.target.value);
+    clearTimeout(filterTimeout)
+    if(!e.target.value){
+      setFilteredOrgzList([])
+     return 
+    }
+    // debounce filter for organization by 1 second
+    if(e.target.value){
+      filterTimeout = setTimeout(() => {
+        CommonSearchService.searchEduIns(e.target.value).then((res)=>{
+          if(res.data)
+          setFilteredOrgzList(res.data)
+          else setFilteredOrgzList([])
+        }).catch(()=>{
+          setFilteredOrgzList([])
+        })
+      }, 1000)
+    }
   };
 
-  const handleInstituitionChange = (e) => {
-    setInstituation(e.target.value);
-  };
-  const handleHighestDegreeChange = (e) => {
-    setHighestDegree(e.target.value);
-  };
   const handleCountryChange = (e) => {
     setCountryId(e.target.value);
+   const idx = countries.findIndex(
+     (country) => country.countryId === e.target.value
+   );
+   if (idx !== -1) setCountry(countries[idx].countryFullName);
+
   };
   const handleCityChange = (e) => {
     setCity(e.target.value);
@@ -124,22 +212,29 @@ function ChangeProfileHeadlineDialog(props) {
       debounceTimer = setTimeout(() => func.apply(context, args), delay);
     };
   };
+  const handleDesignationSelect=(_designation)=>{
+    setDesignation(_designation.userSubTypeMaster) 
+    setFilteredDesignationList([])
+  }
+
+  const handleOrgzSelect=(_orgz)=>{
+    setOrganization(_orgz.educationalInstitutionFullName) 
+    setFilteredOrgzList([])
+  }
+   
 
   const _isSmallScreen = isSmallScreen();
   return (
     <Dialog
       fullWidth
-      fullScreen={props?.fullScreen}
-      className={`${processing ? "control__disabled" : ""} h-screen ${
-        isDark ? "dark-dialog" : ""
-      }`}
+      className={`${processing ? "control__disabled" : ""}   `}
       open={props.isOpen}
       aria-labelledby="responsive-dialog-title"
       onClose={() => handleClose(true)}
       disableEscapeKeyDown
       onBackdropClick={() => handleClose(true)}
     >
-      <div className={`${isDark ? "dark-dialog" : ""} h-screen`}>
+      <div className={`${isDark ? "dark-dialog" : ""} `}>
         <div className="flex justify-between">
           <div
             className={` px-4 py-3 leading-tight  text-left font-bold flex-col `}
@@ -164,7 +259,7 @@ function ChangeProfileHeadlineDialog(props) {
                   onClick={() => handleClose(true)}
                   sx={{
                     marginTop: 2,
-                    color: `${isDark ? "#e2e2e2" : ""}`,
+                    color: `${isDark ? deepGray : ""}`,
                   }}
                 >
                   <CloseIcon fontSize="small" />
@@ -195,20 +290,34 @@ function ChangeProfileHeadlineDialog(props) {
                       name="designation"
                       {...register(`designation`, {
                         onChange: (event) => {
-                          debounce(handleDesignationChange(event), 500);
+                          debounce(handleDesignationChange(event),500);
                         },
                       })}
                       helperText={errors.designation?.message}
                       error={errors.designation?.message ? true : false}
                       required
-                      label="Title"
+                      label={
+                        <label className=" text-blue-800">Current Title</label>
+                      }
+                      inputProps={{ className: classes.input }}
+                      className={classes.root}
                       id="designation"
                     />
                   </FormControl>
+                  {filteredDesignationList && (
+                     <div className=" bg-gray-400 rounded-lg dark:bg-gray-dark z-50 max-h-40 absolute overflow-auto will-change-auto  ">
+                     {filteredDesignationList.map((designation,id)=>(
+                       <div onClick={()=>handleDesignationSelect(designation)} className="hover:bg-blue-800 hover:font-bold whitespace-nowrap text-ellipsis max-w-xs px-2 py-2 dark:text-gray-500 hover:text-gray-100 text-gray-700 cursor-pointer" key ={id}>
+                         {designation.userSubTypeMaster}
+                       </div>
+                     ))}
+                   </div>
+                  )}
+                 
                 </Grid>
 
                 <Grid item lg={6} md={6} sm={12} xs={12}>
-                  {/* Specialization */}
+                  {/* Organization */}
                   <FormControl
                     fullWidth={true}
                     variant="standard"
@@ -216,86 +325,58 @@ function ChangeProfileHeadlineDialog(props) {
                   >
                     <TextField
                       variant="standard"
-                      value={specialization}
-                      name="specialization"
-                      {...register(`specialization`, {
+                      value={organization}
+                      name="organization"
+                      inputProps={{ className: classes.input }}
+                      className={classes.root}
+                      {...register(`organization`, {
                         onChange: (event) => {
-                          debounce(handleSpecializationChange(event), 500);
+                          debounce(handleOrgzChange(event), 500);
                         },
                       })}
-                      helperText={errors.specialization?.message}
-                      error={errors.specialization?.message ? true : false}
+                      helperText={errors.organization?.message}
+                      error={errors.organization?.message ? true : false}
                       required
-                      label="Specialization"
-                      id="specialization"
+                      label={
+                        <label className=" text-blue-800">Organization</label>
+                      }
+                      id="organization"
                     />
                   </FormControl>
+                  {filteredOrgzList && (
+                     <div className=" bg-gray-400 rounded-lg dark:bg-gray-dark z-50 max-h-40 absolute overflow-auto will-change-auto  ">
+                     {filteredOrgzList.map((orgz,id)=>(
+                       <div onClick={()=>handleOrgzSelect(orgz)} className="hover:bg-blue-800 hover:font-bold whitespace-nowrap text-ellipsis max-w-xs px-2 py-2 dark:text-gray-500 hover:text-gray-100 text-gray-700 cursor-pointer" key ={id}>
+                         {orgz.educationalInstitutionFullName}
+                       </div>
+                     ))}
+                   </div>
+                  )}
                 </Grid>
 
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  {/* Instituition */}
-                  <FormControl
-                    fullWidth={true}
-                    variant="standard"
-                    sx={{ marginBottom: 1 }}
-                  >
-                    <TextField
-                      variant="standard"
-                      value={instituition}
-                      name="instituition"
-                      {...register(`instituition`, {
-                        onChange: (event) => {
-                          debounce(handleInstituitionChange(event), 500);
-                        },
-                      })}
-                      helperText={errors.instituition?.message}
-                      error={errors.instituition?.message ? true : false}
-                      required
-                      label="Instituition of highest degree"
-                      id="instituition"
-                    />
-                  </FormControl>
-                </Grid>
-
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  {/* HighestDegree */}
-                  <FormControl
-                    fullWidth={true}
-                    variant="standard"
-                    sx={{ marginBottom: 1 }}
-                  >
-                    <TextField
-                      variant="standard"
-                      value={highestDegree}
-                      name="highestDegree"
-                      {...register(`highestDegree`, {
-                        onChange: (event) => {
-                          debounce(handleHighestDegreeChange(event), 500);
-                        },
-                      })}
-                      helperText={errors.highestDegree?.message}
-                      error={errors.highestDegree?.message ? true : false}
-                      required
-                      label="Highest degree"
-                      id="highestDegree"
-                    />
-                  </FormControl>
-                </Grid>
                 <Grid item lg={6} md={6} sm={12} xs={12}>
                   {/* Country */}
                   <FormControl
                     fullWidth={true}
                     variant="standard"
                     sx={{ marginBottom: 1 }}
+                    className={classes.formControl}
                   >
-                    <InputLabel id="select-country-label">
+                    <InputLabel
+                      className={`${
+                        errors.category?.message
+                          ? "text-red-600"
+                          : "text-blue-800"
+                      } `}
+                      id="select-country-label"
+                    >
                       Choose a country{" "}
                       <h3
                         className={`${
                           errors.category?.message
                             ? "text-red-600"
-                            : "text-blue-800"
-                        } text-xl font-bold inline-flex`}
+                            : "dark:text-white-100"
+                        } text-sm font-bold inline-flex  `}
                       >
                         *
                       </h3>
@@ -312,11 +393,18 @@ function ChangeProfileHeadlineDialog(props) {
                       id="select-country"
                       value={countryId}
                       required
-                      label="Country"
+                      label={<label className=" text-blue-800">Country</label>}
+                      // inputProps={{ className: classes.input }}
+                      inputProps={{
+                        classes: {
+                          icon: classes.icon,
+                        },
+                      }}
+                      className={classes.select}
                     >
                       {countries?.map((country) => (
                         <MenuItem
-                          className=" block p-2"
+                          className={`${classes.menuItem} block p-2`}
                           key={country.countryId}
                           value={country.countryId}
                         >
@@ -353,7 +441,9 @@ function ChangeProfileHeadlineDialog(props) {
                       helperText={errors.city?.message}
                       error={errors.city?.message ? true : false}
                       required
-                      label="City"
+                      label={<label className=" text-blue-800">City</label>}
+                      inputProps={{ className: classes.input }}
+                      className={classes.root}
                       id="city"
                     />
                   </FormControl>

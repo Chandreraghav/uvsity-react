@@ -1,22 +1,42 @@
-import { Typography } from "@mui/material";
-import React,{useState} from "react";
-import { READ_LESS, READ_MORE, READ_MORE_MAX_LENGTH } from "../../../../constants/constants";
+import { Tooltip } from "@mui/material";
+import React from "react";
+import ReadMore from "../../../shared/ReadMore";
 import NoData from "../../Shared/NoData";
-
+import EditIcon from "@mui/icons-material/Edit";
+import { USER_PROFILE } from "../../../../constants/userdata";
 function Interests(props) {
   const interest = props?.interests;
-  const [isReadMore, setIsReadMore] = useState(true);
-  const toggleReadMore = () => {
-    setIsReadMore(!isReadMore);
-  };
-  return interest ? (
-    <div className=" dark:text-gray-500 text-gray-700  text-sm lg:text-md xl:text-md    ">
-    <Typography className={isReadMore && interest.length>READ_MORE_MAX_LENGTH?'line-clamp-1':''} variant="div">{interest}</Typography>
-    <span onClick={toggleReadMore} className="read-or-hide">
-        {isReadMore && interest.length>READ_MORE_MAX_LENGTH ? READ_MORE : interest.length>READ_MORE_MAX_LENGTH?READ_LESS:''}
-      </span>
-  </div>
-  ) : <NoData message='No interests found.'/>
+
+  return (
+    <>
+      <div className=" flex ">
+        {interest ? (
+          <div className=" dark:text-gray-500 text-gray-700  text-sm lg:text-md xl:text-md    ">
+            <ReadMore initialReadLimit={100}>{interest}</ReadMore>
+          </div>
+        ) : (
+          <NoData message="No interests found." />
+        )}
+
+        {props.owner && (
+          <div
+            onClick={() =>
+              props.consumeEvent({
+                id: 5,
+                event: "init_edit",
+                component: "Interests",
+              })
+            }
+            className=" text-sm dark:text-gray-500 text-gray-700  -mt-1 cursor-pointer ml-auto float-right"
+          >
+            <Tooltip title={USER_PROFILE.CHANGE_INTERESTS}>
+              <EditIcon fontSize="small" />
+            </Tooltip>
+          </div>
+        )}
+      </div>
+    </>
+  );
 }
 
 export default Interests;

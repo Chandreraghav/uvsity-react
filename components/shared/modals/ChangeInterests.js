@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import InterestsIcon from "@mui/icons-material/Interests";
 import {
   Button,
   Dialog,
@@ -16,7 +16,7 @@ import {
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 import { COLOR_CODES } from "../../../constants/constants";
 
-function UserSessionRequestDialog(props) {
+function ChangeInterests(props) {
   const isDark = getMode() === THEME_MODES.DARK;
   if (!props.isOpen) return "";
   const [processing, setProcessing] = useState(false);
@@ -43,6 +43,7 @@ function UserSessionRequestDialog(props) {
   const _isSmallScreen = isSmallScreen();
   return (
     <Dialog
+      fullWidth
       fullScreen={shouldDialogAppearInFullScreen()}
       className={`${processing ? "control__disabled" : ""}`}
       open={props.isOpen}
@@ -63,7 +64,7 @@ function UserSessionRequestDialog(props) {
               component="div"
             >
               <>
-                <CalendarTodayIcon />
+                <InterestsIcon />
                 &nbsp;{props?.title}
               </>
             </Typography>
@@ -85,14 +86,13 @@ function UserSessionRequestDialog(props) {
             </div>
           </Tooltip>
         </div>
-        {props?.subtitle && (
-          <>
-            {" "}
-            <div className="flex flex-col px-4 mb-2 gap-3 -mt-3 text-gray-600">
-              {props?.subtitle}
-            </div>
-          </>
-        )}
+
+        <>
+          {" "}
+          <div className="flex flex-col px-4 mb-2 gap-3 -mt-3 text-gray-600">
+            Hey ya
+          </div>
+        </>
       </div>
       <DialogActions
         className={`${isDark ? "dark-dialog" : ""} ${
@@ -105,7 +105,7 @@ function UserSessionRequestDialog(props) {
           onClick={() => handleClose(props.data, false)}
           autoFocus
         >
-          {!processing ? "Send" : "Sending..."}
+          {!processing ? "Save" : "Saving..."}
         </Button>
 
         <Button
@@ -120,4 +120,4 @@ function UserSessionRequestDialog(props) {
   );
 }
 
-export default UserSessionRequestDialog;
+export default ChangeInterests;

@@ -29,6 +29,7 @@ import { KEYS } from "../../../async/queries/keys/unique-keys";
 import { infinity } from "../../../async/subscriptions";
 import { navigateToProfile } from "../../Authorized/Shared/Navigator";
 import { useRouter } from "next/router";
+import { COLOR_CODES } from "../../../constants/constants";
 toast.configure();
 
 export default function CustomDialog({
@@ -245,7 +246,7 @@ export default function CustomDialog({
                   <IconButton
                     aria-label="close"
                     onClick={handleClose}
-                    sx={{ marginTop: 2, color: `${dark ? "#e2e2e2" : ""}` }}
+                    sx={{ marginTop: 2, color: `${dark ? COLOR_CODES.GRAY.DEEP : ""}` }}
                   >
                     <CloseIcon fontSize="small" />
                   </IconButton>

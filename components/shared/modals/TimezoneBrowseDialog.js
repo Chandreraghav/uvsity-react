@@ -16,6 +16,7 @@ import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PublicIcon from "@mui/icons-material/Public";
 import { TIMEZONE } from "../../../constants/timezones";
+import { COLOR_CODES } from "../../../constants/constants";
 
 function TimezoneBrowseDialog({
   isOpen,
@@ -73,7 +74,7 @@ function TimezoneBrowseDialog({
                   <IconButton
                     aria-label="close"
                     onClick={() => handleClose(false, true)}
-                    sx={{ marginTop: 2, color: `${theme ? "#e2e2e2" : ""}` }}
+                    sx={{ marginTop: 2, color: `${theme ? COLOR_CODES.GRAY.DEEP : ""}` }}
                   >
                     <CloseIcon fontSize="small" />
                   </IconButton>
