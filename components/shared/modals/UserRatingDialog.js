@@ -16,6 +16,7 @@ import {
 import { shouldDialogAppearInFullScreen, isSmallScreen } from "../../../utils/utility";
 import { RATING } from "../../../constants/userdata";
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
+import { COLOR_CODES } from "../../../constants/constants";
 
 function UserRatingDialog(props) {
   if (!props.isOpen) return "";
@@ -80,7 +81,7 @@ function UserRatingDialog(props) {
                   onClick={() => handleClose(false, true)}
                   sx={{
                     marginTop: 2,
-                    color: `${isDark ? "#e2e2e2" : ""}`,
+                    color: `${isDark ? COLOR_CODES.GRAY.DEEP : ""}`,
                   }}
                 >
                   <CloseIcon fontSize="small" />

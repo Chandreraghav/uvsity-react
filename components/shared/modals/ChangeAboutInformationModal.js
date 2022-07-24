@@ -18,21 +18,23 @@ import { USER_PROFILE } from "../../../constants/userdata";
 import PersonIcon from '@mui/icons-material/Person';
 import { makeStyles } from "@material-ui/core/styles"
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
+import { COLOR_CODES } from "../../../constants/constants";
 
 function ChangeAboutInformationDialog(props) {
   
   if (!props.isOpen) return "";
   const isDark = getMode() === THEME_MODES.DARK;
+  const deepGray= COLOR_CODES.GRAY.DEEP
   const useStyles = makeStyles({
     root: {
       "& .MuiFormLabel-root": {
-        color: isDark ? "#e2e2e2" : "", // or black
+        color: isDark ? deepGray : "", // or black
       },
      
     },
     input: {
-      color: isDark?'#e2e2e2':'',
-      borderBottom: `1px solid ${isDark ? "#e2e2e2" : "none"}`,
+      color: isDark?deepGray:'',
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
       "&:focus":{
         borderBottom:'none'
       }
@@ -109,7 +111,7 @@ function ChangeAboutInformationDialog(props) {
                   onClick={() => handleClose(true)}
                   sx={{
                     marginTop: 2,
-                    color: `${isDark ? "#e2e2e2" : ""}`,
+                    color: `${isDark ? deepGray : ""}`,
                   }}
                 >
                   <CloseIcon fontSize="small" />

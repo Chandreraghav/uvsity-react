@@ -16,6 +16,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
+  COLOR_CODES,
   CONTACT_SUPPORT,
   ERROR_DETAILS,
   REQUEST_FAILED_HEADER,
@@ -89,7 +90,7 @@ function RequestFailedDialog({
                 <IconButton
                   aria-label="close"
                   onClick={() => handleClose(false, true)}
-                  sx={{ marginTop: 2, color: `${isDark ? "#e2e2e2" : ""}` }}
+                  sx={{ marginTop: 2, color: `${isDark ? COLOR_CODES.GRAY.DEEP : ""}` }}
                 >
                   <CloseIcon fontSize="small" />
                 </IconButton>
@@ -106,7 +107,7 @@ function RequestFailedDialog({
               fontWeight: 400,
             }}
             variant="div"
-            color={isDark ? "#e2e2e2" : ""}
+            color={isDark ? COLOR_CODES.GRAY.DEEP : ""}
           >
             {message ? message : REQUEST_FAILED_MESSAGE}
           </Typography>

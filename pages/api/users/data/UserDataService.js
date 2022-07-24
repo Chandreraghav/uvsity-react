@@ -74,4 +74,11 @@ export default class UserDataService {
        
     );
   }
+  static async editUserHeadline(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.EDITS.HEADLINE,
+      payload,
+       
+    );
+  }
 }

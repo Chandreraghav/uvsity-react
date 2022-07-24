@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { THEME_MODES } from "../../../theme/ThemeProvider";
+import { COLOR_CODES } from "../../../constants/constants";
 function ConfirmDialog({
   isOpen,
   confirmMessage,
@@ -54,7 +55,7 @@ function ConfirmDialog({
                   <IconButton
                     aria-label="close"
                     onClick={() => handleClose(false, true)}
-                    sx={{ marginTop: 2, color: `${theme===THEME_MODES.DARK ? "#e2e2e2" : ""}` }}
+                    sx={{ marginTop: 2, color: `${theme===THEME_MODES.DARK ? COLOR_CODES.GRAY.DEEP : ""}` }}
                   >
                     <CloseIcon fontSize="small" />
                   </IconButton>
