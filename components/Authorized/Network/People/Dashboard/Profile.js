@@ -268,7 +268,13 @@ function Profile({
     return "";
   }
   const goToProfile = (id) => {
-    navigateToProfile(id, router);
+    if(id){
+      navigateToProfile(id, router)
+      return
+    }
+    // cohost id requested
+    navigateToProfile(metaData?.associatedCoHostData.userDetailsId, router)
+    
   };
 
   const handleMessageEvent = (request) => {

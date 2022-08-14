@@ -81,4 +81,21 @@ export default class UserDataService {
        
     );
   }
+  static async editInterests(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.EDITS.INTERESTS,
+      payload,
+       
+    );
+  }
+
+  static async editSkills(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.EDITS.SKILLS,
+      payload,
+       
+    );
+  }
+
+  
 }

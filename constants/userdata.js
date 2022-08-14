@@ -348,6 +348,7 @@ export const TOOLTIPS = {
   YOU_HAVE_REACHED_END: "You're all Caught Up.",
   COME_BACK_AGAIN: "Come back again later.",
   SEEN_ALL_FEEDS: "You've seen all new feeds.",
+  PROFILE_NOT_FOUND: "The profile you are looking for could not be found."
 };
 
 export const GREETING = `${timeOfDay()} <user>`;
@@ -571,6 +572,7 @@ export const IMAGE_PATHS = {
 
     FEED: "/static/images/nodata-illustrations/all-done-illustration-woman-1-removebg-preview.png",
     EVENT_POSTER: "/static/images/session-poster-not-found.jpg",
+    NO_PROFILE:"/static/images/nodata-illustrations/no-results.webp"
   },
   NO_PROFILE_PICTURE: "profilebig.png",
 };
@@ -1108,13 +1110,17 @@ export const PROFILE_AREAS = [
 export const USER_PROFILE = {
   CHANGE_PROFILE_PICTURE: "Change profile picture",
   CHANGE_ABOUT_INFO: "Update your About or bio information",
+  CHANGE_SKILLS: "Update your specialities & skills",
   CHANGE_INTERESTS: "Update your interests",
   CHANGE_PROFILE_HEADLINE:'Update prime highlights to your profile such as designation, organization, location...',
   BIO_UPDATED:'🚀Awesome!! Bio updated successfully',
   BIO_UPDATE_FAILED:'Oops, there encountered an error while updating your bio, please try again.',
   HEADLINE_UPDATED:'👍Superb!! Headline updated successfully',
+  SKILLS_UPDATED:'🚀Great!! Specialities & skills updated successfully',
+  SKILLS_UPDATE_FAILED:'Oops, there encountered an error while updating your skills, please try again.',
   HEADLINE_UPDATE_FAILED:'Oops, there encountered an error while updating your headline, please try again.',
-  
+  INTEREST_UPDATED:'👍Superb!! Interests updated successfully',
+  INTEREST_UPDATE_FAILED:'Oops, there encountered an error while updating your interests, please try again.',
   PLACEHOLDERS: {
     WRITE_BIO: "Write something about yourself here...",
     ABOUT_INFO: "About",

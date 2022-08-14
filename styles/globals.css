@@ -511,6 +511,11 @@ button.danger {
   background-color: #0081cb!important;
 }
 
+div:empty:before {
+  content:attr(data-placeholder);
+  color:gray
+}
+
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
