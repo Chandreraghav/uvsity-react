@@ -1,7 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
+import PersonOffIcon from '@mui/icons-material/PersonOff';
 import {
   asyncSubscriptions,
   standardStaleTime,
@@ -15,7 +17,12 @@ import { formattedName } from "../../../../utils/utility";
 import UserDataService from "../../../api/users/data/UserDataService";
 import Profile from "./Profile";
 import { LOADING_MESSAGE_DEFAULT } from "../../../../constants/constants";
-import Spacer from "../../../../components/shared/Spacer";
+import {
+  getLocalStorageObject,
+  removeLocalStorageObject,
+} from "../../../../localStorage/local-storage";
+import { Typography } from "@mui/material";
+import { IMAGE_PATHS, TOOLTIPS } from "../../../../constants/userdata";
 const UserProfile = () => {
   const router = useRouter();
   const { profileId } = router.query;
@@ -26,6 +33,7 @@ const UserProfile = () => {
     poster: null,
   };
   const [layoutObject, setLayoutObject] = useState(null);
+  const [responseError, setResponseError] = useState(null);
   const [hasChangeEventTriggered, setChangeEventTriggered] = useState(false);
   const getLoggedInUserSummary = async () =>
     (await UserDataService.getSummary()).data;
@@ -47,6 +55,20 @@ const UserProfile = () => {
           ? asyncSubscriptions.PROFILE_VIEWS.pollEvery
           : false,
       staleTime: asyncSubscriptions.PROFILE_VIEWS.staleTime,
+      onError: (err) => {
+        const _layoutObj = {
+          title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
+          desc: "Error",
+          poster: null,
+        };
+        if (layoutObj.desc !== "Error") setLayoutObject(_layoutObj);
+        if (!responseError) {
+          setResponseError(
+            JSON.parse(getLocalStorageObject("uvsity-internal-error-response"))
+          );
+          removeLocalStorageObject("uvsity-internal-error-response");
+        }
+      },
     }
   );
 
@@ -68,9 +90,6 @@ const UserProfile = () => {
     return _profileName;
   };
 
-  if (isError) {
-  }
-
   useEffect(() => {
     if (isSuccess) {
       const profile = profileName();
@@ -84,6 +103,7 @@ const UserProfile = () => {
 
       return () => {
         setLayoutObject(null);
+        setResponseError(null);
       };
     }
   }, [data]);
@@ -92,7 +112,6 @@ const UserProfile = () => {
     setLayoutObject(layoutObj);
     return () => {
       setLayoutObject(null);
-
       setChangeEventTriggered(false);
     };
   }, []);
@@ -124,10 +143,29 @@ const UserProfile = () => {
             userdata={getData.PROFILE_SUMMARY?.data}
             loggedInUser={getData.LOGGED_IN_USER_SUMMARY?.data}
           />
-           
         </div>
       )}
-      {isLoading && <div className="  min-h-screen dark:bg-gray-dark bg-gray-100"></div>}
+      {isError && (
+        // profile not found custom error
+        <div className="min-h-screen w-1/2 mx-auto">
+          <div className="flex flex-col ">
+            <Typography
+              variant="caption"
+              className="dark:text-white-100 mt-5  text-gray-800 text-center font-semibold"
+            >
+              <PersonOffIcon/>{TOOLTIPS.PROFILE_NOT_FOUND}
+            </Typography>
+            <img
+              alt="Error"
+              className=" object-cover"
+              src={IMAGE_PATHS.NO_DATA.NO_PROFILE}
+            />
+          </div>
+        </div>
+      )}
+      {isLoading && (
+        <div className="  min-h-screen dark:bg-gray-dark bg-gray-100"></div>
+      )}
       <PhoneMenu data={getData.LOGGED_IN_USER_SUMMARY} />
       <Footer minimizeOnSmallScreens />
     </Layout>

@@ -80,9 +80,6 @@ function Profile(props) {
             data={props}
           />
         </div>
-
-       
-         
       </div>
     </div>
   );

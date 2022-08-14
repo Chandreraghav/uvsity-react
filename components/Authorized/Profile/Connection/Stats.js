@@ -59,7 +59,7 @@ function Stats({ data }) {
         <Tooltip title={tooltip ? tooltip : ""}>
           <div className={StatStyle.stat__legend}>
             
-            <div className="flex gap-1 dark:hover:text-gray-100 hover:text-gray-900">
+            <div className="flex gap-1 hover:underline dark:hover:text-gray-100 hover:text-gray-900">
             {Icon && <Icon className="dark:hover:text-gray-100 hover:text-gray-900" />}
               {title}({getTotalStatCount()})
             </div>

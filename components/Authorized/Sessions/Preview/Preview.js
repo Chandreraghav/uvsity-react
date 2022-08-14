@@ -236,6 +236,7 @@ function Preview({ data, authorized, userdata }) {
       </Tooltip>
     );
   };
+   
 
   return (
     <div className=" uvsity__card__border__theme bg-gray-100 dark:bg-gray-950 w-full rounded-bl-lg rounded-br-lg px-2">
@@ -290,6 +291,7 @@ function Preview({ data, authorized, userdata }) {
                 <Divider />
                 <div className=" transform scale-100 flex flex-row flex-wrap flex-grow-0 px-2 py-2">
                   <Profile
+                    //oid={}
                     firstName={data.coHosts[0]?.firstName}
                     lastName={data.coHosts[0]?.lastName}
                     avatar={data.coHosts[0]?.profilePicName}

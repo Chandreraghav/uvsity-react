@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogActions,
   IconButton,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -15,27 +16,52 @@ import {
 } from "../../../utils/utility";
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 import { COLOR_CODES } from "../../../constants/constants";
+import { makeStyles } from "@material-ui/core/styles";
 
 function ChangeInterests(props) {
   const isDark = getMode() === THEME_MODES.DARK;
   if (!props.isOpen) return "";
+  const deepGray= COLOR_CODES.GRAY.DEEP
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      "& .MuiFormLabel-root": {
+        color: isDark ?deepGray : "", // or black
+      },
+     
+    },
+    input: {
+      color: isDark ? deepGray : "",
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
+      "&:focus":{
+        borderBottom:'none'
+      }
+    },
+  }));
+  const classes = useStyles();
   const [processing, setProcessing] = useState(false);
-  const [sessionRequest, setSessionRequest] = useState(props?.data);
-
-  const handleClose = (sessionRequestObject, closeInd) => {
+  const [request, setRequest] = useState(props?.data);
+  const handleInterestChange=(e)=>{
+    setRequest(e.target.value?.trim())
+  }
+  const debounce = (func, delay) => {
+    let debounceTimer;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
+  const handleClose = (requestObject, closeInd) => {
     if (props?.dialogCloseRequest) {
       if (!closeInd) {
-        if (!sessionRequestObject || !sessionRequest) {
-          return;
-        }
-
-        if (sessionRequestObject) {
-          setProcessing(true);
-        }
+        setProcessing(true);
       }
       props.dialogCloseRequest({
-        message: sessionRequestObject,
+        event:!closeInd?'edit':null,
+        interest: request,
         close: closeInd,
+        id:5,
       });
     }
   };
@@ -86,13 +112,32 @@ function ChangeInterests(props) {
             </div>
           </Tooltip>
         </div>
+        <div className="flex flex-col px-4 mb-2 gap-3 -mt-3 text-gray-600">
+          
 
-        <>
-          {" "}
-          <div className="flex flex-col px-4 mb-2 gap-3 -mt-3 text-gray-600">
-            Hey ya
-          </div>
-        </>
+          <TextField
+            fullWidth
+            inputProps={{ className: classes.input }}
+            
+            className={classes.root}
+            id="outlined-multiline-static"
+            label={
+              'Interests'
+            }
+            placeholder={
+              'Write your interests here...'
+            }
+            value={request}
+            multiline
+            rows={4}
+            variant="standard"
+           
+            onChange={(event) =>
+              debounce(handleInterestChange(event), 500)
+            }
+          />
+        </div>
+        
       </div>
       <DialogActions
         className={`${isDark ? "dark-dialog" : ""} ${

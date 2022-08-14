@@ -787,11 +787,44 @@ function MacroProfile(props) {
      if (obj.event === "init_edit") {
       const _interests ={
         dialogOpen: true,
-        interests,
+        interests: interestData.interests
       }
       setInterestData(_interests)
       return;
     }
+    if (obj.event === "edit") {
+      UserDataService.editInterests({ myInterests: obj.interest })
+        .then((res) => {
+          const _interests ={
+            dialogOpen: false,
+            interests:obj.interest,
+          }
+          setInterestData(_interests)
+          handleResponse(
+            `${USER_PROFILE.INTEREST_UPDATED}`,
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        })
+        .catch((err) => {
+          const _interests ={
+            dialogOpen: false,
+            interests: interestData.interests
+          }
+          setInterestData(_interests)
+          handleResponse(
+            `${USER_PROFILE.INTEREST_UPDATE_FAILED}`,
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
+      return;
+    }
+    const _interests = {
+      dialogOpen: false,
+      interests: interestData.interests,
+    };
+    setInterestData(_interests);
     }
   };
 
@@ -889,7 +922,7 @@ function MacroProfile(props) {
                    
                 >
                   {/* AVATAR SAMPLE 1 */}
-                  <div className="  lg:inline-block xl:inline-block">
+                  <div className=" hidden lg:inline-block xl:inline-block">
                     {isItMe && showChangeAvatarOption && (
                       <ChangeProfilePicture
                         consumeEvent={handleProfilePictureChange}
@@ -932,7 +965,7 @@ function MacroProfile(props) {
 
                     <Avatar
                       alt={`${firstName}'s photo`}
-                      className={` hidden lg:block xl:block avatar-lg   ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                      className={` avatar-lg cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                       {...avatarToString(`${profileName}`)}
                     ></Avatar>
                   </div>
@@ -945,7 +978,7 @@ function MacroProfile(props) {
                     )}
                     <Avatar
                       alt={`${firstName}'s photo`}
-                      className={` hidden lg:block xl:block  avatar-md  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
+                      className={` avatar-md  cursor-pointer  ml-3 opacity-100 ${ProfileStyle.profile__macro__avatar}`}
                       {...avatarToString(`${profileName}`)}
                     />
                   </div>
@@ -1298,7 +1331,7 @@ function MacroProfile(props) {
                                   <Interests
                                   consumeEvent={handleProfileUpdateEvent}
                                     owner={isItMe}
-                                    interests={interests}
+                                    interests={interestData.interests}
                                   />
                                 </>
                               )}

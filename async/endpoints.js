@@ -80,7 +80,9 @@ export const ENDPOINTS = {
     },
     EDITS:{
       ABOUT:'edit/profile/aboutMe',
-      HEADLINE:'view/profile/secondaryData'
+      HEADLINE:'view/profile/secondaryData',
+      INTERESTS:'edit/profile/myInterests',
+      SKILLS:'edit/profile/userSkillsts'
     },
     METADATA: {
       ROOT: "/courses/metadata",
