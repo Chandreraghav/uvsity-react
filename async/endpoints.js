@@ -25,7 +25,8 @@ export const ENDPOINTS = {
     COMMON:{
       DATA:{
         USERTYPE:'data/filteredUserTypes?queryUsertype=',
-        EDUINS:'data/filteredEducationalInstitutions?queryEduins='
+        EDUINS:'data/filteredEducationalInstitutions?queryEduins=',
+        COURSES:'universalsearch/courses/'
       }
     }
   },
@@ -50,6 +51,7 @@ export const ENDPOINTS = {
       ATTENDEES: "/course/#X#/attendees",
       SEARCH:{
         ATTENDEES:'universalsearch/attendees/',
+        
       },
       VIEW:'view/profile/',
       MESSAGING:{
@@ -82,7 +84,8 @@ export const ENDPOINTS = {
       ABOUT:'edit/profile/aboutMe',
       HEADLINE:'view/profile/secondaryData',
       INTERESTS:'edit/profile/myInterests',
-      SKILLS:'edit/profile/userSkillsts'
+      SKILLS:'edit/profile/userSkillsts',
+      RECOMMENDED_SESSION:'edit/profile/coursesIRecommend'
     },
     METADATA: {
       ROOT: "/courses/metadata",

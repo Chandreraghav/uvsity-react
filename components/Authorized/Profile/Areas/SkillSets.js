@@ -1,5 +1,5 @@
 import { Chip, Stack, Tooltip } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
 import NoData from "../../Shared/NoData";
@@ -11,9 +11,17 @@ import { RESPONSE_TYPES } from "../../../../constants/constants";
 import { toast } from "react-toastify";
 toast.configure();
 function SkillSets(props) {
+
   const skillSets = props?.userSkillsets;
+  const [userSkillsets, setUserSkillSets] = useState(props?.userSkillsets);
+  useEffect(() => {
+    setUserSkillSets(props?.userSkillsets);
+    return () => {
+      setUserSkillSets([]);
+    };
+  }, [props?.userSkillsets]);
   const [isUpdating, setUpdating] = useState(false)
-  const [userSkillsets, setUserSkillsets] = useState(props?.userSkillsets);
+ 
   const [edit, setEdit] = useState(false);
   const ownerName = props?.skillSetOwnerFirstName;
   const handleSessionRequestBasedOnSkill = (skillSet) => {
@@ -31,7 +39,7 @@ function SkillSets(props) {
       if (deleteIdx !== -1) {
         let tempSkillSets = userSkillsets.slice();
         tempSkillSets.splice(deleteIdx, 1);
-        setUserSkillsets(tempSkillSets);
+        setUserSkillSets(tempSkillSets);
       }
     } catch (error) {}
   };
@@ -51,7 +59,7 @@ function SkillSets(props) {
   const handleSkillSetUpdateOK = () => {
     let payloadArr = [];
     setUpdating(true)
-    const skillsArr = userSkillsets.slice();
+    let skillsArr = userSkillsets.slice();
     skillsArr.map((skill) => {
       const obj = { userSkillSetName: skill.userSkillSetName };
       payloadArr.push(obj);
@@ -60,7 +68,8 @@ function SkillSets(props) {
       .then((response) => {
         setUpdating(false)
         setEdit(false);
-        setUserSkillsets(skillsArr);
+        skillsArr=skillsArr.sort((a, b) => a.userSkillSetName.localeCompare(b.userSkillSetName))
+        setUserSkillSets(skillsArr);
         handleResponse(
           `${USER_PROFILE.SKILLS_UPDATED}`,
           RESPONSE_TYPES.SUCCESS,
@@ -70,7 +79,7 @@ function SkillSets(props) {
       .catch((error) => {
         setUpdating(false)
         setEdit(false);
-        setUserSkillsets(skillSets);
+        setUserSkillSets(skillSets);
         handleResponse(
           `${USER_PROFILE.SKILLS_UPDATE_FAILED}`,
           RESPONSE_TYPES.ERROR,
@@ -80,7 +89,7 @@ function SkillSets(props) {
   };
   const handleSkillSetUpdateCancel = () => {
     setEdit(false);
-    setUserSkillsets(skillSets);
+    setUserSkillSets(skillSets);
   };
   const handleSkillUpdateEntry = (e) => {
     if (
@@ -96,7 +105,7 @@ function SkillSets(props) {
       };
       const temp = userSkillsets.slice();
       temp.push(obj);
-      setUserSkillsets(temp);
+      setUserSkillSets(temp);
       setTimeout(() => {
         document.getElementById("add-skill").innerText = "";
         document.getElementById("add-skill").focus();

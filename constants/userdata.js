@@ -1118,6 +1118,8 @@ export const USER_PROFILE = {
   HEADLINE_UPDATED:'👍Superb!! Headline updated successfully',
   SKILLS_UPDATED:'🚀Great!! Specialities & skills updated successfully',
   SKILLS_UPDATE_FAILED:'Oops, there encountered an error while updating your skills, please try again.',
+  RECOMMENDED_SESSIONS_UPDATED:'👍Superb!! We have updated your recommended sessions',
+  RECOMMENDED_SESSIONS_UPDATE_FAILED:'Oops, there encountered an error while updating your recommended sessions, please try again.',
   HEADLINE_UPDATE_FAILED:'Oops, there encountered an error while updating your headline, please try again.',
   INTEREST_UPDATED:'👍Superb!! Interests updated successfully',
   INTEREST_UPDATE_FAILED:'Oops, there encountered an error while updating your interests, please try again.',

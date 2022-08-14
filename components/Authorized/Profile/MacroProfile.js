@@ -174,7 +174,7 @@ function MacroProfile(props) {
     aboutMe,
   };
   const [aboutInfo, setAboutInfo] = useState(_aboutInfo);
-  const userSkillsets = userdata?.userSkillsets;
+  const [userSkillsets, setUserSkillSets] = useState(userdata?.userSkillsets);
   const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
   const interests = userdata?.myInterests;
   const _interests ={
@@ -182,7 +182,7 @@ function MacroProfile(props) {
     interests,
   }
   const [interestData, setInterestData] = useState(_interests);
-  const recommendedSessions = userdata?.coursesIRecommend;
+  const [recommendedSessions, setRecommendedSessions] = useState(userdata?.coursesIRecommend);
   const recommendations = userdata?.recommendationsReceived;
   const education = {
     highestLevel: userdata?.degreeCourse,
@@ -211,6 +211,7 @@ function MacroProfile(props) {
     ],
     invitationRequestId: userdata?.invitationRequestId,
   };
+
   const getTotalStatCount = () => {
     try {
       const count =
@@ -854,6 +855,32 @@ function MacroProfile(props) {
              
       return profileTertiaryLine
   }
+
+  useEffect(()=>{
+    const aboutMe = props?.data?.userdata?.aboutMe;
+    const _aboutInfo = {
+      dialogOpen: false,
+      aboutMe,
+    };
+    const interests = props?.data?.userdata?.myInterests;
+  const _interests ={
+    dialogOpen: false,
+    interests,
+  }
+
+  setRecommendedSessions(props?.data?.userdata?.coursesIRecommend)
+   
+    setInterestData(_interests)
+    setAboutInfo(_aboutInfo)
+    setUserSkillSets(props?.data?.userdata?.userSkillsets)
+
+    return(()=>{
+      setAboutInfo(null)
+      setInterestData(null)
+      setUserSkillSets([])
+      setRecommendedSessions([])
+    })
+  },[props?.data?.userdata])
 
   return (
     <>
