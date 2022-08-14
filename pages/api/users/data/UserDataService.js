@@ -68,34 +68,23 @@ export default class UserDataService {
   }
 
   static async editUserBio(payload) {
-    return await asyncInstance.post(
-      ENDPOINTS.USER.EDITS.ABOUT,
-      payload,
-       
-    );
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.ABOUT, payload);
   }
   static async editUserHeadline(payload) {
-    return await asyncInstance.post(
-      ENDPOINTS.USER.EDITS.HEADLINE,
-      payload,
-       
-    );
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.HEADLINE, payload);
   }
   static async editInterests(payload) {
-    return await asyncInstance.post(
-      ENDPOINTS.USER.EDITS.INTERESTS,
-      payload,
-       
-    );
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.INTERESTS, payload);
   }
 
   static async editSkills(payload) {
-    return await asyncInstance.post(
-      ENDPOINTS.USER.EDITS.SKILLS,
-      payload,
-       
-    );
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.SKILLS, payload);
   }
 
-  
+  static async editRecommendedSessions(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.EDITS.RECOMMENDED_SESSION,
+      payload
+    );
+  }
 }

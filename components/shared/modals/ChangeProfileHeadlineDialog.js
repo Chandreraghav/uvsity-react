@@ -19,12 +19,10 @@ import {
   Typography,
 } from "@mui/material";
 import { isEmptyObject, isSmallScreen } from "../../../utils/utility";
-import { USER_PROFILE } from "../../../constants/userdata";
 import { makeStyles } from "@material-ui/core/styles";
 import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
 import { useForm } from "react-hook-form";
 import {
-  SESSION,
   USER,
 } from "../../../validation/services/auth/ValidationSchema";
 import { getLocalStorageObject } from "../../../localStorage/local-storage";

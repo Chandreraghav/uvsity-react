@@ -15,4 +15,11 @@ export default class CommonSearchService {
       ENDPOINTS.SEARCH.COMMON.DATA.EDUINS + keyword
     );
   }
+
+  static async searchSessions(keyword) {
+    if (!keyword) return null;
+    return await asyncInstance.get(
+      ENDPOINTS.SEARCH.COMMON.DATA.COURSES + keyword
+    );
+  }
 }
