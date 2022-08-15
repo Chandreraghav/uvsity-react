@@ -12,9 +12,12 @@ import {
 } from "../../async/subscriptions";
 import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
 import PhoneMenu from "../../components/Authorized/Shared/FireFighter/PhoneMenu";
+import { useDataLayerContextValue } from "../../context/DataLayer";
+import { useEffect } from "react";
+import { actionTypes } from "../../context/reducer";
 
 function Landing() {
-   
+  const [userdata, dispatch] = useDataLayerContextValue();
   const layoutObj = {
     title: `${process.env.NEXT_PUBLIC_APP_TITLE}`,
   };
@@ -44,6 +47,8 @@ function Landing() {
   const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary, {
     staleTime: standardStaleTime,
   });
+
+ 
   const USER_PROFILE_PERCENTAGE_COMPLETION = useQuery(
     [KEYS.PROFILE.COMPLETION],
     getProfilePercentageCompletion,
@@ -67,6 +72,15 @@ function Landing() {
       staleTime: asyncSubscriptions.INTERESTING_CONNECTIONS.staleTime,
     }
   );
+
+  useEffect(() => {
+    if(USER_PROFILE_SUMMARY.data && !userdata.userdata){
+      dispatch({
+        type: actionTypes.SET_USERDATA,
+        userdata: USER_PROFILE_SUMMARY.data,
+      });
+    }
+  }, [USER_PROFILE_SUMMARY.data]);
 
   const getData = {
     USER_LOGIN_INFO,

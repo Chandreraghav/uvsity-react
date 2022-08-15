@@ -85,7 +85,10 @@ export const ENDPOINTS = {
       HEADLINE:'view/profile/secondaryData',
       INTERESTS:'edit/profile/myInterests',
       SKILLS:'edit/profile/userSkillsts',
-      RECOMMENDED_SESSION:'edit/profile/coursesIRecommend'
+      RECOMMENDED_SESSION:'edit/profile/coursesIRecommend',
+      SOCIAL_PROFILE:{
+        LINKEDIN:'edit/profile/linkedInProfile'
+      }
     },
     METADATA: {
       ROOT: "/courses/metadata",
