@@ -13,10 +13,11 @@ import Profiles from "../Authorized/Network/People/Profiles";
 import { WORKFLOW_CODES } from "../../constants/workflow-codes";
 import Spacer from "./Spacer";
 import Stats from "../Authorized/Profile/Connection/Stats";
+import { useDataLayerContextValue } from "../../context/DataLayer";
 
 
 function Sidebar({ data, type }) {
-  
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
   const [isSticky, setSticky] = useState(false);
    
   useEffect(() => {
@@ -53,7 +54,7 @@ function Sidebar({ data, type }) {
               country: data?.USER_PROFILE_SUMMARY?.data?.country,
             }}
             coverImage={DEFAULT_COVER_IMAGE}
-            profileImage={data?.USER_PROFILE_SUMMARY?.data?.profilePicName}
+            profileImage={ctxUserdata?.userdata?.profilePicName || data?.USER_PROFILE_SUMMARY?.data?.profilePicName}
             masterData={data?.USER_PROFILE_SUMMARY}
           />
         <CompletionDetail data={data ? data : null} />

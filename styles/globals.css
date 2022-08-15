@@ -71,6 +71,11 @@ a {
   color: #f8ac41;
 }
 
+.app__anchor__no__color {
+  text-decoration: none;
+  
+}
+
 .app__anchor__footer:hover {
   text-decoration: underline !important;
   transition-timing-function: ease-in;
@@ -84,7 +89,7 @@ a {
   transition: all 0.8s;
 }
 
-.app__anchor:hover {
+.app__anchor:hover ,.app__anchor__no__color:hover {
   text-decoration: underline !important;
   transition-timing-function: ease-in;
   transition: all 0.8s;

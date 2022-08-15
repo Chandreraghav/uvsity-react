@@ -88,7 +88,7 @@ function RecommendedSessions(props) {
   const handleSessionAdd = () => {
     if (!selectedSession) {
       handleResponse(
-        "Select a session from the list to continue",
+        "Select a session from the suggestive list to continue",
         RESPONSE_TYPES.WARNING,
         toast.POSITION.BOTTOM_CENTER
       );
@@ -103,6 +103,27 @@ function RecommendedSessions(props) {
     payload.push(Number(selectedSession.entityId));
     UserDataService.editRecommendedSessions(payload)
       .then((response) => {
+        const responseSessions = response.data;
+        const addedSessionIdx = responseSessions.findIndex(
+          (responseSession) =>
+            responseSession.course.courseId === Number(selectedSession.entityId)
+        );
+        if (addedSessionIdx !== -1) {
+          const addedSession = responseSessions[addedSessionIdx];
+          const obj = {
+            courseCreator: addedSession?.courseCreator,
+            cost: addedSession?.course.cost,
+            courseCreateTime: addedSession?.course.courseCreateTime,
+            courseDuration: addedSession?.course.courseDuration,
+            courseEndDTime: addedSession?.course.courseEndDTime,
+            courseId: addedSession?.course.courseId,
+            courseImageURL: addedSession?.course.imageURL,
+            courseLastUpdateTime: addedSession?.course.courseLastUpdateTime,
+            courseName: addedSession?.course.courseFullName,
+            courseStartDTime: addedSession?.course.courseStartDTime,
+          };
+          props?.sessions.push(obj);
+        }
         setUpdating(false);
         setRecommendedSession("");
         setSelectedSession(null);
@@ -132,48 +153,79 @@ function RecommendedSessions(props) {
     setSelectedSession(session);
     setSessions([]);
   };
+  const handleRecommendedSessionDelete=(session)=>{
+   setUpdating(true)
+    let sessions = props?.sessions.slice();
+    const targetIdx= sessions.findIndex((_session)=>_session.courseId===session.courseId)
+    if(targetIdx!==-1){
+      let payload=[]
+      sessions.splice(targetIdx,1)
+      
+      sessions.filter((_session)=>_session.courseId!==session.courseId).map((session) => {
+      payload.push(session.courseId);
+    });
+    props.sessions.splice(targetIdx,1)
+    UserDataService.editRecommendedSessions(payload)
+      .then((response) => {
+        setUpdating(false)
+        handleResponse(
+          `${USER_PROFILE.RECOMMENDED_SESSIONS_DELETED.replace('<#X#>',session.courseName)}`,
+          RESPONSE_TYPES.SUCCESS,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      }).catch((error) => {
+        setUpdating(false)
+        handleResponse(
+          `${USER_PROFILE.RECOMMENDED_SESSIONS_DELETE_FAILED.replace('<#X#>',session.courseName)}`,
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      })
+    }
+    else {
+      handleResponse(
+        `${USER_PROFILE.RECOMMENDED_SESSIONS_DELETE_FAILED.replace('<#X#>',session.courseName)}`,
+        RESPONSE_TYPES.ERROR,
+        toast.POSITION.BOTTOM_CENTER
+      );
+    }
+  }
   const classes = useStyles();
   return (
     <>
       {props?.sessions && props?.sessions.length > 0 ? (
         <>
-           
-          <Box
-          className="  min-h-min overflow-auto p-2"
-          sx={{ width: "100%" }}
-        >
-          <Grid
-            container
-            rowSpacing={2}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 ,lg:4 }}
-          >
-            {props?.sessions
-              ?.filter(
-                (v, i, a) =>
-                  a.findIndex((v2) => v2.courseId === v.courseId) === i
-              )
-              .map((session, idx) => (
-                <Grid  key={idx} item xs={12} md={6} lg={6} sm={12}>
-                <div className="flex">
-                  <SnapPreview
-                    consumeEvent={props.consumeEvent}
-                    session={session}
-                  />
-                  {props?.owner && (
-                    <div className=" ml-auto justify-end">
-                    <Tooltip title="Remove this session from your recommended list">
-                      <div className="hover:cursor-pointer dark:text-blue-800 text-gray-dark">
-                        <DeleteIcon size="small" />
-                      </div>
-                    </Tooltip>
+          <Box className="  min-h-min overflow-auto p-2" sx={{ width: "100%" }}>
+            <Grid
+              container
+              rowSpacing={2}
+              columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+            >
+              {props?.sessions
+                ?.filter(
+                  (v, i, a) =>
+                    a.findIndex((v2) => v2.courseId === v.courseId) === i
+                )
+                .map((session, idx) => (
+                  <Grid key={idx} item xs={12} md={6} lg={6} sm={12}>
+                    <div className="flex">
+                      <SnapPreview
+                        consumeEvent={props.consumeEvent}
+                        session={session}
+                      />
+                      {props?.owner && (
+                        <div className=" ml-auto justify-end">
+                          <Tooltip title={USER_PROFILE.PLACEHOLDERS.REMOVE_SESSION_FROM_RECOMMENDATIONS}>
+                            <div onClick={()=>handleRecommendedSessionDelete(session)} className={` ${updating?'control__disabled':''} hover:cursor-pointer dark:text-blue-800 text-gray-dark`}>
+                              <DeleteIcon  size="small" />
+                            </div>
+                          </Tooltip>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  
-                  
-                </div>
-                </Grid>
-              ))}
-              </Grid>
+                  </Grid>
+                ))}
+            </Grid>
           </Box>
         </>
       ) : (
@@ -205,7 +257,7 @@ function RecommendedSessions(props) {
                   onChange={(event) =>
                     debounce(handleRecommendedSessionChange(event), 500)
                   }
-                  placeholder="Type a session name to add to your recommended session list"
+                  placeholder={USER_PROFILE.PLACEHOLDERS.ADD_SESSION_TO_RECOMMENDATIONS}
                   name="recommended-session-add-panel"
                   label={
                     <label className=" text-blue-800">Add a session</label>
@@ -213,10 +265,14 @@ function RecommendedSessions(props) {
                   InputProps={{
                     className: classes.input,
                     endAdornment: (
-                      <AddBoxIcon
-                        onClick={handleSessionAdd}
-                        className={"cursor-pointer"}
-                      />
+                      <Tooltip title="Add now">
+                        <AddBoxIcon
+                          onClick={handleSessionAdd}
+                          className={
+                            "cursor-pointer dark:text-white-100 text-blue-800"
+                          }
+                        />
+                      </Tooltip>
                     ),
                   }}
                   className={classes.root}
@@ -227,7 +283,7 @@ function RecommendedSessions(props) {
           </Grid>
 
           {sessions && sessions.length > 0 && (
-            <div className="session-search-result-container flex flex-col gap-2  w-max max-h-48 overflow-auto ">
+            <div className=" session-search-result-container flex flex-col gap-2  w-max max-h-48 overflow-auto ">
               {sessions.map((session, idx) => (
                 <Grid
                   item

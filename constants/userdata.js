@@ -1110,22 +1110,30 @@ export const PROFILE_AREAS = [
 export const USER_PROFILE = {
   CHANGE_PROFILE_PICTURE: "Change profile picture",
   CHANGE_ABOUT_INFO: "Update your About or bio information",
+  CHANGE_SOCIAL_URL: "Update your ",
+  ADD_SOCIAL_URL: "Add your ",
   CHANGE_SKILLS: "Update your specialities & skills",
   CHANGE_INTERESTS: "Update your interests",
   CHANGE_PROFILE_HEADLINE:'Update prime highlights to your profile such as designation, organization, location...',
   BIO_UPDATED:'🚀Awesome!! Bio updated successfully',
   BIO_UPDATE_FAILED:'Oops, there encountered an error while updating your bio, please try again.',
+  LINKEDIN_PROFILE_UPDATED:'🚀Awesome!! Your linkedin profile was updated successfully',
+  LINKEDIN_PROFILE_UPDATE_FAILED:'Oops, there encountered an error while updating your linkedin profile, please try again.',
   HEADLINE_UPDATED:'👍Superb!! Headline updated successfully',
   SKILLS_UPDATED:'🚀Great!! Specialities & skills updated successfully',
   SKILLS_UPDATE_FAILED:'Oops, there encountered an error while updating your skills, please try again.',
-  RECOMMENDED_SESSIONS_UPDATED:'👍Superb!! We have updated your recommended sessions',
+  RECOMMENDED_SESSIONS_UPDATED:`👍Superb!! We've updated your recommended sessions`,
   RECOMMENDED_SESSIONS_UPDATE_FAILED:'Oops, there encountered an error while updating your recommended sessions, please try again.',
+  RECOMMENDED_SESSIONS_DELETED:`Yay!! We've deleted <#X#> from your recommended sessions`,
+  RECOMMENDED_SESSIONS_DELETE_FAILED:'Oops, there encountered an error while deleting <#X#> from your recommended sessions, please try again.',
   HEADLINE_UPDATE_FAILED:'Oops, there encountered an error while updating your headline, please try again.',
   INTEREST_UPDATED:'👍Superb!! Interests updated successfully',
   INTEREST_UPDATE_FAILED:'Oops, there encountered an error while updating your interests, please try again.',
   PLACEHOLDERS: {
     WRITE_BIO: "Write something about yourself here...",
     ABOUT_INFO: "About",
+    REMOVE_SESSION_FROM_RECOMMENDATIONS:'Remove this session from your recommended list',
+    ADD_SESSION_TO_RECOMMENDATIONS:'Type a session name to add to your recommended sessions list'
   },
 };
 

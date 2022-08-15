@@ -85,9 +85,14 @@ import ChangeProfileHeadlineDialog from "../../shared/modals/ChangeProfileHeadli
 import EditIcon from "@mui/icons-material/Edit";
 import { getLocalStorageObject } from "../../../localStorage/local-storage";
 import ChangeInterests from "../../shared/modals/ChangeInterests";
+import ChangeSocialProfileURIDialog from "../../shared/modals/ChangeSocialProfileURIDialog";
+import AddIcon from '@mui/icons-material/Add';
+import { useDataLayerContextValue } from "../../../context/DataLayer";
+import { actionTypes } from "../../../context/reducer";
 toast.configure();
 
 function MacroProfile(props) {
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
   const [selectedpicture, setSelectedPictureEvent] = useState(null);
   const [openProfilePictureModal, setProfilePictureModal] = useState(false);
   const [showChangeAvatarOption, setShowChangeAvatarOption] = useState(true);
@@ -146,7 +151,7 @@ function MacroProfile(props) {
     };
   }, []);
 
-  const isItMe = props?.data?.owner;
+  const [isItMe, setIsitMe] = useState(props?.data?.owner);
   const isConnected =
     isItMe === false &&
     props?.data?.userdata?.invitationAction ===
@@ -164,7 +169,8 @@ function MacroProfile(props) {
     props?.data?.userdata?.invitationAction ===
       NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
 
-  const userdata = props?.data?.userdata;
+  const [userdata, setUserData] = useState(props?.data?.userdata);
+  
   const isRated =
     userdata.ratingAction === RATING.RATING_ALREADY_SENT ? true : false;
   const aboutMe = userdata?.aboutMe;
@@ -177,12 +183,14 @@ function MacroProfile(props) {
   const [userSkillsets, setUserSkillSets] = useState(userdata?.userSkillsets);
   const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
   const interests = userdata?.myInterests;
-  const _interests ={
+  const _interests = {
     dialogOpen: false,
     interests,
-  }
+  };
   const [interestData, setInterestData] = useState(_interests);
-  const [recommendedSessions, setRecommendedSessions] = useState(userdata?.coursesIRecommend);
+  const [recommendedSessions, setRecommendedSessions] = useState(
+    userdata?.coursesIRecommend
+  );
   const recommendations = userdata?.recommendationsReceived;
   const education = {
     highestLevel: userdata?.degreeCourse,
@@ -201,16 +209,21 @@ function MacroProfile(props) {
     country: userdata?.country,
     social_profiles: [
       {
-        in: {
-          url: userdata?.linkedInProfile,
-          tooltip: `${isItMe ? "My" : firstName + "'s"} Linkedin`,
-          icon: <LinkedInIcon />,
-          display: isConnected || isItMe,
-        },
+        id:1,
+        url: userdata?.linkedInProfile,
+        tooltip: `${isItMe ? "My" : firstName + "'s"} Linkedin`,
+        icon: <LinkedInIcon />,
+        alias: "linkedin",
+        display: isConnected,
+        editDialogOpened: false,
+        
       },
     ],
     invitationRequestId: userdata?.invitationRequestId,
   };
+
+  const [socialProfiles, setSocialProfiles] = useState(metaData.social_profiles);
+  const [selectedSocialProfile, setSelectedSocialProfile] = useState(null);
 
   const getTotalStatCount = () => {
     try {
@@ -231,15 +244,15 @@ function MacroProfile(props) {
   const profileSecondaryLine = formattedProfileSubtitle(
     userType,
     metaData.eduIns
-  )
+  );
 
   const profileTertiaryLine = formattedProfileSubtitle(
     metaData?.city,
     metaData?.country
-  )
+  );
 
   const _profileHighlight = {
-    hasData:false,
+    hasData: false,
     dialogOpen: false,
     designation: null,
     institution: null,
@@ -250,11 +263,9 @@ function MacroProfile(props) {
     specialization: null,
   };
   const [profileHighlight, setProfileHighlight] = useState(_profileHighlight);
-   
-  
+
   useEffect(() => {
     if (props?.lazyAPI && userdata?.userDetailsId) {
-      
       SessionService.getSessionsByUserID(userdata?.userDetailsId)
         .then((res) => {
           setLazySessionData(res.data?.courses);
@@ -433,7 +444,6 @@ function MacroProfile(props) {
     return currentHref + event.id;
   };
 
- 
   const handleProfilePictureChange = (obj) => {
     if (obj) {
       if (!openProfilePictureModal) setProfilePictureModal(true);
@@ -462,8 +472,16 @@ function MacroProfile(props) {
         .then((res) => {
           if (res.data) {
             setProfilePic(res.data);
+            let context = ctxUserdata
+            if(context.userdata.profilePicName)
+            context.userdata.profilePicName=res.data
+            dispatch({
+              type: actionTypes.SET_USERDATA,
+              userdata: context,
+            });
             setProfilePictureModal(false);
             setSelectedPictureEvent(null);
+
             handleResponse(
               TITLES.PROFILE_PHOTO_UPDATED,
               RESPONSE_TYPES.SUCCESS,
@@ -472,7 +490,6 @@ function MacroProfile(props) {
           }
         })
         .catch((err) => {
-          console.log(err);
           setProfilePictureModal(false);
           setProfilePic(null);
           handleResponse(
@@ -675,7 +692,7 @@ function MacroProfile(props) {
 
   const handleProfileUpdateEvent = (obj) => {
     if (obj && obj.id == 0) {
-      if (obj.event === "edit"){
+      if (obj.event === "edit") {
         const updateObj = {
           isPresent: true,
           timeZone: getTimezone(),
@@ -690,59 +707,65 @@ function MacroProfile(props) {
             },
           ],
         };
-        UserDataService.editUserHeadline(updateObj).then((res)=>{
-          
-          const _profileHighlight = {
-            hasData:true,
-            dialogOpen: false,
-            designation: obj.data.designation,
-            institution: obj.data.organization,
-            city: obj.data.city,
-            country: obj.data.country,
-            social: metaData?.social_profiles,
-            education,
-            specialization: userdata?.subject,
-          };
-          
-            metaData.eduIns=_profileHighlight.institution;
-            metaData.city=_profileHighlight.city;
-            metaData.country=_profileHighlight.country
-            userType=_profileHighlight.designation
+        UserDataService.editUserHeadline(updateObj)
+          .then((res) => {
+            const _profileHighlight = {
+              hasData: true,
+              dialogOpen: false,
+              designation: obj.data.designation,
+              institution: obj.data.organization,
+              city: obj.data.city,
+              country: obj.data.country,
+              social: socialProfiles,
+              education,
+              specialization: userdata?.subject,
+            };
+
+            metaData.eduIns = _profileHighlight.institution;
+            metaData.city = _profileHighlight.city;
+            metaData.country = _profileHighlight.country;
+            userType = _profileHighlight.designation;
             setProfileHighlight(_profileHighlight);
             handleResponse(
               `${USER_PROFILE.HEADLINE_UPDATED}`,
               RESPONSE_TYPES.SUCCESS,
               toast.POSITION.BOTTOM_CENTER
             );
-          
-            }).catch(()=>{
-          const _profileHighlight = {
-            hasData:false,
-            dialogOpen: false,
-            designation: userType,
-            institution: metaData?.eduIns,
-            city: metaData?.city,
-            country: metaData?.country,
-            social: metaData?.social_profiles,
-            education,
-            specialization: userdata?.subject,
-          };
-          setProfileHighlight(_profileHighlight);
-          handleResponse(
-            `${USER_PROFILE.HEADLINE_UPDATE_FAILED}`,
-            RESPONSE_TYPES.ERROR,
-            toast.POSITION.BOTTOM_CENTER
-          );
-        })
+          })
+          .catch(() => {
+            const _profileHighlight = {
+              hasData: false,
+              dialogOpen: false,
+              designation: userType,
+              institution: metaData?.eduIns,
+              city: metaData?.city,
+              country: metaData?.country,
+              social: socialProfiles,
+              education,
+              specialization: userdata?.subject,
+            };
+            setProfileHighlight(_profileHighlight);
+            handleResponse(
+              `${USER_PROFILE.HEADLINE_UPDATE_FAILED}`,
+              RESPONSE_TYPES.ERROR,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          });
         return;
       }
       const _profileHighlight = {
         dialogOpen: false,
-        designation: profileHighlight.designation?profileHighlight.designation:userType,
-        institution: profileHighlight.institution?profileHighlight.institution:metaData?.eduIns,
-        city: profileHighlight.city?profileHighlight.city:metaData?.city,
-        country:profileHighlight.country?profileHighlight.country: metaData?.country,
-        social: metaData?.social_profiles,
+        designation: profileHighlight.designation
+          ? profileHighlight.designation
+          : userType,
+        institution: profileHighlight.institution
+          ? profileHighlight.institution
+          : metaData?.eduIns,
+        city: profileHighlight.city ? profileHighlight.city : metaData?.city,
+        country: profileHighlight.country
+          ? profileHighlight.country
+          : metaData?.country,
+        social: socialProfiles,
         education,
         specialization: userdata?.subject,
       };
@@ -784,103 +807,205 @@ function MacroProfile(props) {
       };
       setAboutInfo(__aboutInfo);
     }
-    if(obj && obj.id== 5){
-     if (obj.event === "init_edit") {
-      const _interests ={
-        dialogOpen: true,
-        interests: interestData.interests
+    if (obj && obj.id == 5) {
+      if (obj.event === "init_edit") {
+        const _interests = {
+          dialogOpen: true,
+          interests: interestData.interests,
+        };
+        setInterestData(_interests);
+        return;
       }
-      setInterestData(_interests)
-      return;
+      if (obj.event === "edit") {
+        UserDataService.editInterests({ myInterests: obj.interest })
+          .then((res) => {
+            const _interests = {
+              dialogOpen: false,
+              interests: obj.interest,
+            };
+            setInterestData(_interests);
+            handleResponse(
+              `${USER_PROFILE.INTEREST_UPDATED}`,
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          })
+          .catch((err) => {
+            const _interests = {
+              dialogOpen: false,
+              interests: interestData.interests,
+            };
+            setInterestData(_interests);
+            handleResponse(
+              `${USER_PROFILE.INTEREST_UPDATE_FAILED}`,
+              RESPONSE_TYPES.ERROR,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          });
+        return;
+      }
+      const _interests = {
+        dialogOpen: false,
+        interests: interestData.interests,
+      };
+      setInterestData(_interests);
     }
-    if (obj.event === "edit") {
-      UserDataService.editInterests({ myInterests: obj.interest })
-        .then((res) => {
-          const _interests ={
-            dialogOpen: false,
-            interests:obj.interest,
+
+    if (obj && obj.id === 600) {
+      // social profile update.
+        const _social_profiles= socialProfiles.slice(); 
+        if (obj.event === "edit") {
+          let isQualifiedForSocialProfileUpdate = false
+          _social_profiles.map((profile)=>{
+            if(profile.id===obj.selectedId) {
+              isQualifiedForSocialProfileUpdate=true
+            }
+          })
+          if(isQualifiedForSocialProfileUpdate){
+            if(obj.alias ==='linkedin'){
+              // Call linked in update service
+              UserDataService.editLinkedInProfile({linkedInProfile:obj.url}).then((response)=>{
+                _social_profiles.map((profile)=>{
+                  if(profile.id===obj.selectedId) {
+                   profile.editDialogOpened=false
+                   profile.url = obj.url;
+                   setSelectedSocialProfile(profile)
+                  }
+                })
+                setSocialProfiles(_social_profiles);
+                
+                handleResponse(
+                  `${USER_PROFILE.LINKEDIN_PROFILE_UPDATED}`,
+                  RESPONSE_TYPES.SUCCESS,
+                  toast.POSITION.BOTTOM_CENTER
+                );
+                
+              }).catch((error)=>{
+                _social_profiles.map((profile)=>{
+                  if(profile.id===obj.selectedId) {
+                   profile.editDialogOpened=false
+                   setSelectedSocialProfile(profile)
+                  }
+                })
+                setSocialProfiles(_social_profiles);
+                handleResponse(
+                  `${USER_PROFILE.LINKEDIN_PROFILE_UPDATE_FAILED}`,
+                  RESPONSE_TYPES.ERROR,
+                  toast.POSITION.BOTTOM_CENTER
+                );
+              })
+              return;
+            }
           }
-          setInterestData(_interests)
-          handleResponse(
-            `${USER_PROFILE.INTEREST_UPDATED}`,
-            RESPONSE_TYPES.SUCCESS,
-            toast.POSITION.BOTTOM_CENTER
-          );
+          return;
+        }
+        _social_profiles.map((profile)=>{
+          if(profile.id===obj.selectedId) {
+            profile.editDialogOpened = false;
+            setSelectedSocialProfile(profile)
+          }
         })
-        .catch((err) => {
-          const _interests ={
-            dialogOpen: false,
-            interests: interestData.interests
-          }
-          setInterestData(_interests)
-          handleResponse(
-            `${USER_PROFILE.INTEREST_UPDATE_FAILED}`,
-            RESPONSE_TYPES.ERROR,
-            toast.POSITION.BOTTOM_CENTER
-          );
-        });
-      return;
+        setSocialProfiles(_social_profiles);
     }
-    const _interests = {
-      dialogOpen: false,
-      interests: interestData.interests,
-    };
-    setInterestData(_interests);
-    }
+ 
   };
 
   const handleEditHeadline = () => {
     const _profileHighlight = {
       hasData: false,
       dialogOpen: true,
-      designation: profileHighlight.designation?profileHighlight.designation:userType,
-      institution: profileHighlight.institution?profileHighlight.institution:metaData?.eduIns,
-      city: profileHighlight.city?profileHighlight.city:metaData?.city,
-      country:profileHighlight.country?profileHighlight.country: metaData?.country,
-      social: metaData?.social_profiles,
+      designation: profileHighlight.designation
+        ? profileHighlight.designation
+        : userType,
+      institution: profileHighlight.institution
+        ? profileHighlight.institution
+        : metaData?.eduIns,
+      city: profileHighlight.city ? profileHighlight.city : metaData?.city,
+      country: profileHighlight.country
+        ? profileHighlight.country
+        : metaData?.country,
+      social: socialProfiles,
       education,
       specialization: userdata?.subject,
     };
     setProfileHighlight(_profileHighlight);
   };
-  const getSecondaryLine =()=>{
-    if(profileHighlight.hasData || (profileHighlight.designation && profileHighlight.institution)) 
-    return formattedProfileSubtitle(profileHighlight.designation,profileHighlight.institution)
-             
-      return profileSecondaryLine
-  }
-  const getTertiaryLine=()=>{
-    if(profileHighlight.hasData || (profileHighlight.city && profileHighlight.country)) 
-    return formattedProfileSubtitle(profileHighlight.city,profileHighlight.country)
-             
-      return profileTertiaryLine
-  }
+  const getSecondaryLine = () => {
+    if (
+      profileHighlight.hasData ||
+      (profileHighlight.designation && profileHighlight.institution)
+    )
+      return formattedProfileSubtitle(
+        profileHighlight.designation,
+        profileHighlight.institution
+      );
 
-  useEffect(()=>{
+    return profileSecondaryLine;
+  };
+  const getTertiaryLine = () => {
+    if (
+      profileHighlight.hasData ||
+      (profileHighlight.city && profileHighlight.country)
+    )
+      return formattedProfileSubtitle(
+        profileHighlight.city,
+        profileHighlight.country
+      );
+
+    return profileTertiaryLine;
+  };
+
+  useEffect(() => {
     const aboutMe = props?.data?.userdata?.aboutMe;
     const _aboutInfo = {
       dialogOpen: false,
       aboutMe,
     };
     const interests = props?.data?.userdata?.myInterests;
-  const _interests ={
-    dialogOpen: false,
-    interests,
-  }
+    const _interests = {
+      dialogOpen: false,
+      interests,
+    };
 
-  setRecommendedSessions(props?.data?.userdata?.coursesIRecommend)
-   
-    setInterestData(_interests)
-    setAboutInfo(_aboutInfo)
-    setUserSkillSets(props?.data?.userdata?.userSkillsets)
+    setRecommendedSessions(props?.data?.userdata?.coursesIRecommend);
+    setInterestData(_interests);
+    setAboutInfo(_aboutInfo);
+    setUserSkillSets(props?.data?.userdata?.userSkillsets);
+    setIsitMe(props?.data?.owner)
+   const _social_profiles=socialProfiles.slice();
+   let isQualifiedForSocialProfileUpdate=false
+   _social_profiles.map((profile) =>{
+    if(profile.alias==='linkedin'){
+      isQualifiedForSocialProfileUpdate=true
+      profile.url=props?.data?.userdata?.linkedInProfile
+    }
+   })
+   if(isQualifiedForSocialProfileUpdate)
+   setSocialProfiles(_social_profiles);
 
-    return(()=>{
-      setAboutInfo(null)
-      setInterestData(null)
-      setUserSkillSets([])
-      setRecommendedSessions([])
-    })
-  },[props?.data?.userdata])
+    return () => {
+      setAboutInfo(null);
+      setInterestData(null);
+      setUserSkillSets([]);
+      setRecommendedSessions([]);
+      setSocialProfiles([])
+      setIsitMe(false)
+    };
+  }, [props?.data?.userdata,props?.data]);
+
+  const handleSocialProfileUpdate = (_profile) => {
+    const _social_profiles = socialProfiles.slice();
+    let isProfileQualifiedForStateChange = false
+    _social_profiles.map((profile) => {
+      if (profile.id === _profile.id) {
+        profile.editDialogOpened = true;
+        setSelectedSocialProfile(profile)
+        isProfileQualifiedForStateChange= true
+      }
+    });
+    if(isProfileQualifiedForStateChange)
+    setSocialProfiles(_social_profiles);
+  };
 
   return (
     <>
@@ -945,9 +1070,7 @@ function MacroProfile(props) {
             <div className="flex">
               {profileImage &&
               !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
-                <div
-                   
-                >
+                <div>
                   {/* AVATAR SAMPLE 1 */}
                   <div className=" hidden lg:inline-block xl:inline-block">
                     {isItMe && showChangeAvatarOption && (
@@ -978,9 +1101,7 @@ function MacroProfile(props) {
                   </div>
                 </div>
               ) : (
-                <div
-                   
-                >
+                <div>
                   {/* AVATAR SAMPLE 3 */}
                   <div className=" hidden lg:inline-block xl:inline-block">
                     {isItMe && showChangeAvatarOption && (
@@ -1099,7 +1220,9 @@ function MacroProfile(props) {
                               aria-label="connected-to-person"
                             >
                               <CheckCircleIcon fontSize="small" />
-                              <small className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline `}>
+                              <small
+                                className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline `}
+                              >
                                 {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
                               </small>
                             </IconButton>
@@ -1205,27 +1328,25 @@ function MacroProfile(props) {
                         </div>
                       )}
                     </div>
-                    {metaData?.social_profiles && (
+                    {socialProfiles && (
                       <>
                         <div className="social-handles">
-                          {metaData?.social_profiles?.map((profile, index) => (
+                          {socialProfiles?.map((profile, index) => (
                             <div
                               key={index}
                               className={`${
-                                profile.in.url && profile.in.display
-                                  ? "mt-1"
-                                  : ""
+                                profile.url && profile.display ? "mt-1" : ""
                               }`}
                             >
-                              {profile.in.url && profile.in.display && (
+                              {profile.url && (profile.display || isItMe) && (
                                 <>
-                                  <Tooltip title={profile.in.tooltip}>
+                                  <Tooltip title={profile.tooltip}>
                                     <a
-                                      href={profile.in.url}
+                                      href={profile.url}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
-                                      {profile.in.icon}
+                                      {profile.icon}
                                     </a>
                                   </Tooltip>
                                 </>
@@ -1249,9 +1370,7 @@ function MacroProfile(props) {
                         <div className="flex gap-1">
                           <WorkIcon />
                           <div className="-mt-0.5 lg:-mt-1 xl:-mt-1">
-                         
-                         {getSecondaryLine()}
-                          
+                            {getSecondaryLine()}
                           </div>
                         </div>
                       </Typography>
@@ -1266,14 +1385,66 @@ function MacroProfile(props) {
                           <div className="flex gap-1">
                             <LocationOnIcon className="" fontSize="small" />
                             <div className="ml-1 -mt-0.5 lg:-mt-1 xl:-mt-1">
-                             {getTertiaryLine() } 
-                               
+                              {getTertiaryLine()}
                             </div>
                           </div>
                         </Typography>
                       </div>
                     </div>
                   </>
+                )}
+                {isItMe && socialProfiles && (
+                  <Box sx={{ width: "100%" }}>
+                    <Grid
+                      container
+                      rowSpacing={2}
+                      columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+                    >
+                      {socialProfiles.map((social_profile, idx) => (
+                         
+                          <Grid key={idx} item xs={12} md={6} lg={6} sm={12}>
+                            <div className="text-xs lg:text-md md:text-md sm:text-sm flex gap-2   font-normal leading-loose">
+                             {social_profile.url && (<div>
+                                <a
+                                  className="app__anchor__no__color text-gray-500"
+                                  href={social_profile.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <div className="flex gap-1">
+                                    <span>{social_profile.icon}</span>
+                                    <span className="mt-0.5">
+                                      {social_profile.url}
+                                    </span>
+                                  </div>
+                                </a>
+                              </div>)}
+                            
+
+                              <div
+                                onClick={() =>
+                                  handleSocialProfileUpdate(social_profile)
+                                }
+                                className={`${social_profile.url?'ml-auto':''} cursor-pointer`}
+                              >
+                                {social_profile.url ?(<Tooltip
+                                  title={`${USER_PROFILE.CHANGE_SOCIAL_URL}${social_profile.alias}'s url`}
+                                >
+                                  <EditIcon fontSize="small" />
+                                </Tooltip>):( 
+                                  <div className="flex gap-2">
+                                  <Typography variant="caption">{`${USER_PROFILE.ADD_SOCIAL_URL}${social_profile.alias} profile`}</Typography>
+                                  <AddIcon fontSize="small" />
+                                  </div>
+                                )}
+                              
+                              </div>
+                            </div>
+                          </Grid>
+                       
+                      ))}
+                    </Grid>
+                  </Box>
                 )}
               </div>
             </div>
@@ -1297,8 +1468,11 @@ function MacroProfile(props) {
             >
               {PROFILE_AREAS.filter((hidden) => hidden !== true).map((area) => (
                 <React.Fragment key={area.id}>
-                  <Grid  item xs={12} lg={12} md={12} sm={12}>
-                    <Paper className=" dark:bg-gray-900 bg-white-100" elevation={1}>
+                  <Grid item xs={12} lg={12} md={12} sm={12}>
+                    <Paper
+                      className=" dark:bg-gray-900 bg-white-100"
+                      elevation={1}
+                    >
                       <div className="profile__section__wrapper mb-1 py-2">
                         <Container className="profile__section__container">
                           <div className="flex flex-column">
@@ -1356,7 +1530,7 @@ function MacroProfile(props) {
                               {area.id === 5 && (
                                 <>
                                   <Interests
-                                  consumeEvent={handleProfileUpdateEvent}
+                                    consumeEvent={handleProfileUpdateEvent}
                                     owner={isItMe}
                                     interests={interestData.interests}
                                   />
@@ -1448,12 +1622,13 @@ function MacroProfile(props) {
         isOpen={aboutInfo.dialogOpen}
       ></ChangeAboutInformationDialog>
 
-      <ChangeInterests  
+      <ChangeInterests
         title={`Edit interests`}
         theme
         dialogCloseRequest={handleProfileUpdateEvent}
         data={interestData.interests}
-        isOpen={interestData.dialogOpen}/>
+        isOpen={interestData.dialogOpen}
+      />
 
       <ChangeProfileHeadlineDialog
         fullScreen
@@ -1462,6 +1637,12 @@ function MacroProfile(props) {
         data={profileHighlight}
         isOpen={profileHighlight.dialogOpen}
       ></ChangeProfileHeadlineDialog>
+
+      <ChangeSocialProfileURIDialog
+        isOpen={selectedSocialProfile?.editDialogOpened}
+        data={selectedSocialProfile}
+        dialogCloseRequest={handleProfileUpdateEvent}
+      ></ChangeSocialProfileURIDialog>
     </>
   );
 }

@@ -13,6 +13,10 @@ export const eraseContext = (unauthorize) => {
     type: actionTypes.SET_USER,
     user: null,
   });
+  unauthorize({
+    type: actionTypes.SET_USERDATA,
+    userdata: null,
+  });
 };
 export const SignOffUser = (
   queryClient,

@@ -87,4 +87,13 @@ export default class UserDataService {
       payload
     );
   }
+
+  static async editLinkedInProfile(payload) {
+    return await asyncInstance.post(
+      ENDPOINTS.USER.EDITS.SOCIAL_PROFILE.LINKEDIN,
+      payload
+    );
+  }
+
+   
 }
