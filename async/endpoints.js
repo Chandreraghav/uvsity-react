@@ -90,7 +90,10 @@ export const ENDPOINTS = {
         LINKEDIN:'edit/profile/linkedInProfile'
       },
       EDUCATION:{
-        HIGHEST_DEGREE:'edit/profile/degreeCourse'
+        HIGHEST_DEGREE:'edit/profile/degreeCourse',
+        PAST_EDUCATION:{
+          ADD:'edit/profile/add/pasteducation'
+        }
       }
     },
     METADATA: {

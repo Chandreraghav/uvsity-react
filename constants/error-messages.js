@@ -67,3 +67,25 @@ export const SESSION_ERROR={
 export const REQUEST_FAILED_MESSAGE='The request could not be completed due to an internal error. Please try again in a while.'
 export const PROFILE_UNAVAILABLE='The requested profile is not available.'
 export const PROFILE_PHOTO_UPDATE_FAILED='Your profile photo was not updated due to an internal error. Please try again in a while.'
+export const PAST_EDUCATION_FORM_ERRORS={
+  PERIOD:{
+    FROM:{
+      REQUIRED:"Please specify the year and month you started this course",
+      RANGE_ERROR:"Start period of course can't be after end period"
+    },
+    TO:{
+      REQUIRED:"Please specify the year and month you completed this course",
+      RANGE_ERROR:"End period of course can't be before start period"
+    },
+
+  },
+  INSTITUTE:{
+    REQUIRED:"Please enter name of an educational institution e.g University/College/School",
+  },
+  DEGREE:{
+    REQUIRED:"Please enter a educational qualification, degree or diploma, e.g MSc, PH.d, BS, MS, High School, Middle School etc",
+  },
+  CAMPUS:{
+    REQUIRED: "Please enter the campus location from where you obtained this qualification, e.g Boston, New York, Delhi etc",
+  }
+}

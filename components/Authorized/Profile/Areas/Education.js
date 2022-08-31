@@ -1,5 +1,5 @@
 import { Tooltip, Typography } from "@mui/material";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Spacer from "../../../shared/Spacer";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import NoData from "../../Shared/NoData";
@@ -9,7 +9,7 @@ import { USER_PROFILE } from "../../../../constants/userdata";
 import PastEducationManager from "./PastEducationManager";
 
 function Education(props) {
-  const [editMode, setEditMode]=useState(false)
+  const [editMode, setEditMode] = useState(false);
   const handleHighestDegreeUpdate = () => {
     props.consumeEvent({
       id: 8,
@@ -17,21 +17,42 @@ function Education(props) {
       component: "Education",
     });
   };
-  const handlePastEducationEvent =(event)=>{
-    if(!event) return;
+  const handlePastEducationEvent = (event) => {
+    if (!event) return;
     switch (event.operation) {
-      case 'cancel':
-        setEditMode(false)
+      case "cancel":
+        setEditMode(false);
         break;
-      case 'submit_education_data':
-        console.log(event.data)
+      case "submit_education_data":
+        const fromMonth =
+          event.data?.fromDate?.$M + 1 > 9
+            ? (event.data?.fromDate?.$M + 1).toString()
+            : ("0" + (event.data?.fromDate?.$M + 1)).toString();
+        const toMonth =
+          event.data?.fromDate?.$M + 1 > 9
+            ? (event.data?.toDate?.$M + 1).toString()
+            : ("0" + (event.data?.toDate?.$M + 1)).toString();
+        const fromYear = (event.data?.fromDate.$y).toString();
+        const toYear = (event.data?.toDate.$y).toString();
+        const payload = {
+          degreeCourse: event.data?.degree,
+          educationEndDate: `${toMonth}/01/${toYear}`,
+          educationStartDate: `${fromMonth}/01/${fromYear}`,
+          fromMonth,
+          fromYear,
+          isPresent: "F",
+          pastEducationCampus: event.data?.campus,
+          pastEducationEducationInstitution: event.data?.educationInstitution,
+          toMonth,
+          toYear,
+        };
+        console.log(payload);
         break;
-    
+
       default:
         break;
     }
-
-  }
+  };
   return props.education?.highestLevel && props.education?.pastEducation ? (
     <>
       {props.education?.highestLevel ? (
@@ -79,7 +100,7 @@ function Education(props) {
         </>
       )}
       {props.education?.pastEducation &&
-        props.education?.pastEducation.length > 0 ? (
+        props.education?.pastEducation.length > 0 && (
           <>
             <Spacer />
             <div className="flex flex-col space-y-2">
@@ -120,28 +141,28 @@ function Education(props) {
               </div>
             </div>
           </>
-        ):(
+        )}
+
+      {props.owner && (
         <>
-        {props.owner && (
-          <>
-           {!editMode && 
+          {!editMode && (
             <div
-               onClick={()=>setEditMode(true)}
-            className=" hover:cursor-pointer dark: text-gray-600  text-gray-600  leading-tight flex mt-2"
-          >
-            <AddIcon fontSize="small" />
-            <Typography
-              className="mt-0.5"
-              variant="caption"
-            >{`${USER_PROFILE.ADD_PAST_EDUCATION}`}</Typography>
-          </div>}
-           
-            {editMode &&  <PastEducationManager event={handlePastEducationEvent} mode='add'/>}
-           
-            </>
+              onClick={() => setEditMode(true)}
+              className=" hover:cursor-pointer dark: text-gray-600  text-gray-600  leading-tight flex mt-2"
+            >
+              <AddIcon fontSize="small" />
+              <Typography
+                className="mt-0.5"
+                variant="caption"
+              >{`${USER_PROFILE.ADD_PAST_EDUCATION}`}</Typography>
+            </div>
           )}
-        
-        </>)}
+
+          {editMode && (
+            <PastEducationManager event={handlePastEducationEvent} mode="add" />
+          )}
+        </>
+      )}
     </>
   ) : (
     <NoData message="No details available." />
