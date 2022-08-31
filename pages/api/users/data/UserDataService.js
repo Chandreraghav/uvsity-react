@@ -77,6 +77,10 @@ export default class UserDataService {
     return await asyncInstance.post(ENDPOINTS.USER.EDITS.INTERESTS, payload);
   }
 
+  static async editHighestEducationDegree(payload) {
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.EDUCATION.HIGHEST_DEGREE, payload);
+  }
+
   static async editSkills(payload) {
     return await asyncInstance.post(ENDPOINTS.USER.EDITS.SKILLS, payload);
   }

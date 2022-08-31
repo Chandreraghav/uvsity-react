@@ -89,6 +89,7 @@ import ChangeSocialProfileURIDialog from "../../shared/modals/ChangeSocialProfil
 import AddIcon from '@mui/icons-material/Add';
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { actionTypes } from "../../../context/reducer";
+import ChangeHighestEducationDegreeModal from "../../shared/modals/ChangeHighestEducationDegreeModal";
 toast.configure();
 
 function MacroProfile(props) {
@@ -192,10 +193,18 @@ function MacroProfile(props) {
     userdata?.coursesIRecommend
   );
   const recommendations = userdata?.recommendationsReceived;
-  const education = {
+  const [education, setEducation] = useState({
     highestLevel: userdata?.degreeCourse,
     pastEducation: userdata?.pastEducations,
+  });
+
+  const _education = {
+    dialogOpen: false,
+    education,
   };
+
+  const [educationData, setEducationData] = useState(_education);
+
   const firstName = userdata?.firstName;
   const profileImage = userdata?.profilepicName;
   const profileName = formattedName(userdata?.firstName, userdata?.lastName);
@@ -211,7 +220,7 @@ function MacroProfile(props) {
       {
         id:1,
         url: userdata?.linkedInProfile,
-        tooltip: `${isItMe ? "My" : firstName + "'s"} Linkedin`,
+        tooltip: `${isItMe===true ? "My" : firstName + "'s"} Linkedin`,
         icon: <LinkedInIcon />,
         alias: "linkedin",
         display: isConnected,
@@ -223,6 +232,7 @@ function MacroProfile(props) {
   };
 
   const [socialProfiles, setSocialProfiles] = useState(metaData.social_profiles);
+  
   const [selectedSocialProfile, setSelectedSocialProfile] = useState(null);
 
   const getTotalStatCount = () => {
@@ -851,10 +861,71 @@ function MacroProfile(props) {
       setInterestData(_interests);
     }
 
+    if (obj && obj.id == 8){
+      if (obj.event === "init_edit") {
+        const _education = {
+          dialogOpen: true,
+          education: educationData.education
+        };
+        setEducationData(_education);
+        return;
+      }
+
+      if (obj.event === "edit") {
+        UserDataService.editHighestEducationDegree({ userEducationDegreeCourse: obj.highestLevel })
+          .then((res) => {
+            const modifiedEducationData = {
+              highestLevel: obj?.highestLevel,
+              pastEducation: userdata?.pastEducations,
+            }
+            const _education = {
+              dialogOpen: false,
+              education:modifiedEducationData,
+            };
+            setEducation(modifiedEducationData)
+            setEducationData(_education);
+            handleResponse(
+              `${USER_PROFILE.HIGHEST_DEGREE_UPDATED}`,
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          })
+          .catch((err) => {
+            const _education = {
+              dialogOpen: false,
+              education: educationData.education
+            };
+            setEducationData(_education);
+            handleResponse(
+              `${USER_PROFILE.HIGHEST_DEGREE_UPDATE_FAILED}`,
+              RESPONSE_TYPES.ERROR,
+              toast.POSITION.BOTTOM_CENTER
+            );
+          });
+        return;
+      }
+      const _education = {
+        dialogOpen: false,
+        education: educationData.education
+      };
+      setEducationData(_education);
+
+      return;
+    }
+
     if (obj && obj.id === 600) {
       // social profile update.
         const _social_profiles= socialProfiles.slice(); 
         if (obj.event === "edit") {
+          const incomingUpdatedRequestUrl= obj.url.trim()
+          if(!incomingUpdatedRequestUrl){
+            handleResponse(
+              `${USER_PROFILE.LINKEDIN_PROFILE_URL_MISSING}`,
+              RESPONSE_TYPES.WARNING,
+              toast.POSITION.BOTTOM_CENTER
+            );
+            return;
+          }
           let isQualifiedForSocialProfileUpdate = false
           _social_profiles.map((profile)=>{
             if(profile.id===obj.selectedId) {
@@ -966,7 +1037,6 @@ function MacroProfile(props) {
       dialogOpen: false,
       interests,
     };
-
     setRecommendedSessions(props?.data?.userdata?.coursesIRecommend);
     setInterestData(_interests);
     setAboutInfo(_aboutInfo);
@@ -977,12 +1047,12 @@ function MacroProfile(props) {
    _social_profiles.map((profile) =>{
     if(profile.alias==='linkedin'){
       isQualifiedForSocialProfileUpdate=true
-      profile.url=props?.data?.userdata?.linkedInProfile
+      profile.url= selectedSocialProfile?.url?selectedSocialProfile.url:props?.data?.userdata?.linkedInProfile
+      profile.tooltip=`${isItMe===true ? "My" : firstName + "'s"} Linkedin`
     }
    })
    if(isQualifiedForSocialProfileUpdate)
    setSocialProfiles(_social_profiles);
-
     return () => {
       setAboutInfo(null);
       setInterestData(null);
@@ -1428,13 +1498,14 @@ function MacroProfile(props) {
                                 className={`${social_profile.url?'ml-auto':''} cursor-pointer`}
                               >
                                 {social_profile.url ?(<Tooltip
-                                  title={`${USER_PROFILE.CHANGE_SOCIAL_URL}${social_profile.alias}'s url`}
+                                  title={`${USER_PROFILE.CHANGE_SOCIAL_URL}${social_profile.alias} profile url`}
                                 >
                                   <EditIcon fontSize="small" />
                                 </Tooltip>):( 
-                                  <div className="flex gap-2">
-                                  <Typography variant="caption">{`${USER_PROFILE.ADD_SOCIAL_URL}${social_profile.alias} profile`}</Typography>
+                                  <div className=" dark: text-gray-600  text-gray-600  leading-loose flex gap-2">
                                   <AddIcon fontSize="small" />
+                                  <Typography className="mt-0.5"  variant="caption">{`${USER_PROFILE.ADD_SOCIAL_URL}${social_profile.alias} profile`}</Typography>
+                                 
                                   </div>
                                 )}
                               
@@ -1563,6 +1634,7 @@ function MacroProfile(props) {
                                   <Education
                                     education={education}
                                     owner={isItMe}
+                                    consumeEvent={handleProfileUpdateEvent}
                                   />
                                 </>
                               )}
@@ -1628,6 +1700,14 @@ function MacroProfile(props) {
         dialogCloseRequest={handleProfileUpdateEvent}
         data={interestData.interests}
         isOpen={interestData.dialogOpen}
+      />
+
+      <ChangeHighestEducationDegreeModal
+       title={`Edit highest degree`}
+       theme
+       dialogCloseRequest={handleProfileUpdateEvent}
+       data={educationData.education}
+       isOpen={educationData.dialogOpen}
       />
 
       <ChangeProfileHeadlineDialog

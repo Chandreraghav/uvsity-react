@@ -334,6 +334,32 @@ export const parseMarkdownToHTML = (data) => {
 export const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");
 };
-export const isUvsityLogicalError=(internalError)=> {
-  return internalError?.data?.Uvsity_Errors && internalError?.data?.Uvsity_Errors.length > 0;
-}
+export const isUvsityLogicalError = (internalError) => {
+  return (
+    internalError?.data?.Uvsity_Errors &&
+    internalError?.data?.Uvsity_Errors.length > 0
+  );
+};
+
+export const isValidDate = (value, format) => {
+  if (!value) return false;
+  if (!format) format = "mm-dd-yyyy";
+  const periodPart = moment(value).format(format);
+  if (periodPart === "Invalid date") {
+    return false;
+  }
+  return true;
+};
+
+export const isValidDatePeriod = (start, end) => {
+  if (start instanceof Date && end instanceof Date) {
+    if (start && end) {
+      if (start > end) return false;
+      return true;
+    }
+  }
+  if(start instanceof Date || end instanceof Date){
+    return true;
+  }
+  return false;
+};

@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import SchoolIcon from "@mui/icons-material/School";
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
-  FormControl,
-  Grid,
   IconButton,
   TextField,
   Tooltip,
@@ -20,20 +18,18 @@ import {
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 import { COLOR_CODES } from "../../../constants/constants";
 import { makeStyles } from "@material-ui/core/styles";
-import { USER } from "../../../validation/services/auth/ValidationSchema";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-function ChangeSocialProfileURIDialog(props) {
+import { USER } from "../../../validation/services/auth/ValidationSchema";
+function ChangeHighestEducationDegreeModal(props) {
   const isDark = getMode() === THEME_MODES.DARK;
   if (!props.isOpen) return "";
   const formOptions = {
-    resolver: yupResolver(USER.PROFILE.EDIT.SOCIAL),
+    resolver: yupResolver(USER.PROFILE.EDIT.EDUCATION),
     mode: "all",
   };
   const { register, formState, watch, reset } = useForm(formOptions);
   const { errors } = formState;
-
   const deepGray = COLOR_CODES.GRAY.DEEP;
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -51,8 +47,8 @@ function ChangeSocialProfileURIDialog(props) {
   }));
   const classes = useStyles();
   const [processing, setProcessing] = useState(false);
-  const [request, setRequest] = useState(props?.data?.url);
-  const handleURIChange = (e) => {
+  const [request, setRequest] = useState(props?.data?.highestLevel);
+  const handleHighestDegreeChange = (e) => {
     setRequest(e.target.value?.trim());
   };
   const debounce = (func, delay) => {
@@ -67,29 +63,16 @@ function ChangeSocialProfileURIDialog(props) {
   const handleClose = (requestObject, closeInd) => {
     if (props?.dialogCloseRequest) {
       if (!closeInd) {
-        if(!request){
-          setProcessing(false);
-        }
-        else setProcessing(true);
-        if (!isEmptyObject(errors)) {
-          // if the form contains errors
-          setProcessing(false);
-          return;
-        }
+        setProcessing(true);
       }
       props.dialogCloseRequest({
         event: !closeInd ? "edit" : null,
-        url: request,
+        highestLevel: request,
         close: closeInd,
-        id: 600,
-        alias:props?.data.alias,
-        selectedId:props?.data.id
+        id: 8,
       });
     }
   };
-
-   
-  
 
   const _isSmallScreen = isSmallScreen();
   return (
@@ -115,8 +98,8 @@ function ChangeSocialProfileURIDialog(props) {
               component="div"
             >
               <>
-                {props?.data?.icon}
-                &nbsp;Edit {props?.data.alias} profile
+                <SchoolIcon />
+                &nbsp;{props?.title}
               </>
             </Typography>
           </div>
@@ -137,45 +120,26 @@ function ChangeSocialProfileURIDialog(props) {
             </div>
           </Tooltip>
         </div>
-
         <div className="flex flex-col px-4 mb-2 gap-3 -mt-3 text-gray-600">
-          <form name="edit-profile-highlight-form">
-            <Box sx={{ width: "100%" }}>
-              <Grid
-                container
-                rowSpacing={1}
-                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-              >
-                <Grid item lg={12} md={12} sm={12} xs={12}>
-                  {/* Designation */}
-                  <FormControl
-                    fullWidth={true}
-                    variant="standard"
-                    sx={{ marginBottom: 1 }}
-                  >
-                    <TextField
-                      fullWidth
-                      inputProps={{ className: classes.input }}
-                      className={classes.root}
-                      label={`${props?.data.alias} profile`}
-                      placeholder={`Update your ${props?.data.alias} profile`}
-                      value={request}
-                      variant="standard"
-                      name="uri"
-                      {...register(`uri`, {
-                        onChange: (event) => {
-                          debounce(handleURIChange(event), 500);
-                        },
-                      })}
-                      helperText={errors.uri?.message}
-                      error={errors.uri?.message ? true : false}
-                      id="uri"
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Box>
-          </form>
+          <TextField
+            fullWidth
+            required
+            inputProps={{ className: classes.input }}
+            className={classes.root}
+            name="highestDegree"
+            {...register(`highestDegree`, {
+              onChange: (event) => {
+                debounce(handleHighestDegreeChange(event), 500);
+              },
+            })}
+            helperText={errors.highestDegree?.message}
+            error={errors.highestDegree?.message ? true : false}
+            id="highestDegree"
+            label={"Highest Degree"}
+            placeholder={"Your highest degree of specialization"}
+            value={request}
+            variant="standard"
+          />
         </div>
       </div>
       <DialogActions
@@ -184,7 +148,7 @@ function ChangeSocialProfileURIDialog(props) {
         }`}
       >
         <Button
-          className={!isEmptyObject(errors) ? "control__disabled__opaque" : ""}
+          disabled={!isEmptyObject(errors)}
           color="primary"
           variant="outlined"
           onClick={() => handleClose(props.data, false)}
@@ -205,4 +169,4 @@ function ChangeSocialProfileURIDialog(props) {
   );
 }
 
-export default ChangeSocialProfileURIDialog;
+export default ChangeHighestEducationDegreeModal;

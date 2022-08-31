@@ -129,7 +129,7 @@ function SnapProfile({
 
           <div className="  sm:line-clamp-1 dark:text-gray-500 text-gray-700 text-xs text-brand-grey-700 dark:text-brand-grey-500">
             {profileSecondaryLine !== "" && (
-              <Tooltip title={profileSecondaryLine}>
+              <Tooltip title={`${profileSecondaryLine}${campus?', '+campus:''}`}>
                 <div className={`${origin ? "" : "-mt-2-px"}`}>
                   {profileSecondaryLine} 
                   {campus && (<>, {campus}</>)}

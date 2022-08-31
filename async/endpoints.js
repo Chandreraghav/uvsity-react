@@ -88,6 +88,9 @@ export const ENDPOINTS = {
       RECOMMENDED_SESSION:'edit/profile/coursesIRecommend',
       SOCIAL_PROFILE:{
         LINKEDIN:'edit/profile/linkedInProfile'
+      },
+      EDUCATION:{
+        HIGHEST_DEGREE:'edit/profile/degreeCourse'
       }
     },
     METADATA: {

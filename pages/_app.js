@@ -27,7 +27,7 @@ import Splash from "../components/shared/Splash";
 import { BrowserRouter } from "react-router-dom";
 import ClientDeviceProvider from "../components/Device/HOC/ClientDeviceProvider";
 import CountryService from "./api/countries/CountryService";
-import ThemeProvider from "../theme/ThemeProvider";
+import ThemeProvider, { getMode, initialTheme, themeReducer } from "../theme/ThemeProvider";
 function MyApp({ Component, pageProps }) {
   const [queryClient] = React.useState(() => new QueryClient());
   const [verified, setVerified] = useState(true);
@@ -98,7 +98,7 @@ function MyApp({ Component, pageProps }) {
     };
   }, []);
   return loading ? (
-    <ThemeProvider>
+    <ThemeProvider initialTheme={initialTheme} reducer={themeReducer}>
       <ClientDeviceProvider>
         <Layout options={{ title: process.env.NEXT_PUBLIC_APP_TITLE }}>
           <Splash />
@@ -107,7 +107,7 @@ function MyApp({ Component, pageProps }) {
     </ThemeProvider>
   ) : (
     <>
-      <ThemeProvider>
+      <ThemeProvider initialTheme={initialTheme} reducer={themeReducer}>
         <QueryClientProvider client={queryClient}>
           <DataLayer initialState={initialState} reducer={reducer}>
             <Hydrate state={pageProps.dehydratedState}>
