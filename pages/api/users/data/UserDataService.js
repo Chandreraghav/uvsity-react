@@ -99,5 +99,9 @@ export default class UserDataService {
     );
   }
 
+  static async addPastEducation(payload) {
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.EDUCATION.PAST_EDUCATION.ADD, payload);
+  }
+
    
 }

@@ -1113,7 +1113,7 @@ export const USER_PROFILE = {
   EDIT_HIGHER_EDUCATION_INFO: "Update your highest education degree",
   ADD_SOCIAL_URL: "Add your ",
   ADD_HIGHEST_DEGREE: "Add your highest degree of specialization",
-  ADD_PAST_EDUCATION: "Add any past education details to your profile.",
+  ADD_PAST_EDUCATION: "Add any past education details to your profile",
   CHANGE_SKILLS: "Update your specialities & skills",
   CHANGE_INTERESTS: "Update your interests",
   CHANGE_PROFILE_HEADLINE:'Update prime highlights to your profile such as designation, organization, location...',
