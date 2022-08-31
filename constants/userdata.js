@@ -69,7 +69,6 @@ import {
   pink,
   brown,
 } from "@mui/material/colors";
-import { getMode, THEME_MODES } from "../theme/ThemeProvider";
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -1111,7 +1110,10 @@ export const USER_PROFILE = {
   CHANGE_PROFILE_PICTURE: "Change profile picture",
   CHANGE_ABOUT_INFO: "Update your About or bio information",
   CHANGE_SOCIAL_URL: "Update your ",
+  EDIT_HIGHER_EDUCATION_INFO: "Update your highest education degree",
   ADD_SOCIAL_URL: "Add your ",
+  ADD_HIGHEST_DEGREE: "Add your highest degree of specialization",
+  ADD_PAST_EDUCATION: "Add any past education details to your profile.",
   CHANGE_SKILLS: "Update your specialities & skills",
   CHANGE_INTERESTS: "Update your interests",
   CHANGE_PROFILE_HEADLINE:'Update prime highlights to your profile such as designation, organization, location...',
@@ -1119,16 +1121,19 @@ export const USER_PROFILE = {
   BIO_UPDATE_FAILED:'Oops, there encountered an error while updating your bio, please try again.',
   LINKEDIN_PROFILE_UPDATED:'🚀Awesome!! Your linkedin profile was updated successfully',
   LINKEDIN_PROFILE_UPDATE_FAILED:'Oops, there encountered an error while updating your linkedin profile, please try again.',
+  LINKEDIN_PROFILE_URL_MISSING:'Enter a linkedin profile url and try again.',
   HEADLINE_UPDATED:'👍Superb!! Headline updated successfully',
   SKILLS_UPDATED:'🚀Great!! Specialities & skills updated successfully',
   SKILLS_UPDATE_FAILED:'Oops, there encountered an error while updating your skills, please try again.',
   RECOMMENDED_SESSIONS_UPDATED:`👍Superb!! We've updated your recommended sessions`,
   RECOMMENDED_SESSIONS_UPDATE_FAILED:'Oops, there encountered an error while updating your recommended sessions, please try again.',
-  RECOMMENDED_SESSIONS_DELETED:`Yay!! We've deleted <#X#> from your recommended sessions`,
+  RECOMMENDED_SESSIONS_DELETED:`😃Yay!! We've deleted <#X#> from your recommended sessions`,
   RECOMMENDED_SESSIONS_DELETE_FAILED:'Oops, there encountered an error while deleting <#X#> from your recommended sessions, please try again.',
   HEADLINE_UPDATE_FAILED:'Oops, there encountered an error while updating your headline, please try again.',
   INTEREST_UPDATED:'👍Superb!! Interests updated successfully',
   INTEREST_UPDATE_FAILED:'Oops, there encountered an error while updating your interests, please try again.',
+  HIGHEST_DEGREE_UPDATED:`😃Yay!! We've updated your highest education degree info`,
+  HIGHEST_DEGREE_UPDATE_FAILED:'Oops, there encountered an error while updating your education degree, please try again.',
   PLACEHOLDERS: {
     WRITE_BIO: "Write something about yourself here...",
     ABOUT_INFO: "About",
@@ -1183,7 +1188,7 @@ export const RATING = {
     },
   ],
 
-  RATING_SENT_TO: "Yay! you just rated ",
+  RATING_SENT_TO: "😃Yay! you just rated ",
   RATING_FAILED: "Uh, oh! there was an error rating your review to ",
   REQUEST_TYPE: "RATING_RESPONSE",
   RATING_ALREADY_SENT: "RATING_ALREADY_SENT",

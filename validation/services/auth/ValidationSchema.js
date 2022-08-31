@@ -2,7 +2,7 @@ import * as Yup from "yup";
 import { REGISTRATION_ERRORS } from "../../../constants/error-messages";
 import { PASSWORD } from "../../../constants/regex";
 import { MIN_LENGTH_PASSWORD } from "../../../constants/constants";
-import { isValidURL } from "../../../utils/utility";
+import { isValidDate, isValidDatePeriod, isValidURL } from "../../../utils/utility";
 export const registrationValidationSchema = Yup.object().shape({
   firstname: Yup.string().required(
     REGISTRATION_ERRORS.REQUIRED_FIELDS.FIRSTNAME
@@ -154,7 +154,62 @@ export const USER = {
 
       SOCIAL: Yup.object().shape({
         uri: Yup.string().nullable().url("Enter a valid URL"),
-      })
+      }),
+      EDUCATION: Yup.object().shape({
+        highestDegree: Yup.string()
+          .trim()
+          .required(
+            "Please enter a highest degree of specialization, e.g MSc, PH.d, BS, MS etc"
+          ),
+      }),
+      PASTEDUCATION: Yup.object().shape({
+        educationInstitution: Yup.string()
+          .trim()
+          .required(
+            "Please enter name of an educational institution e.g University/College/School"
+          ),
+        degree: Yup.string()
+          .trim()
+          .required(
+            "Please enter a educational qualification, degree or diploma, e.g MSc, PH.d, BS, MS, High School, Middle School etc"
+          ),
+        campus: Yup.string()
+          .trim()
+          .required(
+            "Please enter the campus location from where you obtained this qualification, e.g Boston, New York, Delhi etc"
+          ),
+        fromDate: Yup.date()
+          .typeError(
+            "Please specify the year and month you started this course."
+          ).max(
+            Yup.ref("toDate"),
+            "Start period of course can't be after end period"
+          )
+          .required(
+            "Please specify the year and month you started this course."
+          )
+          
+          .nullable()
+          .test("fromDate", "Enter a valid period.", function (value) {
+            return isValidDate(value, "MMMM,yyyy");
+          }),
+        toDate: Yup.date()
+          .typeError(
+            "Please specify the year and month you completed this course."
+          ).min(
+            Yup.ref("fromDate"),
+            "End period of course can't be before start period"
+          )
+          .required(
+            "Please specify the year and month you completed this course."
+          )
+          
+          .nullable()
+
+          .test("toDate", "Enter a valid period.", function (value) {
+            return isValidDate(value, "MMMM,yyyy");
+          }),
+      }),
     },
   },
 };

@@ -351,6 +351,7 @@ export const COLOR_CODES = {
   GRAY: {
     LIGHT: "dimgray",
     DEEP: "#e2e2e2",
+    
   },
   BLUE: {
     LIGHT: "#029BFE",
