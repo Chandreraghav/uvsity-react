@@ -86,7 +86,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { getLocalStorageObject } from "../../../localStorage/local-storage";
 import ChangeInterests from "../../shared/modals/ChangeInterests";
 import ChangeSocialProfileURIDialog from "../../shared/modals/ChangeSocialProfileURIDialog";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { actionTypes } from "../../../context/reducer";
 import ChangeHighestEducationDegreeModal from "../../shared/modals/ChangeHighestEducationDegreeModal";
@@ -171,7 +171,8 @@ function MacroProfile(props) {
       NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
 
   const [userdata, setUserData] = useState(props?.data?.userdata);
-  
+  const [additionalUserData, setAdditionalUserData] = useState(props?.data?.additionalUserData);
+
   const isRated =
     userdata.ratingAction === RATING.RATING_ALREADY_SENT ? true : false;
   const aboutMe = userdata?.aboutMe;
@@ -182,7 +183,7 @@ function MacroProfile(props) {
   };
   const [aboutInfo, setAboutInfo] = useState(_aboutInfo);
   const [userSkillsets, setUserSkillSets] = useState(userdata?.userSkillsets);
-  const projectResearchWorkExperience = userdata?.projectResearchWorkExp;
+  const [projectResearchWorkExperience, setProjectResearchWorkExperience] = useState(userdata?.projectResearchWorkExp);
   const interests = userdata?.myInterests;
   const _interests = {
     dialogOpen: false,
@@ -195,7 +196,7 @@ function MacroProfile(props) {
   const recommendations = userdata?.recommendationsReceived;
   const [education, setEducation] = useState({
     highestLevel: userdata?.degreeCourse,
-    pastEducation: userdata?.pastEducations,
+    pastEducation: additionalUserData?.pastEducation?.data,
   });
 
   const _education = {
@@ -218,21 +219,22 @@ function MacroProfile(props) {
     country: userdata?.country,
     social_profiles: [
       {
-        id:1,
+        id: 1,
         url: userdata?.linkedInProfile,
-        tooltip: `${isItMe===true ? "My" : firstName + "'s"} Linkedin`,
+        tooltip: `${isItMe === true ? "My" : firstName + "'s"} Linkedin`,
         icon: <LinkedInIcon />,
         alias: "linkedin",
         display: isConnected,
         editDialogOpened: false,
-        
       },
     ],
     invitationRequestId: userdata?.invitationRequestId,
   };
 
-  const [socialProfiles, setSocialProfiles] = useState(metaData.social_profiles);
-  
+  const [socialProfiles, setSocialProfiles] = useState(
+    metaData.social_profiles
+  );
+
   const [selectedSocialProfile, setSelectedSocialProfile] = useState(null);
 
   const getTotalStatCount = () => {
@@ -482,9 +484,9 @@ function MacroProfile(props) {
         .then((res) => {
           if (res.data) {
             setProfilePic(res.data);
-            let context = ctxUserdata
-            if(context.userdata.profilePicName)
-            context.userdata.profilePicName=res.data
+            let context = ctxUserdata;
+            if (context.userdata.profilePicName)
+              context.userdata.profilePicName = res.data;
             dispatch({
               type: actionTypes.SET_USERDATA,
               userdata: context,
@@ -861,28 +863,31 @@ function MacroProfile(props) {
       setInterestData(_interests);
     }
 
-    if (obj && obj.id == 8){
+    if (obj && obj.id == 8) {
       if (obj.event === "init_edit") {
         const _education = {
           dialogOpen: true,
-          education: educationData.education
+          education: educationData.education,
         };
         setEducationData(_education);
         return;
       }
 
       if (obj.event === "edit") {
-        UserDataService.editHighestEducationDegree({ userEducationDegreeCourse: obj.highestLevel })
+        UserDataService.editHighestEducationDegree({
+          userEducationDegreeCourse: obj.highestLevel,
+        })
           .then((res) => {
+           
             const modifiedEducationData = {
               highestLevel: obj?.highestLevel,
-              pastEducation: userdata?.pastEducations,
-            }
+              pastEducation: obj?.pastEducation,
+            };
             const _education = {
               dialogOpen: false,
-              education:modifiedEducationData,
+              education: modifiedEducationData,
             };
-            setEducation(modifiedEducationData)
+            setEducation(modifiedEducationData);
             setEducationData(_education);
             handleResponse(
               `${USER_PROFILE.HIGHEST_DEGREE_UPDATED}`,
@@ -893,7 +898,7 @@ function MacroProfile(props) {
           .catch((err) => {
             const _education = {
               dialogOpen: false,
-              education: educationData.education
+              education: educationData.education,
             };
             setEducationData(_education);
             handleResponse(
@@ -904,9 +909,24 @@ function MacroProfile(props) {
           });
         return;
       }
+      if (obj.event === "past_education_edit_done") {
+         
+        const modifiedEducationData = {
+          highestLevel: obj?.highestLevel,
+          pastEducation: obj?.pastEducation,
+        };
+        const _education = {
+          dialogOpen: false,
+          education: modifiedEducationData,
+        };
+        
+        setEducation(modifiedEducationData);
+        setEducationData(_education);
+        return;
+      }
       const _education = {
         dialogOpen: false,
-        education: educationData.education
+        education: educationData.education,
       };
       setEducationData(_education);
 
@@ -915,70 +935,70 @@ function MacroProfile(props) {
 
     if (obj && obj.id === 600) {
       // social profile update.
-        const _social_profiles= socialProfiles.slice(); 
-        if (obj.event === "edit") {
-          const incomingUpdatedRequestUrl= obj.url.trim()
-          if(!incomingUpdatedRequestUrl){
-            handleResponse(
-              `${USER_PROFILE.LINKEDIN_PROFILE_URL_MISSING}`,
-              RESPONSE_TYPES.WARNING,
-              toast.POSITION.BOTTOM_CENTER
-            );
-            return;
+      const _social_profiles = socialProfiles.slice();
+      if (obj.event === "edit") {
+        const incomingUpdatedRequestUrl = obj.url.trim();
+        if (!incomingUpdatedRequestUrl) {
+          handleResponse(
+            `${USER_PROFILE.LINKEDIN_PROFILE_URL_MISSING}`,
+            RESPONSE_TYPES.WARNING,
+            toast.POSITION.BOTTOM_CENTER
+          );
+          return;
+        }
+        let isQualifiedForSocialProfileUpdate = false;
+        _social_profiles.map((profile) => {
+          if (profile.id === obj.selectedId) {
+            isQualifiedForSocialProfileUpdate = true;
           }
-          let isQualifiedForSocialProfileUpdate = false
-          _social_profiles.map((profile)=>{
-            if(profile.id===obj.selectedId) {
-              isQualifiedForSocialProfileUpdate=true
-            }
-          })
-          if(isQualifiedForSocialProfileUpdate){
-            if(obj.alias ==='linkedin'){
-              // Call linked in update service
-              UserDataService.editLinkedInProfile({linkedInProfile:obj.url}).then((response)=>{
-                _social_profiles.map((profile)=>{
-                  if(profile.id===obj.selectedId) {
-                   profile.editDialogOpened=false
-                   profile.url = obj.url;
-                   setSelectedSocialProfile(profile)
+        });
+        if (isQualifiedForSocialProfileUpdate) {
+          if (obj.alias === "linkedin") {
+            // Call linked in update service
+            UserDataService.editLinkedInProfile({ linkedInProfile: obj.url })
+              .then((response) => {
+                _social_profiles.map((profile) => {
+                  if (profile.id === obj.selectedId) {
+                    profile.editDialogOpened = false;
+                    profile.url = obj.url;
+                    setSelectedSocialProfile(profile);
                   }
-                })
+                });
                 setSocialProfiles(_social_profiles);
-                
+
                 handleResponse(
                   `${USER_PROFILE.LINKEDIN_PROFILE_UPDATED}`,
                   RESPONSE_TYPES.SUCCESS,
                   toast.POSITION.BOTTOM_CENTER
                 );
-                
-              }).catch((error)=>{
-                _social_profiles.map((profile)=>{
-                  if(profile.id===obj.selectedId) {
-                   profile.editDialogOpened=false
-                   setSelectedSocialProfile(profile)
+              })
+              .catch((error) => {
+                _social_profiles.map((profile) => {
+                  if (profile.id === obj.selectedId) {
+                    profile.editDialogOpened = false;
+                    setSelectedSocialProfile(profile);
                   }
-                })
+                });
                 setSocialProfiles(_social_profiles);
                 handleResponse(
                   `${USER_PROFILE.LINKEDIN_PROFILE_UPDATE_FAILED}`,
                   RESPONSE_TYPES.ERROR,
                   toast.POSITION.BOTTOM_CENTER
                 );
-              })
-              return;
-            }
+              });
+            return;
           }
-          return;
         }
-        _social_profiles.map((profile)=>{
-          if(profile.id===obj.selectedId) {
-            profile.editDialogOpened = false;
-            setSelectedSocialProfile(profile)
-          }
-        })
-        setSocialProfiles(_social_profiles);
+        return;
+      }
+      _social_profiles.map((profile) => {
+        if (profile.id === obj.selectedId) {
+          profile.editDialogOpened = false;
+          setSelectedSocialProfile(profile);
+        }
+      });
+      setSocialProfiles(_social_profiles);
     }
- 
   };
 
   const handleEditHeadline = () => {
@@ -1041,40 +1061,42 @@ function MacroProfile(props) {
     setInterestData(_interests);
     setAboutInfo(_aboutInfo);
     setUserSkillSets(props?.data?.userdata?.userSkillsets);
-    setIsitMe(props?.data?.owner)
-   const _social_profiles=socialProfiles.slice();
-   let isQualifiedForSocialProfileUpdate=false
-   _social_profiles.map((profile) =>{
-    if(profile.alias==='linkedin'){
-      isQualifiedForSocialProfileUpdate=true
-      profile.url= selectedSocialProfile?.url?selectedSocialProfile.url:props?.data?.userdata?.linkedInProfile
-      profile.tooltip=`${isItMe===true ? "My" : firstName + "'s"} Linkedin`
-    }
-   })
-   if(isQualifiedForSocialProfileUpdate)
-   setSocialProfiles(_social_profiles);
+    setIsitMe(props?.data?.owner);
+    const _social_profiles = socialProfiles.slice();
+    let isQualifiedForSocialProfileUpdate = false;
+    _social_profiles.map((profile) => {
+      if (profile.alias === "linkedin") {
+        isQualifiedForSocialProfileUpdate = true;
+        profile.url = selectedSocialProfile?.url
+          ? selectedSocialProfile.url
+          : props?.data?.userdata?.linkedInProfile;
+        profile.tooltip = `${
+          isItMe === true ? "My" : firstName + "'s"
+        } Linkedin`;
+      }
+    });
+    if (isQualifiedForSocialProfileUpdate) setSocialProfiles(_social_profiles);
     return () => {
       setAboutInfo(null);
       setInterestData(null);
       setUserSkillSets([]);
       setRecommendedSessions([]);
-      setSocialProfiles([])
-      setIsitMe(false)
+      setSocialProfiles([]);
+      setIsitMe(false);
     };
-  }, [props?.data?.userdata,props?.data]);
+  }, [props?.data?.userdata, props?.data]);
 
   const handleSocialProfileUpdate = (_profile) => {
     const _social_profiles = socialProfiles.slice();
-    let isProfileQualifiedForStateChange = false
+    let isProfileQualifiedForStateChange = false;
     _social_profiles.map((profile) => {
       if (profile.id === _profile.id) {
         profile.editDialogOpened = true;
-        setSelectedSocialProfile(profile)
-        isProfileQualifiedForStateChange= true
+        setSelectedSocialProfile(profile);
+        isProfileQualifiedForStateChange = true;
       }
     });
-    if(isProfileQualifiedForStateChange)
-    setSocialProfiles(_social_profiles);
+    if (isProfileQualifiedForStateChange) setSocialProfiles(_social_profiles);
   };
 
   return (
@@ -1471,10 +1493,10 @@ function MacroProfile(props) {
                       columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 4 }}
                     >
                       {socialProfiles.map((social_profile, idx) => (
-                         
-                          <Grid key={idx} item xs={12} md={6} lg={6} sm={12}>
-                            <div className="text-xs lg:text-md md:text-md sm:text-sm flex gap-2   font-normal leading-loose">
-                             {social_profile.url && (<div>
+                        <Grid key={idx} item xs={12} md={6} lg={6} sm={12}>
+                          <div className="text-xs lg:text-md md:text-md sm:text-sm flex gap-2   font-normal leading-loose">
+                            {social_profile.url && (
+                              <div>
                                 <a
                                   className="app__anchor__no__color text-gray-500"
                                   href={social_profile.url}
@@ -1488,31 +1510,35 @@ function MacroProfile(props) {
                                     </span>
                                   </div>
                                 </a>
-                              </div>)}
-                            
+                              </div>
+                            )}
 
-                              <div
-                                onClick={() =>
-                                  handleSocialProfileUpdate(social_profile)
-                                }
-                                className={`${social_profile.url?'ml-auto':''} cursor-pointer`}
-                              >
-                                {social_profile.url ?(<Tooltip
+                            <div
+                              onClick={() =>
+                                handleSocialProfileUpdate(social_profile)
+                              }
+                              className={`${
+                                social_profile.url ? "ml-auto" : ""
+                              } cursor-pointer`}
+                            >
+                              {social_profile.url ? (
+                                <Tooltip
                                   title={`${USER_PROFILE.CHANGE_SOCIAL_URL}${social_profile.alias} profile url`}
                                 >
                                   <EditIcon fontSize="small" />
-                                </Tooltip>):( 
-                                  <div className=" dark: text-gray-600  text-gray-600  leading-loose flex gap-2">
+                                </Tooltip>
+                              ) : (
+                                <div className=" dark: text-gray-600  text-gray-600  leading-loose flex gap-2">
                                   <AddIcon fontSize="small" />
-                                  <Typography className="mt-0.5"  variant="caption">{`${USER_PROFILE.ADD_SOCIAL_URL}${social_profile.alias} profile`}</Typography>
-                                 
-                                  </div>
-                                )}
-                              
-                              </div>
+                                  <Typography
+                                    className="mt-0.5"
+                                    variant="caption"
+                                  >{`${USER_PROFILE.ADD_SOCIAL_URL}${social_profile.alias} profile`}</Typography>
+                                </div>
+                              )}
                             </div>
-                          </Grid>
-                       
+                          </div>
+                        </Grid>
                       ))}
                     </Grid>
                   </Box>
@@ -1582,6 +1608,7 @@ function MacroProfile(props) {
                               {area.id === 3 && (
                                 <>
                                   <WorkExperience
+                                     consumeEvent={handleEvent}
                                     owner={isItMe}
                                     experiences={projectResearchWorkExperience}
                                   />
@@ -1703,11 +1730,11 @@ function MacroProfile(props) {
       />
 
       <ChangeHighestEducationDegreeModal
-       title={`Edit highest degree`}
-       theme
-       dialogCloseRequest={handleProfileUpdateEvent}
-       data={educationData.education}
-       isOpen={educationData.dialogOpen}
+        title={`Edit highest degree`}
+        theme
+        dialogCloseRequest={handleProfileUpdateEvent}
+        data={educationData.education}
+        isOpen={educationData.dialogOpen}
       />
 
       <ChangeProfileHeadlineDialog

@@ -69,7 +69,7 @@ function ServerWrapper(props) {
     if (props.serverErrorEmitter && internalError) {
       internalError = JSON.parse(internalError);
       if(isUvsityLogicalError(internalError)) {
-        console.info("SERVER: Internal server logic error encountered. Error will be handled gracefully with a toast message from client in the respective business workflow.");
+        console.info("SERVER: Internal server logic error encountered. System will auto-recover and error(if any) will be handled gracefully.");
         //removeLocalStorageObject("uvsity-internal-error-response"); 
         return;
       }
@@ -86,7 +86,7 @@ function ServerWrapper(props) {
         };
         console.error("SERVER: Internal server error.");
         props.serverErrorEmitter(_error);
-        //removeLocalStorageObject("uvsity-internal-error-response"); 
+        removeLocalStorageObject("uvsity-internal-error-response"); 
         //pop out error state on error emit.
       }
 
@@ -102,6 +102,7 @@ function ServerWrapper(props) {
           KEYS.SESSION.PUBLIC.TOP,
           KEYS.SESSION.TOP,
           KEYS.PROFILE.SUMMARY,
+          KEYS.PROFILE.EDUCATION,
           KEYS.PROFILE.VISITS,
           KEYS.METADATA.STATIC,
           KEYS.METADATA.ROOT,

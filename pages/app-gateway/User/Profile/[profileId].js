@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
-import PersonOffIcon from '@mui/icons-material/PersonOff';
+import PersonOffIcon from "@mui/icons-material/PersonOff";
 import {
   asyncSubscriptions,
   standardStaleTime,
@@ -40,9 +40,18 @@ const UserProfile = () => {
   const getProfileSummary = async () =>
     await UserDataService.getUserProfileBy(profileId);
 
+  const getPastEducationDetail = async () =>
+    await UserDataService.getPastEducation();
+
   const LOGGED_IN_USER_SUMMARY = useQuery(
     [KEYS.PROFILE.SUMMARY],
     getLoggedInUserSummary,
+    { staleTime: standardStaleTime }
+  );
+
+  const PAST_EDUCATION_DETAIL = useQuery(
+    [KEYS.PROFILE.EDUCATION],
+    getPastEducationDetail,
     { staleTime: standardStaleTime }
   );
 
@@ -75,6 +84,7 @@ const UserProfile = () => {
   const getData = {
     LOGGED_IN_USER_SUMMARY: LOGGED_IN_USER_SUMMARY,
     PROFILE_SUMMARY: data,
+    PAST_EDUCATION_DETAIL: PAST_EDUCATION_DETAIL,
   };
 
   const isOwner = () => {
@@ -141,6 +151,9 @@ const UserProfile = () => {
             changeEvent={handleChangeEvent}
             owner={isProfileOwner}
             userdata={getData.PROFILE_SUMMARY?.data}
+            additionalUserData={{
+              pastEducation: getData.PAST_EDUCATION_DETAIL?.data,
+            }}
             loggedInUser={getData.LOGGED_IN_USER_SUMMARY?.data}
           />
         </div>
@@ -153,7 +166,8 @@ const UserProfile = () => {
               variant="caption"
               className="dark:text-white-100 mt-5  text-gray-800 text-center font-semibold"
             >
-              <PersonOffIcon/>{TOOLTIPS.PROFILE_NOT_FOUND}
+              <PersonOffIcon />
+              {TOOLTIPS.PROFILE_NOT_FOUND}
             </Typography>
             <img
               alt="Error"

@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { USER } from "../../../../validation/services/auth/ValidationSchema";
@@ -22,14 +22,21 @@ import {
   isValidDate,
   isValidDatePeriod,
 } from "../../../../utils/utility";
-import { PAST_EDUCATION_FORM_ERRORS } from "../../../../constants/error-messages";
+import {
+  PAST_EDUCATION_FORM_ERRORS,
+  VALIDATION_ERROR_MESSAGE,
+} from "../../../../constants/error-messages";
+import CommonSearchService from "../../../../pages/api/search/CommonSearchService";
 
 function PastEducationManager(props) {
   const [theme, dispatch] = useTheme();
   const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
   const [isUpdating, setUpdating] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
+  const [validationErrors, setValidationErrors] = useState([]);
   const deepGray = COLOR_CODES.GRAY.DEEP;
+  const filteredEduInsRef = useRef(null);
+  const [filteredEduIns, setFilteredEducationalInstituitons] = useState([]);
   const formOptions = {
     resolver: yupResolver(USER.PROFILE.EDIT.PASTEDUCATION),
     mode: "all",
@@ -40,6 +47,16 @@ function PastEducationManager(props) {
   useEffect(() => {
     reset();
   }, [isSubmitted]);
+  useEffect(() => {
+    setUpdating(false);
+    setSubmitted(false);
+    setValidationErrors(props.operationOutcome?.errorData || []);
+    return () => {
+      setUpdating(false);
+      setSubmitted(false);
+      setValidationErrors([]);
+    };
+  }, [props.operationOutcome]);
   useEffect(() => {
     setDark(theme.mode === THEME_MODES.DARK);
   }, [theme]);
@@ -57,14 +74,59 @@ function PastEducationManager(props) {
       },
     },
   }));
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        filteredEduInsRef.current &&
+        !filteredEduInsRef.current.contains(event.target)
+      ) {
+        setFilteredEducationalInstituitons([]);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [filteredEduIns]);
   const classes = useStyles();
-  const [fromDate, setFromDateChange] = useState(null);
-  const [toDate, setToDateChange] = useState(null);
-  const [educationInstitution, seteducationInstitution] = useState("");
-  const [degree, setDegree] = useState("");
-  const [campus, setCampus] = useState("");
+  const [fromDate, setFromDateChange] = useState(
+    props?.data?.educationStartDateForDisplay || ""
+  );
+  const [toDate, setToDateChange] = useState(
+    props?.data?.educationEndDateForDisplay || ""
+  );
+  const [educationInstitution, seteducationInstitution] = useState(
+    props?.data?.pastEducationEducationInstitution || ""
+  );
+  const [degree, setDegree] = useState(props?.data?.degreeCourse || "");
+  const [campus, setCampus] = useState(props?.data?.pastEducationCampus || "");
+  let filterTimeout;
+
   const handleEducationInstitutionChange = (e) => {
     seteducationInstitution(e.target.value);
+    clearTimeout(filterTimeout);
+    if (!e.target.value) {
+      setFilteredEducationalInstituitons([]);
+      return;
+    }
+    // debounce filter for educational institution by 1 second
+    if (e.target.value) {
+      filterTimeout = setTimeout(() => {
+        CommonSearchService.searchEduIns(e.target.value)
+          .then((res) => {
+            if (res.data) setFilteredEducationalInstituitons(res.data);
+            else setFilteredEducationalInstituitons([]);
+          })
+          .catch(() => {
+            setFilteredEducationalInstituitons([]);
+          });
+      }, 1000);
+    }
+  };
+  const handleEducationInstitutionSelect = (event, eduInsName) => {
+    seteducationInstitution(eduInsName);
+    setFilteredEducationalInstituitons([]);
   };
   const handleDegreeChange = (e) => {
     setDegree(e.target.value);
@@ -85,13 +147,18 @@ function PastEducationManager(props) {
 
   const handleCancel = () => {
     setSubmitted(true);
-    if (props.event) props.event({ operation: "cancel" });
+    setFilteredEducationalInstituitons([]);
+    if (props.event)
+      props.event({
+        operation: "cancel",
+        mode: props.mode,
+        data: props.mode === "add" ? null : props.data,
+      });
   };
 
   const handleSubmit = () => {
     setUpdating(true);
-    console.log(errors, formState);
-
+    setFilteredEducationalInstituitons([]);
     if (props.event) {
       let hasErrors = false;
 
@@ -105,8 +172,7 @@ function PastEducationManager(props) {
       if (!toDate) {
         setError("toDate", {
           type: "required",
-          message:
-          PAST_EDUCATION_FORM_ERRORS.PERIOD.TO.REQUIRED,
+          message: PAST_EDUCATION_FORM_ERRORS.PERIOD.TO.REQUIRED,
         });
 
         hasErrors = true;
@@ -114,16 +180,14 @@ function PastEducationManager(props) {
       if (!educationInstitution) {
         setError("educationInstitution", {
           type: "required",
-          message:
-          PAST_EDUCATION_FORM_ERRORS.INSTITUTE.REQUIRED
+          message: PAST_EDUCATION_FORM_ERRORS.INSTITUTE.REQUIRED,
         });
         hasErrors = true;
       }
       if (!degree) {
         setError("degree", {
           type: "required",
-          message:
-          PAST_EDUCATION_FORM_ERRORS.DEGREE.REQUIRED
+          message: PAST_EDUCATION_FORM_ERRORS.DEGREE.REQUIRED,
         });
 
         hasErrors = true;
@@ -131,8 +195,7 @@ function PastEducationManager(props) {
       if (!campus) {
         setError("campus", {
           type: "required",
-          message:
-          PAST_EDUCATION_FORM_ERRORS.CAMPUS.REQUIRED
+          message: PAST_EDUCATION_FORM_ERRORS.CAMPUS.REQUIRED,
         });
         hasErrors = true;
       }
@@ -141,7 +204,7 @@ function PastEducationManager(props) {
       if (start === "Invalid Date") {
         setError("fromDate", {
           type: "required",
-          message: PAST_EDUCATION_FORM_ERRORS.PERIOD.FROM.REQUIRED
+          message: PAST_EDUCATION_FORM_ERRORS.PERIOD.FROM.REQUIRED,
         });
         hasErrors = true;
       }
@@ -149,8 +212,7 @@ function PastEducationManager(props) {
       if (end === "Invalid Date") {
         setError("toDate", {
           type: "required",
-          message:
-          PAST_EDUCATION_FORM_ERRORS.PERIOD.TO.REQUIRED
+          message: PAST_EDUCATION_FORM_ERRORS.PERIOD.TO.REQUIRED,
         });
         hasErrors = true;
       }
@@ -171,8 +233,12 @@ function PastEducationManager(props) {
         return;
       }
       clearErrors();
-      const data = { fromDate, toDate, educationInstitution, degree, campus };
-      props.event({ operation: "submit_education_data", data });
+      const data = { fromDate, toDate, educationInstitution, degree, campus , ...props?.data};
+      props.event({
+        operation: "submit_education_data",
+        data,
+        mode: props.mode,
+      });
       setSubmitted(false);
     }
   };
@@ -194,9 +260,25 @@ function PastEducationManager(props) {
           </>
         )}
       </Typography>
+      {validationErrors.length > 0 && (
+        <div>
+          <Typography
+            className=" font-bold py-3 dark:text-gray-600 text-gray-700"
+            variant="div"
+            sx={{ fontSize: 14 }}
+          >
+            {VALIDATION_ERROR_MESSAGE}
+          </Typography>
+          {validationErrors?.map(errors, (idx) => (
+            <div className=" text-red-100 list-item flex-col gap-2" key={idx}>
+              {errors}
+            </div>
+          ))}
+        </div>
+      )}
 
       <Box
-        className={`${isUpdating ? "control__disabled__opaque" : ""} `}
+        className={`${isUpdating ? "control__disabled" : ""} `}
         sx={{ width: "100%" }}
       >
         <form name="education_management_form" id="education_management_form">
@@ -234,19 +316,36 @@ function PastEducationManager(props) {
                   id="educationInstitution"
                 />
               </FormControl>
-              {/* {filteredDesignationList && (
-              <div className=" bg-gray-400 rounded-lg dark:bg-gray-dark z-50 max-h-40 absolute overflow-auto will-change-auto  ">
-                {filteredDesignationList.map((designation, id) => (
-                  <div
-                    onClick={() => handleDesignationSelect(designation)}
-                    className="hover:bg-blue-800 hover:font-bold whitespace-nowrap text-ellipsis max-w-xs px-2 py-2 dark:text-gray-500 hover:text-gray-100 text-gray-700 cursor-pointer"
-                    key={id}
-                  >
-                    {designation.userSubTypeMaster}
+
+              {filteredEduIns.length > 0 && (
+                <Grid
+                  ref={filteredEduInsRef}
+                  item
+                  lg={6}
+                  md={6}
+                  sm={12}
+                  xs={12}
+                >
+                  <div className=" absolute z-50  bg-gray-400 rounded-lg dark:bg-gray-dark eduins-search-result-container max-h-40  overflow-auto will-change-auto ">
+                    {filteredEduIns.map((orgz, idx) => (
+                      <div
+                        onClick={(event) =>
+                          handleEducationInstitutionSelect(
+                            event,
+                            orgz.educationalInstitutionFullName
+                          )
+                        }
+                        key={idx}
+                        className=" text-gray-dark text-ellipsis hover:text-white-100 hover:bg-gray-700  hover:dark:bg-gray-200 dark:text-gray-400 hover:dark:text-gray-800     hover:font-semibold cursor-pointer p-2 text-sm max-w-sm  "
+                      >
+                        <Typography variant="subtitle2">
+                          {orgz.educationalInstitutionFullName}
+                        </Typography>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )} */}
+                </Grid>
+              )}
             </Grid>
 
             <Grid item lg={3} md={3} sm={12} xs={12}>
@@ -437,21 +536,15 @@ function PastEducationManager(props) {
           </Grid>
         </form>
         <Box sx={{ width: "100%", display: "flex" }}>
-          <div className="flex gap-4 mt-2">
-            <Button
-              disabled={isUpdating}
-              onClick={handleSubmit}
-              variant="outlined"
-              size="small"
-            >
+          <div
+            className={`flex gap-4 mt-2 ${
+              isUpdating ? "control_disabled opacity-40" : ""
+            }`}
+          >
+            <Button onClick={handleSubmit} variant="outlined" size="small">
               {props.mode === "add" ? "Add" : "Save"}
             </Button>
-            <Button
-              disabled={isUpdating}
-              variant="outlined"
-              onClick={handleCancel}
-              size="small"
-            >
+            <Button variant="outlined" onClick={handleCancel} size="small">
               Cancel
             </Button>
           </div>

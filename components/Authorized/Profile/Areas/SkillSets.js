@@ -53,7 +53,7 @@ function SkillSets(props) {
     setEdit(true);
     setTimeout(() => {
       const editableElement = document.getElementById("add-skill");
-      editableElement.focus();
+      editableElement?.focus();
     }, 120);
   };
   const handleSkillSetUpdateOK = () => {
@@ -89,7 +89,7 @@ function SkillSets(props) {
   };
   const handleSkillSetUpdateCancel = () => {
     setEdit(false);
-    setUserSkillSets(skillSets);
+   // setUserSkillSets(skillSets);
   };
   const handleSkillUpdateEntry = (e) => {
     if (
@@ -187,7 +187,21 @@ function SkillSets(props) {
           </div>
         </>
       ) : (
-        <NoData message="There are no skill sets to show." />
+       
+       <>
+       {!edit && <NoData message="There are no skill sets to show." />}
+       {edit && props?.owner && (
+              <>
+                <div
+                  onKeyDown={handleSkillUpdateEntry}
+                  data-placeholder="Add a skill"
+                  id="add-skill"
+                  contentEditable={true}
+                  className=" dark:text-gray-500 text-gray-700 text-sm mt-0.5 max-w-xs max-h-14 overflow-hidden outline-none whitespace-nowrap"
+                ></div>
+              </>
+            )}
+       </> 
       )}
 
       {edit && props?.owner && (
