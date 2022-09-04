@@ -360,23 +360,23 @@ function ChangeProfileHeadlineDialog(props) {
                     sx={{ marginBottom: 1 }}
                     className={classes.formControl}
                   >
-                    <InputLabel
-                      className={`${
-                        errors.category?.message
+                    
+                      
+                     <InputLabel>
+                    
+                      <label id="select-country-label" className={`${
+                        errors.country?.message
                           ? "text-red-600"
                           : "text-blue-800"
-                      } `}
-                      id="select-country-label"
-                    >
-                      Choose a country{" "}
+                      } `}>Choose a country{" "}</label>
                       <h3
                         className={`${
-                          errors.category?.message
+                          errors.country?.message
                             ? "text-red-600"
                             : "dark:text-white-100"
                         } text-sm font-bold inline-flex  `}
                       >
-                        *
+                       *
                       </h3>
                     </InputLabel>
                     <Select
