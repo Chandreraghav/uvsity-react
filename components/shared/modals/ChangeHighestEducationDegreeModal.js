@@ -49,7 +49,7 @@ function ChangeHighestEducationDegreeModal(props) {
   const [processing, setProcessing] = useState(false);
   const [request, setRequest] = useState(props?.data?.highestLevel);
   const handleHighestDegreeChange = (e) => {
-    setRequest(e.target.value?.trim());
+    setRequest(e.target.value);
   };
   const debounce = (func, delay) => {
     let debounceTimer;
@@ -68,6 +68,7 @@ function ChangeHighestEducationDegreeModal(props) {
       props.dialogCloseRequest({
         event: !closeInd ? "edit" : null,
         highestLevel: request,
+        pastEducation: props?.data?.pastEducation,
         close: closeInd,
         id: 8,
       });

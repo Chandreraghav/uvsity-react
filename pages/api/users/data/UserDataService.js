@@ -102,6 +102,16 @@ export default class UserDataService {
   static async addPastEducation(payload) {
     return await asyncInstance.post(ENDPOINTS.USER.EDITS.EDUCATION.PAST_EDUCATION.ADD, payload);
   }
+  static async editPastEducation(payload) {
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.EDUCATION.PAST_EDUCATION.EDIT, payload);
+  }
+  static async removePastEducation(payload) {
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.EDUCATION.PAST_EDUCATION.REMOVE, payload);
+  }
+
+  static async getPastEducation() {
+    return await asyncInstance.get(ENDPOINTS.USER.EDITS.EDUCATION.PAST_EDUCATION.DATA);
+  }
 
    
 }

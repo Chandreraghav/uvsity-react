@@ -89,3 +89,4 @@ export const PAST_EDUCATION_FORM_ERRORS={
     REQUIRED: "Please enter the campus location from where you obtained this qualification, e.g Boston, New York, Delhi etc",
   }
 }
+export const VALIDATION_ERROR_MESSAGE="This action could not be completed due to the following validation errors:"

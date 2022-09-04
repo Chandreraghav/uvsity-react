@@ -92,7 +92,10 @@ export const ENDPOINTS = {
       EDUCATION:{
         HIGHEST_DEGREE:'edit/profile/degreeCourse',
         PAST_EDUCATION:{
-          ADD:'edit/profile/add/pasteducation'
+          DATA:'edit/profile/getData/pastEducations',
+          ADD:'edit/profile/add/pasteducation',
+          REMOVE:'edit/profile/delete/pasteducation',
+          EDIT:'edit/profile/update/pasteducation'
         }
       }
     },
