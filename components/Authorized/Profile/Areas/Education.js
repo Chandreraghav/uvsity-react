@@ -93,7 +93,7 @@ function Education(props) {
           toYear = _toDate.getFullYear().toString();
         }
 
-        if (props.mode === "add") {
+        if (event.mode === "add") {
           payload = {
             degreeCourse: event.data?.degree,
             educationEndDate: `${toMonth}/01/${toYear}`,

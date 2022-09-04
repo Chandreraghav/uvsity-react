@@ -27,13 +27,14 @@ import {
   VALIDATION_ERROR_MESSAGE,
 } from "../../../../constants/error-messages";
 import CommonSearchService from "../../../../pages/api/search/CommonSearchService";
+import { Warning } from "@material-ui/icons";
 
 function PastEducationManager(props) {
   const [theme, dispatch] = useTheme();
   const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
   const [isUpdating, setUpdating] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
-  const [validationErrors, setValidationErrors] = useState([]);
+  const [formValidationErrors, setFormValidationErrors] = useState([]);
   const deepGray = COLOR_CODES.GRAY.DEEP;
   const filteredEduInsRef = useRef(null);
   const [filteredEduIns, setFilteredEducationalInstituitons] = useState([]);
@@ -47,14 +48,19 @@ function PastEducationManager(props) {
   useEffect(() => {
     reset();
   }, [isSubmitted]);
+
   useEffect(() => {
     setUpdating(false);
     setSubmitted(false);
-    setValidationErrors(props.operationOutcome?.errorData || []);
+
+    if (props?.operationOutcome?.errorData.length > 0) {
+      setFormValidationErrors(props?.operationOutcome?.errorData);
+    } else setFormValidationErrors([]);
+
     return () => {
       setUpdating(false);
       setSubmitted(false);
-      setValidationErrors([]);
+      setFormValidationErrors([]);
     };
   }, [props.operationOutcome]);
   useEffect(() => {
@@ -232,8 +238,16 @@ function PastEducationManager(props) {
         setUpdating(false);
         return;
       }
+
       clearErrors();
-      const data = { fromDate, toDate, educationInstitution, degree, campus , ...props?.data};
+      const data = {
+        fromDate,
+        toDate,
+        educationInstitution,
+        degree,
+        campus,
+        ...props?.data,
+      };
       props.event({
         operation: "submit_education_data",
         data,
@@ -260,23 +274,29 @@ function PastEducationManager(props) {
           </>
         )}
       </Typography>
-      {validationErrors.length > 0 && (
-        <div>
+      {formValidationErrors.length > 0 && (
+        <div className="block ">
           <Typography
-            className=" font-bold py-3 dark:text-gray-600 text-gray-700"
-            variant="div"
+            className=" leading-tight font-semibold py-3 dark:text-gray-600 text-gray-700"
+            variant="caption"
             sx={{ fontSize: 14 }}
           >
-            {VALIDATION_ERROR_MESSAGE}
+            <Warning /> {VALIDATION_ERROR_MESSAGE}
           </Typography>
-          {validationErrors?.map(errors, (idx) => (
-            <div className=" text-red-100 list-item flex-col gap-2" key={idx}>
-              {errors}
-            </div>
-          ))}
+          <div className=" ml-4">
+            {formValidationErrors.map((e, idx) => (
+              <>
+                <div
+                  className=" text-red-100 list-item flex-col gap-2 "
+                  key={idx}
+                >
+                  {e}
+                </div>
+              </>
+            ))}
+          </div>
         </div>
       )}
-
       <Box
         className={`${isUpdating ? "control__disabled" : ""} `}
         sx={{ width: "100%" }}
