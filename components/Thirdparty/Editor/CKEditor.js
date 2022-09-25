@@ -23,9 +23,9 @@ function CEditor(props) {
   if (loaded) {
     return (
       <>
-        
-        
-          <CKEditor
+        {props.classic ? <>
+          <ClassicEditor/>
+        </>:(<CKEditor
             data={props.data || ""}
             onReady={(editor) => {
               console.log("Editor is ready", editor);
@@ -69,6 +69,7 @@ function CEditor(props) {
             }}
             onFocus={(event, editor) => {}}
             editor={ClassicEditor}
+            
             config={{
               // TODO: Integrate the S3 endpoint call on image upload 
               // Pass the config for SimpleUploadAdapter
@@ -94,7 +95,9 @@ function CEditor(props) {
               },
               
             }}
-          />
+          />)}
+        
+          
         {props.required && error && (
           <FormHelperText className=" text-red-600">
             {props?.errorText ? props.errorText : "Field is required"}

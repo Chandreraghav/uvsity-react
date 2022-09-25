@@ -2,6 +2,7 @@ import * as Yup from "yup";
 import {
   PAST_EDUCATION_FORM_ERRORS,
   REGISTRATION_ERRORS,
+  WORK_EXPERIENCE_FORM_ERRORS,
 } from "../../../constants/error-messages";
 import { PASSWORD } from "../../../constants/regex";
 import { MIN_LENGTH_PASSWORD } from "../../../constants/constants";
@@ -157,6 +158,39 @@ export const USER = {
           .nullable()
           .required("Please select your country."),
         city: Yup.string().trim().required("Please enter your city name."),
+        location: Yup.string().trim().required("Please enter your location name."),
+        presentWorkPlace:Yup.boolean(),
+        fromDate: Yup.date()
+          .typeError(WORK_EXPERIENCE_FORM_ERRORS.PERIOD.FROM.REQUIRED)
+          .max(
+            Yup.ref("toDate"),
+            WORK_EXPERIENCE_FORM_ERRORS.PERIOD.FROM.RANGE_ERROR
+          )
+          .required(WORK_EXPERIENCE_FORM_ERRORS.PERIOD.FROM.REQUIRED)
+          .nullable()
+          .test("fromDate", "Enter a valid period.", function (value) {
+            return isValidDate(value, "MMMM,yyyy");
+          }),
+        toDate: Yup.date().when("presentWorkPlace", {
+          is: true,
+          then: Yup.date().typeError('')
+            .nullable().notRequired()
+         })
+         .when("presentWorkPlace", {
+          is: false,
+          then: Yup.date()
+          .typeError(WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.REQUIRED)
+          .min(
+            Yup.ref("fromDate"),
+            WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.RANGE_ERROR
+          )
+          .required(WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.REQUIRED)
+          .nullable()
+
+          .test("toDate", "Enter a valid period.", function (value) {
+            return isValidDate(value, "MMMM,yyyy");
+          })
+         })
       }),
 
       SOCIAL: Yup.object().shape({

@@ -5,14 +5,27 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { Grid, Tooltip } from "@mui/material";
 import NoData from "../../Shared/NoData";
-import { READ_MORE_MAX_LENGTH } from "../../../../constants/constants";
+import {
+  READ_MORE_MAX_LENGTH,
+  RESPONSE_TYPES,
+} from "../../../../constants/constants";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 import ReadMore from "../../../shared/ReadMore";
 import { USER_PROFILE } from "../../../../constants/userdata";
 import { AddCircleOutlined } from "@mui/icons-material";
 import { Edit } from "@material-ui/icons";
+import { toast } from "react-toastify";
+import ChangeWorkExperience from "../../../shared/modals/ChangeWorkExperienceDialog";
+import UserDataService from "../../../../pages/api/users/data/UserDataService";
+import { handleResponse } from "../../../../toastr-response-handler/handler";
+toast.configure();
 function WorkExperience(props) {
   const [experiences, setExperiences] = useState([]);
+  const [workExperienceDialogOpen, setWorkExperienceDialogOpen] =
+    useState(false);
+  const [workExperienceChangeMode, setWorkExperienceChangeMode] =
+    useState(null);
+  const [workExperience, setWorkExperience] = useState(null);
   useEffect(() => {
     setExperiences(props?.experiences);
     return () => setExperiences([]);
@@ -25,11 +38,21 @@ function WorkExperience(props) {
     let display = `${start} - ${end}`;
     return display;
   };
+  const handleWorkExperienceAdd = () => {
+    setWorkExperienceChangeMode("add");
+    setWorkExperienceDialogOpen(true);
+    setWorkExperience(null);
+  };
+  const handleWorkExperiencEdit = (e, expierenceData) => {
+    setWorkExperienceChangeMode("edit");
+    setWorkExperienceDialogOpen(true);
+    setWorkExperience(expierenceData);
+  };
   const card = (exp) => (
     <React.Fragment>
       <CardContent>
-        {exp?.projResearchStartDateForDisplay && (
-          <div className="flex">
+        <div className="flex">
+          {exp?.projResearchStartDateForDisplay && (
             <Typography
               sx={{ fontSize: 14 }}
               color={`${
@@ -39,16 +62,20 @@ function WorkExperience(props) {
             >
               {getDurationOfexperience(exp)}
             </Typography>
-
-            {props?.owner && (
-              <div className=" text-sm dark:text-gray-500 text-gray-700 cursor-pointer ml-auto">
+          )}
+          {props?.owner && (
+            <>
+              <div
+                onClick={(event) => handleWorkExperiencEdit(event, exp)}
+                className=" text-sm dark:text-gray-500 text-gray-700 cursor-pointer ml-auto"
+              >
                 <Tooltip title={USER_PROFILE.CHANGE_WORK_EXPERIENCE}>
                   <Edit />
                 </Tooltip>
               </div>
-            )}
-          </div>
-        )}
+            </>
+          )}
+        </div>
 
         {exp?.projectResearchTitle && (
           <Typography variant="h5" component="div">
@@ -81,17 +108,85 @@ function WorkExperience(props) {
       </CardContent>
     </React.Fragment>
   );
+  const handleWorkExperienceChangeEvent = (obj) => {
+    if (obj.close) {
+      setWorkExperienceDialogOpen(false);
+      setWorkExperienceChangeMode(null);
+      return;
+    }
+    //
+    if (obj.event === "edit") {
+      return;
+    }
+    // add new
+    const data = obj.data;
+    var fromMonth, toMonth, fromYear, toYear;
+    try {
+      fromMonth =
+        data?.fromDate?.$M + 1 > 9
+          ? (data?.fromDate?.$M + 1).toString()
+          : ("0" + (data?.fromDate?.$M + 1)).toString();
+      toMonth =
+        data?.toDate?.$M + 1 > 9
+          ? (data?.toDate?.$M + 1).toString()
+          : ("0" + (data?.toDate?.$M + 1)).toString();
+      fromYear = (data?.fromDate.$y).toString();
+      toYear = (data?.toDate.$y).toString();
+    } catch (error) {
+      const _fromDate = new Date(data.fromDate);
+      const _toDate = new Date(data.toDate);
+      fromMonth =
+        _fromDate.getMonth() + 1 > 9
+          ? (_fromDate.getMonth() + 1).toString()
+          : ("0" + (_fromDate.getMonth() + 1)).toString();
+      toMonth =
+        _toDate.getMonth() + 1 > 9
+          ? (_toDate.getMonth() + 1).toString()
+          : ("0" + (_toDate.getMonth() + 1)).toString();
+      fromYear = _fromDate.getFullYear().toString();
+      toYear = _toDate.getFullYear().toString();
+    }
+    const payload = {
+      projectResearchDescription: data.description,
+      projectResearchExpEducationInsitution: data.organization,
+      projectResearchTitle: data.designation,
+      projectResearchExpCampus: data.location,
+      fromMonth,
+      fromYear,
+      toMonth,
+      toYear,
+      isPresent: data.presentWorkPlace === true ? "T" : "F",
+      projectResearchStartDate: `${fromMonth}/01/${fromYear}`,
+      projectResearchEndDate: `${toMonth}/01/${toYear}`,
+    };
+    UserDataService.addWorkExperience(payload)
+      .then((res) => {
+        props.consumeEvent({data:res.data}, "WorkExperience");
+        setWorkExperienceChangeMode(null);
+        setWorkExperienceDialogOpen(false);
+        setWorkExperience(null);
+        handleResponse(
+          `${USER_PROFILE.WORK_EXPERIENCE_UPDATED}`,
+          RESPONSE_TYPES.SUCCESS,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      })
+      .catch((error) => {
+        setWorkExperienceChangeMode(null);
+        setWorkExperienceDialogOpen(false);
+        setWorkExperience(null);
+        handleResponse(
+          `${USER_PROFILE.WORK_EXPERIENCE_UPDATE_FAILED}`,
+          RESPONSE_TYPES.SUCCESS,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      });
+  };
   return (
     <>
       {props?.owner && (
         <div
-          onClick={() =>
-            props.consumeEvent({
-              id: 3,
-              event: "init_edit",
-              component: "WorkExperience",
-            })
-          }
+          onClick={handleWorkExperienceAdd}
           className=" text-sm dark:text-gray-500 text-gray-700 cursor-pointer ml-auto float-right"
         >
           <Tooltip title={USER_PROFILE.ADD_WORK_EXPERIENCE}>
@@ -131,6 +226,21 @@ function WorkExperience(props) {
       )}
       {experiences.length === 0 && (
         <NoData message="No project or work experience available." />
+      )}
+
+      {props?.owner && (
+        <ChangeWorkExperience
+          title={`${
+            workExperienceChangeMode == "add"
+              ? "Add new work experience"
+              : "Update work experience"
+          }`}
+          theme
+          dialogCloseRequest={handleWorkExperienceChangeEvent}
+          mode={workExperienceChangeMode}
+          data={workExperience ?? null}
+          isOpen={workExperienceDialogOpen}
+        />
       )}
     </>
   );

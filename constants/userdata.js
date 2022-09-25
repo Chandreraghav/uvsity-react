@@ -1140,6 +1140,9 @@ export const USER_PROFILE = {
   PAST_EDUCATION_UPDATE_FAILED: "Oops, there encountered an error while updating your past education, check out for any validation errors or please try again.",
   PAST_EDUCATION_DELETE_FAILED: "Oops, there encountered an error while removing your past education, check out for any validation errors or please try again.",
   ADD_WORK_EXPERIENCE: "Add new experience",
+  WORK_EXPERIENCE_UPDATED:"👍Superb!! We've successfully updated your work experience",
+  WORK_EXPERIENCE_UPDATE_FAILED:'Oops, there encountered an error while updating your work experience, please try again.',
+  
   CHANGE_WORK_EXPERIENCE: "Update experience",
   PLACEHOLDERS: {
     WRITE_BIO: "Write something about yourself here...",

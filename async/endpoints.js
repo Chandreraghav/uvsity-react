@@ -97,6 +97,9 @@ export const ENDPOINTS = {
           REMOVE:'edit/profile/delete/pasteducation',
           EDIT:'edit/profile/update/pasteducation'
         }
+      },
+      WORKEXPERIENCE:{
+        ADD:'edit/profile/add/projectResearchExperience'
       }
     },
     METADATA: {

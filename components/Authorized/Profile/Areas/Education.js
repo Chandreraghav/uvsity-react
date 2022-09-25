@@ -309,7 +309,8 @@ function Education(props) {
       toast.POSITION.BOTTOM_CENTER
     );
   };
-  return education?.highestLevel && education?.pastEducation ? (
+  
+  return education ? (
     <>
       {education?.highestLevel ? (
         <div className="flex gap-2 ">
@@ -346,11 +347,11 @@ function Education(props) {
               onClick={handleHighestDegreeUpdate}
               className=" hover:cursor-pointer dark: text-gray-600  text-gray-600  leading-loose flex gap-2"
             >
-              <AddIcon fontSize="small" />
+              
               <Typography
                 className="mt-0.5"
                 variant="h5"
-              >{`${USER_PROFILE.ADD_HIGHEST_DEGREE}`}</Typography>
+              ><AddIcon  />{`${USER_PROFILE.ADD_HIGHEST_DEGREE}`}</Typography>
             </div>
           )}
         </>
@@ -474,7 +475,45 @@ function Education(props) {
       )}
     </>
   ) : (
-    <NoData message="No details available." />
+    <div>
+      {!props.owner &&<><NoData message="No details available." /></>}
+      {props.owner && (
+            <div
+              onClick={handleHighestDegreeUpdate}
+              className=" hover:cursor-pointer dark: text-gray-600  text-gray-600  leading-loose flex gap-2"
+            >
+              
+              <Typography
+                className="mt-0.5"
+                variant="h5"
+              ><AddIcon />{`${USER_PROFILE.ADD_HIGHEST_DEGREE}`}</Typography>
+            </div>
+          )}
+      {props.owner && (
+        <>
+          {!addPastEducationMode && (
+            <div
+              onClick={() => setAddPastEducationMode(true)}
+              className=" hover:cursor-pointer dark: text-gray-600  text-gray-600  leading-tight flex mt-2"
+            >
+              <Typography className="mt-0.5" variant="h6">
+                <AddIcon /> {`${USER_PROFILE.ADD_PAST_EDUCATION}`}
+              </Typography>
+            </div>
+          )}
+
+          {addPastEducationMode && (
+            <PastEducationManager
+              operationOutcome={outcome}
+              event={handlePastEducationEvent}
+              mode="add"
+            />
+          )}
+        </>
+      )}
+      
+    </div>
+    
   );
 }
 
