@@ -42,7 +42,7 @@ const UserProfile = () => {
 
   const getPastEducationDetail = async () =>
     await UserDataService.getPastEducation();
-
+ const getWorkExperienceDetail = async () =>await UserDataService.getWorkExperience();
   const LOGGED_IN_USER_SUMMARY = useQuery(
     [KEYS.PROFILE.SUMMARY],
     getLoggedInUserSummary,
@@ -52,6 +52,12 @@ const UserProfile = () => {
   const PAST_EDUCATION_DETAIL = useQuery(
     [KEYS.PROFILE.EDUCATION],
     getPastEducationDetail,
+    { staleTime: standardStaleTime }
+  );
+
+  const WORK_EXPERIENCE = useQuery(
+    [KEYS.PROFILE.EXPERIENCE],
+    getWorkExperienceDetail,
     { staleTime: standardStaleTime }
   );
 
@@ -85,6 +91,7 @@ const UserProfile = () => {
     LOGGED_IN_USER_SUMMARY: LOGGED_IN_USER_SUMMARY,
     PROFILE_SUMMARY: data,
     PAST_EDUCATION_DETAIL: PAST_EDUCATION_DETAIL,
+    WORK_EXPERIENCE:WORK_EXPERIENCE
   };
 
   const isOwner = () => {
@@ -153,6 +160,7 @@ const UserProfile = () => {
             userdata={getData.PROFILE_SUMMARY?.data}
             additionalUserData={{
               pastEducation: getData.PAST_EDUCATION_DETAIL?.data,
+              workExperience: getData.WORK_EXPERIENCE.data
             }}
             loggedInUser={getData.LOGGED_IN_USER_SUMMARY?.data}
           />

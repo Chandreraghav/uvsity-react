@@ -183,7 +183,7 @@ function MacroProfile(props) {
   };
   const [aboutInfo, setAboutInfo] = useState(_aboutInfo);
   const [userSkillsets, setUserSkillSets] = useState(userdata?.userSkillsets);
-  const [projectResearchWorkExperience, setProjectResearchWorkExperience] = useState(userdata?.projectResearchWorkExp);
+  const [projectResearchWorkExperience, setProjectResearchWorkExperience] = useState(additionalUserData.workExperience.data??userdata?.projectResearchWorkExp);
   const interests = userdata?.myInterests;
   const _interests = {
     dialogOpen: false,
