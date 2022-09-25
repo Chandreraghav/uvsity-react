@@ -421,6 +421,10 @@ function MacroProfile(props) {
   };
   const handleEvent = (event, component) => {
     switch (component) {
+      case "WorkExperience":
+        setProjectResearchWorkExperience(event.data)
+        
+        break
       case "RecommendationsFeed":
       case "RecommendedSessions":
         if (
@@ -1608,7 +1612,7 @@ function MacroProfile(props) {
                               {area.id === 3 && (
                                 <>
                                   <WorkExperience
-                                     consumeEvent={handleEvent}
+                                    consumeEvent={handleEvent}
                                     owner={isItMe}
                                     experiences={projectResearchWorkExperience}
                                   />

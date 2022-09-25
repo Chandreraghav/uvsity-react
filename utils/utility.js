@@ -305,12 +305,18 @@ export const download = (src, name) => {
 };
 
 export const timestamp = () => {
-  return (
-    moment(new Date()).format("DDMMYYYYhhmmss").toString() +
-    moment.tz
-      .zone(Intl.DateTimeFormat().resolvedOptions().timeZone.toString())
-      .abbr(360)
-  );
+  try {
+    return (
+      moment(new Date()).format("DDMMYYYYhhmmss").toString() +
+      moment.tz
+        .zone(Intl.DateTimeFormat().resolvedOptions().timeZone.toString())
+        .abbr(360)
+    );
+  } catch (error) {
+    return null
+  }
+
+ 
 };
 
 export const shouldDialogAppearInFullScreen = () => {

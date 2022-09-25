@@ -113,5 +113,9 @@ export default class UserDataService {
     return await asyncInstance.get(ENDPOINTS.USER.EDITS.EDUCATION.PAST_EDUCATION.DATA);
   }
 
+  static async addWorkExperience(payload) {
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.WORKEXPERIENCE.ADD, payload);
+  }
+
    
 }

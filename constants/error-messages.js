@@ -89,4 +89,18 @@ export const PAST_EDUCATION_FORM_ERRORS={
     REQUIRED: "Please enter the campus location from where you obtained this qualification, e.g Boston, New York, Delhi etc",
   }
 }
+export const WORK_EXPERIENCE_FORM_ERRORS={
+  PERIOD:{
+    FROM:{
+      REQUIRED:"Please specify the year and month you joined this organization",
+      RANGE_ERROR:"Start period of experience can't be after end period"
+    },
+    TO:{
+      REQUIRED:"Please specify the year and month you exit this organization",
+      RANGE_ERROR:"End period of experience can't be before start period"
+    },
+
+  },
+ 
+}
 export const VALIDATION_ERROR_MESSAGE="This action could not be completed due to the following validation errors:"

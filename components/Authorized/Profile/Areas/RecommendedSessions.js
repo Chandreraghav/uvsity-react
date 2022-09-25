@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import NoData from "../../Shared/NoData";
 import SnapPreview from "../../Sessions/Preview/SnapPreview";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -21,6 +21,7 @@ function RecommendedSessions(props) {
   const deepGray = COLOR_CODES.GRAY.DEEP;
   const lightGray = COLOR_CODES.GRAY.LIGHT;
   const isDark = getMode() === THEME_MODES.DARK;
+  const filteredSessionRef = useRef(null);
   const useStyles = makeStyles((theme) => ({
     root: {
       "& .MuiInputBase-root": {
@@ -191,6 +192,20 @@ function RecommendedSessions(props) {
     }
   }
   const classes = useStyles();
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        filteredSessionRef.current &&
+        !filteredSessionRef.current.contains(event.target)
+      ) {
+        setSessions([]);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [sessions]);
   return (
     <>
       {props?.sessions && props?.sessions.length > 0 ? (
@@ -283,13 +298,14 @@ function RecommendedSessions(props) {
           </Grid>
 
           {sessions && sessions.length > 0 && (
-            <div className=" session-search-result-container flex flex-col gap-2  w-max max-h-48 overflow-auto ">
+            <div ref={filteredSessionRef} className=" session-search-result-container flex flex-col gap-2  w-max max-h-48 overflow-auto ">
               {sessions.map((session, idx) => (
                 <Grid
                   item
                   xs={12}
                   onClick={() => selectSession(session)}
                   key={idx}
+                  
                 >
                   <div className="text-gray-dark hover:text-white-100 hover:bg-gray-700  hover:dark:bg-gray-200 dark:text-gray-400 hover:dark:text-gray-800     hover:font-semibold cursor-pointer p-2 text-sm w-screen">
                     <SnapPreview resultOnSearch session={session} />

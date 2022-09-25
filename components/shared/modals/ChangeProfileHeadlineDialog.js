@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -97,7 +97,7 @@ function ChangeProfileHeadlineDialog(props) {
 
   const [organization, setOrganization] = useState(props.data.institution);
   const [filteredOrgzList, setFilteredOrgzList] = useState([])
-
+  const filteredOrgzListRef = useRef(null);
   const countries = JSON.parse(getLocalStorageObject("uvsity-countries"));
   const selected_country = countries.find(
     (country) =>
@@ -220,7 +220,20 @@ function ChangeProfileHeadlineDialog(props) {
     setFilteredOrgzList([])
   }
    
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        filteredOrgzListRef.current &&
+        !filteredOrgzListRef.current.contains(event.target)
+      ) {
+        setFilteredOrgzList([]);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [filteredOrgzList]);
   const _isSmallScreen = isSmallScreen();
   return (
     <Dialog
@@ -342,13 +355,22 @@ function ChangeProfileHeadlineDialog(props) {
                     />
                   </FormControl>
                   {filteredOrgzList && (
-                     <div className=" bg-gray-400 rounded-lg dark:bg-gray-dark z-50 max-h-40 absolute overflow-auto will-change-auto  ">
+                    <Grid
+                    ref={filteredOrgzListRef}
+                    item
+                    lg={6}
+                    md={6}
+                    sm={12}
+                    xs={12}
+                  >
+                     <div  className=" bg-gray-400 rounded-lg dark:bg-gray-dark z-50 max-h-40 absolute overflow-auto will-change-auto">
                      {filteredOrgzList.map((orgz,id)=>(
-                       <div onClick={()=>handleOrgzSelect(orgz)} className="hover:bg-blue-800 hover:font-bold whitespace-nowrap text-ellipsis max-w-xs px-2 py-2 dark:text-gray-500 hover:text-gray-100 text-gray-700 cursor-pointer" key ={id}>
+                       <div onClick={()=>handleOrgzSelect(orgz)} className="hover:bg-blue-800 hover:font-bold max-w-sm px-2 py-2 dark:text-gray-500 hover:text-gray-100 text-gray-700 cursor-pointer" key ={id}>
                          {orgz.educationalInstitutionFullName}
                        </div>
                      ))}
                    </div>
+                   </Grid>
                   )}
                 </Grid>
 
