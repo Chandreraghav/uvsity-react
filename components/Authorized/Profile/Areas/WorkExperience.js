@@ -13,6 +13,7 @@ import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 import ReadMore from "../../../shared/ReadMore";
 import { USER_PROFILE } from "../../../../constants/userdata";
 import { AddCircleOutlined } from "@mui/icons-material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Edit } from "@material-ui/icons";
 import { toast } from "react-toastify";
 import ChangeWorkExperience from "../../../shared/modals/ChangeWorkExperienceDialog";
@@ -48,6 +49,105 @@ function WorkExperience(props) {
     setWorkExperienceDialogOpen(true);
     setWorkExperience(expierenceData);
   };
+
+  const handleWorkExperiencRemove = (e, expierenceData) => {
+    const isPresent = expierenceData?.isPresent === "T";
+    expierenceData.deleting = true;
+    setWorkExperience(expierenceData);
+    setWorkExperienceChangeMode("delete");
+    const data = {
+      designation: expierenceData.projectResearchTitle,
+      organization: expierenceData.projectResearchExpEducationInsitution,
+      location: expierenceData.projectResearchExpCampus,
+      presentWorkPlace: isPresent,
+      fromDate: expierenceData.projResearchStartDateForDisplay,
+      toDate: expierenceData.projResearchEndDateForDisplay,
+      description: expierenceData.projectResearchDescription,
+      projectResearchExpId: expierenceData.projectResearchExpId,
+    };
+    var fromMonth, toMonth, fromYear, toYear;
+    try {
+      fromMonth =
+        data?.fromDate?.$M + 1 > 9
+          ? (data?.fromDate?.$M + 1).toString()
+          : ("0" + (data?.fromDate?.$M + 1)).toString();
+
+      if (data.presentWorkPlace === false) {
+        toMonth =
+          data?.toDate?.$M + 1 > 9
+            ? (data?.toDate?.$M + 1).toString()
+            : ("0" + (data?.toDate?.$M + 1)).toString();
+        toYear = (data?.toDate.$y).toString();
+      } else {
+        toMonth = "";
+        toYear = "";
+      }
+
+      fromYear = (data?.fromDate.$y).toString();
+    } catch (error) {
+      const _fromDate = new Date(data.fromDate);
+      const _toDate = new Date(data.toDate);
+      fromMonth =
+        _fromDate.getMonth() + 1 > 9
+          ? (_fromDate.getMonth() + 1).toString()
+          : ("0" + (_fromDate.getMonth() + 1)).toString();
+
+      if (data.presentWorkPlace === false) {
+        toMonth =
+          _toDate.getMonth() + 1 > 9
+            ? (_toDate.getMonth() + 1).toString()
+            : ("0" + (_toDate.getMonth() + 1)).toString();
+
+        toYear = _toDate.getFullYear().toString();
+      } else {
+        toMonth = "";
+        toYear = "";
+      }
+
+      fromYear = _fromDate.getFullYear().toString();
+    }
+    const payload = {
+      projectResearchExpId: data.projectResearchExpId,
+      projectResearchDescription: data.description,
+      projectResearchExpEducationInsitution: data.organization,
+      projectResearchTitle: data.designation,
+      projectResearchExpCampus: data.location,
+      fromMonth,
+      fromYear,
+      toMonth,
+      toYear,
+      wsisPresent: data.presentWorkPlace,
+      isPresent: data.presentWorkPlace === true ? "T" : "F",
+      projectResearchStartDate: `${fromMonth}/01/${fromYear}`,
+      projectResearchEndDate: `${
+        data.presentWorkPlace === false ? toMonth + "/01/" + toYear : ""
+      }`,
+    };
+    UserDataService.removeWorkExperience(payload)
+      .then((res) => {
+        props.consumeEvent({ data: res.data }, "WorkExperience");
+        setWorkExperienceChangeMode(null);
+        setWorkExperienceDialogOpen(false);
+        setWorkExperience(null);
+        expierenceData.deleting = false;
+        handleResponse(
+          `${USER_PROFILE.WORK_EXPERIENCE_DELETED.replace('<#X#>',payload.projectResearchTitle)}`,
+          RESPONSE_TYPES.SUCCESS,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      })
+      .catch((error) => {
+        setWorkExperienceChangeMode(null);
+        setWorkExperienceDialogOpen(false);
+        setWorkExperience(null);
+        expierenceData.deleting = false;
+        handleResponse(
+          `${USER_PROFILE.WORK_EXPERIENCE_DELETE_FAILED}`,
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.BOTTOM_CENTER
+        );
+      });
+  };
   const card = (exp) => (
     <React.Fragment>
       <CardContent>
@@ -64,16 +164,28 @@ function WorkExperience(props) {
             </Typography>
           )}
           {props?.owner && (
-            <>
-              <div
-                onClick={(event) => handleWorkExperiencEdit(event, exp)}
-                className=" text-sm dark:text-gray-500 text-gray-700 cursor-pointer ml-auto"
-              >
-                <Tooltip title={USER_PROFILE.CHANGE_WORK_EXPERIENCE}>
-                  <Edit />
-                </Tooltip>
+            <div className="ml-auto">
+              <div className="flex">
+                <div
+                  onClick={(event) => handleWorkExperiencEdit(event, exp)}
+                  className=" text-sm dark:text-gray-500 text-gray-700 cursor-pointer "
+                >
+                  <Tooltip title={USER_PROFILE.CHANGE_WORK_EXPERIENCE}>
+                    <Edit />
+                  </Tooltip>
+                </div>
+                <div
+                  onClick={(event) => handleWorkExperiencRemove(event, exp)}
+                  className={`${
+                    exp?.deleting ? "control__disabled__opaque" : ""
+                  } text-sm dark:text-gray-500 text-gray-700 cursor-pointer`}
+                >
+                  <Tooltip title={USER_PROFILE.REMOVE_WORK_EXPERIENCE}>
+                    <DeleteIcon />
+                  </Tooltip>
+                </div>
               </div>
-            </>
+            </div>
           )}
         </div>
 
@@ -114,11 +226,6 @@ function WorkExperience(props) {
       setWorkExperienceChangeMode(null);
       return;
     }
-    //
-    if (obj.event === "edit") {
-      return;
-    }
-    // add new
     const data = obj.data;
     var fromMonth, toMonth, fromYear, toYear;
     try {
@@ -126,12 +233,19 @@ function WorkExperience(props) {
         data?.fromDate?.$M + 1 > 9
           ? (data?.fromDate?.$M + 1).toString()
           : ("0" + (data?.fromDate?.$M + 1)).toString();
-      toMonth =
-        data?.toDate?.$M + 1 > 9
-          ? (data?.toDate?.$M + 1).toString()
-          : ("0" + (data?.toDate?.$M + 1)).toString();
+
+      if (data.presentWorkPlace === false) {
+        toMonth =
+          data?.toDate?.$M + 1 > 9
+            ? (data?.toDate?.$M + 1).toString()
+            : ("0" + (data?.toDate?.$M + 1)).toString();
+        toYear = (data?.toDate.$y).toString();
+      } else {
+        toMonth = "";
+        toYear = "";
+      }
+
       fromYear = (data?.fromDate.$y).toString();
-      toYear = (data?.toDate.$y).toString();
     } catch (error) {
       const _fromDate = new Date(data.fromDate);
       const _toDate = new Date(data.toDate);
@@ -139,48 +253,103 @@ function WorkExperience(props) {
         _fromDate.getMonth() + 1 > 9
           ? (_fromDate.getMonth() + 1).toString()
           : ("0" + (_fromDate.getMonth() + 1)).toString();
-      toMonth =
-        _toDate.getMonth() + 1 > 9
-          ? (_toDate.getMonth() + 1).toString()
-          : ("0" + (_toDate.getMonth() + 1)).toString();
+
+      if (data.presentWorkPlace === false) {
+        toMonth =
+          _toDate.getMonth() + 1 > 9
+            ? (_toDate.getMonth() + 1).toString()
+            : ("0" + (_toDate.getMonth() + 1)).toString();
+
+        toYear = _toDate.getFullYear().toString();
+      } else {
+        toMonth = "";
+        toYear = "";
+      }
+
       fromYear = _fromDate.getFullYear().toString();
-      toYear = _toDate.getFullYear().toString();
     }
-    const payload = {
-      projectResearchDescription: data.description,
-      projectResearchExpEducationInsitution: data.organization,
-      projectResearchTitle: data.designation,
-      projectResearchExpCampus: data.location,
-      fromMonth,
-      fromYear,
-      toMonth,
-      toYear,
-      isPresent: data.presentWorkPlace === true ? "T" : "F",
-      projectResearchStartDate: `${fromMonth}/01/${fromYear}`,
-      projectResearchEndDate: `${toMonth}/01/${toYear}`,
-    };
-    UserDataService.addWorkExperience(payload)
-      .then((res) => {
-        props.consumeEvent({data:res.data}, "WorkExperience");
-        setWorkExperienceChangeMode(null);
-        setWorkExperienceDialogOpen(false);
-        setWorkExperience(null);
-        handleResponse(
-          `${USER_PROFILE.WORK_EXPERIENCE_UPDATED}`,
-          RESPONSE_TYPES.SUCCESS,
-          toast.POSITION.BOTTOM_CENTER
-        );
-      })
-      .catch((error) => {
-        setWorkExperienceChangeMode(null);
-        setWorkExperienceDialogOpen(false);
-        setWorkExperience(null);
-        handleResponse(
-          `${USER_PROFILE.WORK_EXPERIENCE_UPDATE_FAILED}`,
-          RESPONSE_TYPES.SUCCESS,
-          toast.POSITION.BOTTOM_CENTER
-        );
-      });
+
+    if (obj.event === "edit") {
+      const payload = {
+        projectResearchExpId: data.projectResearchExpId,
+        projectResearchDescription: data.description,
+        projectResearchExpEducationInsitution: data.organization,
+        projectResearchTitle: data.designation,
+        projectResearchExpCampus: data.location,
+        fromMonth,
+        fromYear,
+        toMonth,
+        toYear,
+        wsisPresent: data.presentWorkPlace,
+        isPresent: data.presentWorkPlace === true ? "T" : "F",
+        projectResearchStartDate: `${fromMonth}/01/${fromYear}`,
+        projectResearchEndDate: `${
+          data.presentWorkPlace === false ? toMonth + "/01/" + toYear : ""
+        }`,
+      };
+      // edit
+      UserDataService.editWorkExperience(payload)
+        .then((res) => {
+          props.consumeEvent({ data: res.data }, "WorkExperience");
+          setWorkExperienceChangeMode(null);
+          setWorkExperienceDialogOpen(false);
+          setWorkExperience(null);
+          handleResponse(
+            `${USER_PROFILE.WORK_EXPERIENCE_UPDATED}`,
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        })
+        .catch((error) => {
+          setWorkExperienceChangeMode(null);
+          setWorkExperienceDialogOpen(false);
+          setWorkExperience(null);
+          handleResponse(
+            `${USER_PROFILE.WORK_EXPERIENCE_UPDATE_FAILED}`,
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
+    } else {
+      const payload = {
+        projectResearchDescription: data.description,
+        projectResearchExpEducationInsitution: data.organization,
+        projectResearchTitle: data.designation,
+        projectResearchExpCampus: data.location,
+        fromMonth,
+        fromYear,
+        toMonth,
+        toYear,
+        isPresent: data.presentWorkPlace === true ? "T" : "F",
+        projectResearchStartDate: `${fromMonth}/01/${fromYear}`,
+        projectResearchEndDate: `${
+          data.presentWorkPlace === false ? toMonth + "/01/" + toYear : ""
+        }`,
+      };
+      // add new
+      UserDataService.addWorkExperience(payload)
+        .then((res) => {
+          props.consumeEvent({ data: res.data }, "WorkExperience");
+          setWorkExperienceChangeMode(null);
+          setWorkExperienceDialogOpen(false);
+          setWorkExperience(null);
+          handleResponse(
+            `${USER_PROFILE.WORK_EXPERIENCE_UPDATED}`,
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        })
+        .catch((error) => {
+          setWorkExperienceChangeMode(null);
+          setWorkExperienceDialogOpen(false);
+          setWorkExperience(null);
+          handleResponse(
+            `${USER_PROFILE.WORK_EXPERIENCE_UPDATE_FAILED}`,
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
+    }
   };
   return (
     <>

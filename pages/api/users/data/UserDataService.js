@@ -113,8 +113,19 @@ export default class UserDataService {
     return await asyncInstance.get(ENDPOINTS.USER.EDITS.EDUCATION.PAST_EDUCATION.DATA);
   }
 
+  static async getWorkExperience() {
+    return await asyncInstance.get(ENDPOINTS.USER.EDITS.WORKEXPERIENCE.DATA);
+  }
+
   static async addWorkExperience(payload) {
     return await asyncInstance.post(ENDPOINTS.USER.EDITS.WORKEXPERIENCE.ADD, payload);
+  }
+  static async editWorkExperience(payload) {
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.WORKEXPERIENCE.EDIT, payload);
+  }
+
+  static async removeWorkExperience(payload) {
+    return await asyncInstance.post(ENDPOINTS.USER.EDITS.WORKEXPERIENCE.REMOVE, payload);
   }
 
    

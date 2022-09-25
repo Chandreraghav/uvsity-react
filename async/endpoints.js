@@ -99,7 +99,10 @@ export const ENDPOINTS = {
         }
       },
       WORKEXPERIENCE:{
-        ADD:'edit/profile/add/projectResearchExperience'
+        DATA:'edit/profile/getData/projectResearchExperiences',
+        ADD:'edit/profile/add/projectResearchExperience',
+        EDIT:'edit/profile/update/projectResearchExperience',
+        REMOVE:'edit/profile/delete/projectResearchExperience'
       }
     },
     METADATA: {

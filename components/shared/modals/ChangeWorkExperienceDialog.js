@@ -124,17 +124,18 @@ function ChangeWorkExperience(props) {
   const [isSubmitted, setSubmitted] = useState(false);
   const [request, setRequest] = useState(null);
   const [fromDate, setFromDateChange] = useState(
-    props?.data?.educationStartDateForDisplay ??""
+    props?.data?.projResearchStartDateForDisplay ??""
   );
   const [toDate, setToDateChange] = useState(
-    props?.data?.educationEndDateForDisplay ?? ""
+    props?.data?.projResearchEndDateForDisplay ?? ""
   );
   const [designation, setDesignation] = useState(
-    props.data?.designation
+    props.data?.projectResearchTitle
   );
 
+  const isPresent = props.data?.isPresent==='T'
   const [presentWorkPlace, setPresentWorkPlace] = useState(
-    props.data?.presentWorkPlace?props.data.presentWorkPlace:false
+    isPresent
   );
 
   const [presentWorkPlaceDisabled, setPresentWorkPlaceDisabled] = useState(
@@ -142,16 +143,16 @@ function ChangeWorkExperience(props) {
   );
 
   const [description, setDescription] = useState(
-  props.data?.description
+  props.data?.projectResearchDescription
   );
   const [filteredDesignationList, setFilteredDesignationList] = useState([]);
   const [organization, setOrganization] = useState(
-     props.data?.institution
+     props.data?.projectResearchExpEducationInsitution
   );
   const [filteredOrgzList, setFilteredOrgzList] = useState([]);
   const filteredOrgzListRef = useRef(null);
   const [location, setLocation] = useState(
-    props?.mode == "edit" ? props.data?.location : ""
+    props.data?.projectResearchExpCampus
   );
   const formOptions = {
     resolver: yupResolver(USER.PROFILE.EDIT.HIGHLIGHTS),

@@ -4,7 +4,8 @@ export const KEYS = {
     COMPLETION: "completion",
     SUMMARY: "summary",
     VIEWS:'views',
-    EDUCATION:'education'
+    EDUCATION:'education',
+    EXPERIENCE: 'experience'
   },
   LOGIN: {
     INFO: "login-info",
