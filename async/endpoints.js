@@ -103,6 +103,10 @@ export const ENDPOINTS = {
         ADD:'edit/profile/add/projectResearchExperience',
         EDIT:'edit/profile/update/projectResearchExperience',
         REMOVE:'edit/profile/delete/projectResearchExperience'
+      },
+      RECOMMENDATIONS:{
+        DATA:'edit/profile/getData/userAcceptedRecommendations',
+        CHANGE_PRIVACY:'edit/profile/userAcceptedRecommendations'
       }
     },
     METADATA: {

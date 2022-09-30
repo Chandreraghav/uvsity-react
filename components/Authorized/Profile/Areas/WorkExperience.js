@@ -31,6 +31,7 @@ function WorkExperience(props) {
     setExperiences(props?.experiences);
     return () => setExperiences([]);
   }, [props?.experiences]);
+
   const getDurationOfexperience = (exp) => {
     let end = exp?.projResearchEndDateForDisplay;
     if (!end) end = "Present";
@@ -120,7 +121,9 @@ function WorkExperience(props) {
       isPresent: data.presentWorkPlace === true ? "T" : "F",
       projectResearchStartDate: `${fromMonth}/01/${fromYear}`,
       projectResearchEndDate: `${
-        data.presentWorkPlace === false ? toMonth + "/01/" + toYear : ""
+        data.presentWorkPlace === false
+          ? toMonth + "/01/" + toYear
+          : "undefined/01/undefined"
       }`,
     };
     UserDataService.removeWorkExperience(payload)
@@ -131,7 +134,10 @@ function WorkExperience(props) {
         setWorkExperience(null);
         expierenceData.deleting = false;
         handleResponse(
-          `${USER_PROFILE.WORK_EXPERIENCE_DELETED.replace('<#X#>',payload.projectResearchTitle)}`,
+          `${USER_PROFILE.WORK_EXPERIENCE_DELETED.replace(
+            "<#X#>",
+            payload.projectResearchTitle
+          )}`,
           RESPONSE_TYPES.SUCCESS,
           toast.POSITION.BOTTOM_CENTER
         );
@@ -195,13 +201,25 @@ function WorkExperience(props) {
           </Typography>
         )}
 
-        {exp?.educationInstitution && (
+        {props?.owner && exp?.projectResearchExpEducationInsitution ? (
           <Typography
+            sx={{ mb: 1.5 }}
+            color={`${getMode() === THEME_MODES.DARK ? "" : "text.secondary"}`}
+          >
+            {exp?.projectResearchExpEducationInsitution}{" "}
+            {exp?.projectResearchExpCampus
+              ? `,${exp?.projectResearchExpCampus}`
+              : ""}
+          </Typography>
+        ) : (
+          exp?.educationInstitution && (
+            <Typography
             sx={{ mb: 1.5 }}
             color={`${getMode() === THEME_MODES.DARK ? "" : "text.secondary"}`}
           >
             {exp?.educationInstitution} {exp?.campus ? `,${exp?.campus}` : ""}
           </Typography>
+          )
         )}
 
         {exp?.projectResearchDescription && (
@@ -271,7 +289,7 @@ function WorkExperience(props) {
 
     if (obj.event === "edit") {
       const payload = {
-        projectResearchExpId: data.projectResearchExpId,
+        projectResearchExpId: workExperience?.projectResearchExpId,
         projectResearchDescription: data.description,
         projectResearchExpEducationInsitution: data.organization,
         projectResearchTitle: data.designation,
@@ -284,7 +302,9 @@ function WorkExperience(props) {
         isPresent: data.presentWorkPlace === true ? "T" : "F",
         projectResearchStartDate: `${fromMonth}/01/${fromYear}`,
         projectResearchEndDate: `${
-          data.presentWorkPlace === false ? toMonth + "/01/" + toYear : ""
+          data.presentWorkPlace === false
+            ? toMonth + "/01/" + toYear
+            : "undefined/01/undefined"
         }`,
       };
       // edit

@@ -218,7 +218,7 @@ function ChangeWorkExperience(props) {
           if (start === "Invalid Date") {
             setError("fromDate", {
               type: "required",
-              message: PAST_EDUCATION_FORM_ERRORS.PERIOD.FROM.REQUIRED,
+              message: WORK_EXPERIENCE_FORM_ERRORS.PERIOD.FROM.REQUIRED,
             });
             hasErrors = true;
           }
@@ -227,18 +227,18 @@ function ChangeWorkExperience(props) {
             if (end === "Invalid Date") {
                 setError("toDate", {
                   type: "required",
-                  message: PAST_EDUCATION_FORM_ERRORS.PERIOD.TO.REQUIRED,
+                  message: WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.REQUIRED,
                 });
                 hasErrors = true;
               }
               if (!isValidDatePeriod(start, end)) {
                 setError("toDate", {
                   type: "required",
-                  message: PAST_EDUCATION_FORM_ERRORS.PERIOD.TO.RANGE_ERROR,
+                  message: WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.RANGE_ERROR,
                 });
                 setError("fromDate", {
                   type: "required",
-                  message: PAST_EDUCATION_FORM_ERRORS.PERIOD.FROM.RANGE_ERROR,
+                  message: WORK_EXPERIENCE_FORM_ERRORS.PERIOD.FROM.RANGE_ERROR,
                 });
                 hasErrors = true;
               }

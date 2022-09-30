@@ -96,6 +96,7 @@ function PastEducationManager(props) {
     };
   }, [filteredEduIns]);
   const classes = useStyles();
+  
   const [fromDate, setFromDateChange] = useState(
     props?.data?.educationStartDateForDisplay || ""
   );
@@ -108,7 +109,6 @@ function PastEducationManager(props) {
   const [degree, setDegree] = useState(props?.data?.degreeCourse || "");
   const [campus, setCampus] = useState(props?.data?.pastEducationCampus || "");
   let filterTimeout;
-
   const handleEducationInstitutionChange = (e) => {
     seteducationInstitution(e.target.value);
     clearTimeout(filterTimeout);

@@ -5,7 +5,8 @@ export const KEYS = {
     SUMMARY: "summary",
     VIEWS:'views',
     EDUCATION:'education',
-    EXPERIENCE: 'experience'
+    EXPERIENCE: 'experience',
+    RECOMMENDATIONS:'recommendations'
   },
   LOGIN: {
     INFO: "login-info",
