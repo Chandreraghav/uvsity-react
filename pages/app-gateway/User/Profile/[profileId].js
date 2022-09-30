@@ -42,7 +42,10 @@ const UserProfile = () => {
 
   const getPastEducationDetail = async () =>
     await UserDataService.getPastEducation();
- const getWorkExperienceDetail = async () =>await UserDataService.getWorkExperience();
+  const getWorkExperienceDetail = async () =>
+    await UserDataService.getWorkExperience();
+  const getUserAcceptedRecommendations = async () =>
+    await UserDataService.getUserAcceptedRecommendations();
   const LOGGED_IN_USER_SUMMARY = useQuery(
     [KEYS.PROFILE.SUMMARY],
     getLoggedInUserSummary,
@@ -58,6 +61,12 @@ const UserProfile = () => {
   const WORK_EXPERIENCE = useQuery(
     [KEYS.PROFILE.EXPERIENCE],
     getWorkExperienceDetail,
+    { staleTime: standardStaleTime }
+  );
+
+  const USER_ACCEPTED_RECOMMENDATIONS = useQuery(
+    [KEYS.PROFILE.RECOMMENDATIONS],
+    getUserAcceptedRecommendations,
     { staleTime: standardStaleTime }
   );
 
@@ -91,7 +100,8 @@ const UserProfile = () => {
     LOGGED_IN_USER_SUMMARY: LOGGED_IN_USER_SUMMARY,
     PROFILE_SUMMARY: data,
     PAST_EDUCATION_DETAIL: PAST_EDUCATION_DETAIL,
-    WORK_EXPERIENCE:WORK_EXPERIENCE
+    WORK_EXPERIENCE: WORK_EXPERIENCE,
+    USER_ACCEPTED_RECOMMENDATIONS: USER_ACCEPTED_RECOMMENDATIONS,
   };
 
   const isOwner = () => {
@@ -144,7 +154,7 @@ const UserProfile = () => {
   const handleNavigationError = (obj) => {
     console.log(obj);
   };
-
+  
   return (
     <Layout private lowZoom={false} options={layoutObject}>
       <Header
@@ -159,8 +169,15 @@ const UserProfile = () => {
             owner={isProfileOwner}
             userdata={getData.PROFILE_SUMMARY?.data}
             additionalUserData={{
-              pastEducation: getData.PAST_EDUCATION_DETAIL?.data,
-              workExperience: getData.WORK_EXPERIENCE.data
+              pastEducation: isOwner()
+                ? getData.PAST_EDUCATION_DETAIL?.data
+                : getData.PROFILE_SUMMARY?.data?.pastEducations,
+              workExperience: isOwner()
+                ? getData.WORK_EXPERIENCE.data
+                : getData.PROFILE_SUMMARY?.data?.projectResearchWorkExp,
+              recommendations: isOwner()
+                ? getData.USER_ACCEPTED_RECOMMENDATIONS.data
+                : getData.PROFILE_SUMMARY?.data?.recommendationsReceived,
             }}
             loggedInUser={getData.LOGGED_IN_USER_SUMMARY?.data}
           />

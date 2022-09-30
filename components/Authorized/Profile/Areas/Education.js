@@ -310,6 +310,17 @@ function Education(props) {
     );
   };
   
+  function preConditionsMet(education) {
+    if(props.owner){
+      return education?.degreeCourse &&
+      education.pastEducationEducationInstitution &&
+      education?.pastEducationCampus;
+    }
+    return education?.degreeCourse &&
+    education.educationInstitution &&
+    education?.campus;
+   
+  }
   return education ? (
     <>
       {education?.highestLevel ? (
@@ -366,9 +377,7 @@ function Education(props) {
             <div>
               {education?.pastEducation?.map((education, idx) => (
                 <div className="flex" key={idx}>
-                  {education?.degreeCourse &&
-                    education.pastEducationEducationInstitution &&
-                    education?.pastEducationCampus && (
+                  {preConditionsMet(education) && (
                       <>
                         <div
                           className={`${
@@ -379,11 +388,11 @@ function Education(props) {
                           <div className="flex flex-col">
                             <div className=" dark:text-gray-500 text-blue-400 font-semibold line-clamp-1">
                               {education.degreeCourse} from &nbsp;
-                              {education.pastEducationEducationInstitution}
+                              {education?.pastEducationEducationInstitution??education?.educationInstitution}
                             </div>
                             <div>
                               <div className="text-xs dark:font-semibold dark:text-gray-500  text-gray-700">
-                                <span>{education?.pastEducationCampus}</span>
+                                <span>{education?.pastEducationCampus??education?.campus}</span>
                                 &nbsp;&#8739;&nbsp;
                                 <span>
                                   {education.educationStartDateForDisplay}{" "}
@@ -518,3 +527,5 @@ function Education(props) {
 }
 
 export default Education;
+
+

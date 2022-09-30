@@ -3,9 +3,7 @@ import { Button, Tooltip, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import {
-  IMAGE_PATHS,
   INTRO_ACTIONS,
-  TOOLTIPS,
 } from "../../../../constants/userdata";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import NoData from "../../Shared/NoData";

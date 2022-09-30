@@ -183,7 +183,7 @@ function MacroProfile(props) {
   };
   const [aboutInfo, setAboutInfo] = useState(_aboutInfo);
   const [userSkillsets, setUserSkillSets] = useState(userdata?.userSkillsets);
-  const [projectResearchWorkExperience, setProjectResearchWorkExperience] = useState(additionalUserData.workExperience.data??userdata?.projectResearchWorkExp);
+  const [projectResearchWorkExperience, setProjectResearchWorkExperience] = useState(additionalUserData?.workExperience?.data??additionalUserData?.workExperience);
   const interests = userdata?.myInterests;
   const _interests = {
     dialogOpen: false,
@@ -193,12 +193,14 @@ function MacroProfile(props) {
   const [recommendedSessions, setRecommendedSessions] = useState(
     userdata?.coursesIRecommend
   );
-  const recommendations = userdata?.recommendationsReceived;
+  const [userAcceptedRecommendations, setUserAcceptedRecommendations] =useState(additionalUserData?.recommendations?.data??null)
+  const [recommendations, setRecommendations] = useState(userdata?.recommendationsReceived);
   const [education, setEducation] = useState({
     highestLevel: userdata?.degreeCourse,
-    pastEducation: additionalUserData?.pastEducation?.data,
+    pastEducation: additionalUserData?.pastEducation?.data??additionalUserData.pastEducation,
   });
-
+   
+    
   const _education = {
     dialogOpen: false,
     education,
@@ -1644,6 +1646,7 @@ function MacroProfile(props) {
                                   <RecommendationsFeed
                                     owner={isItMe}
                                     recommendations={recommendations}
+                                    userAcceptedRecommendations={userAcceptedRecommendations}
                                     consumeEvent={handleEvent}
                                   />
                                 </>
