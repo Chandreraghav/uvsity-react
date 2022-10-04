@@ -51,6 +51,7 @@ export const ENDPOINTS = {
       ATTENDEES: "/course/#X#/attendees",
       SEARCH:{
         ATTENDEES:'universalsearch/attendees/',
+        PEOPLE:"search"
         
       },
       VIEW:'view/profile/',

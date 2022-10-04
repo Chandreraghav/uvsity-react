@@ -1,6 +1,6 @@
 import React from "react";
 import { HEADER_OPTIONS } from "../../../../constants/userdata";
-import ThemeSwitcher from "../../../../theme/theme";
+import ThemeSwitcher from "../../../../theme/Theme";
 import { formattedName } from "../../../../utils/utility";
 import HeaderOption from "../HeaderOption";
 import Shimmer from "../Shimmer/Shimmer";

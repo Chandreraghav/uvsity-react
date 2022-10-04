@@ -17,7 +17,6 @@ import { AUTHORIZED_ROUTES } from "../../../constants/routes";
 import { v4 as uuidv4 } from "uuid";
 import Shimmer from "./Shimmer/Shimmer";
 import IntroShimmer from "./Shimmer/IntroShimmer";
-import ThemeSwitcher from "../../../theme/theme";
 
 function Intro(props) {
   const userdata = props.data;
@@ -92,9 +91,7 @@ function Intro(props) {
             👋 {GREETING.replace("<user>", userdata.data?.firstName)}
           </p>
         )}
-        <div className="hidden ml-auto mr-4">
-          <ThemeSwitcher />
-        </div>
+        
       </div>
 
       <Spacer />

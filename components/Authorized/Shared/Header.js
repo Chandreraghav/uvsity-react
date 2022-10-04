@@ -6,7 +6,7 @@ import { HEADER_OPTIONS } from "../../../constants/userdata";
 import Search from "./Search";
 import { formattedName } from "../../../utils/utility";
 import Shimmer from "./Shimmer/Shimmer";
-import ThemeSwitcher from "../../../theme/theme";
+import ThemeSwitcher from "../../../theme/Theme";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 function Header(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();

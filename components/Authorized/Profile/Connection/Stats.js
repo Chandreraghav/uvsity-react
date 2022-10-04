@@ -1,5 +1,5 @@
 import { Divider, Tooltip, Typography } from "@mui/material";
-import React, {  } from "react";
+import React from "react";
 import {
   CONNECTIONS,
   IMAGE_PATHS,
@@ -12,10 +12,14 @@ import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Spacer from "../../../shared/Spacer";
 import Shimmer from "../Shimmer/Shimmer";
+import { navigateToPath } from "../../Shared/Navigator";
+import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
+import { useRouter } from "next/router";
+import { v4 as uuidv4 } from "uuid";
 function Stats({ data }) {
   let tooltip, title, Icon, summary;
-   
-   
+
+  const router = useRouter();
   summary = data?.USER_PROFILE_SUMMARY;
   title = TITLES.CONNECTIONS;
   Icon = SupervisorAccountIcon;
@@ -57,10 +61,16 @@ function Stats({ data }) {
       >
         <Spacer />
         <Tooltip title={tooltip ? tooltip : ""}>
-          <div className={StatStyle.stat__legend}>
-            
-            <div className="flex gap-1 hover:underline dark:hover:text-gray-100 hover:text-gray-900">
-            {Icon && <Icon className="dark:hover:text-gray-100 hover:text-gray-900" />}
+          <div
+            onClick={()=>navigateToPath(
+              router,
+              AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
+              {utrn:AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS,token:uuidv4()}
+            )}
+            className={`${StatStyle.stat__legend} hover:underline dark:hover:text-gray-100 hover:text-gray-900`}
+          >
+            <div className="flex gap-1 ">
+              {Icon && <Icon />}
               {title}({getTotalStatCount()})
             </div>
           </div>
@@ -69,7 +79,6 @@ function Stats({ data }) {
         <Divider className={StatStyle.stat__divider} />
         {summary?.isLoading && (
           <>
-            
             {[1, 2, 3].map((shim, index) => (
               <div key={index} className={StatStyle.stat}>
                 <Shimmer key={index} visible />
@@ -78,11 +87,15 @@ function Stats({ data }) {
             ))}
           </>
         )}
-        {getTotalStatCount() >0 &&
+        {getTotalStatCount() > 0 &&
           CONNECTIONS.filter((hidden) => hidden !== true).map(
             (connection) =>
               getCount(connection.code) > 0 && (
-                <div key={connection.id} className={StatStyle.stat}>
+                <div  onClick={()=>navigateToPath(
+                  router,
+                  AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
+                  {utrn:AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS,filter:connection.title,token:uuidv4()}
+                )} key={connection.id} className={StatStyle.stat}>
                   <p>{connection.title}</p>
                   <p className={StatStyle.statNumber}>
                     {getCount(connection.code)}

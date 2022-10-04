@@ -73,9 +73,8 @@ function Profile({
   sticky,
   userdata,
   noCardOnHover,
-  dark
+  dark,
 }) {
-  
   const [isConnectToPersonOptionShown, setConnectToPersonShown] =
     useState(false);
   const router = useRouter();
@@ -88,7 +87,7 @@ function Profile({
     subject: null,
     message: null,
     dialogOpen: false,
-    event:null
+    event: null,
   };
   const [messageEvent, setMessageEvent] = useState(_messageEvent);
   const handlePopoverOpen = (event) => {
@@ -268,13 +267,12 @@ function Profile({
     return "";
   }
   const goToProfile = (id) => {
-    if(id){
-      navigateToProfile(id, router)
-      return
+    if (id) {
+      navigateToProfile(id, router);
+      return;
     }
     // cohost id requested
-    navigateToProfile(metaData?.associatedCoHostData.userDetailsId, router)
-    
+    navigateToProfile(metaData?.associatedCoHostData.userDetailsId, router);
   };
 
   const handleMessageEvent = (request) => {
@@ -286,7 +284,7 @@ function Profile({
       subject: null,
       message: null,
       dialogOpen: true,
-      event:request.event
+      event: request.event,
     };
     setMessageEvent(_messageEvent);
   };
@@ -296,7 +294,7 @@ function Profile({
       setMessageEvent(_messageEvent);
       return;
     }
-    if(request.event===RECOMMENDATIONS.REQUEST_TYPE){
+    if (request.event === RECOMMENDATIONS.REQUEST_TYPE) {
       const payload = {
         requestTo: {
           userDetailsId: request.recommendation.to,
@@ -309,60 +307,56 @@ function Profile({
         userRequestType: RECOMMENDATIONS.REQUEST_TYPE,
       };
       MessagingService.sendRecommendationRequest(payload)
-      .then((res) => {
-        setMessageEvent(_messageEvent);
-        handleResponse(
-          `${RECOMMENDATIONS.REQUEST_SENT_TO}${firstName}`,
-          RESPONSE_TYPES.SUCCESS,
-          toast.POSITION.BOTTOM_CENTER
-        );
-      })
-      .catch((err) => {
-        setMessageEvent(_messageEvent);
-        handleResponse(
-          `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${firstName}`,
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.BOTTOM_CENTER
-        );
-      });
+        .then((res) => {
+          setMessageEvent(_messageEvent);
+          handleResponse(
+            `${RECOMMENDATIONS.REQUEST_SENT_TO}${firstName}`,
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        })
+        .catch((err) => {
+          setMessageEvent(_messageEvent);
+          handleResponse(
+            `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${firstName}`,
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
     }
-    if(request.event===INBOX.REQUEST_TYPE){
-      const payload={
-        usersInTo: [
-          request.message.to,
-        ],
+    if (request.event === INBOX.REQUEST_TYPE) {
+      const payload = {
+        usersInTo: [request.message.to],
         messageSubject: request.message.subject,
         messageBody: request.message.message,
         senderUserId: request.message.from,
         htmlFormattedMessageBody: null,
         isMessageBodyHTMLFormatted: false,
-        usersInCc: null
-    }
-    MessagingService.sendMessage(payload)
-      .then((res) => {
-        setMessageEvent(_messageEvent);
-        handleResponse(
-          `${INBOX.MESSAGE_SENT_TO}${firstName}`,
-          RESPONSE_TYPES.SUCCESS,
-          toast.POSITION.BOTTOM_CENTER
-        );
-      })
-      .catch((err) => {
-        setMessageEvent(_messageEvent);
-        handleResponse(
-          `${INBOX.MESSAGE_SENT_FAILED}${firstName}`,
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.BOTTOM_CENTER
-        );
-      });
-    
+        usersInCc: null,
+      };
+      MessagingService.sendMessage(payload)
+        .then((res) => {
+          setMessageEvent(_messageEvent);
+          handleResponse(
+            `${INBOX.MESSAGE_SENT_TO}${firstName}`,
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        })
+        .catch((err) => {
+          setMessageEvent(_messageEvent);
+          handleResponse(
+            `${INBOX.MESSAGE_SENT_FAILED}${firstName}`,
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
+        });
     }
   };
 
   return (
     <div>
       <Popover
-        
         id="mouse-over-popover"
         className={classes.popover}
         classes={{
@@ -402,7 +396,7 @@ function Profile({
           isConnectionAcceptRequestSendError={
             isConnectionAcceptRequestSendError
           }
-          dark={getMode()===THEME_MODES.DARK?true:false}
+          dark={getMode() === THEME_MODES.DARK ? true : false}
           data={{
             oid: oid,
             avatar: avatar,
@@ -488,34 +482,33 @@ function Profile({
                 }`}
                 role="button"
               >
-                <IconButton
-                  className=" cursor-pointer inline-flex "
-                  fontSize="small"
-                  color="primary"
-                  aria-label="connect-to-person"
-                >
-                  {isConnectionRequestInProgress ? (
+                {isConnectionRequestInProgress ? (
+                  <IconButton
+                    className=" cursor-pointer inline-flex "
+                    fontSize="small"
+                    color="primary"
+                    aria-label="connect-to-person"
+                  >
                     <ClipLoader color={`${dark ? "#fff" : "#111"}`} size={20} />
-                  ) : isConnectionRequestSent ? (
-                    <>
-                      <DoneIcon fontSize="small" />
-                      <small
-                        title={`${TITLES.CONNECTION_REQUEST_SENT_TO_LATENT}${firstName}`}
-                        className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline"
-                      >
-                        {TITLES.CONNECTION_REQUEST_SENT}
-                      </small>
-                    </>
-                  ) : (
-                    <span
-                      onClick={(e) => addToNetwork(e)}
-                      className="-mt-1"
-                      title={`Connect with ${firstName}`}
+                  </IconButton>
+                ) : isConnectionRequestSent ? (
+                  <>
+                    <DoneIcon color='primary' fontSize="small" />
+                    <small
+                      title={`${TITLES.CONNECTION_REQUEST_SENT_TO_LATENT}${firstName}`}
+                      className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline"
                     >
-                      <PersonAddAltIcon />
-                    </span>
-                  )}
-                </IconButton>
+                      {TITLES.CONNECTION_REQUEST_SENT}
+                    </small>
+                  </>
+                ) : (
+                  <PersonAddAltIcon
+                    color="primary"
+                    onClick={(e) => addToNetwork(e)}
+                    className="-mt-1"
+                    title={`Connect with ${firstName}`}
+                  />
+                )}
 
                 {isConnectToPersonOptionShown && (
                   <div
@@ -541,31 +534,33 @@ function Profile({
                     }`}
                     role="button"
                   >
-                    <IconButton
-                      className=" cursor-pointer inline-flex "
-                      fontSize="small"
+                    {isConnectionRequestInProgress ? (
+                      <IconButton
+                        className=" cursor-pointer inline-flex "
+                        fontSize="small"
+                        color="primary"
+                        aria-label="connect-to-person"
+                      >
+                        <ClipLoader
+                          color={`${dark ? "#fff" : "#111"}`}
+                          size={20}
+                        />
+                      </IconButton>
+                    ) : isConnectionRequestSent ? (
+                      <>
+                        <DoneIcon color='primary' fontSize="small" />
+                        <small className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
+                          {TITLES.CONNECTION_REQUEST_SENT}
+                        </small>
+                      </>
+                    ) : (
+                      <PersonAddAltIcon
                       color="primary"
-                      aria-label="connect-to-person"
-                    >
-                      {isConnectionRequestInProgress ? (
-                        <ClipLoader  color={`${dark ? "#fff" : "#111"}`} size={20} />
-                      ) : isConnectionRequestSent ? (
-                        <>
-                          <DoneIcon fontSize="small" />
-                          <small className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
-                            {TITLES.CONNECTION_REQUEST_SENT}
-                          </small>
-                        </>
-                      ) : (
-                        <span
-                          onClick={(e) => addToNetwork(e)}
-                          className="-mt-1"
-                          title={`Connect with ${firstName}`}
-                        >
-                          <PersonAddAltIcon />
-                        </span>
-                      )}
-                    </IconButton>
+                        onClick={(e) => addToNetwork(e)}
+                        className="-mt-1"
+                        title={`Connect with ${firstName}`}
+                      />
+                    )}
 
                     {isConnectToPersonOptionShown && (
                       <div
@@ -591,34 +586,35 @@ function Profile({
                     }`}
                     role="button"
                   >
-                    <IconButton
-                      className=" cursor-pointer inline-flex "
-                      fontSize="small"
-                      color="primary"
-                      aria-label="accept-connection-request-from-person"
-                    >
-                      {isConnectionAcceptRequestInProgress ? (
-                        <ClipLoader color={`${dark ? "#fff" : "#111"}`} size={20} />
-                      ) : isConnectionAcceptRequestSent ? (
-                        <>
-                          <CheckCircleIcon
-                            sx={{ color: "green" }}
-                            fontSize="small"
-                          />
-                          <small className="md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
-                            {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
-                          </small>
-                        </>
-                      ) : (
-                        <span
-                          onClick={(e) => acceptRequest(e)}
-                          className="-mt-1"
-                          title={`Accept connection request from ${firstName}`}
-                        >
-                          <AddTaskIcon />
-                        </span>
-                      )}
-                    </IconButton>
+                    {isConnectionAcceptRequestInProgress ? (
+                      <IconButton
+                        className=" cursor-pointer inline-flex "
+                        fontSize="small"
+                        color="primary"
+                        aria-label="accept-connection-request-from-person"
+                      >
+                        <ClipLoader
+                          color={`${dark ? "#fff" : "#111"}`}
+                          size={20}
+                        />
+                      </IconButton>
+                    ) : isConnectionAcceptRequestSent ? (
+                      <>
+                        <CheckCircleIcon
+                          sx={{ color: "green" }}
+                          fontSize="small"
+                        />
+                        <small className="md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
+                          {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
+                        </small>
+                      </>
+                    ) : (
+                      <AddTaskIcon
+                        onClick={(e) => acceptRequest(e)}
+                        className="-mt-1"
+                        title={`Accept connection request from ${firstName}`}
+                      />
+                    )}
 
                     {isAcceptPersonRequestOptionShown && (
                       <div
@@ -733,7 +729,11 @@ function Profile({
         </div>
       </div>
       <PolyMessagingDialog
-        workflow={messageEvent.event===RECOMMENDATIONS.REQUEST_TYPE?WORKFLOW_CODES.MESSAGING.RECOMMENDATIONS.SEND_RECOMMENDATION:WORKFLOW_CODES.MESSAGING.INBOX.SEND_MESSAGE}
+        workflow={
+          messageEvent.event === RECOMMENDATIONS.REQUEST_TYPE
+            ? WORKFLOW_CODES.MESSAGING.RECOMMENDATIONS.SEND_RECOMMENDATION
+            : WORKFLOW_CODES.MESSAGING.INBOX.SEND_MESSAGE
+        }
         title={`${firstName}`}
         dialogCloseRequest={handleMessageEventClosure}
         data={messageEvent}
