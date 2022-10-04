@@ -302,7 +302,8 @@ export const PLACEHOLDERS = {
 
   NO_POPULAR_SESSIONS:
     "There are no popular sessions available right now. How about creating your own session, invite people to join and grow your connectivity.",
-  BE_THE_FIRST:'Be the first to attend'
+  BE_THE_FIRST:'Be the first to attend',
+  PROCESSING: 'Processing...'
 };
 export const TITLES = {
   CONNECTIONS: "Connections",

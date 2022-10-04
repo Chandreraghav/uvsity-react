@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PreAuthSignUpMessageBar from "./PreAuthSignUpMessageBar";
 import { AuthService } from "../../pages/api/users/auth/AuthService";
-import ThemeSwitcher from "../../theme/theme";
+import ThemeSwitcher from "../../theme/Theme";
 toast.configure();
 function Nav({ setSignInDialogOpen }) {
   const [show, handleShow] = useState(false);

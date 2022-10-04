@@ -32,7 +32,7 @@ export const KEYS = {
   },
   NETWORK: {
     PEOPLE: {
-      CONNECTIONS: {},
+      CONNECTIONS: "connections",
       INTERESTING: "interesting",
     },
     USER:{

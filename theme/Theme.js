@@ -22,15 +22,11 @@ function ThemeSwitcher() {
   };
   return (
     <Tooltip title={getThemeTooltip()}>
-      
-      {theme === "light" ? (
-        
-         <DarkModeIcon
+      {ctxTheme.mode === THEME_MODES.LIGHT ? (
+        <DarkModeIcon
           onClick={() => handleModeChange(THEME_MODES.DARK)}
           className={` cursor-pointer text-blue-900 mt-1`}
         />
-        
-       
       ) : (
         <LightModeIcon
           onClick={() => handleModeChange(THEME_MODES.LIGHT)}
@@ -38,6 +34,7 @@ function ThemeSwitcher() {
         />
       )}
     </Tooltip>
+     
   );
 }
 

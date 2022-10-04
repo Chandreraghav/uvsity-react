@@ -10,6 +10,7 @@ import FileUpload from "../../../../../FileUploader/FileUpload";
 import Slide from "@mui/material/Slide";
 import {
   APP as APP,
+  PLACEHOLDERS,
   SESSION_DOCUMENT,
   SESSION_POSTER,
 } from "../../../../../../constants/userdata";
@@ -613,7 +614,7 @@ function Basic(props) {
           </Grid>
         </Box>
       </form>
-      <Overlay  message='Processing...' open={processing}/>
+      <Overlay  message={PLACEHOLDERS.PROCESSING} open={processing}/>
       <PastSessionDialog selectedSession={pastSessionId} getSelectedSession={handlePastSessionChange} data={props?.data?.root?.expiredCourses} isOpen={pastSessionDialogOpen} dialogCloseRequest={handlePastSessionDialogClose} />
     </div>
     </Slide>

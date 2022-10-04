@@ -50,7 +50,6 @@
 .stat__legend:hover {
   text-decoration: underline;
   cursor: pointer;
-  color: #111;
   transition-timing-function: ease-in;
   transition: all 0.8s;
 }

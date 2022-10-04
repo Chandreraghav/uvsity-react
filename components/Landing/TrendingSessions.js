@@ -31,7 +31,8 @@ function TrendingSessions() {
             className={`flex  flex-col  ${TrendingSessionsStyle.trending__sessions__text} 
       justify-center text-center font-medium lg:text-2xl md:text-2xl sm:text-xl mt-10`}
           >
-            <div className="">
+            {trendingSessions?.data.length>0 && (<>
+              <div className="">
               <h1
                 className={`${TrendingSessionsStyle.trending__sessions__title} text-center dark:text-gray-300`}
               >
@@ -49,6 +50,9 @@ function TrendingSessions() {
                 />
               </a>
             </div>
+              
+              </>)}
+            
             <Loader visible={trendingSessions.isLoading} />
           </div>
 

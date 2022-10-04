@@ -19,7 +19,7 @@ export class AuthGuardService extends AuthService {
       script.type = 'text/javascript'
       script.src = 'https://apis.google.com/js/platform.js'
       script.onload = e => {
-        window.gapi.load('client:auth2', _ => {
+        window.gapi?.load('client:auth2', _ => {
           const clientId = process.env.NEXT_PUBLIC_GOOGLE_ID
           function initGAPI(){
             if (!window.gapi || !window.gapi.client){ return reject('no window.gapi.client') }

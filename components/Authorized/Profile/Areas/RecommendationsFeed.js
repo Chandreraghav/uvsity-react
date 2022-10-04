@@ -22,6 +22,7 @@ import {
   THEME_MODES,
   useTheme,
 } from "../../../../theme/ThemeProvider";
+import { PLACEHOLDERS } from "../../../../constants/userdata";
 function RecommendationsFeed(props) {
   const [theme, dispatch] = useTheme();
   const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
@@ -197,7 +198,7 @@ function RecommendationsFeed(props) {
                         <div className="flex text-sm text-muted leading-tight gap-1 dark:text-gray-500 text-gray-700">
                           <CircularProgress color="primary" size={15} />
                           <Typography variant="caption">
-                            Please wait...
+                            {PLACEHOLDERS.PROCESSING}
                           </Typography>
                         </div>
                       </>

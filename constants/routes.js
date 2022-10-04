@@ -5,8 +5,16 @@ export const AUTHORIZED_ROUTES={
        CREATE:"/app-gateway/Session/Create"
     },
     PEOPLE:{
-       PROFILE:'/app-gateway/User/Profile/'
+       PROFILE:'/app-gateway/User/Profile/',
+       INDEX:'/app-gateway/People'
+       
+    },
+    UTRN:{ // uvsity target resource name
+      MYCONNECTIONS:'myconnections',
+      PROFILE_VISITS:'profileVisits',
+      ADD_TO_NETWORK:'addToNetwork'
     }
+    
    }
     
 }

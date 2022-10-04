@@ -32,7 +32,7 @@ function PeekProfile(props) {
   const isAConnection = () => {
     let metadata = props.metaData;
     if (metadata) {
-      if (metadata.courseId) {
+      if (metadata?.courseId) {
         // meta data contains data about posted session and associated user data.
         if (metadata.associatedUserData) {
           if (
@@ -44,7 +44,7 @@ function PeekProfile(props) {
         }
       }
 
-      if (metadata.associatedCoHostData) {
+      if (metadata?.associatedCoHostData) {
         // meta data contains data about posted session co-host and associated user data.
 
         if (
@@ -58,11 +58,13 @@ function PeekProfile(props) {
       // meta data contains data only about user network status.
       return (
         metadata?.invitationAction?.invitationAction ===
-        NETWORK.CONNECTION_RELATION_STATE.IN_MY_NETWORK
+        NETWORK.CONNECTION_RELATION_STATE.IN_MY_NETWORK ||
+        metadata?.invitationAction?.invitationAction=== NETWORK.CONNECTION_RELATION_STATE_ALT.IN_MY_NETWORK
       );
     }
     return false;
   };
+   
   const [isConnected, setIsConnected] = useState(isAConnection());
 
   const [isInAcceptanceState, setAcceptanceState] = useState(acceptanceState);
@@ -116,16 +118,18 @@ function PeekProfile(props) {
   }
   const handleRequestRecommendation = () => {
     const requestedTo = getUserID();
+    const requestTitle=props.metaData?.firstName
     if (requestedTo) {
-      const request = { requestedTo, event:RECOMMENDATIONS.REQUEST_TYPE };
+      const request = { requestedTo, requestTitle,event:RECOMMENDATIONS.REQUEST_TYPE };
       if (props.messageEvent) props?.messageEvent(request);
     }
   };
 
   const handleSendMessage=()=>{
     const requestedTo = getUserID();
+    const requestTitle=props.metaData?.firstName
     if (requestedTo) {
-      const request = { requestedTo, event:INBOX.REQUEST_TYPE };
+      const request = { requestedTo, requestTitle, event:INBOX.REQUEST_TYPE };
       if (props.messageEvent) props?.messageEvent(request);
     }
   }
@@ -135,7 +139,7 @@ function PeekProfile(props) {
       className={` relative border-0   rounded
        overflow-hidden ${
          props.dark ? "dark-dialog-variant" : "default-dialog-variant"
-       }  flex flex-col rectangular-md-card ${
+       }  flex flex-col ${props.fullWidth?'rectangular-md-card-fullWidth':'rectangular-md-card'} ${
         props?.options?.mixedMode === false
           ? "rectangular-md-card-fixed-height"
           : ""
@@ -437,18 +441,15 @@ function PeekProfile(props) {
         <div className="text-md actions-on-peek ">
           <Stack direction="row" spacing={2}>
             {COMPLETION_DETAIL_ACTION.map((action, index) =>
-              action.id===1 ? (
-                <Button
-                  key={index}
+            (<div key={index}>
+              { action.id===1 ?(<Button
                   variant="contained"
                   startIcon={action.icon}
                   size={action.size}
                   onClick={handleProfileEdit}
                 >
                   {action.title}
-                </Button>
-              ) : (
-                <Tooltip title={action.tooltip}>
+                </Button>):(<Tooltip title={action.tooltip}>
                    <Button
                       key={index}
                       variant="contained"
@@ -457,10 +458,8 @@ function PeekProfile(props) {
                     >
                       {action.title}
                     </Button>
-                </Tooltip>
-                 
-                   
-              )
+                </Tooltip>)}
+            </div>)
             )}
           </Stack>
         </div>
