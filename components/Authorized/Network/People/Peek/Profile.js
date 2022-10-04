@@ -30,6 +30,7 @@ function PeekProfile(props) {
   if (!props.isOpen) return <></>;
   const router = useRouter();
   const isAConnection = () => {
+    if (props?.connected===true) return true;
     let metadata = props.metaData;
     if (metadata) {
       if (metadata?.courseId) {
