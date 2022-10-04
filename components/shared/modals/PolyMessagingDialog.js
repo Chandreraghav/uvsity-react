@@ -76,6 +76,7 @@ function PolyMessagingDialog(props) {
           setProcessing(true);
           messageObject.subject = subject.trim();
           messageObject.message = message.trim();
+          messageObject.title=props.title
         }
       }
       if (workflow === RECOMMENDATIONS.REQUEST_TYPE)

@@ -120,7 +120,7 @@ function AllConnections() {
         .then((res) => {
           setMessageEvent(_messageEvent);
           handleResponse(
-            `${RECOMMENDATIONS.REQUEST_SENT_TO}${request.requestTitle}`,
+            `${RECOMMENDATIONS.REQUEST_SENT_TO}${request.recommendation.title}`,
             RESPONSE_TYPES.SUCCESS,
             toast.POSITION.BOTTOM_CENTER
           );
@@ -128,7 +128,7 @@ function AllConnections() {
         .catch((err) => {
           setMessageEvent(_messageEvent);
           handleResponse(
-            `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${request.requestTitle}`,
+            `${RECOMMENDATIONS.REQUEST_SENT_FAILED}${request.recommendation.title}`,
             RESPONSE_TYPES.ERROR,
             toast.POSITION.BOTTOM_CENTER
           );
@@ -148,7 +148,7 @@ function AllConnections() {
         .then((res) => {
           setMessageEvent(_messageEvent);
           handleResponse(
-            `${INBOX.MESSAGE_SENT_TO}${request.requestTitle}`,
+            `${INBOX.MESSAGE_SENT_TO}${request.message.title}`,
             RESPONSE_TYPES.SUCCESS,
             toast.POSITION.BOTTOM_CENTER
           );
@@ -156,7 +156,7 @@ function AllConnections() {
         .catch((err) => {
           setMessageEvent(_messageEvent);
           handleResponse(
-            `${INBOX.MESSAGE_SENT_FAILED}${request.requestTitle}`,
+            `${INBOX.MESSAGE_SENT_FAILED}${request.message.title}`,
             RESPONSE_TYPES.ERROR,
             toast.POSITION.BOTTOM_CENTER
           );
@@ -197,6 +197,7 @@ function AllConnections() {
                 >
                   <PeekProfile
                     isOpen={true}
+                    connected={true}
                     fullWidth
                     options={{ connect: false, mixedMode: false }}
                     metaData={getMetaData(data)}
