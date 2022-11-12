@@ -121,7 +121,7 @@ function Plans(props) {
             </Button>
 
             {props.data.dirty && (
-              <div class="ml-auto">
+              <div className="ml-auto">
                 <Tooltip title="Reset to default offering">
                   <Button
                     onClick={() => resetSponsorShip(props.data)}

@@ -397,7 +397,7 @@ function Participant(props) {
                         <DeleteIcon
                           onClick={handleRemoveParticipant}
                           size="small"
-                          className="app__anchor__block cursor-pointer"
+                          className="app-anchor-block cursor-pointer"
                         />
                       </Tooltip>
                     </div>
@@ -515,7 +515,7 @@ function Participant(props) {
                         key={option.id}
                       >
                         <FormControlLabel
-                          className="app__anchor__block"
+                          className="app-anchor-block"
                           value={option.value}
                           control={<Radio />}
                           label={

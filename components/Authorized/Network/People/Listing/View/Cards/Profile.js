@@ -7,6 +7,17 @@ function Profile(props) {
             props.messageEvent(obj)
         }
     }
+    const addToNetwork = (obj) => {
+        if (props.addToNetwork) {
+            props.addToNetwork(obj)
+        }
+    }
+
+    const acceptRequest = (obj) => {
+        if (props.acceptRequest) {
+            props.acceptRequest(obj)
+        }
+    }
     return (
         <>
             <PeekProfile
@@ -37,6 +48,9 @@ function Profile(props) {
                 dark={props.dark}
                 data={props.data}
                 messageEvent={handleMessageEvent}
+                addToNetwork={addToNetwork}
+                acceptRequest={acceptRequest}
+                listed={props.listed}
             />
         </>
     )

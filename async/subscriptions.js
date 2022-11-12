@@ -8,7 +8,8 @@ export const asyncSubscriptions = {
     subscribed: false,
     pollEvery: standardSubscriptionPollDelay,
     model: false,
-    staleTime: 5000 // 5 seconds
+    staleTime: 5000, // 5 seconds
+    alias:'PROFILE_VISITS',
   },
   PROFILE_VIEWS: {
     enabled: false,

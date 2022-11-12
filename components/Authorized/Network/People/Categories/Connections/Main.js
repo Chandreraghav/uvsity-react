@@ -52,11 +52,13 @@ function Main(props) {
   }
   useEffect(() => {
     setConnectionData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.filter])
 
   useEffect(() => {
     if (loadMore === true)
       setConnectionData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadMore])
 
   const handleLoadMore = (obj) => {

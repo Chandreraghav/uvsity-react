@@ -1,5 +1,5 @@
 import { Avatar, Button, Stack, IconButton, Tooltip } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState,useEffect,useCallback } from "react";
 import {
   COMPLETION_DETAIL_ACTION,
   IMAGE_PATHS,
@@ -20,7 +20,6 @@ import DoneIcon from "@mui/icons-material/Done";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
 import AddTaskIcon from "@mui/icons-material/AddTask";
-import ProfileStyle from "../../../../../styles/DashboardProfile.module.css";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
@@ -30,7 +29,38 @@ import { WORKFLOW_CODES } from "../../../../../constants/workflow-codes";
 toast.configure();
 function PeekProfile(props) {
   if (!props.isOpen) return <></>;
+   
   const router = useRouter();
+  const invitedState =
+  props.metaData?.invitationAction?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE.CONNECT ||
+  props.metaData?.invitationAction?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT ||
+  props.metaData?.associatedUserData?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT ||
+  props.metaData?.associatedCoHostData?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT;
+const acceptanceState =
+  props.metaData?.invitationAction?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE.ACCEPT_REQUEST ||
+  props.metaData?.invitationAction?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST ||
+  props.metaData?.associatedUserData?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST ||
+  props.metaData?.associatedCoHostData?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
+const pendingState =
+  props.metaData?.invitationAction?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE ||
+  props.metaData?.invitationAction?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE ||
+  props.metaData?.associatedUserData?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE ||
+  props.metaData?.associatedCoHostData?.invitationAction ===
+  NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE;
+ 
+ 
+  
   const isAConnection = () => {
     if (props?.connected === true) return true;
     let metadata = props.metaData;
@@ -67,7 +97,6 @@ function PeekProfile(props) {
     }
     return false;
   };
-
   const [isConnected, setIsConnected] = useState(isAConnection());
 
   const [isInAcceptanceState, setAcceptanceState] = useState(acceptanceState);
@@ -75,35 +104,14 @@ function PeekProfile(props) {
   const [isInInvitedState, setInvitedState] = useState(invitedState);
 
   const [isInPendingState, setPendingState] = useState(pendingState);
-  const invitedState =
-    props.metaData?.invitationAction?.invitationAction ===
-    NETWORK.CONNECTION_RELATION_STATE.CONNECT ||
-    props.metaData?.associatedUserData?.invitationAction ===
-    NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT ||
-    props.metaData?.associatedCoHostData?.invitationAction ===
-    NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT;
-  const acceptanceState =
-    props.metaData?.invitationAction?.invitationAction ===
-    NETWORK.CONNECTION_RELATION_STATE.ACCEPT_REQUEST ||
-    props.metaData?.associatedUserData?.invitationAction ===
-    NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST ||
-    props.metaData?.associatedCoHostData?.invitationAction ===
-    NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST;
-  const pendingState =
-    props.metaData?.invitationAction?.invitationAction ===
-    NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE ||
-    props.metaData?.associatedUserData?.invitationAction ===
-    NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE ||
-    props.metaData?.associatedCoHostData?.invitationAction ===
-    NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE;
-
-
-
+  
   const handleConnectRequest = () => {
-    props?.addToNetwork();
+    if(props.addToNetwork)
+    props.addToNetwork(props);
   };
   const handleAcceptRequest = () => {
-    props?.acceptRequest();
+    if(props.acceptRequest)
+    props.acceptRequest(props);
     setIsConnected(true);
   };
   const getUserID = () => {
@@ -188,7 +196,7 @@ function PeekProfile(props) {
 
             </>)}
 
-            {props.connected && (
+            {(isConnected || props.connected) && (
               <Tooltip
                 title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
                   "#X#",
@@ -246,8 +254,8 @@ function PeekProfile(props) {
                       {TITLES.CONNECTION_REQUEST_SENT}
                     </small>
                   </>
-                ) : (
-                  <span
+                ) : props?.isConnectToPersonOptionShown &&(
+                   <span
                     onClick={(e) => handleConnectRequest()}
                     className="-mt-1"
                     title={`${props?.metaData?.firstName
@@ -257,20 +265,11 @@ function PeekProfile(props) {
                   >
                     <PersonAddAltIcon />
                   </span>
+                 
                 )}
               </IconButton>
 
-              {props?.isConnectToPersonOptionShown && (
-                <div
-                  onClick={(e) => handleConnectRequest()}
-                  className={`${ProfileStyle.profile__connect__request__text} 
-                      font-small mt-3-5 font-medium text-gray-600 leading-tight cursor-pointer ${props?.isConnectionRequestInProgress &&
-                    "control__disabled"
-                    }`}
-                >
-                  {TITLES.CONNECT_TO_PERSON}
-                </div>
-              )}
+              
             </div>
           )}
           {/* CONNECTED/CONNECT/ACCEPT/AWAITING OR PENDING RESPONSE */}
@@ -304,7 +303,7 @@ function PeekProfile(props) {
                           {TITLES.CONNECTION_REQUEST_SENT}
                         </small>
                       </>
-                    ) : (
+                    ) : props?.isConnectToPersonOptionShown &&(
                       <span
                         onClick={(e) => handleConnectRequest()}
                         className="-mt-1"
@@ -318,18 +317,7 @@ function PeekProfile(props) {
                     )}
                   </IconButton>
 
-                  {props?.isConnectToPersonOptionShown && (
-                    <div
-                      onClick={(e) => handleConnectRequest()}
-                      className={`${ProfileStyle.profile__connect__request__text
-                        } 
-                    font-small mt-3-5 font-medium text-gray-600 leading-tight cursor-pointer ${props?.isConnectionRequestInProgress &&
-                        "control__disabled"
-                        }`}
-                    >
-                      {TITLES.CONNECT_TO_PERSON}
-                    </div>
-                  )}
+                   
                 </div>
               )}
 
@@ -338,7 +326,6 @@ function PeekProfile(props) {
                   className={`flex cursor-pointer  slow-transition ${props?.isConnectionAcceptRequestSent && "control__disabled"
                     }`}
                   role="button"
-
                 >
                   <IconButton
                     className=" cursor-pointer inline-flex "
@@ -346,72 +333,32 @@ function PeekProfile(props) {
                     color="primary"
                     aria-label="accept-connection-request-from-person"
                   >
-                    {props?.isConnectionAcceptRequestInProgress ? (
+                    {props?.isConnectionAcceptRequestInProgress && (
                       <ClipLoader
                         color={`${props.dark ? "#fff" : "#111"}`}
                         size={20}
                       />
-                    ) : props?.isConnectionAcceptRequestSent ? (
-                      <>
-                        <CheckCircleIcon
-                          sx={{ color: "green" }}
-                          fontSize="small"
-                        />
-                        <small className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline text-green-600`}>
-                          {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
-                        </small>
-                      </>
-                    ) : (
-                      <span
-                        onClick={(e) => handleAcceptRequest(e)}
-                        className="-mt-1"
-                        title={`${props?.metaData?.firstName
-                            ? `Accept connection request from ${props.metaData.firstName}`
-                            : ""
-                          }`}
-                      >
-                        {" "}
-                        <AddTaskIcon />
-                      </span>
+                    ) }
+                    {!props?.isConnectionAcceptRequestInProgress &&(
+                       <span
+                       onClick={(e) => handleAcceptRequest(e)}
+                       className="-mt-1"
+                       title={`${props?.metaData?.firstName
+                           ? `Accept connection request from ${props.metaData.firstName}`
+                           : ""
+                         }`}
+                     > 
+                       <AddTaskIcon />
+                     </span>
                     )}
+                     
+                    
                   </IconButton>
-
-                  {props?.isAcceptPersonRequestOptionShown && (
-                    <div
-                      onClick={(e) => handleAcceptRequest()}
-                      className={`${ProfileStyle.profile__connect__request__text
-                        } 
-                    font-small mt-3-5 font-medium text-gray-600 leading-tight cursor-pointer ${props?.isConnectionAcceptRequestInProgress &&
-                        "control__disabled"
-                        }`}
-                    >
-                      {NETWORK.CONNECTION_ACTION_STATUS.ACCEPT}
-                    </div>
-                  )}
+ 
                 </div>
               )}
 
-              {isConnected && (
-                <div className={`flex cursor-pointer  slow-transition`}>
-                  <IconButton
-                    title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
-                      "#X#",
-                      props.metaData.firstName ||
-                      props.metaData?.associatedUserData?.firstName ||
-                      props.metaData?.associatedCoHostData?.firstName
-                    )}`}
-                    className=" cursor-pointer inline-flex text-green-700 "
-                    fontSize="small"
-                    sx={{ color: NETWORK.COLOR_VARIANTS.CONNECTED }}
-                    aria-label="connected-to-person"
-                  >
-                    <CheckCircleIcon fontSize="small" />
-                    <small className={`text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline`}>
-                      {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
-                    </small>
-                  </IconButton>
-                </div>
-              )}
+              
 
               {isInPendingState && (
                 <div className={`flex cursor-pointer  slow-transition`}>

@@ -370,7 +370,7 @@ function Final(props) {
                   </Typography>
                   <div
                     className="ml-auto flex mt-2.5 text-blue-600
-                              app__anchor__block cursor-pointer"
+                              app-anchor-block cursor-pointer"
                   >
                     <Tooltip title="Change">
                       <EditIcon
@@ -445,7 +445,7 @@ function Final(props) {
                           </span>
                           <div
                             className="flex text-blue-600
-              ml-auto app__anchor__block cursor-pointer"
+              ml-auto app-anchor-block cursor-pointer"
                           >
                             <Tooltip title="Change">
                               <EditIcon
@@ -484,7 +484,7 @@ function Final(props) {
 
                           <div
                             className="flex mr-2 text-blue-600
-         ml-auto app__anchor__block cursor-pointer"
+         ml-auto app-anchor-block cursor-pointer"
                           >
                             <Tooltip title="Change">
                               <EditIcon
@@ -542,7 +542,7 @@ function Final(props) {
 
                       <div
                         className="flex mr-2 text-blue-600
-           ml-auto app__anchor__block cursor-pointer"
+           ml-auto app-anchor-block cursor-pointer"
                       >
                         <Tooltip title="Change">
                           <EditIcon
@@ -621,7 +621,7 @@ function Final(props) {
                       <Typography
                         onClick={() => handleTimezoneBrowserChange()}
                         variant="div"
-                        className=" app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-blue-600"
+                        className=" app-anchor-block cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-blue-600"
                       >
                         See other timezones
                       </Typography>
@@ -656,7 +656,7 @@ function Final(props) {
                             </Typography>{" "}
                             <div
                               className="flex mr-2 text-blue-600
-           ml-auto app__anchor__block cursor-pointer"
+           ml-auto app-anchor-block cursor-pointer"
                             >
                               <Tooltip title="Change">
                                 <EditIcon
@@ -721,7 +721,7 @@ function Final(props) {
                               <Tooltip title="Click to download">
                                 <Typography
                                   variant="div"
-                                  className="app__anchor__block cursor-pointer font-normal line-clamp-1 text-sm mt-1  leading-tight  text-gray-600"
+                                  className="app-anchor-block cursor-pointer font-normal line-clamp-1 text-sm mt-1  leading-tight  text-gray-600"
                                 >
                                   {
                                     data?.basic?.binary?.documents?.data?.binary
@@ -753,7 +753,7 @@ function Final(props) {
                           </Tooltip>
                           <div
                             className="flex mr-2 text-blue-600
-           ml-auto app__anchor__block cursor-pointer"
+           ml-auto app-anchor-block cursor-pointer"
                           >
                             <Tooltip title="Change">
                               <EditIcon
@@ -968,7 +968,7 @@ function Final(props) {
                           sx={{ mt: 0 }}
                         >
                           {APP.MESSAGES.INFO.TERMS_ACCEPT_TEXT}
-                          <span className=" cursor-pointer app__anchor__block">
+                          <span className=" cursor-pointer app-anchor-block">
                             {APP.MESSAGES.INFO.TnC}
                           </span>
                         </Typography>

@@ -125,7 +125,7 @@ export default function CustomDialog({
               >
                 <div
                   onClick={() => goToProfile()}
-                  className="line-clamp-1 cursor-pointer app__anchor__block"
+                  className="line-clamp-1 cursor-pointer app-anchor-block"
                 >
                   {profilePrimaryLine}
                   {isItMe() && <>{ME}</>}

@@ -131,6 +131,7 @@ function Questions({ data, mode, onSave, onCancel }) {
       initialArray = [_question];
       setQuestions(initialArray);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const handleAdd = () => {
@@ -376,7 +377,7 @@ function Questions({ data, mode, onSave, onCancel }) {
                 <div onClick={handleAdd}>
                   <span
                     title="Add another question"
-                    className=" cursor-pointer app__anchor__block"
+                    className=" cursor-pointer app-anchor-block"
                   >
                     {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
                   </span>
@@ -385,7 +386,7 @@ function Questions({ data, mode, onSave, onCancel }) {
                   <div onClick={removeAll}>
                     <span
                       title="Remove all questions"
-                      class="cursor-pointer app__anchor__block"
+                      className="cursor-pointer app-anchor-block"
                     >
                       {CUSTOM_QUESTION_OPTS.icons.RemoveQuestion}
                     </span>
@@ -406,7 +407,7 @@ function Questions({ data, mode, onSave, onCancel }) {
               <Box key={index} sx={{ width: "100%" }}>
                 <Grid
                   container
-                  container
+                  
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
@@ -421,7 +422,7 @@ function Questions({ data, mode, onSave, onCancel }) {
                             >
                               <span
                                 title="Remove this question"
-                                class=" cursor-pointer app__anchor__block"
+                                className=" cursor-pointer app-anchor-block"
                               >
                                 {CUSTOM_QUESTION_OPTS.icons.RemoveQuestion}
                               </span>
@@ -572,7 +573,7 @@ function Questions({ data, mode, onSave, onCancel }) {
                               >
                                 <span
                                   title="Add another option"
-                                  class=" cursor-pointer app__anchor__block"
+                                  className=" cursor-pointer app-anchor-block"
                                 >
                                   {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
                                 </span>
@@ -635,7 +636,7 @@ function Questions({ data, mode, onSave, onCancel }) {
                               >
                                 <span
                                   title="Remove this option"
-                                  class=" cursor-pointer app__anchor__block"
+                                  className=" cursor-pointer app-anchor-block"
                                 >
                                   {CUSTOM_QUESTION_OPTS.icons.RemoveQuestion}
                                 </span>

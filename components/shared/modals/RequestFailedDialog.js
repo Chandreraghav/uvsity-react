@@ -157,7 +157,7 @@ function RequestFailedDialog({
                         <Typography sx={{ fontSize: "14px" }}>
                           <a
                             target="_blank"
-                            className="app__anchor__block"
+                            className="app-anchor-block"
                             href={url ? url : window.location.href}
                             rel="noreferrer"
                           >

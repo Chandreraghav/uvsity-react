@@ -21,7 +21,7 @@ function ProfileStats(props) {
   return (
     <div className="flex flex-col gap-3 lg:flex lg:flex-row 2xl:flex 2xl:flex-row xl:flex xl:flex-row md:flex md:flex-row lg:gap-4 md:gap-4 xl:gap-4 2xl:gap-8  ">
       <Tooltip title={TOOLTIPS.VIEW_ALL_CONNECTIONS}>
-        <div className="app__anchor__block cursor-pointer flex gap-1">
+        <div className="app-anchor-block cursor-pointer flex gap-1">
           <Typography
             className="flex gap-1 text-gray-600 font-normal"
             variant="div"
@@ -63,7 +63,7 @@ function ProfileStats(props) {
                       </Avatar>
                       <div className=" text-xs ml-auto sm:text-xs  lg:text-base xl:text-base text-gray-500 font-normal line-clamp-1 ">
                         <Typography
-                          className="  app__anchor__block "
+                          className="  app-anchor-block "
                           variant="div"
                         >
                           {connection.title}
