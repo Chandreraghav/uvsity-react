@@ -313,6 +313,7 @@ export const LOGIN_SOURCE = {
   GOOGLE: "Google",
 };
 export const LOADING_MESSAGE_DEFAULT = "Loading...";
+export const LOAD_MORE = "Load more...";
 export const TIME_OF_DAY_GREETING = {
   MORNING: "Good morning",
   AFTERNOON: "Good afternoon",

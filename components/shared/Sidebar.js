@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import MiniProfile from "../Authorized/Profile/MiniProfile";
-import { AuthGuardService } from "../../auth-guard/service/AuthGuardService";
 import { formattedName } from "../../utils/utility";
 import {
   DEFAULT_COVER_IMAGE,

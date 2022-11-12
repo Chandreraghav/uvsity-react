@@ -1,15 +1,11 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-import { KEYS } from "../../../../../../async/queries/keys/unique-keys";
-import { standardStaleTime } from "../../../../../../async/subscriptions";
 import { RESPONSE_TYPES } from "../../../../../../constants/constants";
-import { INBOX, RECOMMENDATIONS } from "../../../../../../constants/userdata";
+import { INBOX, NETWORK, RECOMMENDATIONS } from "../../../../../../constants/userdata";
 import { WORKFLOW_CODES } from "../../../../../../constants/workflow-codes";
 import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
 import MessagingService from "../../../../../../pages/api/people/Messaging/MessageService";
-import SearchService from "../../../../../../pages/api/people/network/Search/SearchService";
 import { THEME_MODES, useTheme } from "../../../../../../theme/ThemeProvider";
 import { handleResponse } from "../../../../../../toastr-response-handler/handler";
 import {
@@ -17,17 +13,18 @@ import {
   formattedProfileSubtitle,
 } from "../../../../../../utils/utility";
 import PolyMessagingDialog from "../../../../../shared/modals/PolyMessagingDialog";
+import Profile from "../../Listing/View/Cards/Profile";
 import PeekProfile from "../../Peek/Profile";
 toast.configure();
 
-function AllConnections() {
+function Connections(props) {
   const [userdata, _dispatch] = useDataLayerContextValue();
   const _messageEvent = {
     from: null,
     to: null,
     subject: null,
     message: null,
-    title:null,
+    title: null,
     dialogOpen: false,
     event: null,
   };
@@ -54,26 +51,6 @@ function AllConnections() {
   ] = useState(false);
 
   const [isMePrefixOnProfileName, setMePrefixOnProfileName] = useState(false);
-
-  const getAllConnections = async (loadMore = false) =>
-    (
-      await SearchService.searchPeople(
-        { isOnlyFriendsRequired: true },
-        loadMore
-      )
-    ).data;
-  const ALL_CONNECTIONS = useQuery(
-    [KEYS.NETWORK.PEOPLE.CONNECTIONS],
-    getAllConnections,
-    {
-      refetchOnWindowFocus: false,
-      staleTime: standardStaleTime,
-    }
-  );
-  const getData = {
-    ALL_CONNECTIONS,
-  };
-
   const profilePrimaryLine = (firstName, lastName) =>
     formattedName(firstName, lastName);
   const profileSecondaryLine = (userType, instituition) =>
@@ -86,13 +63,13 @@ function AllConnections() {
   };
   const handleMessageEvent = (request) => {
     const from = userdata?.userDetailsId;
-    const to = request.requestedTo;
+    const to = request?.requestedTo;
     const _messageEvent = {
       from,
       to,
       subject: null,
       message: null,
-      title:request.requestTitle,
+      title: request.requestTitle,
       dialogOpen: true,
       event: request.event,
     };
@@ -175,73 +152,83 @@ function AllConnections() {
     return metadata;
   };
 
+  
+
   return (
-    <div className="    py-2 px-4">
-      {getData.ALL_CONNECTIONS.isSuccess &&
-        getData.ALL_CONNECTIONS.data &&
-        getData.ALL_CONNECTIONS.data instanceof Array && (
+    <div className="py-2 px-4">
+      {props.properties && (
+        <Typography className="py-1" variant="h5">
+          {<props.properties.icon />} {props.properties.title}
+        </Typography>
+
+      )}
+      {props?._data &&
+        props?._data instanceof Array && (
           <Box sx={{ width: "100%", display: "flex" }}>
             <Grid
               container
               rowSpacing={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 4 }}
             >
-              {getData.ALL_CONNECTIONS.data.map((data, index) => (
+              {props?._data?.map((data, index) => (
                 <Grid
                   key={data.userDetailsId}
                   item
                   lg={6}
-                  md={6}
+                  xl={4}
+                  md={12}
                   sm={12}
                   xs={12}
                 >
-                  <PeekProfile
-                    isOpen={true}
-                    connected={true}
-                    fullWidth
-                    options={{ connect: false, mixedMode: false }}
-                    metaData={getMetaData(data)}
-                    isConnectToPersonOptionShown={false}
-                    isAcceptPersonRequestOptionShown={
-                      isAcceptPersonRequestOptionShown
-                    }
-                    isConnectionRequestSent={isConnectionRequestSent}
-                    isConnectionAcceptRequestSent={
-                      isConnectionAcceptRequestSent
-                    }
-                    isConnectionRequestInProgress={
-                      isConnectionRequestInProgress
-                    }
-                    isConnectionAcceptRequestInProgress={
-                      isConnectionAcceptRequestInProgress
-                    }
-                    isConnectionRequestSendError={isConnectionRequestSendError}
-                    isConnectionAcceptRequestSendError={
-                      isConnectionAcceptRequestSendError
-                    }
-                    dark={ctxTheme.mode === THEME_MODES.DARK}
-                    data={{
-                      oid: data.userDetailsId,
-                      avatar: data.profilePicName,
-                      primary: profilePrimaryLine(
-                        data.firstName,
-                        data.lastName
-                      ),
-                      secondary: profileSecondaryLine(
-                        data.userTypeFullDescription,
-                        data.educationalInstitutionFullName
-                      ),
-                      tertiary: profileTertiaryLine(
-                        data.cityFullName,
-                        data.countryFullName
-                      ),
-                      isItMe: false,
-                    }}
-                    messageEvent={handleMessageEvent}
+                  <Profile
+                   isOpen={true}
+                   connected={data.invitationAction === NETWORK.CONNECTION_RELATION_STATE_ALT.IN_MY_NETWORK}
+                   workflow={WORKFLOW_CODES.PEOPLE.PROFILE_VIEW}
+                   fullWidth
+                   options={{ connect: false, mixedMode: false }}
+                   metaData={getMetaData(data)}
+                   isConnectToPersonOptionShown={false}
+                   isAcceptPersonRequestOptionShown={
+                     isAcceptPersonRequestOptionShown
+                   }
+                   isConnectionRequestSent={isConnectionRequestSent}
+                   isConnectionAcceptRequestSent={
+                     isConnectionAcceptRequestSent
+                   }
+                   isConnectionRequestInProgress={
+                     isConnectionRequestInProgress
+                   }
+                   isConnectionAcceptRequestInProgress={
+                     isConnectionAcceptRequestInProgress
+                   }
+                   isConnectionRequestSendError={isConnectionRequestSendError}
+                   isConnectionAcceptRequestSendError={
+                     isConnectionAcceptRequestSendError
+                   }
+                   dark={ctxTheme.mode === THEME_MODES.DARK}
+                   data={{
+                     oid: data.userDetailsId,
+                     avatar: data.profilePicName,
+                     primary: profilePrimaryLine(
+                       data.firstName,
+                       data.lastName
+                     ),
+                     secondary: profileSecondaryLine(
+                       data.userTypeFullDescription,
+                       data.educationalInstitutionFullName
+                     ),
+                     tertiary: profileTertiaryLine(
+                       data.cityFullName,
+                       data.countryFullName
+                     ),
+                     isItMe: false,
+                   }}
+                   messageEvent={handleMessageEvent}
                   />
                 </Grid>
               ))}
             </Grid>
+
             <PolyMessagingDialog
               workflow={
                 messageEvent.event === RECOMMENDATIONS.REQUEST_TYPE
@@ -255,8 +242,9 @@ function AllConnections() {
             ></PolyMessagingDialog>
           </Box>
         )}
+      
     </div>
   );
 }
 
-export default AllConnections;
+export default Connections;
