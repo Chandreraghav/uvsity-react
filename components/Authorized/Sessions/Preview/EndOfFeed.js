@@ -6,13 +6,13 @@ function EndOfFeed(props) {
   return (
     <div className=" flex-col">
       <img
-        className={"object-contain     mx-auto w-1/2"}
+        className={"object-contain mx-auto w-1/2"}
         alt={props.title}
         src={props.src}
       />
       <div className="flex justify-center">
         <Typography className={`dark:text-gray-600 text-gray-800`} variant="h5">
-          <props.icon/> {props.title}
+          <props.icon /> {props.title}
         </Typography>
       </div>
 

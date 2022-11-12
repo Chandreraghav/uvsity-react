@@ -93,7 +93,7 @@ function Sessions(props) {
           {data?.length > slicedData?.length && (
             <Typography
               onClick={handleSeeMore}
-              className="   app__anchor__block cursor-pointer read-or-hide text-gray-700 dark:text-gray-500"
+              className="   app-anchor-block cursor-pointer read-or-hide text-gray-700 dark:text-gray-500"
               
             >
               {SEE_MORE}

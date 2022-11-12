@@ -164,7 +164,7 @@ function SkillSets(props) {
                         onClick={() =>
                           handleSessionRequestBasedOnSkill(skillset)
                         }
-                        className="app__anchor__block "
+                        className="app-anchor-block "
                         label={skillset.userSkillSetName}
                         color="primary"
                       />

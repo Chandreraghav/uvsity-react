@@ -102,7 +102,7 @@ function Profiles({
       
       className={`uvsity__card uvsity__card__border__theme ${
         sticky && bo.length > 0
-          ? "md:sticky top-20 lg:sticky top-20 xl:sticky top-20  "
+          ? "md:sticky  lg:sticky  xl:sticky top-20  "
           : ""
       }`}
     >

@@ -21,7 +21,7 @@ function Sidebar({ data, type }) {
    
   useEffect(() => {
     window.addEventListener("scroll", () => {
-      const scrollheightLimit = type === "left" ? 500 : 700;
+      const scrollheightLimit = type === "left" ? 500 : data?.TOP_SESSIONS.data?.length>0?700:300;
       if (window.scrollY > scrollheightLimit) {
         setSticky(true);
       } else {
@@ -33,7 +33,7 @@ function Sidebar({ data, type }) {
         window.removeEventListener("scroll");
       } catch (error) {}
     };
-  }, []);
+  }, [data?.TOP_SESSIONS.data?.length, type]);
 
   
   if (type === "left") {

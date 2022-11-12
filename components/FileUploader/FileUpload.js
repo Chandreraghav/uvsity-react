@@ -188,7 +188,7 @@ function FileUpload(props) {
             <div
               title="Remove document"
               onClick={(event) => removeDocument(event)}
-              className="cursor-pointer font-semibold app__anchor__block 
+              className="cursor-pointer font-semibold app-anchor-block 
                  text-sm sm:text-md  text-black-700"
             >
               <RemoveCircleIcon />
@@ -204,7 +204,7 @@ function FileUpload(props) {
           <div
             title="Remove document"
             onClick={(event) => removeDocument(event)}
-            className="cursor-pointer font-semibold app__anchor__block 
+            className="cursor-pointer font-semibold app-anchor-block 
                  text-sm sm:text-md  text-black-700 ml-auto"
           >
             <RemoveCircleIcon />

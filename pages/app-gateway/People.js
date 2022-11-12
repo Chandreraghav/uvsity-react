@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { KEYS } from "../../async/queries/keys/unique-keys";
-import { standardStaleTime } from "../../async/subscriptions";
+import { asyncSubscriptions, standardStaleTime } from "../../async/subscriptions";
 import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
 import AddToNetwork from "../../components/Authorized/Network/People/Categories/AddToNetwork";
 import Main from "../../components/Authorized/Network/People/Categories/Connections/Main";
@@ -75,7 +75,7 @@ function People() {
         <Main filter={routeFilter??'all'} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.PROFILE_VISITS && (
-        <ProfileVisits />
+        <ProfileVisits filter ={asyncSubscriptions.PROFILE_VISITS.alias} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ADD_TO_NETWORK && (
         <AddToNetwork />

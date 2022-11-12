@@ -1,18 +1,34 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
+import React,{useState,useEffect} from "react";
 import Preview from "./Preview";
-import { Divider, Typography } from "@mui/material";
+import { Divider } from "@mui/material";
 import Spacer from "../../../shared/Spacer";
 import Shimmer from "./Shimmer/Shimmer";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InfoIcon from "@mui/icons-material/Info";
-import { IMAGE_PATHS, TITLES, TOOLTIPS } from "../../../../constants/userdata";
+import { IMAGE_PATHS, TOOLTIPS } from "../../../../constants/userdata";
 import EndOfFeed from "./EndOfFeed";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 function CompactCard({ data, title }) {
+  const [isSticky, setSticky] = useState(false);
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      const scrollheightLimit = 100;
+      if (window.scrollY > scrollheightLimit) {
+        setSticky(true);
+      } else {
+        setSticky(false);
+      }
+    });
+    return () => {
+      try {
+        window.removeEventListener("scroll");
+      } catch (error) {}
+    };
+  }, []);
   return (
-    <div>
+    <>
       {data?.TOP_SESSIONS.data?.length > 0 ? (
         <div className="flex flex-col">
           <h2 className="font-bold text-lg pr-8">{title}</h2>
@@ -47,7 +63,7 @@ function CompactCard({ data, title }) {
           </div>
         </div>
       ) : (
-        <div className=" mb-4">
+        <div className={`mb-4 ${isSticky?'sticky top-20':''}`}>
           <EndOfFeed
             src={IMAGE_PATHS.NO_DATA.SESSION}
             title={TOOLTIPS.NO_POPULAR_SESSIONS}
@@ -57,7 +73,7 @@ function CompactCard({ data, title }) {
           />
         </div>
       )}
-    </div>
+    </>
   );
 }
 

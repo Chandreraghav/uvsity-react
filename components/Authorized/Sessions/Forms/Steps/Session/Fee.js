@@ -496,7 +496,7 @@ function Fee() {
                   {_editSponsorshipLevel && (
                     <>
                       <div
-                        className="ml-auto cursor-pointer app__anchor__block"
+                        className="ml-auto cursor-pointer app-anchor-block"
                         onClick={() => handleCancel(true)}
                       >
                         <ArrowBackIcon />
