@@ -111,7 +111,7 @@ function HeaderOption({
         ) : (
           <div>
             <Tooltip title={tooltip}>
-              <Avatar {...avatarToString(`${name}`)} />
+              <Avatar  onClick={(e) => handleClick(e)} className={HeaderOptionsStyle.headerOption__avatar} {...avatarToString(`${name}`)} />
             </Tooltip>
             <AccountMenu
               isOpen={open}

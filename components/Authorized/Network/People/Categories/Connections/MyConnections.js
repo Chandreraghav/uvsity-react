@@ -6,10 +6,11 @@ import { CONNECTIONS, HEADER_OPTIONS } from "../../../../../../constants/userdat
 import SearchService from "../../../../../../pages/api/people/network/Search/SearchService";
 import LoadMore from "../../../../../shared/LoadMore";
 import Sidebar from "../../Filter/Sidebar";
-function Main(props) {
-  const [student, setStudent] = useState(CONNECTIONS[0].title === props.filter ? true : false);
-  const [professors, setProfessors] = useState(CONNECTIONS[1].title === props.filter ? true : false);
-  const [alumni, setAlumni] = useState(CONNECTIONS[2].title === props.filter ? true : false);
+function MyConnections(props) {
+  const [student, setStudent] = useState(false);
+  const [professors, setProfessors] = useState(false);
+  const [alumni, setAlumni] = useState(false);
+  const [additionalTitle,setAdditionalTitle]=useState(null)
   const [inMyNetworkFilterCriteria, setInMyNetworkFilter] = useState(true);
   const [onlyFriendsRequired, setOnlyFriendsRequired] = useState(true);
   const [loadMore, setLoadMore] = useState(false);
@@ -51,14 +52,33 @@ function Main(props) {
     });
   }
   useEffect(() => {
+    setStudent(CONNECTIONS[0].title === props.filter)
+    setProfessors(CONNECTIONS[1].title === props.filter)
+    setAlumni(CONNECTIONS[2].title === props.filter)
     setConnectionData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.filter])
+ 
+  useEffect(() => {
+    if(student){
+      setAdditionalTitle(CONNECTIONS[0].title)
+    }
+    else if(professors){
+      setAdditionalTitle(CONNECTIONS[1].title)
+    }
+    else if(alumni) {
+      setAdditionalTitle(CONNECTIONS[2].title)
+    }
+    else {
+      setAdditionalTitle(null)
+    }
+  },[student,alumni,professors])
 
   useEffect(() => {
     if (loadMore === true)
       setConnectionData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadMore])
 
   const handleLoadMore = (obj) => {
@@ -76,7 +96,7 @@ function Main(props) {
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
           <>
             {data.length > 0 && (
-              <Connections _data={data} properties={HEADER_OPTIONS[1]} />
+              <Connections workflow={props.workflow} _data={data} properties={{title:HEADER_OPTIONS[1].title, subtitle:additionalTitle,icon:HEADER_OPTIONS[1].icon}} />
             )
             }
             {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
@@ -85,7 +105,7 @@ function Main(props) {
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
-          <Sidebar/>
+          <Sidebar />
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />
           <Spacer count={2} />
@@ -95,5 +115,5 @@ function Main(props) {
   );
 }
 
-export default Main;
+export default MyConnections;
 

@@ -57,9 +57,9 @@ function ProfileVisits(props) {
     setLoadMore(true)
     setLoadingMore(true)
   }
-  const handleDataChange =(obj)=>{
-    if(obj===true)
-    setConnectionData()
+  const handleDataChange = (obj) => {
+    if (obj === true)
+      setConnectionData()
   }
   return (
     <>
@@ -72,7 +72,7 @@ function ProfileVisits(props) {
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
           <>
             {data.length > 0 && (
-              <Connections dataChange={handleDataChange} _data={data} properties={{title:TITLES.PEOPLE_WHO_VIEWED_YOU, icon:PeopleAltIcon}} />
+              <Connections workflow={props.workflow} userdata={props?.userdata} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PEOPLE_WHO_VIEWED_YOU, icon: PeopleAltIcon }} />
             )
             }
             {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}

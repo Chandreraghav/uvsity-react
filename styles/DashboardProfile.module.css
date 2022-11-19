@@ -29,7 +29,6 @@
 .profile__connect__request__text:hover{
   text-decoration: underline!important;
   transition: width 0.3s linear;
-  color: #e2e2e2!important;
   cursor: pointer!important;
 }
 .profile__connect__request__text{
@@ -38,8 +37,6 @@
   padding-right:5px !important;
   text-align: center !important;
   height:min-content;
-  background: #111 !important;
-  color: #fff !important;
   box-sizing: border-box !important;
   cursor: pointer!important;
 }

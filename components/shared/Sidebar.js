@@ -85,6 +85,7 @@ function Sidebar({ data, type }) {
           dashboardPreview
           sticky={isSticky}
           data={data ? data : null}
+          
         />
       </>
     );

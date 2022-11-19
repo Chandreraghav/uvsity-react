@@ -5,7 +5,7 @@ import { KEYS } from "../../async/queries/keys/unique-keys";
 import { asyncSubscriptions, standardStaleTime } from "../../async/subscriptions";
 import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
 import AddToNetwork from "../../components/Authorized/Network/People/Categories/AddToNetwork";
-import Main from "../../components/Authorized/Network/People/Categories/Connections/Main";
+import MyConnections from "../../components/Authorized/Network/People/Categories/Connections/MyConnections";
 import ProfileVisits from "../../components/Authorized/Network/People/Categories/ProfileVisits";
 import PhoneMenu from "../../components/Authorized/Shared/FireFighter/PhoneMenu";
 import Header from "../../components/Authorized/Shared/Header";
@@ -13,6 +13,8 @@ import { navigateToPath } from "../../components/Authorized/Shared/Navigator";
 import Layout from "../../components/Main/Layout";
 import Footer from "../../components/shared/Footer";
 import { AUTHORIZED_ROUTES } from "../../constants/routes";
+import { CONNECTIONS } from "../../constants/userdata";
+import { WORKFLOW_CODES } from "../../constants/workflow-codes";
 import UserDataService from "../api/users/data/UserDataService";
 
 function People() {
@@ -35,10 +37,20 @@ function People() {
   const setLayout = () => {
     const utrn = router.query.utrn;
     if (utrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS) {
-      setLayoutObject({
-        title: `${process.env.NEXT_PUBLIC_APP_NAME} | My Connections`,
-        desc: "uvsity lets you easily manage people in your network or rather people who are your connections. Your connections can be of 3 categories, students, professors and alumni.",
-      });
+      const subtitle = router.query?.filter;
+       if(subtitle){
+        setLayoutObject({
+          title: `${process.env.NEXT_PUBLIC_APP_NAME} | My Connections | ${subtitle}`,
+          desc: "uvsity lets you easily manage people in your network or rather people who are your connections. Your connections can be of 3 categories, students, professors and alumni.",
+        });
+       }
+       else{
+        setLayoutObject({
+          title: `${process.env.NEXT_PUBLIC_APP_NAME} | My Connections`,
+          desc: "uvsity lets you easily manage people in your network or rather people who are your connections. Your connections can be of 3 categories, students, professors and alumni.",
+        });
+       }
+      
     } else if (utrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.PROFILE_VISITS) {
       setLayoutObject({
         title: `${process.env.NEXT_PUBLIC_APP_NAME} | Profile visits`,
@@ -72,13 +84,13 @@ function People() {
         data={getData.USER_PROFILE_SUMMARY}
       />
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS && (
-        <Main filter={routeFilter??'all'} />
+        <MyConnections workflow={WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS} userdata={getData.USER_PROFILE_SUMMARY} filter={routeFilter??'all'} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.PROFILE_VISITS && (
-        <ProfileVisits filter ={asyncSubscriptions.PROFILE_VISITS.alias} />
+        <ProfileVisits workflow={WORKFLOW_CODES.PEOPLE.PROFILE_VIEW} userdata={getData.USER_PROFILE_SUMMARY} filter ={asyncSubscriptions.PROFILE_VISITS.alias} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ADD_TO_NETWORK && (
-        <AddToNetwork />
+        <AddToNetwork workflow={WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING} userdata={getData.USER_PROFILE_SUMMARY} filter ={asyncSubscriptions.INTERESTING_CONNECTIONS.alias}  />
       )}
 
       <PhoneMenu data={getData.USER_PROFILE_SUMMARY} />
