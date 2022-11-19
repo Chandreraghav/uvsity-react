@@ -23,7 +23,8 @@ export const asyncSubscriptions = {
     subscribed: false,
     pollEvery: standardSubscriptionPollDelay,
     model: false,
-    staleTime: 5000 // 5 seconds
+    staleTime: 5000 ,// 5 seconds
+    alias:'INTERESTED_CONNECTIONS',
   },
   LOGGED_IN_USER_INFO: {
     enabled: true,

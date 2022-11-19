@@ -1,3 +1,4 @@
+import { CoPresentOutlined } from "@mui/icons-material";
 import { Box, Grid, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -5,7 +6,6 @@ import { RESPONSE_TYPES } from "../../../../../../constants/constants";
 import { PEOPLE } from "../../../../../../constants/error-messages";
 import { INBOX, NETWORK, PAYLOAD_DEFAULT_TEXTS, RECOMMENDATIONS, TITLES } from "../../../../../../constants/userdata";
 import { WORKFLOW_CODES } from "../../../../../../constants/workflow-codes";
-import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
 import { getWorkflowError } from "../../../../../../error-handler/handler";
 import MessagingService from "../../../../../../pages/api/people/Messaging/MessageService";
 import ConnectionService from "../../../../../../pages/api/people/network/ConnectionService";
@@ -20,8 +20,8 @@ import Profile from "../../Listing/View/Cards/Profile";
 toast.configure();
 
 function Connections(props) {
-  const [userdata, _dispatch] = useDataLayerContextValue();
-  console.log(userdata);
+  const [userdata,setUserData] = useState(props?.userdata)
+   
   const _messageEvent = {
     from: null,
     to: null,
@@ -33,16 +33,10 @@ function Connections(props) {
   };
   const [messageEvent, setMessageEvent] = useState(_messageEvent);
   const [ctxTheme, dispatch] = useTheme();
-  
+  const [i, setI]=useState(0)
 
   const [connData, setConnectionData] = useState([])
-
-  
-
-  
-
-  const [isMePrefixOnProfileName, setMePrefixOnProfileName] = useState(false);
-  const profilePrimaryLine = (firstName, lastName) =>
+   const profilePrimaryLine = (firstName, lastName) =>
     formattedName(firstName, lastName);
   const profileSecondaryLine = (userType, instituition) =>
     formattedProfileSubtitle(userType, instituition);
@@ -145,7 +139,7 @@ function Connections(props) {
   const getPayload = (obj) => {
     let payload = {
       requestFrom: {
-        userDetailsId: userdata.userdata.userDetailsId,
+        userDetailsId: userdata.userDetailsId,
       },
       requestTo: { userDetailsId: obj.data.oid },
       userRequestText: "",
@@ -165,7 +159,7 @@ function Connections(props) {
   };
   const addToNetwork = (obj) => {
     if (!obj) return;
-    const tempConn = connData;
+    const tempConn = connData.slice()
     let objectIdx = -1
     if (tempConn.length > 0) {
       objectIdx = tempConn.findIndex((connData) => connData.userDetailsId === obj.data.oid)
@@ -178,47 +172,61 @@ function Connections(props) {
     ConnectionService.sendConnectionRequest(
       getPayload(obj)
     )
-      .then(() => {
-
+      .then((res) => {
         if (objectIdx !== -1) {
+          tempConn[objectIdx].invitationAction =NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE
           tempConn[objectIdx].isConnectionRequestSendError = false
-          setConnectionData(tempConn)
-        }
-        //props.dataChange(true)
-        handleResponse(
-          `${TITLES.CONNECTION_REQUEST_SENT_TO}${firstName}`,
-          RESPONSE_TYPES.SUCCESS,
-          toast.POSITION.TOP_RIGHT
-        );
-      })
-      .catch(() => {
-
-        if (objectIdx !== -1) {
-          tempConn[objectIdx].isConnectionRequestSendError = true
-          setConnectionData(tempConn)
-        }
-        //props.dataChange(false)
-        handleResponse(
-          getWorkflowError(
-            PEOPLE.NETWORK.CONNECTION_REQUEST_ERROR + " " + firstName
-          ),
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.TOP_RIGHT
-        );
-      })
-      .finally(() => {
-
-        if (objectIdx !== -1) {
           tempConn[objectIdx].isConnectionRequestInProgress = false
           tempConn[objectIdx].isConnectionRequestSent = true
-          setConnectionData(tempConn)
+          tempConn[objectIdx].isConnectToPersonOptionShown=false
+          setConnectionData(current =>
+            current.map(obj => {
+              if (obj.id === objectIdx) {
+                return {...obj, ...tempConn[objectIdx]};
+              }
+              return obj;
+            }),
+          );
+          handleResponse(
+            `${TITLES.CONNECTION_REQUEST_SENT_TO}${firstName}`,
+            RESPONSE_TYPES.SUCCESS,
+            toast.POSITION.TOP_RIGHT
+          );
+           
         }
-      });
+       
+      })
+      .catch((err) => {
+         props.dataChange(false)
+        if (objectIdx !== -1) {
+          tempConn[objectIdx].invitationAction =NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT
+          tempConn[objectIdx].isConnectionRequestSendError = true
+          tempConn[objectIdx].isConnectionRequestInProgress = false
+          tempConn[objectIdx].isConnectionRequestSent = false
+          tempConn[objectIdx].isConnectToPersonOptionShown=true
+          setConnectionData(current =>
+            current.map(obj => {
+              if (obj.id === objectIdx) {
+                return {...obj, ...tempConn[objectIdx]};
+              }
+              return obj;
+            }),
+          );
+          handleResponse(
+            getWorkflowError(
+              PEOPLE.NETWORK.CONNECTION_REQUEST_ERROR + " " + firstName
+            ),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.TOP_RIGHT
+          );
+        }
+       
+      })
   };
 
   const acceptRequest = (obj) => {
     if (!obj) return
-    const tempConn = connData;
+    const tempConn = connData.slice()
     let objectIdx = -1
     if (tempConn.length > 0) {
 
@@ -236,64 +244,73 @@ function Connections(props) {
       const requestId =
         obj.metaData.invitationRequestId
       ConnectionService.acceptConnectionRequest(requestId)
-        .then(() => {
-
+        .then((res) => {
           if (objectIdx !== -1) {
-            tempConn[objectIdx].isConnectionAcceptRequestSendError = false
-            setConnectionData(tempConn)
-          }
-        //props
-        //  props.dataChange(true)
-          handleResponse(
-            TITLES.CONNECTED_PEOPLE.replace("#X#", firstName),
-            RESPONSE_TYPES.SUCCESS,
-            toast.POSITION.TOP_LEFT
-          );
-        })
-        .catch(() => {
-
-          if (objectIdx !== -1) {
-            tempConn[objectIdx].isConnectionAcceptRequestSendError = true
-            setConnectionData(tempConn)
-          }
-          //props.dataChange(false)
-          handleResponse(
-            getWorkflowError(
-              PEOPLE.NETWORK.CONNECTION_ACCEPT_ERROR + " " + firstName
-            ),
-            RESPONSE_TYPES.ERROR,
-            toast.POSITION.TOP_LEFT
-          );
-        })
-        .finally(() => {
-
-          if (objectIdx !== -1) {
+            tempConn[objectIdx].invitationAction =NETWORK.CONNECTION_RELATION_STATE_ALT.IN_MY_NETWORK
             tempConn[objectIdx].isConnectionAcceptRequestInProgress = false
             tempConn[objectIdx].isConnectionAcceptRequestSent = true
-
-            setConnectionData(tempConn)
+            tempConn[objectIdx].isConnectionAcceptRequestSendError = false
+            tempConn[objectIdx].isConnectionRequestSent = false
+            tempConn[objectIdx].isConnectToPersonOptionShown=false
+            tempConn[objectIdx].isConnectionRequestInProgress = false
+            setConnectionData(current =>
+              current.map(obj => {
+                if (obj.id === objectIdx) {
+                  return {...obj, ...tempConn[objectIdx]};
+                }
+                return obj;
+              }),
+            );
+            handleResponse(
+              TITLES.CONNECTED_PEOPLE.replace("#X#", firstName),
+              RESPONSE_TYPES.SUCCESS,
+              toast.POSITION.TOP_LEFT
+            );
+             
           }
-        });
-    } else {
+         
+       
+        
+        })
+        .catch(() => {
+          props.dataChange(false)
+          if (objectIdx !== -1) {
+            tempConn[objectIdx].invitationAction =NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST
+            tempConn[objectIdx].isConnectionAcceptRequestSendError = true
+            tempConn[objectIdx].isConnectionAcceptRequestInProgress = false
+            tempConn[objectIdx].isConnectionAcceptRequestSent = false
+            tempConn[objectIdx].isConnectionRequestSent = false
+            tempConn[objectIdx].isConnectToPersonOptionShown=false
+            tempConn[objectIdx].isConnectionRequestInProgress = false
+            setConnectionData(current =>
+              current.map(obj => {
+                if (obj.id === objectIdx) {
+                  return {...obj, ...tempConn[objectIdx]};
+                }
+                return obj;
+              }),
+            );
 
-      if (objectIdx !== -1) {
-        tempConn[objectIdx].isConnectionAcceptRequestInProgress = false
-        tempConn[objectIdx].isConnectionAcceptRequestSendError = true
-        setConnectionData(tempConn)
-      }
-      handleResponse(
-        TITLES.CONNECTED_PEOPLE_ALREADY.replace("#X#", firstName),
-        RESPONSE_TYPES.INFO,
-        toast.POSITION.TOP_RIGHT
-      );
-    }
+            handleResponse(
+              getWorkflowError(
+                PEOPLE.NETWORK.CONNECTION_ACCEPT_ERROR + " " + firstName
+              ),
+              RESPONSE_TYPES.ERROR,
+              toast.POSITION.TOP_LEFT
+            );
+          }
+          
+          //props.dataChange(false)
+       
+        })
+    } 
   };
 
   useEffect(() => {
     if (props && props?._data instanceof Array) {
       props?._data.forEach((data, index) => {
         data.isConnectToPersonOptionShown = data.invitationAction !== NETWORK.CONNECTION_RELATION_STATE_ALT.IN_MY_NETWORK
-        data.isAcceptPersonRequestOptionShown = data.invitationAction === NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST || NETWORK.CONNECTION_RELATION_STATE.ACCEPT_REQUEST;
+        data.isAcceptPersonRequestOptionShown = (data.invitationAction === NETWORK.CONNECTION_RELATION_STATE_ALT.ACCEPT_REQUEST || data.invitationAction===NETWORK.CONNECTION_RELATION_STATE.ACCEPT_REQUEST)?true:false;
         data.isConnectionRequestSent = false;
         data.isConnectionAcceptRequestSent = false;
         data.isConnectionRequestInProgress = false
@@ -302,22 +319,40 @@ function Connections(props) {
         data.isConnectionAcceptRequestSendError = false
       })
       setConnectionData(props?._data)
+      setUserData(props?.userdata)
     }
     return () => {
       setConnectionData([])
+      setUserData(null)
     }
-  }, [props, props?._data])
+  }, [props, props?._data,props?.userdata])
 
   return (
     <div className="py-2 px-4">
+       
       {props.properties && (
-        <Typography className="py-1" variant="h5">
-          {<props.properties.icon />} {props.properties.title}
-        </Typography>
+        <Typography className="py-2 flex lg:justify-start md:justify-start xs:justify-center sm:justify-center " variant="h5">
+          {<props.properties.icon fontSize="large" className="mt-1" />}
+          <div className=" space-x-2 px-2 w-2"></div>
+          <div className="mt-2 flex">
+          <div>{props.properties.title}
+          </div>
+
+          {props.properties.subtitle && (
+            <div className="flex  dark:text-gray-500 text-gray-700">
+          <div className=" space-x-2 px-2">&raquo;</div>
+          <div className=" ml-auto leading-tight mt-0.5 ">{props.properties.subtitle}</div>
+          
+          </div>
+          )}
+
+          </div>
+          
+                 </Typography>
 
       )}
       {connData &&
-        connData instanceof Array && (
+         (
           <Box sx={{ width: "100%", display: "flex" }}>
             <Grid
               container
@@ -338,7 +373,7 @@ function Connections(props) {
                     isOpen={true}
                     listed={true}
                     connected={data.invitationAction === NETWORK.CONNECTION_RELATION_STATE_ALT.IN_MY_NETWORK}
-                    workflow={WORKFLOW_CODES.PEOPLE.PROFILE_VIEW}
+                    workflow={props.workflow??WORKFLOW_CODES.PEOPLE.PROFILE_VIEW}
                     fullWidth
                     options={{ connect: false, mixedMode: true }}
                     metaData={getMetaData(data)}

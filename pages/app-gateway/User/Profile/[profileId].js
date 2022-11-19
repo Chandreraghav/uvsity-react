@@ -70,6 +70,7 @@ const UserProfile = () => {
     { staleTime: standardStaleTime }
   );
 
+
   const { data, isError, isSuccess, isLoading } = useQuery(
     [KEYS.PROFILE.VIEWS + "_" + profileId],
     getProfileSummary,

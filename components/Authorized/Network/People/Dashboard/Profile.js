@@ -156,9 +156,9 @@ function Profile({
     );
     return _tertiaryLine === ""
       ? formattedProfileSubtitle(
-          metaData?.creator?.city,
-          metaData?.creator?.country
-        )
+        metaData?.creator?.city,
+        metaData?.creator?.country
+      )
       : _tertiaryLine;
   };
 
@@ -356,6 +356,7 @@ function Profile({
 
   return (
     <div>
+
       <Popover
         id="mouse-over-popover"
         className={classes.popover}
@@ -410,28 +411,26 @@ function Profile({
       </Popover>
 
       <div
-        className={`flex flex-row items-center flex-1 ${
-          sticky ? "mb-2" : "mb-4"
-        } ${!isVisibleAsCoHost ? "gap-2" : "gap-0"} pt-2`}
+        className={`flex flex-row items-center flex-1 ${sticky ? "mb-2" : "mb-4"
+          } ${!isVisibleAsCoHost ? "gap-2" : "gap-0"} pt-2`}
       >
         {/* AVATAR */}
         <div className="avatar flex items-center justify-center flex-shrink-0 w-10 h-10 mr-2 rounded-full bg-brand-grey-200 dark:bg-brand-grey-700">
           {avatar !== "" &&
-          !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
+            !avatar?.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
             <Avatar
               ref={popoverAnchor}
               onTouchStart={handlePopoverOpen}
               onTouchEnd={handlePopoverClose}
               onMouseEnter={handlePopoverOpen}
               onMouseLeave={handlePopoverClose}
-              className={`${
-                isVisibleOnSessionCard
+              className={`${isVisibleOnSessionCard
                   ? "avatar-sm"
                   : isVisibleAsCoHost ||
                     (origin && origin === "recommendation_feed")
-                  ? "avatar-xs"
-                  : "avatar-dashboard"
-              }`}
+                    ? "avatar-xs"
+                    : "avatar-dashboard"
+                }`}
               alt={`${profilePrimaryLine}`}
               src={avatar}
             />
@@ -442,14 +441,13 @@ function Profile({
               onTouchEnd={handlePopoverClose}
               onMouseEnter={handlePopoverOpen}
               onMouseLeave={handlePopoverClose}
-              className={`${
-                isVisibleOnSessionCard
+              className={`${isVisibleOnSessionCard
                   ? "avatar-sm"
                   : isVisibleAsCoHost ||
                     (origin && origin === "recommendation_feed")
-                  ? "avatar-xs"
-                  : "avatar-dashboard"
-              }`}
+                    ? "avatar-xs"
+                    : "avatar-dashboard"
+                }`}
               {...avatarToString(`${profilePrimaryLine}`)}
             />
           )}
@@ -477,9 +475,8 @@ function Profile({
             {/* ONLY CONNECTED OPTIONS */}
             {options && options.connect && (
               <div
-                className={`flex cursor-pointer ml-auto slow-transition ${
-                  isConnectionRequestSent && "control__disabled"
-                }`}
+                className={`flex cursor-pointer ml-auto slow-transition ${isConnectionRequestSent && "control__disabled"
+                  }`}
                 role="button"
               >
                 {isConnectionRequestInProgress ? (
@@ -488,7 +485,7 @@ function Profile({
                     fontSize="small"
                     color="primary"
                     aria-label="connect-to-person"
-                  >
+                  > 
                     <ClipLoader color={`${dark ? "#fff" : "#111"}`} size={20} />
                   </IconButton>
                 ) : isConnectionRequestSent ? (
@@ -502,25 +499,18 @@ function Profile({
                     </small>
                   </>
                 ) : (
-                  <PersonAddAltIcon
-                    color="primary"
-                    onClick={(e) => addToNetwork(e)}
-                    className="-mt-1"
-                    title={`Connect with ${firstName}`}
-                  />
+                  <Tooltip title={`Connect with ${firstName}`}>
+                    <PersonAddAltIcon
+                      color="primary"
+                      onClick={(e) => addToNetwork(e)}
+                      className="-mt-1"
+
+                    />
+
+                  </Tooltip>
                 )}
 
-                {isConnectToPersonOptionShown && (
-                  <div
-                    onClick={(e) => addToNetwork(e)}
-                    className={`${ProfileStyle.profile__connect__request__text} 
-                      font-small mt-3-5 font-medium text-gray-600 leading-tight cursor-pointer ${
-                        isConnectionRequestInProgress && "control__disabled"
-                      }`}
-                  >
-                    {TITLES.CONNECT_TO_PERSON}
-                  </div>
-                )}
+
               </div>
             )}
             {/* CONNECTED/CONNECT/ACCEPT/AWAITING OR PENDING RESPONSE */}
@@ -528,152 +518,157 @@ function Profile({
               <>
                 {metaData.invitationAction?.invitationAction ===
                   NETWORK.CONNECTION_RELATION_STATE.CONNECT && (
-                  <div
-                    className={`flex cursor-pointer ml-auto slow-transition ${
-                      isConnectionRequestSent && "control__disabled"
-                    }`}
-                    role="button"
-                  >
-                    {isConnectionRequestInProgress ? (
-                      <IconButton
-                        className=" cursor-pointer inline-flex "
-                        fontSize="small"
-                        color="primary"
-                        aria-label="connect-to-person"
-                      >
-                        <ClipLoader
-                          color={`${dark ? "#fff" : "#111"}`}
-                          size={20}
-                        />
-                      </IconButton>
-                    ) : isConnectionRequestSent ? (
-                      <>
-                        <DoneIcon color='primary' fontSize="small" />
-                        <small className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
-                          {TITLES.CONNECTION_REQUEST_SENT}
-                        </small>
-                      </>
-                    ) : (
-                      <PersonAddAltIcon
-                      color="primary"
-                        onClick={(e) => addToNetwork(e)}
-                        className="-mt-1"
-                        title={`Connect with ${firstName}`}
-                      />
-                    )}
+                    <div
+                      className={`flex cursor-pointer ml-auto slow-transition ${isConnectionRequestSent && "control__disabled"
+                        }`}
+                      role="button"
+                    >
+                      {isConnectionRequestInProgress ? (
+                        <IconButton
+                          className=" cursor-pointer inline-flex "
+                          fontSize="small"
+                          color="primary"
+                          aria-label="connect-to-person"
+                        >
+                          <ClipLoader
+                            color={`${dark ? "#fff" : "#111"}`}
+                            size={20}
+                          />
+                        </IconButton>
+                      ) : isConnectionRequestSent ? (
+                        <>
+                          <DoneIcon color='primary' fontSize="small" />
+                          <small className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
+                            {TITLES.CONNECTION_REQUEST_SENT}
+                          </small>
+                        </>
+                      ) : (
+                        <Tooltip title={`Connect with ${firstName}`}>
 
-                    {isConnectToPersonOptionShown && (
-                      <div
-                        onClick={(e) => addToNetwork(e)}
-                        className={`${
-                          ProfileStyle.profile__connect__request__text
-                        } 
-                    font-small mt-3-5 font-medium text-gray-600 leading-tight cursor-pointer ${
-                      isConnectionRequestInProgress && "control__disabled"
-                    }`}
-                      >
-                        {TITLES.CONNECT_TO_PERSON}
-                      </div>
-                    )}
-                  </div>
-                )}
+                          <PersonAddAltIcon
+                            color="primary"
+                            onClick={(e) => addToNetwork(e)}
+                            className="-mt-1"
+
+                          />
+                        </Tooltip>
+                      )}
+
+
+                    </div>
+                  )}
 
                 {metaData.invitationAction?.invitationAction ===
                   NETWORK.CONNECTION_RELATION_STATE.ACCEPT_REQUEST && (
-                  <div
-                    className={`flex cursor-pointer ml-auto slow-transition ${
-                      isConnectionAcceptRequestSent && "control__disabled"
-                    }`}
-                    role="button"
-                  >
-                    {isConnectionAcceptRequestInProgress ? (
-                      <IconButton
-                        className=" cursor-pointer inline-flex "
-                        fontSize="small"
-                        color="primary"
-                        aria-label="accept-connection-request-from-person"
-                      >
-                        <ClipLoader
-                          color={`${dark ? "#fff" : "#111"}`}
-                          size={20}
-                        />
-                      </IconButton>
-                    ) : isConnectionAcceptRequestSent ? (
-                      <>
-                        <CheckCircleIcon
-                          sx={{ color: "green" }}
+                    <div
+                      className={`flex cursor-pointer ml-auto slow-transition ${isConnectionAcceptRequestSent && "control__disabled"
+                        }`}
+                      role="button"
+                    >
+                      {isConnectionAcceptRequestInProgress ? (
+                        <IconButton
+                          className=" cursor-pointer inline-flex "
                           fontSize="small"
-                        />
-                        <small className="md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
-                          {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
-                        </small>
-                      </>
-                    ) : (
-                      <AddTaskIcon
-                        onClick={(e) => acceptRequest(e)}
-                        className="-mt-1"
-                        title={`Accept connection request from ${firstName}`}
-                      />
-                    )}
+                          color="primary"
+                          aria-label="accept-connection-request-from-person"
+                        >
+                          <ClipLoader
+                            color={`${dark ? "#fff" : "#111"}`}
+                            size={20}
+                          />
+                        </IconButton>
+                      ) : isConnectionAcceptRequestSent ? (
+                        <>
+                       <Tooltip title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
+                          "#X#",
+                          firstName
+                        )}`}>
+                          <div className="flex">
+                          <CheckCircleIcon
+                            sx={{ color: "green" }}
+                            fontSize="small"
+                          />
+                          <small className="mt-0.5 md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
+                            {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
+                          </small>
+                          </div>
+                          
+                        </Tooltip>
+                         
+                        </>
+                      ) : (
+                        <Tooltip title={`Accept connection request from ${firstName}`}>
+                          <AddTaskIcon
 
-                    {isAcceptPersonRequestOptionShown && (
-                      <div
-                        onClick={(e) => acceptRequest(e)}
-                        className={`${
-                          ProfileStyle.profile__connect__request__text
-                        } 
-                    font-small mt-3-5 font-medium text-gray-600 leading-tight cursor-pointer ${
-                      isConnectionAcceptRequestInProgress && "control__disabled"
-                    }`}
-                      >
-                        {NETWORK.CONNECTION_ACTION_STATUS.ACCEPT}
-                      </div>
-                    )}
-                  </div>
-                )}
+                            color="primary"
+                            onClick={(e) => acceptRequest(e)}
+                            className="-mt-1"
+
+
+                          />
+                        </Tooltip>
+
+                      )}
+
+                    </div>
+                  )}
 
                 {metaData.invitationAction?.invitationAction ===
                   NETWORK.CONNECTION_RELATION_STATE.IN_MY_NETWORK && (
-                  <div
-                    className={`flex cursor-pointer ml-auto slow-transition`}
-                  >
-                    <IconButton
-                      title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
-                        "#X#",
-                        firstName
-                      )}`}
-                      className=" cursor-pointer inline-flex text-green-700 "
-                      fontSize="small"
-                      sx={{ color: NETWORK.COLOR_VARIANTS.CONNECTED }}
-                      aria-label="connected-to-person"
+                    <div
+                      className={`flex cursor-pointer ml-auto slow-transition`}
                     >
-                      <CheckCircleIcon fontSize="small" />
-                      <small className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
-                        {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
-                      </small>
-                    </IconButton>
-                  </div>
-                )}
+                      <IconButton
+
+                        className=" cursor-pointer inline-flex text-green-700 "
+                        fontSize="small"
+                        sx={{ color: NETWORK.COLOR_VARIANTS.CONNECTED }}
+                        aria-label="connected-to-person"
+                      >
+                        
+                        <Tooltip title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
+                          "#X#",
+                          firstName
+                        )}`}>
+                          <div className="flex">
+                          <CheckCircleIcon fontSize="small" />
+                           <small className="mt-0.5 md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
+                            {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
+                          </small>
+                          </div>
+                          
+                        </Tooltip>
+
+                      </IconButton>
+                    </div>
+                  )}
 
                 {metaData.invitationAction?.invitationAction ===
                   NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE && (
-                  <div
-                    className={`flex cursor-pointer ml-auto slow-transition`}
-                  >
-                    <IconButton
-                      title={`${TITLES.CONNECTION_REQUEST_PENDING}${firstName}`}
-                      className=" cursor-pointer inline-flex "
-                      fontSize="small"
-                      sx={{ color: NETWORK.COLOR_VARIANTS.PENDING }}
-                      aria-label="awaiting-connection-response-from-person"
+                    <div
+                      className={`flex cursor-pointer ml-auto slow-transition`}
                     >
-                      <PendingIcon fontSize="small" />
-                      <small className="text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
-                        {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
-                      </small>
-                    </IconButton>
-                  </div>
-                )}
+                      <IconButton
+
+                        className=" cursor-pointer inline-flex "
+                        fontSize="small"
+                        sx={{ color: NETWORK.COLOR_VARIANTS.PENDING }}
+                        aria-label="awaiting-connection-response-from-person"
+                      >
+                       
+                        <Tooltip title={`${TITLES.CONNECTION_REQUEST_PENDING}${firstName}`}>
+                        <div className="flex"> 
+                          <PendingIcon fontSize="small" />
+                          <small className="mt-0.5 text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
+                            {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
+                          </small>
+                          </div>
+                       
+                        </Tooltip>
+
+                      </IconButton>
+                    </div>
+                  )}
               </>
             )}
           </div>
