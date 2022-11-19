@@ -4,7 +4,12 @@ import { CONNECTIONS, TOOLTIPS } from "../../../../constants/userdata";
 import { Avatar, Tooltip, Typography } from "@mui/material";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import { blue } from "@mui/material/colors";
+import { navigateToPath } from "../../Shared/Navigator";
+import { useRouter } from "next/router";
+import { v4 as uuidv4 } from "uuid";
+import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 function ProfileStats(props) {
+  const router = useRouter();
   const getCount = (type) => {
     if (!type) return 0;
     switch (type) {
@@ -21,7 +26,11 @@ function ProfileStats(props) {
   return (
     <div className="flex flex-col gap-3 lg:flex lg:flex-row 2xl:flex 2xl:flex-row xl:flex xl:flex-row md:flex md:flex-row lg:gap-4 md:gap-4 xl:gap-4 2xl:gap-8  ">
       <Tooltip title={TOOLTIPS.VIEW_ALL_CONNECTIONS}>
-        <div className="app-anchor-block cursor-pointer flex gap-1">
+        <div onClick={() => navigateToPath(
+          router,
+          AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
+          { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS, token: uuidv4() }
+        )} className="app-anchor-block cursor-pointer flex gap-1">
           <Typography
             className="flex gap-1 text-gray-600 font-normal"
             variant="div"
@@ -42,7 +51,11 @@ function ProfileStats(props) {
           {CONNECTIONS.filter((hidden) => hidden !== true).map(
             (connection) =>
               getCount(connection.code) > 0 && (
-                <div key={connection.id}>
+                <div onClick={() => navigateToPath(
+                  router,
+                  AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
+                  { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS, filter: connection.title, token: uuidv4() }
+                )} key={connection.id}>
                   <Tooltip
                     title={`${getCount(
                       connection.code
