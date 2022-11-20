@@ -10,7 +10,7 @@ function Error(props) {
         <>
             <div className=" flex gap-1 text-sm text-md justify-center items-center text-gray-600 font-normal">
                 <WarningIcon className="mt-1" />
-                <Typography className=" mt-1" variant="div">
+                <Typography className=" mt-1 text-md leading-snug font-medium" variant="subtitle">
                     {props.message ? props.message : GENERIC_INTERNAL_ERROR}
                 </Typography>
             </div>

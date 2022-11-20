@@ -238,6 +238,24 @@ export const CONNECTIONS = [
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.ALUMNI,
   },
+
+  {
+    id: 4,
+    title: "Awaiting Response",
+    hidden: true,
+    tooltip: "People who are awaiting a response from you",
+    icon: "",
+    code: WORKFLOW_CODES.USER.CONNECTION_TYPES.AWAITING,
+  },
+
+  {
+    id: 5,
+    title: "In my network",
+    hidden: true,
+    tooltip: "Connections who are in my network",
+    icon: "",
+    code: WORKFLOW_CODES.USER.CONNECTION_TYPES.IN_MY_NETWORK,
+  },
 ];
 export const INTRO_ACTIONS = [
   {
@@ -1214,3 +1232,5 @@ export const SESSION_REQUEST = {
   MESSAGE_SENT_FAILED:
     "Uh, oh! there was an error sending this session request to ",
 };
+
+ 

@@ -10,9 +10,10 @@ function NoDataFound(props) {
             <div className="  flex gap-1 text-sm text-md justify-center items-center text-gray-600 font-normal">
 
                 <InfoIcon className="mt-1" />
-                <Typography className=" mt-1" variant="div">
-                    {props.message ? props.message : GENERIC_NO_DATA_ERROR}
+                <Typography className=" mt-1 text-md leading-snug font-medium" variant="subtitle">
+                {props.message ? props.message : GENERIC_NO_DATA_ERROR}
                 </Typography>
+                 
             </div>
 
             <img

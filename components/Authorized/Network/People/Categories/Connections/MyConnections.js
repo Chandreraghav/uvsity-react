@@ -6,6 +6,7 @@ import { CONNECTIONS, HEADER_OPTIONS } from "../../../../../../constants/userdat
 import SearchService from "../../../../../../pages/api/people/network/Search/SearchService";
 import LoadMore from "../../../../../shared/LoadMore";
 import Sidebar from "../../Filter/Sidebar";
+import { WORKFLOW_CODES } from "../../../../../../constants/workflow-codes";
 function MyConnections(props) {
   const [student, setStudent] = useState(false);
   const [professors, setProfessors] = useState(false);
@@ -19,6 +20,9 @@ function MyConnections(props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [count, setCount] = useState(0)
+  const [subCount, setSubCount] = useState(0)
+
   const getConnectionsData = async () =>
     (
       await SearchService.searchPeople(
@@ -34,11 +38,11 @@ function MyConnections(props) {
     ).data;
   const setConnectionData = () => {
     getConnectionsData().then((res) => {
-      if (!loadMore){
+      if (!loadMore) {
         setData(res);
         setLoading(false);
       }
-       
+
       else {
         const _data = data.slice();
         const merged = [..._data, ...res];
@@ -49,12 +53,12 @@ function MyConnections(props) {
       }
     }).catch((err) => {
       setLoading(false);
-      if(loadMore===false){
+      if (loadMore === false) {
         setLoadError(true)
-      }else {
+      } else {
         setLoadMore(false)
       }
-      
+
       setError(true);
       setLoadingMore(false)
     });
@@ -70,19 +74,35 @@ function MyConnections(props) {
   }, [props.filter])
 
   useEffect(() => {
-    if (student) {
-      setAdditionalTitle(CONNECTIONS[0].title)
-    }
-    else if (professors) {
-      setAdditionalTitle(CONNECTIONS[1].title)
-    }
-    else if (alumni) {
-      setAdditionalTitle(CONNECTIONS[2].title)
+    if (props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS) {
+      const count =
+        parseInt(props.userdata?.data?.studentConnectionCount) +
+        parseInt(props.userdata?.data?.alumniConnectionCount) +
+        parseInt(props.userdata?.data?.professorConnectionCount)
+        setCount(count)
+      if (student) {
+        setAdditionalTitle(CONNECTIONS[0].title)
+        setSubCount(props.userdata?.data?.studentConnectionCount)
+      }
+      else if (professors) {
+        setAdditionalTitle(CONNECTIONS[1].title)
+        setSubCount(props.userdata?.data?.professorConnectionCount)
+      }
+      else if (alumni) {
+        setAdditionalTitle(CONNECTIONS[2].title)
+        setSubCount(props.userdata?.data?.alumniConnectionCount)
+      }
+      else {
+        setAdditionalTitle(null)
+
+      }
     }
     else {
       setAdditionalTitle(null)
     }
-  }, [student, alumni, professors])
+
+
+  }, [student, alumni, professors, props.workflow, props.userdata?.data?.studentConnectionCount, props.userdata?.data?.professorConnectionCount, props.userdata?.data?.alumniConnectionCount])
 
   useEffect(() => {
     if (loadMore === true)
@@ -103,19 +123,22 @@ function MyConnections(props) {
     xl:grid-cols-8 2xl:px-5 "
       >
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
-           
-            <>
 
-              <Connections error={loadError} loading={loading} workflow={props.workflow} _data={data} properties={{ title: HEADER_OPTIONS[1].title, subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon }} />
+          <>
 
-              {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
-              <Spacer count={2} />
-            </>
+            <Connections error={loadError} loading={loading} workflow={props.workflow} userdata={props.userdata?.data} _data={data} 
+            properties={{ title: HEADER_OPTIONS[1].title,
+               subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon,
+                count , subCount}} />
+
+            {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
+            <Spacer count={2} />
+          </>
 
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
-          <Sidebar />
+          <Sidebar workflow={props.workflow} userdata={props.userdata?.data}/>
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />
           <Spacer count={2} />
