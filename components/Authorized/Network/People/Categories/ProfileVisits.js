@@ -24,9 +24,11 @@ function ProfileVisits(props) {
     ).data;
   const setConnectionData = () => {
     getConnectionsData().then((res) => {
-      setLoading(false);
-      if (!loadMore)
+      if (!loadMore){
+        setLoading(false);
         setData(res);
+      }
+        
       else {
         const _data = data.slice();
         const merged = [..._data, ...res];
@@ -43,6 +45,7 @@ function ProfileVisits(props) {
     });
   }
   useEffect(() => {
+    setLoading(true);
     setConnectionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.filter])
@@ -70,14 +73,13 @@ function ProfileVisits(props) {
   xl:grid-cols-8 2xl:px-5 "
       >
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
-          <>
-            {data.length > 0 && (
-              <Connections workflow={props.workflow} userdata={props?.userdata} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PEOPLE_WHO_VIEWED_YOU, icon: PeopleAltIcon }} />
-            )
-            }
+          
+
+            <Connections  error={error} loading={loading}  workflow={props.workflow} userdata={props?.userdata} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PEOPLE_WHO_VIEWED_YOU, icon: PeopleAltIcon }} />
+
             {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
             <Spacer count={2} />
-          </>
+          
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}

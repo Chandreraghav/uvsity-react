@@ -44,6 +44,7 @@ export const LOGOUT={
 export const GENERIC_INTERNAL_ERROR =
   "An unexpected internal error has occured. Please try again.";
 
+export const GENERIC_NO_DATA_ERROR="No data available"
 export const PEOPLE={
   NETWORK:{
      CONNECTION_REQUEST_ERROR: "There occured a problem sending the connection request to",
@@ -104,3 +105,7 @@ export const WORK_EXPERIENCE_FORM_ERRORS={
  
 }
 export const VALIDATION_ERROR_MESSAGE="This action could not be completed due to the following validation errors:"
+export const CUSTOM_ERRORS={
+  SOMETHING_WENT_WRONG:'Uh! Oh, Something went wrong on our side. Please try again later.',
+  NOTHING_TO_SHOW:'We do not have anything to show right now. Come back later.'
+}

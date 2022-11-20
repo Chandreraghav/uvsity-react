@@ -10,7 +10,7 @@ function MyConnections(props) {
   const [student, setStudent] = useState(false);
   const [professors, setProfessors] = useState(false);
   const [alumni, setAlumni] = useState(false);
-  const [additionalTitle,setAdditionalTitle]=useState(null)
+  const [additionalTitle, setAdditionalTitle] = useState(null)
   const [inMyNetworkFilterCriteria, setInMyNetworkFilter] = useState(true);
   const [onlyFriendsRequired, setOnlyFriendsRequired] = useState(true);
   const [loadMore, setLoadMore] = useState(false);
@@ -33,9 +33,11 @@ function MyConnections(props) {
     ).data;
   const setConnectionData = () => {
     getConnectionsData().then((res) => {
-      setLoading(false);
-      if (!loadMore)
+      if (!loadMore){
         setData(res);
+        setLoading(false);
+      }
+       
       else {
         const _data = data.slice();
         const merged = [..._data, ...res];
@@ -55,25 +57,26 @@ function MyConnections(props) {
     setStudent(CONNECTIONS[0].title === props.filter)
     setProfessors(CONNECTIONS[1].title === props.filter)
     setAlumni(CONNECTIONS[2].title === props.filter)
+    setLoading(true);
     setConnectionData();
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.filter])
- 
+
   useEffect(() => {
-    if(student){
+    if (student) {
       setAdditionalTitle(CONNECTIONS[0].title)
     }
-    else if(professors){
+    else if (professors) {
       setAdditionalTitle(CONNECTIONS[1].title)
     }
-    else if(alumni) {
+    else if (alumni) {
       setAdditionalTitle(CONNECTIONS[2].title)
     }
     else {
       setAdditionalTitle(null)
     }
-  },[student,alumni,professors])
+  }, [student, alumni, professors])
 
   useEffect(() => {
     if (loadMore === true)
@@ -94,14 +97,15 @@ function MyConnections(props) {
     xl:grid-cols-8 2xl:px-5 "
       >
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
-          <>
-            {data.length > 0 && (
-              <Connections workflow={props.workflow} _data={data} properties={{title:HEADER_OPTIONS[1].title, subtitle:additionalTitle,icon:HEADER_OPTIONS[1].icon}} />
-            )
-            }
-            {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
-            <Spacer count={2} />
-          </>
+           
+            <>
+
+              <Connections error={error} loading={loading} workflow={props.workflow} _data={data} properties={{ title: HEADER_OPTIONS[1].title, subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon }} />
+
+              {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
+              <Spacer count={2} />
+            </>
+
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
