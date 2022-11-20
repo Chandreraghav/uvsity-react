@@ -107,5 +107,5 @@ export const WORK_EXPERIENCE_FORM_ERRORS={
 export const VALIDATION_ERROR_MESSAGE="This action could not be completed due to the following validation errors:"
 export const CUSTOM_ERRORS={
   SOMETHING_WENT_WRONG:'Uh! Oh, Something went wrong on our side. Please try again later.',
-  NOTHING_TO_SHOW:'We do not have anything to show right now. Come back later.'
+  NOTHING_TO_SHOW:'We do not have anything to show here right now. Come back later.'
 }
