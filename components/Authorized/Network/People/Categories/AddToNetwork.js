@@ -13,6 +13,7 @@ function AddToNetwork(props) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const getConnectionsData = async () =>
     (
       await SearchService.searchPeople(
@@ -39,7 +40,11 @@ function AddToNetwork(props) {
       }
     }).catch((err) => {
       setLoading(false);
-      setLoadMore(false)
+      if(loadMore===false){
+        setLoadError(true)
+      }else {
+        setLoadMore(false)
+      }
       setError(true);
       setLoadingMore(false)
     });
@@ -75,7 +80,7 @@ function AddToNetwork(props) {
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
          <>
             
-              <Connections  error={error} loading={loading}  workflow={props.workflow} userdata={props?.userdata} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PROBABLE_INTERESTING_CONNECTIONS, icon: PeopleAltIcon }} />
+              <Connections  error={loadError} loading={loading}  workflow={props.workflow} userdata={props?.userdata} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PROBABLE_INTERESTING_CONNECTIONS, icon: PeopleAltIcon }} />
             
             {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
             <Spacer count={2} />

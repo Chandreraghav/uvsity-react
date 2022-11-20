@@ -51,8 +51,10 @@ function MyConnections(props) {
       setLoading(false);
       if(loadMore===false){
         setLoadError(true)
+      }else {
+        setLoadMore(false)
       }
-      setLoadMore(false)
+      
       setError(true);
       setLoadingMore(false)
     });
