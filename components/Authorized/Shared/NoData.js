@@ -2,6 +2,7 @@ import { CircularProgress, Typography } from "@mui/material";
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import { GENERIC_NO_DATA_ERROR } from "../../../constants/error-messages";
 
 function NoData(props) {
   return (
@@ -18,7 +19,7 @@ function NoData(props) {
       )}
 
       <Typography sx={{ fontSize: 14, color: "darkgrey" }}>
-        {props.message || "No data available"}
+        {props.message || GENERIC_NO_DATA_ERROR}
       </Typography>
     </div>
   );
