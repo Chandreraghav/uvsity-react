@@ -1,7 +1,7 @@
-import { Box, Button, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { RESPONSE_TYPES } from "../../../../../../constants/constants";
+import { RESPONSE_TYPES, COLOR_CODES } from "../../../../../../constants/constants";
 import { CUSTOM_ERRORS, PEOPLE } from "../../../../../../constants/error-messages";
 import { IMAGE_PATHS, INBOX, NETWORK, PAYLOAD_DEFAULT_TEXTS, RECOMMENDATIONS, TITLES } from "../../../../../../constants/userdata";
 import { WORKFLOW_CODES } from "../../../../../../constants/workflow-codes";
@@ -18,15 +18,39 @@ import PolyMessagingDialog from "../../../../../shared/modals/PolyMessagingDialo
 import Spacer from "../../../../../shared/Spacer";
 import Profile from "../../Listing/View/Cards/Profile";
 import CardShimmer from "../../ProfileShimmers/CardShimmer";
-import StartIcon from "@mui/icons-material/Start";
-import WarningIcon from "@mui/icons-material/Warning";
 import Error from "../../../../Shared/Error";
 import NoDataFound from "../../../../Shared/NoDataFound";
+import { useRouter } from "next/router";
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
+import { makeStyles } from "@material-ui/core/styles"
+
 toast.configure();
 
 function Connections(props) {
-  const [userdata, setUserData] = useState(props?.userdata)
 
+  const [ctxTheme, dispatch] = useTheme();
+  const deepGray = COLOR_CODES.GRAY.DEEP;
+  const [isDark, setDark] = useState(ctxTheme.mode === THEME_MODES.DARK);
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      "& .MuiFormLabel-root": {
+        color: isDark ? deepGray : "", // or black
+      },
+    },
+    input: {
+      color: isDark ? deepGray : "",
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
+      "&:focus": {
+        borderBottom: "none",
+      },
+    },
+  }));
+  const classes = useStyles();
+  const [userdata, setUserData] = useState(props?.userdata)
+  const [count, setCount] = useState(0)
+  const router = useRouter();
   const _messageEvent = {
     from: null,
     to: null,
@@ -37,8 +61,6 @@ function Connections(props) {
     event: null,
   };
   const [messageEvent, setMessageEvent] = useState(_messageEvent);
-  const [ctxTheme, dispatch] = useTheme();
-  const [i, setI] = useState(0)
 
   const [connData, setConnectionData] = useState([])
   const profilePrimaryLine = (firstName, lastName) =>
@@ -326,35 +348,87 @@ function Connections(props) {
       setConnectionData(props?._data)
       setUserData(props?.userdata)
     }
+
+    setCount(props.properties?.count || 0)
     return () => {
+      setCount(0)
       setConnectionData([])
       setUserData(null)
     }
   }, [props, props?._data, props?.userdata])
-
+  useEffect(() => {
+    setDark(ctxTheme.mode === THEME_MODES.DARK);
+  }, [ctxTheme]);
   return (
     <div className="py-2 px-4">
 
       {props.properties && (
-        <Typography className="py-2 flex lg:justify-start md:justify-start xs:justify-center sm:justify-center " variant="h5">
-          {<props.properties.icon fontSize="large" className="mt-1" />}
-          <div className=" space-x-2 px-2 w-2"></div>
-          <div className="mt-2 flex">
-            <div>{props.properties.title}
-            </div>
 
-            {props.properties.subtitle && (
-              <div className="flex  dark:text-gray-500 text-gray-700">
-                <div className=" space-x-2 px-2">&raquo;</div>
-                <div className=" ml-auto leading-tight mt-0.5 ">{props.properties.subtitle}</div>
+        <Box
+          sx={{ width: "100%", display: 'flex' }}
+        >
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
 
-              </div>
-            )}
+            <Grid item lg={6} md={6} sm={12} xs={12}>
+              <Typography className="py-2 flex lg:justify-start md:justify-start xs:justify-center sm:justify-center " variant="h5">
+                {<props.properties.icon fontSize="large" className="mt-1" />}
+                <div className=" space-x-2 px-2 w-2"></div>
+                <div className="mt-2 flex">
 
-          </div>
 
-        </Typography>
+                  <div className="flex gap-1">
+                    <div>{props.properties.title}</div>
+                    {props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS && count > 0 && (<div>({count})</div>)}
+                  </div>
 
+                  {props.properties.subtitle && (
+                    <div className="flex  dark:text-gray-500 text-gray-700">
+                      <div className=" space-x-2 px-2">&raquo;</div>
+                      <div className=" ml-auto leading-tight mt-0.5 ">{props.properties.subtitle}</div>
+
+                      {props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS
+                        && router.query?.filter === props.properties.subtitle
+                        && props.properties?.subCount > 0 &&
+                        (<div>({props.properties?.subCount})</div>)}
+
+                    </div>
+                  )}
+
+                </div>
+
+              </Typography>
+            </Grid>
+
+
+            <Grid item lg={6} md={6} sm={12} xs={12}>
+              {/* Search by text */}
+              <TextField
+                id="input-with-icon-textfield-for-search-by-name"
+                label="Search by name"
+                placeholder="Search..."
+                inputProps={{ className: classes.input }}
+                className={classes.root}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ width: "100%" }}
+                variant="standard"
+              />
+            </Grid>
+
+            <Spacer/>
+
+          </Grid>
+
+        </Box>
       )}
       {props.error === true && (<>
         <Error message={CUSTOM_ERRORS.SOMETHING_WENT_WRONG} />

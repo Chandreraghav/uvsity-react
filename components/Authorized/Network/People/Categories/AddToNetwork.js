@@ -80,7 +80,7 @@ function AddToNetwork(props) {
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
          <>
             
-              <Connections  error={loadError} loading={loading}  workflow={props.workflow} userdata={props?.userdata} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PROBABLE_INTERESTING_CONNECTIONS, icon: PeopleAltIcon }} />
+              <Connections  error={loadError} loading={loading}  workflow={props.workflow} userdata={props?.userdata?.data} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PROBABLE_INTERESTING_CONNECTIONS, icon: PeopleAltIcon }} />
             
             {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
             <Spacer count={2} />
@@ -89,7 +89,8 @@ function AddToNetwork(props) {
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
-          <Sidebar />
+          <Sidebar workflow={props.workflow} userdata={props.userdata?.data}/>
+         
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />
           <Spacer count={2} />

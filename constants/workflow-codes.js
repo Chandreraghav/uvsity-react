@@ -48,6 +48,8 @@ export const WORKFLOW_CODES = {
       STUDENT: "CT_STUD",
       ALUMNI: "CT_ALUM",
       PROFESSOR: "CT_PROF",
+      AWAITING: "CT_AWAIT",
+      IN_MY_NETWORK: "CT_INNW"
     },
     INTRO_PATHS: {
       SESSION: "IP_SESS",
