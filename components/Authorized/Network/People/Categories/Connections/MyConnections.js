@@ -18,6 +18,7 @@ function MyConnections(props) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const getConnectionsData = async () =>
     (
       await SearchService.searchPeople(
@@ -48,6 +49,9 @@ function MyConnections(props) {
       }
     }).catch((err) => {
       setLoading(false);
+      if(loadMore===false){
+        setLoadError(true)
+      }
       setLoadMore(false)
       setError(true);
       setLoadingMore(false)
@@ -100,7 +104,7 @@ function MyConnections(props) {
            
             <>
 
-              <Connections error={error} loading={loading} workflow={props.workflow} _data={data} properties={{ title: HEADER_OPTIONS[1].title, subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon }} />
+              <Connections error={loadError} loading={loading} workflow={props.workflow} _data={data} properties={{ title: HEADER_OPTIONS[1].title, subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon }} />
 
               {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
               <Spacer count={2} />
