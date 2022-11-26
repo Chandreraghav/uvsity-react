@@ -340,9 +340,9 @@ function Fee() {
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
          
-            <div className="flex gap-2 ">
+            <div className="flex   gap-2 ">
               <div className=" flex leading-loose lg:text-3xl text-xl md:text-3xl text-gray-700">
-                <div className="flex">
+                <div className="flex dark:text-gray-400  text-gray-900">
                   <Typography gutterBottom variant="h4" component="div">
                     Paid session
                   </Typography>
@@ -360,7 +360,7 @@ function Fee() {
               </div>
               <FormControl variant="filled">
                 <FormControlLabel
-                  className=" text-gray-600"
+                  className=" dark:text-gray-400  text-gray-900"
                   control={
                     <Switch
                       id="freeSessionOrPaid"
@@ -383,7 +383,7 @@ function Fee() {
                     fullWidth
                     sx={{ display: "flex", alignItems: "flex-end" }}
                   >
-                    <AttachMoneyIcon sx={{ color: "action.active" }} />
+                    <AttachMoneyIcon color="primary"/>
                     <TextField
                       id="fees"
                       label="Session fee"
@@ -402,14 +402,14 @@ function Fee() {
                     />
                   </Box>
                 </FormControl>
-                <div className="text-blue-600 lg:text-md text-xs md:text-sm leading-tight flex gap-2 px-3 py-1">
+                <div className=" dark:text-gray-600 text-blue-800 lg:text-md text-xs md:text-sm leading-tight flex gap-2 px-3 py-1">
                   <div>{FEE.PROMO_CODES.icon}</div>
                   <div>{FEE.PROMO_CODES.text}</div>
                 </div>
 
                 {sessionFee && !isNaN(sessionFee) && sessionFee > 0 && (
                   <>
-                    <div className="text-green-600 lg:text-xl text-xs md:text-sm leading-tight font-semibold flex gap-2 px-3 py-1">
+                    <div className=" text-green   lg:text-xl text-xs md:text-sm leading-tight font-semibold flex gap-2 px-3 py-1">
                       <div>{FEE.HELP_TEXT.ICON}</div>
                       <div>
                         {FEE.HELP_TEXT.SET_FEE_TYPEWRITER.replace(
@@ -427,7 +427,7 @@ function Fee() {
           <Grid item xs={12}>
             <div className="flex gap-2 ">
               <div className="flex leading-loose lg:text-3xl text-xl md:text-3xl text-gray-700">
-                <div className="flex">
+                <div className="flex dark:text-gray-400  text-gray-900">
                   <Typography gutterBottom variant="h5" component="div">
                     Sponsorships
                   </Typography>
@@ -444,7 +444,7 @@ function Fee() {
               </div>
               <FormControl variant="filled">
                 <FormControlLabel
-                  className=" text-gray-600"
+                  className=" dark:text-gray-400  text-gray-900"
                   control={
                     <Switch
                       size="medium"
@@ -459,11 +459,11 @@ function Fee() {
             </div>
             {sponsorShipReqd && (
               <>
-                <div className="items-center  py-2 flex">
+                <div className="items-center  py-2 flex dark:text-gray-300 ">
                   <Typography
-                    color="text.secondary"
+                     
                     gutterBottom
-                    variant="h6"
+                    variant="subtitle"
                     component="div"
                   >
                     {!_editSponsorshipLevel && (
@@ -528,7 +528,7 @@ function Fee() {
                     fullWidth
                     sx={{ display: "flex", alignItems: "flex-end" }}
                   >
-                    <AttachMoneyIcon sx={{ color: "action.active" }} />
+                     
                     <TextField
                       id="sponsorshipFee"
                       label="Sponsorship fee"
@@ -550,7 +550,7 @@ function Fee() {
                     !isNaN(sposnsorshipFee) &&
                     sposnsorshipFee > 0 && (
                       <>
-                        <div className="text-green-600 lg:text-md text-xs md:text-sm leading-tight font-semibold flex gap-2 px-3 py-1">
+                        <div className="text-green lg:text-md text-xs md:text-sm leading-tight font-semibold flex gap-2 px-3 py-1">
                           <div>{FEE.HELP_TEXT.ICON}</div>
                           <div>
                             {SPONSORSHIP.MESSAGES.INFO.SET_FEE_TYPEWRITER.replace(
@@ -570,7 +570,7 @@ function Fee() {
                 >
                   <div className="flex gap-1 py-2">
                     <label
-                      className=" text-gray-600 font-normal"
+                      className="  dark:text-gray-400  text-gray-900 font-normal"
                       id="session-summary"
                     >
                       Pre-customized offering Template
@@ -581,7 +581,7 @@ function Fee() {
                           .PRE_CUSTOMIZED_TEMPLATE_HELP_TEXT
                       }
                     >
-                      <div className=" cursor-pointer">
+                      <div className=" text-gray-600 cursor-pointer">
                         <HelpOutlineIcon fontSize="small" />
                       </div>
                     </Tooltip>
@@ -597,7 +597,7 @@ function Fee() {
                   />
                 </FormControl>
 
-                <div className="save-sponsorship-action-buttons border-dotted border-2">
+                <div className="save-sponsorship-action-buttons  ">
                   <Tooltip title={"Save sponsorship"}>
                     <IconButton
                       onClick={handleSaveSponsorshipOffering}
@@ -613,7 +613,7 @@ function Fee() {
                       aria-label="save-sponsorship-cancel"
                       size="small"
                     >
-                      <CancelIcon fontSize="small" />
+                      <CancelIcon color="warning" fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 </div>

@@ -451,7 +451,7 @@ button.danger {
 .list-hover:hover {
   transition-timing-function: ease-in;
   transition: all 0.8s;
-  scale: 2;
+   
   background-image: linear-gradient(to right, #558ee1, #000) !important;
 }
 
