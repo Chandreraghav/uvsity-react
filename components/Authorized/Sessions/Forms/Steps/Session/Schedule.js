@@ -760,6 +760,7 @@ function Schedule(props) {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <StaticDatePicker
                 orientation="landscape"
+                
                 disablePast
                 label={
                   <>
@@ -785,6 +786,7 @@ function Schedule(props) {
               />
             </LocalizationProvider>
 
+<Spacer/>
             <div className="flex flex-col gap-1 text-xs text-gray-600 leading-tight">
               <div className="flex gap-1">
                 <InfoIcon size="small" />
@@ -800,13 +802,25 @@ function Schedule(props) {
                 </Typography>
               </div>
 
+              
               <div
                 className="text-center items-center leading-tight 
               text-xs text-gray-500 font-semibold flex gap-1"
               >
-                <PublicIcon />
-                <div>{timezone}</div>
+                
+                
+                
+                  <Tooltip title="Timezone">
+                    <>
+                      <PublicIcon />
+                      {timezone}
+                    </>
+
+                  </Tooltip>
+                
+               
               </div>
+             
               {repeatChecked && (
                 <>
                   <img
@@ -826,6 +840,7 @@ function Schedule(props) {
                 variant="standard"
                 sx={{ marginBottom: 1 }}
               >
+                {/* sx={{color: isDark ? deepGray : ""}}  */}
                 <InputLabel required htmlFor="grouped-select-timezone">
                   Timezone
                 </InputLabel>

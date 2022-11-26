@@ -155,7 +155,7 @@ function FileUpload(props) {
             {" "}
             {props.data.icon}
             <div className="flex gap-1">
-              <p className="leading-tight text-gray-700">{props.data.title}</p>
+              <p className="leading-tight dark:text-gray-500 text-gray-700">{props.data.title}</p>
               {props.data.required && (
                 <small className="text-blue-800 text-bold">*</small>
               )}
