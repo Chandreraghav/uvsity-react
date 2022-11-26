@@ -380,10 +380,10 @@ function CreateSession(props) {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
         ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
+        // find the first step that has been completed
+        steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
-    handleStep(newActiveStep, steps[newActiveStep]); 
+    handleStep(newActiveStep, steps[newActiveStep]);
     setTimeout(() => {
       scrollDivToTop();
     }, 100);
@@ -414,20 +414,20 @@ function CreateSession(props) {
         isNewCourse: true,
         notifyPastAttendees:
           formdata?.participant.choiceOfInvitation === null ||
-          formdata?.participant.choiceOfInvitation === "0"
+            formdata?.participant.choiceOfInvitation === "0"
             ? true
             : false,
         cohostUser: formdata?.participant?.cohost
           ? {
-              userName: formattedName(
-                formdata?.participant?.cohost?.firstName,
-                formdata?.participant?.cohost?.lastName
-              ),
-              imageURL: formdata?.participant?.cohost?.profilepicName,
-              userBaseType: formdata?.participant?.cohost?.userType,
-              educationalInstitution: formdata?.participant?.cohost?.eduIns,
-              campus: formdata?.participant?.cohost?.campus,
-            }
+            userName: formattedName(
+              formdata?.participant?.cohost?.firstName,
+              formdata?.participant?.cohost?.lastName
+            ),
+            imageURL: formdata?.participant?.cohost?.profilepicName,
+            userBaseType: formdata?.participant?.cohost?.userType,
+            educationalInstitution: formdata?.participant?.cohost?.eduIns,
+            campus: formdata?.participant?.cohost?.campus,
+          }
           : null,
         registrationQuestionnaireId: formdata?.participant?.questions,
         sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
@@ -450,75 +450,75 @@ function CreateSession(props) {
 
         currentSchedule: formdata?.schedule?.repeats
           ? {
-              repeateEveryCount: formdata?.schedule?.repeatEvery
-                ? Number(formdata?.schedule?.repeatEvery)
-                : 0,
-              monthlyRepeatTypeStr:
-                formdata?.schedule?.repeatSchedule?.currentSchedule
-                  ?.monthlyRepeatTypeStr,
-              endOfMeetingTypeStr:
-                formdata?.schedule?.repeatSchedule?.currentSchedule
-                  ?.endOfMeetingTypeStr,
-              csoccurence: formdata?.schedule?.occurenceCount?.toString(),
-              repeateEveryCounttemp: formdata?.schedule?.repeatEvery
-                ? formdata?.schedule?.repeatEvery.toString()
-                : "0",
-              csstartDate: formdata?.schedule.startDate
-                ? getReadableFormattedDate(formdata?.schedule.startDate)
-                : null,
-              endOfMeetingTypeInputStr:
-                formdata?.schedule?.repeatSchedule?.currentSchedule
-                  ?.endOfMeetingTypeStr,
-              monthlyRepeatTypeInputStr:
-                formdata?.schedule?.repeatSchedule?.currentSchedule
-                  ?.monthlyRepeatTypeStr,
-              repeattype:
-                formdata?.schedule?.repeatSchedule?.currentSchedule
-                  ?.repeatTypeStr,
-              repeatTypeStr:
-                formdata?.schedule?.repeatSchedule?.currentSchedule
-                  ?.repeatTypeStr,
-              selectedDaysOfWeektempStr:
-                formdata?.schedule?.repeatSchedule?.currentSchedule
-                  ?.selectedDaysOfWeekStr,
-              repeatcheckbox: formdata?.schedule.repeats
-                ? formdata?.schedule.repeats
-                : "",
-              isScheduleValid:
-                formdata?.schedule?.repeatScheduleFixed !== undefined &&
+            repeateEveryCount: formdata?.schedule?.repeatEvery
+              ? Number(formdata?.schedule?.repeatEvery)
+              : 0,
+            monthlyRepeatTypeStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.monthlyRepeatTypeStr,
+            endOfMeetingTypeStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.endOfMeetingTypeStr,
+            csoccurence: formdata?.schedule?.occurenceCount?.toString(),
+            repeateEveryCounttemp: formdata?.schedule?.repeatEvery
+              ? formdata?.schedule?.repeatEvery.toString()
+              : "0",
+            csstartDate: formdata?.schedule.startDate
+              ? getReadableFormattedDate(formdata?.schedule.startDate)
+              : null,
+            endOfMeetingTypeInputStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.endOfMeetingTypeStr,
+            monthlyRepeatTypeInputStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.monthlyRepeatTypeStr,
+            repeattype:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.repeatTypeStr,
+            repeatTypeStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.repeatTypeStr,
+            selectedDaysOfWeektempStr:
+              formdata?.schedule?.repeatSchedule?.currentSchedule
+                ?.selectedDaysOfWeekStr,
+            repeatcheckbox: formdata?.schedule.repeats
+              ? formdata?.schedule.repeats
+              : "",
+            isScheduleValid:
+              formdata?.schedule?.repeatScheduleFixed !== undefined &&
                 formdata?.schedule?.repeatScheduleFixed !== null
-                  ? formdata?.schedule?.repeatScheduleFixed
-                  : false,
-              occurence: formdata?.schedule?.occurenceCount?.toString(),
-              startDate: formdata?.schedule.startDate
-                ? getReadableFormattedDate(formdata?.schedule.startDate)
-                : null,
-              endDate: formdata?.schedule?.endDate
-                ? formatDate(formdata?.schedule.endDate)
-                : null,
-            }
+                ? formdata?.schedule?.repeatScheduleFixed
+                : false,
+            occurence: formdata?.schedule?.occurenceCount?.toString(),
+            startDate: formdata?.schedule.startDate
+              ? getReadableFormattedDate(formdata?.schedule.startDate)
+              : null,
+            endDate: formdata?.schedule?.endDate
+              ? formatDate(formdata?.schedule.endDate)
+              : null,
+          }
           : {
-              repeateEveryCount: "",
-              monthlyRepeatTypeStr: "",
-              endOfMeetingTypeStr: "Occurence",
-              csoccurence: "",
-              repeateEveryCounttemp: "",
-              csstartDate: "",
-              endOfMeetingTypeInputStr: "Occurence",
-              monthlyRepeatTypeInputStr: "DayOfMonth",
-              repeattype: "None",
-              repeatTypeStr: "None",
-              selectedDaysOfWeektempStr: [
-                "Sun",
-                "Mon",
-                "Tue",
-                "Wed",
-                "Thu",
-                "Fri",
-                "Sat",
-              ],
-              repeatcheckbox: "",
-            },
+            repeateEveryCount: "",
+            monthlyRepeatTypeStr: "",
+            endOfMeetingTypeStr: "Occurence",
+            csoccurence: "",
+            repeateEveryCounttemp: "",
+            csstartDate: "",
+            endOfMeetingTypeInputStr: "Occurence",
+            monthlyRepeatTypeInputStr: "DayOfMonth",
+            repeattype: "None",
+            repeatTypeStr: "None",
+            selectedDaysOfWeektempStr: [
+              "Sun",
+              "Mon",
+              "Tue",
+              "Wed",
+              "Thu",
+              "Fri",
+              "Sat",
+            ],
+            repeatcheckbox: "",
+          },
         EndDate: formdata?.schedule?.endDate
           ? formdata?.schedule?.endDate?.toISOString()
           : new Date()?.toISOString(),
@@ -528,14 +528,14 @@ function CreateSession(props) {
         courseSummary: formdata?.basic?.summary?.html,
         courseType:
           formdata?.participant?.visibility == null ||
-          formdata?.participant?.visibility
+            formdata?.participant?.visibility
             ? WORKFLOW_CODES.USER.SESSION.VISIBILITY.PUBLIC
             : WORKFLOW_CODES.USER.SESSION.VISIBILITY.PRIVATE,
         courseFullName: formdata?.basic?.name,
         courseShortName: formdata?.basic?.shortName,
         docCheckbox:
           formdata?.basic?.binary?.documents?.consent !== undefined &&
-          formdata?.basic?.binary?.documents?.consent !== null
+            formdata?.basic?.binary?.documents?.consent !== null
             ? formdata?.basic?.binary?.documents?.consent
             : false,
         isEndDateCalculatedFromSchedule: formdata?.schedule?.repeats
@@ -544,7 +544,7 @@ function CreateSession(props) {
         url: formdata?.basic?.url,
         imageURL:
           formdata?.basic?.binary?.images?.poster &&
-          formdata?.basic?.binary?.images?.poster.indexOf("blob:") === -1
+            formdata?.basic?.binary?.images?.poster.indexOf("blob:") === -1
             ? formdata?.basic?.binary?.images?.poster
             : null,
         cost: Number(formdata?.fees.amount),
@@ -641,7 +641,7 @@ function CreateSession(props) {
       setStepComplete(true);
       setStepValidationErrorFlag(false);
       setCompleted(newCompleted);
-    } catch (error) {}
+    } catch (error) { }
   };
   const setStepComplete = (ind) => {
     const _steps = steps;
@@ -832,8 +832,8 @@ function CreateSession(props) {
       formdata?.basic?.binary?.images?.poster.indexOf("blob:") === -1
       ? formdata?.basic?.binary?.images?.poster
       : finalSubmit
-      ? uploads.image
-      : null;
+        ? uploads.image
+        : null;
   };
   const handleSessionSubmit = (obj) => {
     setTimeout(() => {
@@ -863,84 +863,84 @@ function CreateSession(props) {
     ];
     const currentSchedule = formdata?.schedule?.repeats
       ? {
-          repeateEveryCount: formdata?.schedule?.repeatEvery
-            ? Number(formdata?.schedule?.repeatEvery)
-            : 0,
-          monthlyRepeatTypeStr:
-            formdata?.schedule?.repeatSchedule?.currentSchedule
-              ?.monthlyRepeatTypeStr,
-          endOfMeetingTypeStr:
-            formdata?.schedule?.repeatSchedule?.currentSchedule
-              ?.endOfMeetingTypeStr,
-          csoccurence: formdata?.schedule?.occurenceCount?.toString(),
-          repeateEveryCounttemp: formdata?.schedule?.repeatEvery
-            ? formdata?.schedule?.repeatEvery.toString()
-            : "0",
-          csstartDate: formdata?.schedule.startDate
-            ? getReadableFormattedDate(formdata?.schedule.startDate)
-            : null,
-          endOfMeetingTypeInputStr:
-            formdata?.schedule?.repeatSchedule?.currentSchedule
-              ?.endOfMeetingTypeStr,
-          monthlyRepeatTypeInputStr:
-            formdata?.schedule?.repeatSchedule?.currentSchedule
-              ?.monthlyRepeatTypeStr,
-          repeattype:
-            formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
-          repeatTypeStr:
-            formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
-          selectedDaysOfWeektempStr:
-            formdata?.schedule?.repeatSchedule?.currentSchedule
-              ?.selectedDaysOfWeekStr,
-          repeatcheckbox: formdata?.schedule.repeats
-            ? formdata?.schedule.repeats
-            : "",
-          isScheduleValid:
-            formdata?.schedule?.repeatScheduleFixed !== undefined &&
+        repeateEveryCount: formdata?.schedule?.repeatEvery
+          ? Number(formdata?.schedule?.repeatEvery)
+          : 0,
+        monthlyRepeatTypeStr:
+          formdata?.schedule?.repeatSchedule?.currentSchedule
+            ?.monthlyRepeatTypeStr,
+        endOfMeetingTypeStr:
+          formdata?.schedule?.repeatSchedule?.currentSchedule
+            ?.endOfMeetingTypeStr,
+        csoccurence: formdata?.schedule?.occurenceCount?.toString(),
+        repeateEveryCounttemp: formdata?.schedule?.repeatEvery
+          ? formdata?.schedule?.repeatEvery.toString()
+          : "0",
+        csstartDate: formdata?.schedule.startDate
+          ? getReadableFormattedDate(formdata?.schedule.startDate)
+          : null,
+        endOfMeetingTypeInputStr:
+          formdata?.schedule?.repeatSchedule?.currentSchedule
+            ?.endOfMeetingTypeStr,
+        monthlyRepeatTypeInputStr:
+          formdata?.schedule?.repeatSchedule?.currentSchedule
+            ?.monthlyRepeatTypeStr,
+        repeattype:
+          formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
+        repeatTypeStr:
+          formdata?.schedule?.repeatSchedule?.currentSchedule?.repeatTypeStr,
+        selectedDaysOfWeektempStr:
+          formdata?.schedule?.repeatSchedule?.currentSchedule
+            ?.selectedDaysOfWeekStr,
+        repeatcheckbox: formdata?.schedule.repeats
+          ? formdata?.schedule.repeats
+          : "",
+        isScheduleValid:
+          formdata?.schedule?.repeatScheduleFixed !== undefined &&
             formdata?.schedule?.repeatScheduleFixed !== null
-              ? formdata?.schedule?.repeatScheduleFixed
-              : false,
-          occurence: formdata?.schedule?.occurenceCount?.toString(),
-          startDate: formdata?.schedule.startDate
-            ? getReadableFormattedDate(formdata?.schedule.startDate)
-            : null,
-          endDate: formdata?.schedule?.endDate
-            ? formatDate(formdata?.schedule.endDate)
-            : null,
-        }
+            ? formdata?.schedule?.repeatScheduleFixed
+            : false,
+        occurence: formdata?.schedule?.occurenceCount?.toString(),
+        startDate: formdata?.schedule.startDate
+          ? getReadableFormattedDate(formdata?.schedule.startDate)
+          : null,
+        endDate: formdata?.schedule?.endDate
+          ? formatDate(formdata?.schedule.endDate)
+          : null,
+      }
       : {
-          repeateEveryCount: "",
-          monthlyRepeatTypeStr: "",
-          endOfMeetingTypeStr: "Occurence",
-          csoccurence: "",
-          repeateEveryCounttemp: "",
-          csstartDate: "",
-          endOfMeetingTypeInputStr: "Occurence",
-          monthlyRepeatTypeInputStr: "DayOfMonth",
-          repeattype: "None",
-          repeatTypeStr: "None",
-          selectedDaysOfWeektempStr: [
-            "Sun",
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-            "Sat",
-          ],
-          repeatcheckbox: "",
-        };
+        repeateEveryCount: "",
+        monthlyRepeatTypeStr: "",
+        endOfMeetingTypeStr: "Occurence",
+        csoccurence: "",
+        repeateEveryCounttemp: "",
+        csstartDate: "",
+        endOfMeetingTypeInputStr: "Occurence",
+        monthlyRepeatTypeInputStr: "DayOfMonth",
+        repeattype: "None",
+        repeatTypeStr: "None",
+        selectedDaysOfWeektempStr: [
+          "Sun",
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat",
+        ],
+        repeatcheckbox: "",
+      };
     const cohost = formdata?.participant?.cohost
       ? {
-          userName: formattedName(
-            formdata?.participant?.cohost?.firstName,
-            formdata?.participant?.cohost?.lastName
-          ),
-          imageURL: formdata?.participant?.cohost?.profilepicName,
-          userBaseType: formdata?.participant?.cohost?.userType,
-          educationalInstitution: formdata?.participant?.cohost?.eduIns,
-          campus: formdata?.participant?.cohost?.campus,
-        }
+        userName: formattedName(
+          formdata?.participant?.cohost?.firstName,
+          formdata?.participant?.cohost?.lastName
+        ),
+        imageURL: formdata?.participant?.cohost?.profilepicName,
+        userBaseType: formdata?.participant?.cohost?.userType,
+        educationalInstitution: formdata?.participant?.cohost?.eduIns,
+        campus: formdata?.participant?.cohost?.campus,
+      }
       : null;
 
     const finalPayload = {
@@ -948,16 +948,16 @@ function CreateSession(props) {
       isNewCourse: true,
       notifyPastAttendees:
         formdata?.participant.choiceOfInvitation === null ||
-        formdata?.participant.choiceOfInvitation === "0"
+          formdata?.participant.choiceOfInvitation === "0"
           ? true
           : false,
       cohostUser: cohost,
       sessionCoHostData: formdata?.participant?.cohost
         ? {
-            sessionCoHostId: formdata?.participant?.cohost
-              ? formdata?.participant?.cohost?.userDetailsId
-              : null,
-          }
+          sessionCoHostId: formdata?.participant?.cohost
+            ? formdata?.participant?.cohost?.userDetailsId
+            : null,
+        }
         : null,
       registrationQuestionnaireId: formdata?.participant?.questions,
       sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
@@ -976,7 +976,7 @@ function CreateSession(props) {
       courseSummary: formdata?.basic?.summary?.html,
       courseType:
         formdata?.participant?.visibility == null ||
-        formdata?.participant?.visibility
+          formdata?.participant?.visibility
           ? WORKFLOW_CODES.USER.SESSION.VISIBILITY.PUBLIC
           : WORKFLOW_CODES.USER.SESSION.VISIBILITY.PRIVATE,
       courseFullName: formdata?.basic?.name,
@@ -1156,21 +1156,19 @@ function CreateSession(props) {
                   >
                     <StepButton
                       color="inherit"
-                      onClick={()=>handleStep(index, label)}
+                      onClick={() => handleStep(index, label)}
                     >
                       <StepLabel
                         StepIconComponent={ColorlibStepIcon}
                         error={label.validationError}
                       >
                         <div
-                          className={` flex justify-center items-start mx-auto  gap-1 ${
-                            label.complete ? "font-semibold" : "font-normal"
-                          }`}
+                          className={` flex justify-center items-start mx-auto  gap-1 ${label.complete ? "font-semibold" : "font-normal"
+                            }`}
                         >
                           <div
-                            className={`  ${
-                              index === activeStep ? "italic" : "normal"
-                            }`}
+                            className={`  ${index === activeStep ? "italic" : "normal"
+                              }`}
                           >
                             {label.title}
                           </div>
@@ -1201,7 +1199,7 @@ function CreateSession(props) {
                     />
                   )}
 
-                  <Box className=" mb-14 lg:mb-0 xl:mb-0 md:mb-0" 
+                  <Box className=" mb-14 lg:mb-0 xl:mb-0 md:mb-0"
                     sx={{ display: "flex", flexDirection: "row" }}
                   >
                     <Button

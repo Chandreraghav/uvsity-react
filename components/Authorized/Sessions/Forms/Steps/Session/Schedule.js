@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
@@ -16,6 +17,7 @@ import {
   getTimeAfter,
   getTimezone,
   HTMLUnderlineByCharacterIndex,
+  isSmallScreen,
   isToday,
 } from "../../../../../../utils/utility";
 import Checkbox from "@mui/material/Checkbox";
@@ -29,10 +31,10 @@ import {
 import FormHelperText from "@mui/material/FormHelperText";
 import ScheduleModuleCSS from "../../../../../../styles/Schedule.module.css";
 import parse from "html-react-parser";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import Slide from "@mui/material/Slide";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider"
+import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormLabel from "@mui/material/FormLabel";
@@ -40,7 +42,7 @@ import IconButton from "@mui/material/IconButton";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Tooltip } from "@material-ui/core";
-import StaticDatePicker from "@mui/lab/StaticDatePicker";
+import {StaticDatePicker} from "@mui/x-date-pickers/StaticDatePicker";
 import ScheduleService from "../../../../../../pages/api/session/ScheduleService";
 import { handleResponse } from "../../../../../../toastr-response-handler/handler";
 import { getWorkflowError } from "../../../../../../error-handler/handler";
@@ -259,7 +261,7 @@ function Schedule(props) {
   };
 
   const handleStartDateChange = (event) => {
-    const startDate = event;
+    const startDate = event.$d;
     startDate.setHours(parseInt(Number(startTime.hour)));
     startDate.setMinutes(parseInt(Number(startTime.minute)));
     startDate.setSeconds(0);
@@ -276,7 +278,7 @@ function Schedule(props) {
       const p = props?.data?.static.times.filter(
         (obj) => obj?.timeId === startTime?.timeid
       );
-      const selectedDate = event;
+      const selectedDate = event.$d;
       const selectedHour = parseInt(p[0]?.hour);
       selectedDate.setHours(selectedHour);
       const selectedMinute = parseInt(p[0]?.minute);
@@ -510,6 +512,8 @@ function Schedule(props) {
           type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
           schedule: APP.SESSION.DTO.SCHEDULE,
         });
+        if(!isSmallScreen())
+        window.scrollTo(0, 0);
       });
   };
   const handleDurationChange = (event) => {
@@ -561,7 +565,7 @@ function Schedule(props) {
     }
   };
   const handleEndsOnChange = (event) => {
-    setEndsOnDate(event);
+    setEndsOnDate(event.$d);
     APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = event;
     setDirty();
     dispatch({
@@ -598,6 +602,8 @@ function Schedule(props) {
         type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
         schedule: APP.SESSION.DTO.SCHEDULE,
       });
+      if(!isSmallScreen())
+      window.scrollTo(0, 0);
     }, 120);
   };
 
@@ -750,7 +756,8 @@ function Schedule(props) {
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item sm={12} lg={6} md={6} xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
               <StaticDatePicker
                 orientation="landscape"
                 disablePast
@@ -769,6 +776,11 @@ function Schedule(props) {
                 openTo="day"
                 value={selectedStartDate}
                 onChange={handleStartDateChange}
+                componentsProps={{
+                  actionBar: {
+                    actions: [],
+                  },
+                }}
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
@@ -1013,7 +1025,8 @@ function Schedule(props) {
                                 {repeatByDaysOfWeek
                                   .filter((obj) => !obj.disabled)
                                   .map((day, index) => (
-                                    <Tooltip title={day.display.long}>
+                                    <div key={index}>
+                                       <Tooltip title={day.display.long}>
                                       <FormControlLabel
                                         key={day.id}
                                         className=" text-gray-500   "
@@ -1040,6 +1053,8 @@ function Schedule(props) {
                                         labelPlacement="end"
                                       ></FormControlLabel>
                                     </Tooltip>
+                                    </div>
+                                   
                                   ))}
                               </div>
                               <Spacer />
@@ -1048,13 +1063,13 @@ function Schedule(props) {
                         )}
 
                       <FormControl variant="outlined" sx={{ marginBottom: 1 }}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DesktopDatePicker
                             disableToolbar
                             label="Starts on"
                             variant="inline"
                             margin="normal"
-                            inputFormat="MM/dd/yyyy"
+                            
                             renderInput={(params) => <TextField {...params} />}
                             minDate={startMinDate}
                             disablePast
@@ -1108,13 +1123,13 @@ function Schedule(props) {
                                 className="ml-2 mt-2 text-xs text-gray-700"
                               />
                               <LocalizationProvider
-                                dateAdapter={AdapterDateFns}
+                                dateAdapter={AdapterDayjs}
                               >
                                 <DesktopDatePicker
                                   disableToolbar
                                   allowSameDateSelection
                                   variant="inline"
-                                  inputFormat="MM/dd/yyyy"
+                                  
                                   renderInput={(params) => (
                                     <TextField
                                       className={classes.root}

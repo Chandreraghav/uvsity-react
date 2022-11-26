@@ -228,11 +228,20 @@ export const getDifferenceOfTimeWithCurrentTimeInMinutes = (time) => {
 };
 export const isToday = (someDate) => {
   const today = new Date();
-  return (
-    someDate.getDate() == today.getDate() &&
-    someDate.getMonth() == today.getMonth() &&
-    someDate.getFullYear() == today.getFullYear()
-  );
+  try {
+    return (
+      someDate.getDate() == today.getDate() &&
+      someDate.getMonth() == today.getMonth() &&
+      someDate.getFullYear() == today.getFullYear()
+    );
+  } catch (error) {
+    return (
+      someDate.$d.getDate() == today.getDate() &&
+      someDate.$d.getMonth() == today.getMonth() &&
+      someDate.$d.getFullYear() == today.getFullYear()
+    );
+  }
+  
 };
 
 export const getFileExtension = (fileName, separator, limit) => {
@@ -263,7 +272,7 @@ export const isEmptyObject = (obj) => {
     }
     return Object.keys(obj).length === 0 && obj.constructor === Object;
   } catch (error) {
-    console.log(error);
+     
   }
   return true;
 };

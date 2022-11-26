@@ -16,14 +16,16 @@ function FileUpload(props) {
   const FILE_INVALID_EXT = "file-invalid-type";
   const FILE_DIMENSION_ERROR = "FILE_DIMENSION_ERROR";
   const img = {
-    marginTop: 10,
+     
     margin: "auto",
     display: "block",
     overflow: "hidden",
-    maxWidth: 250,
-    height: "min-content",
-    paddingBottom: 4,
-    objectFit: "contain",
+    width:200,
+    height:200,
+    objectFit: "cover",
+    border:"3px dotted #0081CB",
+    boxShadow: " 5px 10px lightblue",
+    borderRadius:"7px"
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -265,7 +267,7 @@ function FileUpload(props) {
         errors.length == 0 && (
           <img className="mt-2" src={props.data.imageURL} style={img} />
         )}
-
+<Spacer />
       {props?.data?.consent && (
         <>
           <Spacer />
