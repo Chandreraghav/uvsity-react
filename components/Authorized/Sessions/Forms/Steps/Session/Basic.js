@@ -22,7 +22,7 @@ import CEditor from "../../../../../Thirdparty/Editor/CKEditor";
 import { toast } from "react-toastify";
 import UserDataService from "../../../../../../pages/api/users/data/UserDataService";
 import { handleResponse } from "../../../../../../toastr-response-handler/handler";
-import { RESPONSE_TYPES } from "../../../../../../constants/constants";
+import { COLOR_CODES, RESPONSE_TYPES } from "../../../../../../constants/constants";
 import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
 import { actionTypes } from "../../../../../../context/reducer";
 import { useEffect } from "react";
@@ -34,10 +34,15 @@ import { AuthService } from "../../../../../../pages/api/users/auth/AuthService"
 import { Button, FormHelperText, Typography } from "@mui/material";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import PastSessionDialog from "../../../Modals/PastSessionDialog";
-
+import { THEME_MODES, useTheme } from "../../../../../../theme/ThemeProvider";
+import { makeStyles } from "@material-ui/core/styles";
 toast.configure();
 function Basic(props) {
   const Router = useRouter();
+  const [theme, _dispatch] = useTheme();
+  const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
+  const deepGray = COLOR_CODES.GRAY.DEEP;
+  const lightGray= COLOR_CODES.GRAY.LIGHT
   const [processing, setProcessing]=useState(false)
   const [videoPreviewURL, setVideoPreviewURL] = useState("");
   const [pastSessionId, setPastSessionId] = useState(0);
@@ -52,10 +57,64 @@ function Basic(props) {
   const [documentData, setDocumentData] = useState(null);
   const [documentConsent, setDocumentConsent] = useState(false);
   const [data, dispatch] = useDataLayerContextValue();
+  useEffect(() => {
+    setDark(theme.mode === THEME_MODES.DARK);
+  }, [theme]);
   const setDirty = () => {
     APP.SESSION.DTO.BASIC.dirty = true;
   };
+  const useStyles = makeStyles((theme) => ({
+    
+    paper:{
+      "& .MuiMenu-paper":{
+        backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      }
 
+    },
+    root: {
+      "& .MuiFormLabel-root": {
+        color: isDark ? deepGray : "", // or black
+      },
+       
+
+
+    },
+    input: {
+      color: isDark ? deepGray : "",
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
+      "&:focus": {
+        borderBottom: "none",
+      },
+    },
+    select: {
+      color: isDark ? deepGray : "",
+
+      "&:before": {
+        borderBottom: ` ${isDark ? `1px solid ${lightGray}` : ""}`,
+      },
+    },
+    icon: {
+      fill: isDark ?deepGray : "inherit",
+    },
+     
+    menuItem: {
+      backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      color: isDark ? `${deepGray}` : "",
+      "&.Mui-selected": {
+        backgroundColor: `${isDark ? COLOR_CODES.BLUE.DARK : ""}`,
+        color: isDark ? `${deepGray}` : "",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: isDark ? `${COLOR_CODES.BLUE.LIGHT}!important` : "",
+        
+      },
+    },
+    
+   
+     
+  }));
+  const classes = useStyles();
   const debounce = (func, delay) => {
     let debounceTimer;
     return function () {
@@ -374,7 +433,7 @@ function Basic(props) {
                 variant="standard"
                 sx={{ marginBottom: 1 }}
               >
-                <InputLabel id="select-category-label">
+                <InputLabel sx={{color: isDark ? deepGray : ""}} id="select-category-label">
                   Choose a category{" "}
                   <h3
                     className={`${
@@ -399,10 +458,22 @@ function Basic(props) {
                   value={categoryId}
                   required
                   label="Category"
+                  inputProps={{
+                    classes: {
+                      icon: classes.icon,
+                    },
+                  }}
+                  className={classes.select}
+                  MenuProps={{
+                    className:classes.paper,
+                  }}
+                  
                 >
                   {props?.data?.static?.categories?.map((category) => (
+                     
                     <MenuItem
-                      className=" block p-2"
+                      dense
+                      className={`${classes.menuItem}   block p-2`}
                       key={category.courseCategoryId}
                       value={category.courseCategoryId}
                     >
@@ -412,7 +483,7 @@ function Basic(props) {
                 </Select>
                 {errors?.category?.message && (
                   <>
-                    <FormHelperText className=" text-red-600">
+                    <FormHelperText className=" text-red-400">
                       {errors.category?.message}
                     </FormHelperText>
                   </>
@@ -423,7 +494,7 @@ function Basic(props) {
               <FormControl fullWidth={true} variant="standard">
                 <Typography
                   variant="h6"
-                  className=" text-lg  items-center justify-center font-medium italic leading-loose text-gray-800 lowercase   lg:mt-3  lg:-ml-2"
+                  className=" text-lg  items-center justify-center font-medium italic leading-loose dark:text-gray-500 text-gray-800 lowercase   lg:mt-3  lg:-ml-2"
                 >
                   OR&nbsp;
                 </Typography>
@@ -439,7 +510,7 @@ function Basic(props) {
                     startIcon={<WatchLaterIcon />}
                     variant="contained"
                      
-                    color={choosenFromPastSession?'success':'primary'}
+                    // color={choosenFromPastSession?'success':'primary'}
                   >
                     {choosenFromPastSession?<>Choose from past sessions again</>:<>Choose from past sessions</>}
                     
@@ -472,6 +543,8 @@ function Basic(props) {
                   required
                   label="Title"
                   id="fullName"
+                  inputProps={{ className: classes.input }}
+                  className={classes.root}
                 />
               </FormControl>
             </Grid>
@@ -496,6 +569,8 @@ function Basic(props) {
                   required
                   label="Short title"
                   id="shortName"
+                  inputProps={{ className: classes.input }}
+                  className={classes.root}
                 />
               </FormControl>
             </Grid>
@@ -514,7 +589,7 @@ function Basic(props) {
                     className={`${
                       summaryError
                         ? "text-red-600  font-normal"
-                        : "text-gray-600 font-normal"
+                        : "text-gray-600 dark: text-gray-500 font-normal"
                     }  inline-flex`}
                     id="session-summary"
                   >
@@ -591,6 +666,8 @@ function Basic(props) {
                     label="Video Preview URL"
                     variant="standard"
                     id="previewurl"
+                    inputProps={{ className: classes.input }}
+                  className={classes.root}
                   />
                 </FormControl>
 

@@ -7,6 +7,10 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import JoinFullIcon from "@mui/icons-material/JoinFull";
+import { THEME_MODES, useTheme } from "../../../../theme/ThemeProvider";
+import { COLOR_CODES } from "../../../../constants/constants";
+import { useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 function PastSessionDialog({
   data,
   type,
@@ -18,6 +22,58 @@ function PastSessionDialog({
   selectedSession
 }) {
   if (!isOpen) return "";
+  const [_theme, _dispatch] = useTheme();
+  const [isDark, setDark] = useState(_theme.mode === THEME_MODES.DARK);
+  const deepGray = COLOR_CODES.GRAY.DEEP;
+  const lightGray= COLOR_CODES.GRAY.LIGHT
+  useEffect(() => {
+    setDark(_theme.mode === THEME_MODES.DARK);
+  }, [_theme]);
+
+  const useStyles = makeStyles((theme) => ({
+    
+    paper:{
+      "& .MuiMenu-paper":{
+        backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      }
+
+    },
+    root: {
+      "& .MuiFormLabel-root": {
+        color: isDark ? deepGray : "", // or black
+      },
+       
+
+
+    },
+    
+    select: {
+      color: isDark ? deepGray : "",
+
+      "&:before": {
+        borderBottom: ` ${isDark ? `1px solid ${lightGray}` : ""}`,
+      },
+    },
+    icon: {
+      fill: isDark ?deepGray : "inherit",
+    },
+     
+    menuItem: {
+      backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      color: isDark ? `${deepGray}` : "",
+      "&.Mui-selected": {
+        backgroundColor: `${isDark ? COLOR_CODES.BLUE.DARK : ""}`,
+        color: isDark ? `${deepGray}` : "",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: isDark ? `${COLOR_CODES.BLUE.LIGHT}!important` : "",
+        
+      },
+    },
+     
+  }));
+  const classes = useStyles();
   const [pastSession, setPastSession] = useState();
   const handleClose = () => {
     if (dialogCloseRequest) {
@@ -47,7 +103,7 @@ function PastSessionDialog({
         disableEscapeKeyDown
         onBackdropClick={() => handleClose()}
       >
-        <div className={`${theme ? "dark-dialog" : ""}`}>
+        <div className={`${isDark ? "dark-dialog" : ""}`}>
           <div className={` px-4 py-2 leading-tight  text-left flex-col`}>
             <div className="flex gap-1 font-semibold">
               <JoinFullIcon />
@@ -65,7 +121,7 @@ function PastSessionDialog({
                   variant="standard"
                   sx={{ marginBottom: 1 }}
                 >
-                  <InputLabel id="select-past-session-label">Choose</InputLabel>
+                  <InputLabel  sx={{color: isDark ? deepGray : ""}} id="select-past-session-label">Choose</InputLabel>
                   <Select
                     fullWidth
                     onChange={handlePastSessionChange}
@@ -73,15 +129,29 @@ function PastSessionDialog({
                     id="select-past-session"
                     value={pastSession?.target?.value || selectedSession}
                     label="Choose"
+                    inputProps={{
+                      classes: {
+                        icon: classes.icon,
+                      },
+                    }}
+                    className={classes.select}
+                    MenuProps={{
+                      className:classes.paper,
+                    }}
                   >
                     <MenuItem
-                      className="text-sm block p-2 text-gray-600"
+                       dense
+                       className={`${classes.menuItem}   block p-2`}
+                      
                       value={0}
                     ></MenuItem>
                     {data &&
                       Object.values(data).map((session) => (
                         <MenuItem
-                          className=" block p-2"
+                        dense
+                       className={`${classes.menuItem}   block p-2`}
+                      
+                         
                           key={session.courseId}
                           value={session.courseId}
                         >
@@ -94,7 +164,10 @@ function PastSessionDialog({
             </Box>
           </div>
         </div>
-        <DialogActions className={`${theme ? "dark-dialog" : ""}`}>
+        <DialogActions
+        
+        className={`${isDark ? "dark-dialog" : ""}`}>
+        
           <>
             <Button
               disabled={pastSession === null}

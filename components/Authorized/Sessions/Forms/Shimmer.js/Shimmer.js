@@ -41,7 +41,7 @@ function Shimmer({ visible, animation }) {
   }));
 
   return (
-    <div className=" h-screen uvsity__card__border__disabled bg-white w-full dark:bg-brand-dark-grey-800 dark:border-brand-grey-800 rounded-bl-lg rounded-br-lg px-2">
+    <div className=" h-screen  bg-gray-400 dark:bg-gray-700 uvsity__card__border__disabled w-full  rounded-bl-lg rounded-br-lg px-2">
       <div className="flex-auto lg:ml-32 py-4 md:ml-20 xs:ml-4 xl:ml-32 ml-6">
         <div className="">
           <div id="stepper" className="flex justify-evenly ">
