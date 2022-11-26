@@ -1133,8 +1133,8 @@ function CreateSession(props) {
   };
 
   return (
-    <div id="create-session" className="px-4 py-2 bg-white">
-      <Typography variant="h6" component="div">
+    <div id="create-session" className="px-4 py-2 dark:bg-gray-dark bg-gray-100">
+      <Typography variant="h5" component="div">
         {props.data.workflow.workflow.alias}
       </Typography>
       <Shimmer visible={shimmer} />
@@ -1168,7 +1168,7 @@ function CreateSession(props) {
                         >
                           <div
                             className={`  ${index === activeStep ? "italic" : "normal"
-                              }`}
+                              } ${!label.validationError?'dark:text-gray-400  text-gray-900':''}`}
                           >
                             {label.title}
                           </div>

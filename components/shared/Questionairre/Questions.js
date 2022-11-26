@@ -347,11 +347,11 @@ function Questions({ data, mode, onSave, onCancel }) {
   console.log(errors)
 
   return (
-    <div className={`${processing ? "control__disabled__opaque" : ""}`}>
+    <div className={`${processing ? "control__disabled__opaque" : ""} dark:bg-gray-dark bg-gray-100 dark:text-gray-400  text-gray-900`}>
       <Spacer />
       {/* INITIAL MANDATORY CONTROLS */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex gap-2">
+        <div className="dark:bg-gray-dark bg-gray-100 flex gap-2">
           {/* QUESTION DESCRIPTION */}
           <FormControl
             variant="standard"
@@ -398,9 +398,9 @@ function Questions({ data, mode, onSave, onCancel }) {
         </div>
         <div
           id="scrollable-question-div"
-          className="scroll-smooth  overflow-auto py-1 px-2 mb-2 max-h-96 border-2 rounded-md shadow-md bg-gray-300"
+          className="scroll-smooth dark:bg-gray-dark bg-gray-100  overflow-auto py-1 px-2 mb-2 max-h-96  rounded-md shadow-md  "
         >
-          <div className="flex flex-col">
+          <div className="dark:bg-gray-dark bg-gray-100 flex flex-col">
             {/* QUESTIONS ARRAY */}
 
             {questions?.map((question, index) => (
@@ -653,7 +653,7 @@ function Questions({ data, mode, onSave, onCancel }) {
           </div>
         </div>
 
-        <div className="save-questions-action-buttons border-dotted border-2">
+        <div className="save-questions-action-buttons">
           <Tooltip title={"Save questions"}>
             <IconButton
               type="submit"
@@ -669,7 +669,7 @@ function Questions({ data, mode, onSave, onCancel }) {
               aria-label="save-questions-cancel"
               size="small"
             >
-              <CancelIcon fontSize="small" />
+              <CancelIcon color="warning" fontSize="small" />
             </IconButton>
           </Tooltip>
         </div>

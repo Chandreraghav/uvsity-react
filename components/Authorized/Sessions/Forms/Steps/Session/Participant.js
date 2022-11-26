@@ -409,14 +409,17 @@ function Participant(props) {
                 <div
                   className={`${itemSelected ? "control__disabled" : ""} ${
                     ParticipantStyles.participant__search__results
-                  } flex flex-col gap-2 pb-2 pt-2  px-2 shadow-xl absolute w-full overflow-y-auto`}
+                  } flex flex-col gap-2 pb-2 pt-2  px-2   absolute w-full overflow-y-auto`}
                 >
                   {searchResults?.map((searchResult) => (
-                    <Profile
+                     
+                       <Profile
                       onSelect={handleSelect}
                       key={searchResult.entityId}
                       data={searchResult}
                     />
+                    
+                   
                   ))}
                 </div>
               )}
@@ -443,7 +446,7 @@ function Participant(props) {
                   error={errors.expectedNumber?.message ? true : false}
                   required
                 />
-                <FormHelperText className="blue-text leading-tight -ml-1 font-semibold">
+                <FormHelperText className=" text-gray-600 leading-tight -ml-1 font-semibold">
                   For 100+ participants, premium membership is required.
                 </FormHelperText>
               </FormControl>
@@ -511,7 +514,7 @@ function Participant(props) {
                       (option) => !option.disabled
                     ).map((option) => (
                       <div
-                        className="text-gray-700 leading-tight line-clamp-2 text-xs font-normal mb-2"
+                        className=" dark:text-gray-500 text-gray-800 leading-tight line-clamp-2 text-xs font-normal mb-2"
                         key={option.id}
                       >
                         <FormControlLabel
@@ -580,7 +583,7 @@ function Participant(props) {
                   </div>
                 )}
                 <Tooltip title={CUSTOM_QUESTION_OPTS.helptext.text_2}>
-                  <div className=" cursor-pointer">
+                  <div className=" text-gray-600 cursor-pointer">
                     <HelpOutlineIcon fontSize="small" />
                   </div>
                 </Tooltip>
