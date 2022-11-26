@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/Authorized/Shared/Header";
 import Layout from "../../../components/Main/Layout";
-import Footer from "../../../components/shared/Footer";
 import MetaDataService from "../../api/users/data/MetaDataService";
 import CreateSession from "../../../components/Authorized/Sessions/Forms/CreateSession";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
@@ -9,7 +8,6 @@ import { useQuery } from "react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import UserDataService from "../../api/users/data/UserDataService";
 import PrivateRoute from "../../../components/Auth/HOC/Routes/PrivateRoute";
-import dynamic from "next/dynamic";
 import { eraseFormContext } from "../../../components/Authorized/Sessions/Clean/cleanup";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import PhoneMenu from "../../../components/Authorized/Shared/FireFighter/PhoneMenu";
@@ -54,7 +52,7 @@ function Create() {
   };
 
   useEffect(() => {
-    setMode('light')
+    //setMode('light')
     eraseFormContext(formdata, dispatch).then(() => {
       setOldContextErased(true);
     });

@@ -22,7 +22,6 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/pickers": "^3.3.10",
     "@mui/icons-material": "^5.10.9",
-    "@mui/lab": "^5.0.0-alpha.107",
     "@mui/material": "^5.10.13",
     "@mui/x-date-pickers": "^5.0.8",
     "@tailwindcss/line-clamp": "^0.2.1",

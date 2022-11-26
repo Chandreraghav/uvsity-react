@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import AdapterDateFns from "@mui/x-date-pickers/AdapterDateFns";
 import TokenIcon from "@mui/icons-material/Token";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import React, { useEffect, useState } from "react";
@@ -70,7 +70,7 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import moment from "moment-timezone";
 import WarningIcon from "@mui/icons-material/Warning";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre";
 function Final(props) {
   const [data, dispatch] = useDataLayerContextValue();
