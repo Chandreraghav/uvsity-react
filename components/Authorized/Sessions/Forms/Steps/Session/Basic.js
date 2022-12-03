@@ -42,8 +42,8 @@ function Basic(props) {
   const [theme, _dispatch] = useTheme();
   const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
   const deepGray = COLOR_CODES.GRAY.DEEP;
-  const lightGray= COLOR_CODES.GRAY.LIGHT
-  const [processing, setProcessing]=useState(false)
+  const lightGray = COLOR_CODES.GRAY.LIGHT
+  const [processing, setProcessing] = useState(false)
   const [videoPreviewURL, setVideoPreviewURL] = useState("");
   const [pastSessionId, setPastSessionId] = useState(0);
   const [pastSessionDialogOpen, setPastSessionDialogOpen] = useState(false);
@@ -64,9 +64,9 @@ function Basic(props) {
     APP.SESSION.DTO.BASIC.dirty = true;
   };
   const useStyles = makeStyles((theme) => ({
-    
-    paper:{
-      "& .MuiMenu-paper":{
+
+    paper: {
+      "& .MuiMenu-paper": {
         backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
       }
 
@@ -75,7 +75,7 @@ function Basic(props) {
       "& .MuiFormLabel-root": {
         color: isDark ? deepGray : "", // or black
       },
-       
+
 
 
     },
@@ -94,9 +94,9 @@ function Basic(props) {
       },
     },
     icon: {
-      fill: isDark ?deepGray : "inherit",
+      fill: isDark ? deepGray : "inherit",
     },
-     
+
     menuItem: {
       backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
       color: isDark ? `${deepGray}` : "",
@@ -107,12 +107,12 @@ function Basic(props) {
       },
       "&:hover": {
         backgroundColor: isDark ? `${COLOR_CODES.BLUE.LIGHT}!important` : "",
-        
+
       },
     },
-    
-   
-     
+
+
+
   }));
   const classes = useStyles();
   const debounce = (func, delay) => {
@@ -125,7 +125,7 @@ function Basic(props) {
     };
   };
 
-  const handlePastSessionDialogClose =()=>{
+  const handlePastSessionDialogClose = () => {
     setPastSessionDialogOpen(false)
   }
   const trackVideoPlayerUrlInput = (e) => {
@@ -159,7 +159,7 @@ function Basic(props) {
     });
   };
   const handlePastSessionChange = (e) => {
-    const val=e?.target?.value || e
+    const val = e?.target?.value || e
     setPastSessionId(val);
     setDirty();
     if (val > 0) {
@@ -375,7 +375,7 @@ function Basic(props) {
   const handleOnSummaryError = (indicator) => {
     setSummaryError(indicator);
   };
-  const handlePastSessionDialogOpenRequest=()=>{
+  const handlePastSessionDialogOpenRequest = () => {
     setPastSessionDialogOpen(true)
   }
   useEffect(() => {
@@ -418,282 +418,279 @@ function Basic(props) {
 
   return (
     <Slide direction="up" in={true}>
-    <div className={`p-3`}>
-      <form name="basic-form">
-        <Box sx={{ width: "100%" }}>
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          >
-            <Grid item lg={7} md={7} sm={12} xs={12}>
-              {/* Category */}
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                <InputLabel sx={{color: isDark ? deepGray : ""}} id="select-category-label">
-                  Choose a category{" "}
-                  <h3
-                    className={`${
-                      errors.category?.message
-                        ? "text-red-600"
-                        : "text-blue-800"
-                    } text-xl font-bold inline-flex`}
-                  >
-                    *
-                  </h3>
-                </InputLabel>
-                <Select
-                  name="category"
-                  {...register(`category`, {
-                    onChange: (event) => {
-                      debounce(handleSessionCategory(event), 500);
-                    },
-                  })}
-                  error={errors.category?.message ? true : false}
-                  labelId="select-category-label"
-                  id="select-category"
-                  value={categoryId}
-                  required
-                  label="Category"
-                  inputProps={{
-                    classes: {
-                      icon: classes.icon,
-                    },
-                  }}
-                  className={classes.select}
-                  MenuProps={{
-                    className:classes.paper,
-                  }}
-                  
-                >
-                  {props?.data?.static?.categories?.map((category) => (
-                     
-                    <MenuItem
-                      dense
-                      className={`${classes.menuItem}   block p-2`}
-                      key={category.courseCategoryId}
-                      value={category.courseCategoryId}
-                    >
-                      {category.courseCategoryName}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors?.category?.message && (
-                  <>
-                    <FormHelperText className=" text-red-400">
-                      {errors.category?.message}
-                    </FormHelperText>
-                  </>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item lg={0.4} md={0.4} sm={12} xs={12}>
-              <FormControl fullWidth={true} variant="standard">
-                <Typography
-                  variant="h6"
-                  className=" text-lg  items-center justify-center font-medium italic leading-loose dark:text-gray-500 text-gray-800 lowercase   lg:mt-3  lg:-ml-2"
-                >
-                  OR&nbsp;
-                </Typography>
-              </FormControl>
-            </Grid>
-            {props?.data?.root?.expiredCourses &&
-              Object.values(props?.data?.root?.expiredCourses).length > 0 && (
-                <Grid item lg={4.6} md={4.6} sm={12} xs={12}>
-                  {/* Choose from */}
-                  <Button
-                    className={"lg:mt-2"}
-                    onClick={handlePastSessionDialogOpenRequest}
-                    startIcon={<WatchLaterIcon />}
-                    variant="contained"
-                     
-                    // color={choosenFromPastSession?'success':'primary'}
-                  >
-                    {choosenFromPastSession?<>Choose from past sessions again</>:<>Choose from past sessions</>}
-                    
-                  </Button>
-
-  
-                </Grid>
-              )}
-            <Grid item xs={12}>
-              <Spacer />
-            </Grid>
-            <Grid item lg={12} sm={12} md={12} xs={12}>
-              {/* Full name */}
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                <TextField
-                  variant="standard"
-                  value={fullName}
-                  name="fullName"
-                  {...register(`fullName`, {
-                    onChange: (event) => {
-                      debounce(handlefullNameChange(event), 500);
-                    },
-                  })}
-                  helperText={errors.fullName?.message}
-                  error={errors.fullName?.message ? true : false}
-                  required
-                  label="Title"
-                  id="fullName"
-                  inputProps={{ className: classes.input }}
-                  className={classes.root}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item lg={12} sm={12} md={12} xs={12}>
-              {/* Short name */}
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                <TextField
-                  value={shortName}
-                  name="shortName"
-                  {...register(`shortName`, {
-                    onChange: (event) => {
-                      debounce(handleShortNameChange(event), 500);
-                    },
-                  })}
-                  helperText={errors.shortName?.message}
-                  error={errors.shortName?.message ? true : false}
-                  variant="standard"
-                  required
-                  label="Short title"
-                  id="shortName"
-                  inputProps={{ className: classes.input }}
-                  className={classes.root}
-                />
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12}>
-              {/* Summary */}
-              {/* You are ready now to use CEDITOR, using onChange, value , placeholder props */}
-
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                <div className="flex gap-1">
-                  <label
-                    className={`${
-                      summaryError
-                        ? "text-red-600  font-normal"
-                        : "text-gray-600 dark: text-gray-500 font-normal"
-                    }  inline-flex`}
-                    id="session-summary"
-                  >
-                    Summary
-                  </label>
-
-                  <span
-                    className={`${
-                      summaryError ? "text-red-600" : "text-blue-800"
-                    }  inline-flex`}
-                  >
-                    *
-                  </span>
-                </div>
-
-                <CEditor
-                  required
-                  errorText="Summary is required"
-                  data={summary}
-                  onError={handleOnSummaryError}
-                  getDataOnChange={handleEditorDataOnChange}
-                />
-              </FormControl>
-            </Grid>
-
-            <Grid item sm={6} lg={3} md={3} xs={12}>
-              {/* Poster Upload */}
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                <FileUpload
-                  data={posterData}
-                  receptorData={handleFileOnChange}
-                />
-              </FormControl>
-            </Grid>
-
-            <Grid item sm={6} lg={3} md={3} xs={12}>
-              {/* Document Upload */}
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                {" "}
-                <FileUpload
-                  data={documentData}
-                  receptorData={handleFileOnChange}
-                  consent={handleConsentChange}
-                />
-              </FormControl>
-            </Grid>
-
-            <Grid className="mt-1" item sm={12} lg={6} md={6} xs={12}>
-              <div className="flex flex-col">
+      <div className={`p-3`}>
+        <form name="basic-form">
+          <Box sx={{ width: "100%" }}>
+            <Grid
+              container
+              rowSpacing={1}
+              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            >
+              <Grid item lg={7} md={7} sm={12} xs={12}>
+                {/* Category */}
                 <FormControl
                   fullWidth={true}
                   variant="standard"
                   sx={{ marginBottom: 1 }}
                 >
-                  {/* Video URL */}
-                  <TextField
-                    name="previewurl"
-                    {...register(`previewurl`, {
+                  <InputLabel sx={{ color: isDark ? deepGray : "" }} id="select-category-label">
+                    Choose a category{" "}
+                    <h3
+                      className={`${errors.category?.message
+                          ? "text-red-600"
+                          : "text-blue-800"
+                        } text-xl font-bold inline-flex`}
+                    >
+                      *
+                    </h3>
+                  </InputLabel>
+                  <Select
+                    name="category"
+                    {...register(`category`, {
                       onChange: (event) => {
-                        debounce(trackVideoPlayerUrlInput(event), 500);
+                        debounce(handleSessionCategory(event), 500);
                       },
                     })}
-                    helperText={errors.previewurl?.message}
-                    error={errors.previewurl?.message ? true : false}
-                    value={videoPreviewURL}
-                    label="Video Preview URL"
+                    error={errors.category?.message ? true : false}
+                    labelId="select-category-label"
+                    id="select-category"
+                    value={categoryId}
+                    required
+                    label="Category"
+                    inputProps={{
+                      classes: {
+                        icon: classes.icon,
+                      },
+                    }}
+                    className={classes.select}
+                    MenuProps={{
+                      className: classes.paper,
+                    }}
+
+                  >
+                    {props?.data?.static?.categories?.map((category) => (
+
+                      <MenuItem
+                        dense
+                        className={`${classes.menuItem}   block p-2`}
+                        key={category.courseCategoryId}
+                        value={category.courseCategoryId}
+                      >
+                        {category.courseCategoryName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors?.category?.message && (
+                    <>
+                      <FormHelperText className=" text-red-400">
+                        {errors.category?.message}
+                      </FormHelperText>
+                    </>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item lg={0.4} md={0.4} sm={12} xs={12}>
+                <FormControl fullWidth={true} variant="standard">
+                  <Typography
+                    variant="h6"
+                    className=" text-lg  items-center justify-center font-medium italic leading-loose dark:text-gray-500 text-gray-800 lowercase   lg:mt-3  lg:-ml-2"
+                  >
+                    OR&nbsp;
+                  </Typography>
+                </FormControl>
+              </Grid>
+              {props?.data?.root?.expiredCourses &&
+                Object.values(props?.data?.root?.expiredCourses).length > 0 && (
+                  <Grid item lg={4.6} md={4.6} sm={12} xs={12}>
+                    {/* Choose from */}
+                    <Button
+                      className={"lg:mt-2"}
+                      onClick={handlePastSessionDialogOpenRequest}
+                      startIcon={<WatchLaterIcon />}
+                      variant="contained"
+
+                    // color={choosenFromPastSession?'success':'primary'}
+                    >
+                      {choosenFromPastSession ? <>Choose from past sessions again</> : <>Choose from past sessions</>}
+
+                    </Button>
+
+
+                  </Grid>
+                )}
+              <Grid item xs={12}>
+                <Spacer />
+              </Grid>
+              <Grid item lg={12} sm={12} md={12} xs={12}>
+                {/* Full name */}
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  <TextField
                     variant="standard"
-                    id="previewurl"
+                    value={fullName}
+                    name="fullName"
+                    {...register(`fullName`, {
+                      onChange: (event) => {
+                        debounce(handlefullNameChange(event), 500);
+                      },
+                    })}
+                    helperText={errors.fullName?.message}
+                    error={errors.fullName?.message ? true : false}
+                    required
+                    label="Title"
+                    id="fullName"
                     inputProps={{ className: classes.input }}
-                  className={classes.root}
+                    className={classes.root}
                   />
                 </FormControl>
+              </Grid>
+              <Grid item lg={12} sm={12} md={12} xs={12}>
+                {/* Short name */}
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  <TextField
+                    value={shortName}
+                    name="shortName"
+                    {...register(`shortName`, {
+                      onChange: (event) => {
+                        debounce(handleShortNameChange(event), 500);
+                      },
+                    })}
+                    helperText={errors.shortName?.message}
+                    error={errors.shortName?.message ? true : false}
+                    variant="standard"
+                    required
+                    label="Short title"
+                    id="shortName"
+                    inputProps={{ className: classes.input }}
+                    className={classes.root}
+                  />
+                </FormControl>
+              </Grid>
 
-              
-                {isValidURL(videoPreviewURL) &&
-                  !errors?.previewurl?.message && (
-                    <div className="player__wrapper">
-                    <ReactPlayer
-                      controls
-                      loop={true}
-                      muted
-                      width="100%"
-                      height="250px"
-                      className="player"
-                      url={videoPreviewURL}
+              <Grid item xs={12}>
+                {/* Summary */}
+                {/* You are ready now to use CEDITOR, using onChange, value , placeholder props */}
+
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  <div className="flex gap-1">
+                    <label
+                      className={`${summaryError
+                          ? "text-red-600  font-normal"
+                          : "text-gray-600 dark: text-gray-500 font-normal"
+                        }  inline-flex`}
+                      id="session-summary"
+                    >
+                      Summary
+                    </label>
+
+                    <span
+                      className={`${summaryError ? "text-red-600" : "text-blue-800"
+                        }  inline-flex`}
+                    >
+                      *
+                    </span>
+                  </div>
+
+                  <CEditor
+                    required
+                    errorText="Summary is required"
+                    data={summary}
+                    onError={handleOnSummaryError}
+                    getDataOnChange={handleEditorDataOnChange}
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item sm={6} lg={3} md={3} xs={12}>
+                {/* Poster Upload */}
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  <FileUpload
+                    data={posterData}
+                    receptorData={handleFileOnChange}
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item sm={6} lg={3} md={3} xs={12}>
+                {/* Document Upload */}
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  {" "}
+                  <FileUpload
+                    data={documentData}
+                    receptorData={handleFileOnChange}
+                    consent={handleConsentChange}
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid className="mt-1" item sm={12} lg={6} md={6} xs={12}>
+                <div className="flex flex-col">
+                  <FormControl
+                    fullWidth={true}
+                    variant="standard"
+                    sx={{ marginBottom: 1 }}
+                  >
+                    {/* Video URL */}
+                    <TextField
+                      name="previewurl"
+                      {...register(`previewurl`, {
+                        onChange: (event) => {
+                          debounce(trackVideoPlayerUrlInput(event), 500);
+                        },
+                      })}
+                      helperText={errors.previewurl?.message}
+                      error={errors.previewurl?.message ? true : false}
+                      value={videoPreviewURL}
+                      label="Video Preview URL"
+                      variant="standard"
+                      id="previewurl"
+                      inputProps={{ className: classes.input }}
+                      className={classes.root}
                     />
-                    </div>
-                  )}
-              </div>
+                  </FormControl>
+
+
+                  {isValidURL(videoPreviewURL) &&
+                    !errors?.previewurl?.message && (
+                      <div className="player__wrapper">
+                        <ReactPlayer
+                          controls
+                          loop={true}
+                          muted
+                          width="100%"
+                          height="250px"
+                          className="player"
+                          url={videoPreviewURL}
+                        />
+                      </div>
+                    )}
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
-      </form>
-      <Overlay  message={PLACEHOLDERS.PROCESSING} open={processing}/>
-      <PastSessionDialog selectedSession={pastSessionId} getSelectedSession={handlePastSessionChange} data={props?.data?.root?.expiredCourses} isOpen={pastSessionDialogOpen} dialogCloseRequest={handlePastSessionDialogClose} />
-    </div>
+          </Box>
+        </form>
+        <Overlay message={PLACEHOLDERS.PROCESSING} open={processing} />
+        <PastSessionDialog selectedSession={pastSessionId} getSelectedSession={handlePastSessionChange} data={props?.data?.root?.expiredCourses} isOpen={pastSessionDialogOpen} dialogCloseRequest={handlePastSessionDialogClose} />
+      </div>
     </Slide>
   );
 }
