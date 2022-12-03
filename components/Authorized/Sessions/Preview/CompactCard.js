@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React,{useState,useEffect} from "react";
 import Preview from "./Preview";
-import { Divider } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import Spacer from "../../../shared/Spacer";
 import Shimmer from "./Shimmer/Shimmer";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -10,6 +10,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { IMAGE_PATHS, TOOLTIPS } from "../../../../constants/userdata";
 import EndOfFeed from "./EndOfFeed";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 function CompactCard({ data, title }) {
   const [isSticky, setSticky] = useState(false);
   useEffect(() => {
@@ -31,8 +32,8 @@ function CompactCard({ data, title }) {
     <>
       {data?.TOP_SESSIONS.data?.length > 0 ? (
         <div className="flex flex-col">
-          <h2 className="font-bold text-lg pr-8">{title}</h2>
-          <Spacer />
+          <Typography className="font-bold text-lg pr-8" variant="subtitle"><TrendingUpIcon/>&nbsp;{title}</Typography>
+           <Spacer />
           <Divider />
           <div
             className="grid items-stretch grid-cols-1 gap-2 px-2 
