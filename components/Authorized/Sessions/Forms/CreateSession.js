@@ -51,6 +51,7 @@ import { SESSION_ERROR } from "../../../../constants/error-messages";
 import { useToggle } from "react-use";
 import { useLeavePageConfirm } from "../../../../hooks/useLeave";
 import Shimmer from "./Shimmer.js/Shimmer";
+import InfoIcon from "@mui/icons-material/Info";
 toast.configure();
 function CreateSession(props) {
   const Router = useRouter();
@@ -1188,7 +1189,6 @@ function CreateSession(props) {
                     <Final
                       showCompletionMessage={showCompletionMessage}
                       onNavigate={handleNavigate}
-                      allStepsCompletedExceptFinalStep={allStepsCompletedExceptFinalStep()}
                       hasErrors={hasErrors}
                       errorMessage={errorMessage}
                       preRequisiteSessionAPIComplete={
@@ -1202,6 +1202,7 @@ function CreateSession(props) {
                   <Box className=" mb-14 lg:mb-0 xl:mb-0 md:mb-0"
                     sx={{ display: "flex", flexDirection: "row" }}
                   >
+
                     <Button
                       color="inherit"
                       disabled={activeStep === 0 || hasErrors}
@@ -1211,6 +1212,23 @@ function CreateSession(props) {
                       Back
                     </Button>
                     <Box sx={{ flex: "1 1 auto" }} />
+                    {allStepsCompletedExceptFinalStep() && (
+                      <Box className="mt-2" sx={{ display: "flex", flexDirection: "row" }}>
+                      
+                        <Typography
+                          variant="div"
+                          className=" line-clamp-2 leading-tight lg:text-sm md:text-sm text-xs text-gray-600"
+                          sx={{ mt: 0 }}
+                        >
+                         <InfoIcon fontSize="small" /> {APP.MESSAGES.INFO.TERMS_ACCEPT_TEXT}
+                          <span className=" cursor-pointer app-anchor-block">
+                            {APP.MESSAGES.INFO.TnC}
+                          </span>
+                        </Typography>
+                       
+                      </Box>
+                    )}
+                    
                     <Button
                       disabled={
                         !steps[activeStep].complete ||

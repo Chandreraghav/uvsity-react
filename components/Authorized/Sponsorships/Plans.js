@@ -43,7 +43,7 @@ function Plans(props) {
   const id = open ? 'simple-popover' : undefined;
   return (
     <Grid item lg={4} xs={12} sm={6} md={4}>
-      <Card className="shadow-xl" sx={{ maxWidth: 345 }}>
+      <Card className=" bg-gray-100 dark:bg-gray-950 shadow-xl" sx={{ maxWidth: 345 }}>
         <CardMedia
           component="img"
           alt={props.data.alias}
@@ -55,7 +55,7 @@ function Plans(props) {
         />
         <CardContent>
           <div className={`${props.showOnlyHeader ? "" : "flex"}`}>
-            <Typography gutterBottom variant="h5" component="div">
+            <Typography className=" dark:text-gray-400" gutterBottom variant="h5" component="div">
               {props.showOnlyHeader ? props.data.alias : props.data.alias}
             </Typography>
 
@@ -66,7 +66,7 @@ function Plans(props) {
                   : "ml-auto"
               }`}
             >
-              <Typography gutterBottom variant="h6" component="div">
+              <Typography className="text-gray-600" gutterBottom variant="h6" component="div">
                 $
                 {props.data.current.price.text
                   ? props.data.current.price.text
@@ -85,7 +85,7 @@ function Plans(props) {
             <div>
               <Tooltip  title="See features of this plan">
                 <div className=" cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-blue-600" onClick={handleFeaturePopoverClick}>
-                <VisibilityIcon />
+                <VisibilityIcon color="primary" />
                 
                 </div>
                
@@ -100,7 +100,7 @@ function Plans(props) {
                   horizontal: "left",
                 }}
               >
-                <div className="p-2">
+                <div className=" dark:bg-gray-dark text-gray-400 p-2">
               {props?.data?.current?.featured?.html
                 ? props.data.current.featured.html
                 : props.data.defaults.featured.html}

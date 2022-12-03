@@ -12,12 +12,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PublicIcon from "@mui/icons-material/Public";
 import { TIMEZONE } from "../../../constants/timezones";
 import { COLOR_CODES } from "../../../constants/constants";
-
+import { THEME_MODES, useTheme } from "../../../theme/ThemeProvider";
+import { makeStyles } from "@material-ui/core/styles";
 function TimezoneBrowseDialog({
   isOpen,
   dialogCloseRequest,
@@ -27,6 +28,63 @@ function TimezoneBrowseDialog({
   if (!isOpen) return "";
   const [timezone, setTimeZone] = useState(selectedTimezone);
   const [processing, setProcessing] = useState(false);
+  const [_theme, _dispatch] = useTheme();
+  const [isDark, setDark] = useState(_theme.mode === THEME_MODES.DARK);
+  const deepGray = COLOR_CODES.GRAY.DEEP;
+  const lightGray = COLOR_CODES.GRAY.LIGHT
+  const useStyles = makeStyles((theme) => ({
+    paper: {
+      "& .MuiMenu-paper": {
+        backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      }
+
+    },
+    root: {
+
+      '& .MuiInputBase-root.Mui-disabled': {
+        color: '#fff',
+
+      }
+
+    },
+    input: {
+      color: isDark ? deepGray : "",
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
+      "&:focus": {
+        borderBottom: "none",
+      },
+
+    },
+    select: {
+      color: isDark ? deepGray : "",
+
+      "&:before": {
+        borderBottom: ` ${isDark ? `1px solid ${lightGray}` : ""}`,
+      },
+    },
+    icon: {
+      fill: isDark ? deepGray : "inherit",
+    },
+
+    menuItem: {
+      backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      color: isDark ? `${deepGray}` : "",
+      "&.Mui-selected": {
+        backgroundColor: `${isDark ? COLOR_CODES.BLUE.DARK : ""}`,
+        color: isDark ? `${deepGray}` : "",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: isDark ? `${COLOR_CODES.BLUE.LIGHT}!important` : "",
+
+      },
+    },
+  }));
+
+  const classes = useStyles();
+  useEffect(() => {
+    setDark(_theme.mode === THEME_MODES.DARK);
+  }, [_theme])
   const handleClose = (confirmInd, closeInd) => {
     if (dialogCloseRequest) {
       if (confirmInd) setProcessing(true);
@@ -52,7 +110,7 @@ function TimezoneBrowseDialog({
         disableEscapeKeyDown
         onBackdropClick={() => handleClose(false, true)}
       >
-        <div className={`${theme ? "dark-dialog" : ""} w-30vw`}>
+        <div className={`${isDark ? "dark-dialog" : ""} w-30vw`}>
           <div className="flex justify-between">
             <div
               className={` px-4 py-3 leading-tight  text-left font-bold flex-col`}
@@ -83,13 +141,13 @@ function TimezoneBrowseDialog({
             </Tooltip>
           </div>
           <Grid item xs={12}>
-            <div className="flex   flex-col px-4 mb-2 -mt-3 text-gray-600">
+            <div className="flex   flex-col px-4 mb-2 -mt-3 text-gray-600 dark:text-gray-400">
               <FormControl
                 fullWidth={true}
                 variant="standard"
                 sx={{ marginBottom: 1 }}
               >
-                <InputLabel required htmlFor="grouped-select-timezone">
+                <InputLabel  required htmlFor="grouped-select-timezone">
                   Browse
                 </InputLabel>
                 <Select
@@ -97,6 +155,15 @@ function TimezoneBrowseDialog({
                   label="Timezone"
                   value={timezone}
                   onChange={handleTimezoneChange}
+                  inputProps={{
+                    classes: {
+                      icon: classes.icon,
+                    },
+                  }}
+                  className={classes.select}
+                  MenuProps={{
+                    className: classes.paper,
+                  }}
                 >
                   {TIMEZONE.map((tz, identityTypeIndex) => {
                     let children = [];
@@ -105,7 +172,9 @@ function TimezoneBrowseDialog({
                     tz.utc.forEach((identity) => {
                       children.push(
                         <MenuItem
-                          className="block p-2"
+                        dense
+                        className={`${classes.menuItem}   block p-2`}
+ 
                           key={identity}
                           value={identity}
                         >
@@ -121,7 +190,7 @@ function TimezoneBrowseDialog({
             </div>
           </Grid>
         </div>
-        <DialogActions className={`${theme ? "dark-dialog" : ""}`}>
+        <DialogActions className={`${isDark ? "dark-dialog" : ""}`}>
           <Button
             color="primary"
             variant="outlined"

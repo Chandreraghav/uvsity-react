@@ -786,7 +786,7 @@ export const SPONSORSHIP = {
           <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li></ul>`,
           html: (
             <>
-              <h3 className="text-bold font-semibold text-xl mb-1">
+              <h3 className="dark:text-gray-400 text-bold font-semibold text-xl mb-1">
                 <u>F</u>eatures
               </h3>
               <p className="leading-loose text-sm text-gray-600">
@@ -833,19 +833,19 @@ export const SPONSORSHIP = {
           <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li><li><span style="color:hsl(0, 0%, 0%);">2 min time during the session to showcase your company or product</span></li></ul>`,
           html: (
             <>
-              <h3 className="text-bold font-semibold text-xl mb-1">
+              <h3  className="dark:text-gray-400 text-bold font-semibold text-xl mb-1">
                 <u>F</u>eatures
               </h3>
               <p className="leading-loose text-sm text-gray-600">
-                <CheckCircleOutlineIcon className=" text-yellow-700" /> Company
+                <CheckCircleOutlineIcon  color="warning"  className=" text-yellow-700" /> Company
                 logo and link on this session
               </p>
               <p className="leading-loose text-sm text-gray-600">
-                <CheckCircleOutlineIcon className=" text-yellow-700" />{" "}
+                <CheckCircleOutlineIcon color="warning" className=" text-yellow-700" />{" "}
                 Announcement by session owner during the session
               </p>
               <p className="leading-loose text-sm text-gray-600">
-                <CheckCircleOutlineIcon className=" text-yellow-700" /> 2 min
+                <CheckCircleOutlineIcon color="warning" className=" text-yellow-700" /> 2 min
                 time during the session to showcase your company or product
               </p>
             </>
@@ -881,7 +881,7 @@ export const SPONSORSHIP = {
           <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li><li><span style="color:hsl(0, 0%, 0%);">5 min time during the session to showcase your company or product</span></li><li><span style="color:hsl(0, 0%, 0%);">Include company logo and link in social media as proud sponsor</span></li></ul>`,
           html: (
             <>
-              <h3 className="text-bold font-semibold text-xl mb-1">
+              <h3 className="dark:text-gray-400 text-bold font-semibold text-xl mb-1">
                 <u>F</u>eatures
               </h3>
               <p className="leading-loose text-sm text-gray-600">
