@@ -1,6 +1,6 @@
 const path = require("path");
 module.exports = {
-  
+
   //purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
   content: [
     // Example content paths...
@@ -60,6 +60,15 @@ module.exports = {
         yellow: {
           100: "#FFCA2C",
         },
+        indigo: {
+          500: '#6366F1'
+        },
+        purple: {
+          500: '#A855F7'
+        },
+        pink: {
+          500: '#EC4899'
+        },
         primary: {
           100: "#E6F6FE",
           200: "#C0EAFC",
@@ -83,8 +92,8 @@ module.exports = {
           900: "#1a202c",
           950: "#111",
         },
-        white:{
-          100:'#fff'
+        white: {
+          100: '#fff'
         }
       },
       lineHeight: {

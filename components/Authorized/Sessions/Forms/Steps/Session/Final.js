@@ -20,12 +20,9 @@ import {
   Typography,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
-import AdapterDateFns from "@mui/x-date-pickers/AdapterDateFns";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import React, { useEffect, useState } from "react";
 import InfoIcon from "@mui/icons-material/Info";
-import parse from "html-react-parser";
-import FormHelperText from "@mui/material/FormHelperText";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
 import Profile from "../../../../Network/People/Dashboard/Profile";
@@ -36,7 +33,6 @@ import {
   download,
   getFileExtension,
   getTimezone,
-  HTMLUnderlineByCharacterIndex,
 } from "../../../../../../utils/utility";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import ReactPlayer from "react-player";
@@ -69,11 +65,14 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import moment from "moment-timezone";
 import WarningIcon from "@mui/icons-material/Warning";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+
 import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre";
 import ReadMore from "../../../../../shared/ReadMore";
 import { THEME_MODES, useTheme } from "../../../../../../theme/ThemeProvider";
 import { makeStyles } from "@material-ui/core/styles";
+import Spacer from "../../../../../shared/Spacer";
+import EventIcon from '@mui/icons-material/Event';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 function Final(props) {
   const [data, dispatch] = useDataLayerContextValue();
 
@@ -159,6 +158,11 @@ function Final(props) {
         return icons.TXT;
     }
   };
+  const isFreeSession = (data) => {
+    const amount = Number(data?.amount);
+    const isPaid = data?.paidInd;
+    return (!isPaid || !amount || amount == 0 || isNaN(amount))
+  }
   const generateMonetizationAmountOnCard = (data) => {
     const amount = Number(data?.amount);
     const isPaid = data?.paidInd;
@@ -204,7 +208,7 @@ function Final(props) {
     return _err;
   };
   const getCompletionMessage = () => {
-    const randomString=USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION[4]
+    const randomString = USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION[4]
     // const randomString = getRandomArrayElement(
     //   USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION
     // );
@@ -216,7 +220,7 @@ function Final(props) {
     return randomString + message;
   };
 
-  
+
 
   const getStartDate = () => {
     return data?.schedule?.startDate.getDate();
@@ -354,7 +358,7 @@ function Final(props) {
               </Typography>
             </div>
 
-            
+
             <img
               alt="something-went-wrong-illustration"
               src="/static/images/something-wrong-illustration-1.webp"
@@ -383,70 +387,82 @@ function Final(props) {
               </Stack>
             </div>
           </>
-        ) : !props.preRequisiteSessionAPIComplete?(<>
-        
+        ) : !props.preRequisiteSessionAPIComplete ? (<>
+          <div className="mb-2 flex gap-1 text-md text-gray-600 font-semibold">
+            <CircularProgress className="text-sm -mt-1.5" color="inherit" />
+            <Typography className=" " variant="div">
+              {VALIDATING_REQUEST}
+            </Typography>
+          </div>
 
-         <div className="mb-2 flex gap-1 text-md text-gray-600 font-semibold">
-         <CircularProgress className="text-sm -mt-1.5" color="inherit" />
-                  <Typography className=" " variant="div">
-                     {VALIDATING_REQUEST}
-                  </Typography>
-                </div>
-        
-        </>): (
+        </>) : (
           <>
             {showCompletionMessage && (
               <>
                 <div className="mb-2 flex gap-1 text-md font-semibold">
-                  
+
                   <Typography className=" dark:text-gray-500 text-gray-700" variant="h6">
-                  🚀{getCompletionMessage()}
+                    🚀{getCompletionMessage()}
                   </Typography>
                 </div>
-                <Divider className=""></Divider>
+
+                <div className="flex ml-1 gap-1 mt-2">
+                  <InfoIcon className="text-gray-600" fontSize="small" />
+                  <Typography
+                    variant="div"
+                    className=" line-clamp-1 leading-tight text-sm text-gray-600"
+                    sx={{ mt: 0 }}
+                  >
+                    {APP.MESSAGES.INFO.FINAL_STEP_EDITS_HELP_TEXT}
+                  </Typography>
+                </div>
+                <Spacer />
+                <Divider sx={{ borderColor: isDark ? 'lightgrey' : 'darkgrey' }} variant="fullWidth" light={!isDark}></Divider>
               </>
             )}
 
             <Box sx={{ width: "100%", mt: 1 }}>
-              <div className="flex gap-1 ">
-                <div className="flex flex-col mt-1">
+              <div className="flex gap-3 ">
+                <div className="flex flex-col mt-1 bg-blue-800 p-4">
                   <Typography variant="h3">  {getStartDate()}</Typography>
-                   <Typography className=" " variant="h5">
-                   {getStartMonth()}
-                   </Typography>
-                  
+                  <Typography variant="subtitle">
+                    {getStartMonth()}
+                  </Typography>
+
                 </div>
-                <div>
+                <div className="mt-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500  w-full p-4 shadow-md rounded-md">
+                <Spacer count={2}/>
+                  <div className=" flex ">
                   <Typography
-                    variant="h5"
-                    className=" line-clamp-1  mt-3  "
+                    variant="body"
+                    className="lg:text-3xl sm:text-xl md:text-2xl   leading-tight line-clamp-2 align-middle  "
                   >
                     {data?.basic?.name}
 
                   </Typography>
-                  
-                 
+
+<div className="ml-auto">
+                  <div className="flex gap-2">
+                    <div className={`${isFreeSession(data?.fees) ? 'mt-2.5' : 'mt-1.5'} text-blue-600
+                              app-anchor-block cursor-pointer`}>
+                      <Tooltip title="Change">
+                        <EditIcon
+                          onClick={() => {
+                            props.onNavigate ? props.onNavigate(0) : null;
+                          }}
+
+                          className=" leading-3 font-semibold"
+                        />
+                      </Tooltip>
+                    </div>
+
+                    {generateMonetizationAmountOnCard(data?.fees)}
+                  </div>
+                  </div>
+                  </div>
                 </div>
 
-                <div className={`ml-auto`}>
-                  <div className="flex gap-2">
-                    <div className="mt-2.5 text-blue-600
-                              app-anchor-block cursor-pointer">
-                                 <Tooltip title="Change">
-                      <EditIcon
-                        onClick={() => {
-                          props.onNavigate ? props.onNavigate(0) : null;
-                        }}
-                         
-                        className=" leading-3 font-semibold"
-                      />
-                    </Tooltip>
-                              </div>
-                 
-                  {generateMonetizationAmountOnCard(data?.fees)}
-                  </div>
               
-                </div>
               </div>
 
               <Grid
@@ -457,15 +473,24 @@ function Final(props) {
               >
                 <Grid item lg={6} sm={12} md={6} xs={12}>
                   <div className="flex flex-col py-1">
-                    <img
-                      className=" relative block overflow-hidden  xl:h-48 lg:h-48  object-contain xl:object-cover lg:object-cover bg-gray-100 bg-center  rounded mb-2 "
+                    <div className="relative bg-gray-100 dark:bg-gray-950 bg-center mb-2 border-0 p-2  shadow-md bg-repeat-round rounded-lg">
+                    <img alt="courseImg" className="w-full absolute  left-0 top-0 xl:h-48 lg:h-48 blur-sm scale-100" src={
+                        data?.basic?.binary?.images?.poster
+                          ? data?.basic?.binary?.images?.poster
+                          : IMAGE_PATHS.NO_DATA.EVENT_POSTER
+                      }/>
+                    
+                      <img alt="courseImg"
+                      className=" relative mx-auto w-3/4 block overflow-hidden  xl:h-48 lg:h-48  object-contain xl:object-cover lg:object-cover rounded-lg  "
                       src={
                         data?.basic?.binary?.images?.poster
                           ? data?.basic?.binary?.images?.poster
                           : IMAGE_PATHS.NO_DATA.EVENT_POSTER
                       }
                     />
-                    <div className="flex ">
+                    </div>
+                    <div className="flex border-0 p-2  shadow-md bg-repeat-round rounded-lg">
+                     
                       <Profile
                         oid={props?.data?.user?.data?.userDetailsId}
                         options={{ connect: false, mixedMode: true }}
@@ -482,21 +507,31 @@ function Final(props) {
                     </div>
 
                     {data?.basic?.summary?.html && (
-                      <div>
-                        <ReadMore parseHtml initialReadLimit={250}
-                      
-                    >
-                      {data?.basic?.summary?.html}
-                    </ReadMore>
-                       
+                      <div className="  border-0 p-2  shadow-md bg-repeat-round rounded-lg">
+                         
+                         
+                         <div className="text-md flex gap-2">
+                          <SummarizeIcon className=" leading-3 font-semibold  text-xl text-gray-600" />{" "}
+                          <span className="text-md leading-tight font-semibold text-gray-600">
+                          Summary
+                          </span>
+                          </div>
+
+                         <Spacer/>
+                        <ReadMore parseHtml initialReadLimit={250}>
+                          {data?.basic?.summary?.html}
+                        </ReadMore>
+
                       </div>
                     )}
 
-                    <Divider></Divider>
+                     
                     {data?.participant?.cohost && (
+
                       <div
-                        className={` flex flex-col   gap-2     border-0 p-2  shadow-sm bg-repeat-round rounded-lg  `}
+                        className={` flex flex-col   gap-2     border-0 p-2  shadow-md bg-repeat-round rounded-lg  `}
                       >
+                        <Spacer/>
                         <div className="text-md flex gap-2">
                           <CoPresentIcon className=" leading-3 font-semibold  text-xl text-gray-600" />{" "}
                           <span className="text-md leading-tight font-semibold text-gray-600">
@@ -563,27 +598,21 @@ function Final(props) {
                               showOnlyHeader={true}
                               key={level.id}
                               data={level}
+                              dark={isDark}
                             />
                           ))}
                         </div>
                       </div>
                     )}
 
-                    <div className="flex ml-1 gap-1 mt-2">
-                      <InfoIcon className="text-gray-600" fontSize="small" />
-                      <Typography
-                        variant="div"
-                        className=" line-clamp-1 leading-tight text-sm text-gray-600"
-                        sx={{ mt: 0 }}
-                      >
-                        {APP.MESSAGES.INFO.FINAL_STEP_EDITS_HELP_TEXT}
-                      </Typography>
-                    </div>
+
                   </div>
                 </Grid>
 
+
                 <Grid item lg={6} sm={12} md={6} xs={12}>
-                  <div className="flex flex-col gap-2 bg-gray-100 px-2 p-2 rounded-lg border-1 shadow-sm bg-repeat-round">
+
+                  <div className="flex flex-col gap-2 bg-gray-100 dark:bg-gray-950 px-4 p-4 mt-1 rounded-lg border-1 border-spacing-2 shadow-md bg-repeat-round">
                     <div className="flex gap-1">
                       <ScheduleIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                       <Typography
@@ -594,7 +623,7 @@ function Final(props) {
                       </Typography>
                       <Typography
                         variant="div"
-                        className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800"
+                        className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800 dark:text-gray-400"
                       >
                         {getScheduleText()}
                       </Typography>
@@ -627,7 +656,7 @@ function Final(props) {
 
                           <Typography
                             variant="div"
-                            className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800"
+                            className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800 dark:text-gray-500"
                           >
                             {getEffectiveDate()}
                           </Typography>
@@ -647,7 +676,7 @@ function Final(props) {
 
                             <Typography
                               variant="div"
-                              className=" text-sm font-normal line-clamp-2 italic  leading-snug  text-gray-800"
+                              className=" text-xs font-normal line-clamp-2 italic  leading-tight  text-gray-800 dark:text-gray-500"
                             >
                               {data?.schedule?.repeatScheduleSummary.substring(
                                 0,
@@ -671,7 +700,7 @@ function Final(props) {
 
                       <Typography
                         variant="div"
-                        className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-800"
+                        className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-800 dark:text-gray-400"
                       >
                         {getTime(timeDisplay)}(
                         {data?.schedule?.timezone || getTimezone()})
@@ -679,8 +708,8 @@ function Final(props) {
 
                       <Typography
                         onClick={() => handleTimezoneBrowserChange()}
-                        variant="div"
-                        className=" app-anchor-block cursor-pointer font-normal line-clamp-1 text-sm  leading-tight  text-blue-600"
+                        variant="caption"
+                        className="text-xs app-anchor-block cursor-pointer font-normal line-clamp-1 text-gray-500    leading-tight  ml-auto"
                       >
                         See other timezones
                       </Typography>
@@ -704,7 +733,7 @@ function Final(props) {
                     <div className="flex flex-col gap-1">
                       {data?.basic?.url && (
                         <>
-                          <Divider></Divider>
+                          <Divider sx={{ borderColor: isDark ? 'lightgrey' : 'darkgrey' }} variant="fullWidth" light={!isDark}></Divider>
                           <div className="flex gap-1">
                             <VideocamIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                             <Typography
@@ -746,7 +775,7 @@ function Final(props) {
 
                       {data?.basic?.binary?.documents?.consent && (
                         <>
-                          <Divider></Divider>
+                          <Divider sx={{ borderColor: isDark ? 'lightgrey' : 'darkgrey' }} variant="fullWidth" light={!isDark}></Divider>
                           <div className="flex gap-1">
                             <AttachmentIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                             <Typography
@@ -796,7 +825,7 @@ function Final(props) {
                   </div>
                   {data?.participant?.questions &&
                     data?.participant?.questionairre && (
-                      <div className=" border-dotted  py-1 mt-2 mb-2 flex flex-col gap-2 bg-gray-100 px-2 p-2 rounded-lg   shadow-sm bg-repeat-round">
+                      <div className=" mt-2 mb-2 flex flex-col gap-2 bg-gray-100 dark:bg-gray-950 px-4 p-4 rounded-lg border-1 border-spacing-2 shadow-md bg-repeat-round">
                         <div className="flex gap-1">
                           <QuizIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                           <Typography
@@ -826,15 +855,12 @@ function Final(props) {
                           </div>
                         </div>
 
-                        <div className="flex gap-1 font-normal  text-sm   leading-snug text-black-700">
-                          <blockquote className="line-clamp-1">
-                            {parse(
-                              HTMLUnderlineByCharacterIndex(
-                                data?.participant?.questionairre?.description,
-                                0
-                              )
-                            )}
-                          </blockquote>
+                        <div className="flex gap-1 font-normal  text-sm leading-snug">
+                          <Typography variant="subtitle" className="line-clamp-1">
+                            <div className="first-letter:underline">
+                              {data?.participant?.questionairre?.description}
+                            </div>
+                          </Typography>
                         </div>
 
                         <div className=" overflow-auto max-h-52">
@@ -842,29 +868,36 @@ function Final(props) {
                             (q, index) => (
                               <div
                                 key={index}
-                                className="flex flex-col p-2 border-l-2"
+                                className="flex flex-col p-2 border-l-2 border-dashed  border-separate border-spacing-1 dark:border-l-gray-500 border-l-gray-600 px-3"
                               >
                                 <div className="flex gap-1">
-                                  <div className="text-sm text-gray-800 font-semibold">
+                                  <div className="text-sm text-gray-800 dark:text-gray-500 font-semibold">
                                     Q{index + 1}.
                                   </div>
-                                  <div className="text-sm text-gray-800 font-semibold line-clamp-1">
+                                  <div className="text-sm flex gap-2 text-gray-800 dark:text-gray-500 font-semibold line-clamp-1">
+
                                     {q.question}
                                   </div>
                                   {q.optional && (
-                                    <div className="text-xs text-gray-600">
+
+                                    <div className="text-xs   text-gray-600">
                                       (optional)
                                     </div>
+
+
                                   )}
                                 </div>
                                 {q.answerTypeCode === 1 && (
                                   <TextField
                                     placeholder="Answer"
                                     variant="standard"
-                                    label="Answer"
+                                    label={<label className="dark:text-blue-800">Answer</label>}
                                     InputProps={{
                                       readOnly: true,
                                     }}
+
+                                    inputProps={{ className: classes.input }}
+                                    className={classes.root}
                                   />
                                 )}
 
@@ -879,13 +912,14 @@ function Final(props) {
                                         <div className="flex">
                                           {q.options.map((option) => (
                                             <div
-                                              className="text-gray-700 leading-snug text-xs font-normal "
+                                              className="  leading-tight text-xs font-normal "
                                               key={option}
                                             >
                                               <FormControlLabel
+                                                sx={{ "& .Mui-disabled": { color: isDark ? lightGray : 'inherit' } }}
                                                 value={option}
-                                                control={<Radio disabled />}
-                                                label={<>{option}</>}
+                                                control={<Radio size="small" disabled />}
+                                                label={<label className=" dark:text-gray-700 text-gray-800">{option}</label>}
                                               />
                                             </div>
                                           ))}
@@ -902,8 +936,16 @@ function Final(props) {
                                         <FormControlLabel
                                           className="text-sm text-gray-700"
                                           disabled
-                                          control={<Checkbox size="small" />}
-                                          label={option}
+                                          sx={{"& .Mui-disabled":{color: isDark ? lightGray : "inherit"}}}
+                                          control={<Checkbox  sx={{
+                                            "&:hover": {
+                                              background: '#E01EE8',
+                                              boxShadow: 3
+                                            },
+                                            
+                                            color: isDark ? deepGray : "inherit"
+                                          }} size="small" />}
+                                          label={<label className=" dark:text-gray-700 text-gray-800">{option}</label>}
                                           labelPlacement="end"
                                           key={option}
                                         />
@@ -927,9 +969,22 @@ function Final(props) {
                                           value={q.options[0]}
                                           placeholder="Choose answer"
                                           fullWidth
+                                          inputProps={{
+                                            classes: {
+                                              icon: classes.icon,
+                                            },
+                                          }}
+                                          variant="outlined"
+                                          className={classes.select}
+                                          MenuProps={{
+                                            className: classes.paper,
+                                          }}
                                         >
                                           {q.options?.map((option) => (
                                             <MenuItem
+                                              dense
+                                              className={`${classes.menuItem}   block p-2`}
+
                                               key={option}
                                               disabled
                                               value={option}
@@ -959,9 +1014,21 @@ function Final(props) {
                                           }
                                           value={q.options}
                                           variant="standard"
+                                          inputProps={{
+                                            classes: {
+                                              icon: classes.icon,
+                                            },
+                                          }}
+                                          className={classes.select}
+                                          MenuProps={{
+                                            className: classes.paper,
+                                          }}
                                         >
                                           {q.options.map((option) => (
                                             <MenuItem
+                                              dense
+                                              className={`${classes.menuItem}   block p-2`}
+
                                               key={option}
                                               value={option}
                                               disabled
@@ -976,35 +1043,24 @@ function Final(props) {
                                 )}
 
                                 {q.answerTypeCode === 7 && (
+
                                   <>
-                                    <div className="flex mt-1">
-                                      <FormControl
-                                        fullWidth={true}
-                                        sx={{ marginBottom: 1 }}
-                                      >
-                                        <LocalizationProvider
-                                          dateAdapter={AdapterDateFns}
-                                        >
-                                          <DesktopDatePicker
-                                            disabled
-                                            inputFormat="MM/dd/yyyy"
-                                            renderInput={(params) => (
-                                              <TextField
-                                                variant="standard"
-                                                {...params}
-                                              />
-                                            )}
-                                          />
-                                        </LocalizationProvider>
-                                      </FormControl>
-                                    </div>
-                                  </>
+                                    <Spacer />
+                                    <Typography className=" text-gray-700 dark:text-gray-500 leading-tight " variant="caption">
+                                      <InfoIcon size="small" />
+                                      A calendar will be available when answering this question.
+                                    </Typography></>
+
+
                                 )}
 
                                 {q.answerTypeCode === 1 && (
-                                  <FormHelperText className=" text-xs leading-tight text-gray-700 font-normal">
-                                    {q.maxLength}
-                                  </FormHelperText>
+                                  <Tooltip title="Maximum length of field">
+                                    <Typography className="cursor-pointer text-xs leading-tight text-gray-700 font-normal"> {q.maxLength}</Typography>
+
+                                  </Tooltip>
+
+
                                 )}
                               </div>
                             )
@@ -1012,24 +1068,7 @@ function Final(props) {
                         </div>
                       </div>
                     )}
-                   
-                  <Box sx={{ display: "flex", flexDirection: "row" }}>
-                    {props.allStepsCompletedExceptFinalStep && (
-                      <div className="flex ml-2 gap-1 mt-1">
-                        <InfoIcon className="text-gray-600" fontSize="small" />
-                        <Typography
-                          variant="div"
-                          className=" line-clamp-1 leading-tight  text-sm text-gray-600"
-                          sx={{ mt: 0 }}
-                        >
-                          {APP.MESSAGES.INFO.TERMS_ACCEPT_TEXT}
-                          <span className=" cursor-pointer app-anchor-block">
-                            {APP.MESSAGES.INFO.TnC}
-                          </span>
-                        </Typography>
-                      </div>
-                    )}
-                  </Box>
+
                 </Grid>
               </Grid>
             </Box>
