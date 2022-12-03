@@ -16,7 +16,6 @@ import {
   getDifferenceOfTimeWithCurrentTimeInMinutes,
   getTimeAfter,
   getTimezone,
-  HTMLUnderlineByCharacterIndex,
   isSmallScreen,
   isToday,
 } from "../../../../../../utils/utility";
@@ -31,10 +30,10 @@ import {
 import FormHelperText from "@mui/material/FormHelperText";
 import ScheduleModuleCSS from "../../../../../../styles/Schedule.module.css";
 import parse from "html-react-parser";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Slide from "@mui/material/Slide";
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider"
-import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormLabel from "@mui/material/FormLabel";
@@ -42,14 +41,14 @@ import IconButton from "@mui/material/IconButton";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Tooltip } from "@material-ui/core";
-import {StaticDatePicker} from "@mui/x-date-pickers/StaticDatePicker";
+import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import ScheduleService from "../../../../../../pages/api/session/ScheduleService";
 import { handleResponse } from "../../../../../../toastr-response-handler/handler";
 import { getWorkflowError } from "../../../../../../error-handler/handler";
 import { toast } from "react-toastify";
 import { GENERIC_INTERNAL_ERROR } from "../../../../../../constants/error-messages";
 import { Typography } from "@mui/material";
-import { RESPONSE_TYPES } from "../../../../../../constants/constants";
+import { COLOR_CODES, RESPONSE_TYPES } from "../../../../../../constants/constants";
 import InfoIcon from "@mui/icons-material/Info";
 import PublicIcon from "@mui/icons-material/Public";
 import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
@@ -57,17 +56,68 @@ import { APP } from "../../../../../../constants/userdata";
 import { useRouter } from "next/router";
 import { AuthService } from "../../../../../../pages/api/users/auth/AuthService";
 import { actionTypes } from "../../../../../../context/reducer";
+import { THEME_MODES, useTheme } from "../../../../../../theme/ThemeProvider";
 toast.configure();
 function Schedule(props) {
+  const [theme, _dispatch] = useTheme();
+  const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
+  const deepGray = COLOR_CODES.GRAY.DEEP;
+  const lightGray = COLOR_CODES.GRAY.LIGHT
+  const [isSticky, setSticky] = useState(false);
   const useStyles = makeStyles((theme) => ({
+    paper: {
+      "& .MuiMenu-paper": {
+        backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      }
+
+    },
     root: {
-      "& .MuiFormLabel-root": {
-        marginTop: "4px!important",
+
+      '& .MuiInputBase-root.Mui-disabled': {
+        color: '#fff',
+
+      }
+
+    },
+    input: {
+      color: isDark ? deepGray : "",
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
+      "&:focus": {
+        borderBottom: "none",
+      },
+
+    },
+    select: {
+      color: isDark ? deepGray : "",
+
+      "&:before": {
+        borderBottom: ` ${isDark ? `1px solid ${lightGray}` : ""}`,
+      },
+    },
+    icon: {
+      fill: isDark ? deepGray : "inherit",
+    },
+
+    menuItem: {
+      backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      color: isDark ? `${deepGray}` : "",
+      "&.Mui-selected": {
+        backgroundColor: `${isDark ? COLOR_CODES.BLUE.DARK : ""}`,
+        color: isDark ? `${deepGray}` : "",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: isDark ? `${COLOR_CODES.BLUE.LIGHT}!important` : "",
+
       },
     },
   }));
 
   const classes = useStyles();
+  useEffect(() => {
+    setDark(theme.mode === THEME_MODES.DARK);
+  }, [theme])
+
   const Router = useRouter();
   const [data, dispatch] = useDataLayerContextValue();
   const [timezone, setTimeZone] = useState(getTimezone());
@@ -121,7 +171,7 @@ function Schedule(props) {
     _endTime.setHours(_startTime.getHours());
     _endTime.setMinutes(
       _startTime.getMinutes() +
-        Number(_durationCollection[0].durationDisplay) * 60
+      Number(_durationCollection[0].durationDisplay) * 60
     );
     const endDate = {
       hour:
@@ -161,9 +211,9 @@ function Schedule(props) {
 
   const handleRepeatCheckChange = (event) => {
     setRepeatChecked(event.target.checked);
-    
+
     setTimeout(() => {
-      if(!event.target.checked){
+      if (!event.target.checked) {
         setRepeatObject(null);
         APP.SESSION.DTO.SCHEDULE.repeatObject = null;
       }
@@ -261,13 +311,11 @@ function Schedule(props) {
   };
 
   const handleStartDateChange = (event) => {
-    const startDate = event.$d;
+    let startDate = event.$d;
     startDate.setHours(parseInt(Number(startTime.hour)));
     startDate.setMinutes(parseInt(Number(startTime.minute)));
     startDate.setSeconds(0);
-
     setSelectedStartDate(startDate);
-
     APP.SESSION.DTO.SCHEDULE.startDate = startDate;
     setDirty();
     dispatch({
@@ -275,13 +323,13 @@ function Schedule(props) {
       schedule: APP.SESSION.DTO.SCHEDULE,
     });
     if (isToday(event)) {
-      const p = props?.data?.static.times.filter(
-        (obj) => obj?.timeId === startTime?.timeid
+      const p = props?.data?.static.times.find(
+        (obj) => obj?.timeId === startTime?.timeId
       );
       const selectedDate = event.$d;
-      const selectedHour = parseInt(p[0]?.hour);
+      const selectedHour = parseInt(p?.hour);
       selectedDate.setHours(selectedHour);
-      const selectedMinute = parseInt(p[0]?.minute);
+      const selectedMinute = parseInt(p?.minute);
       selectedDate.setMinutes(selectedMinute);
       if (getDifferenceOfTimeWithCurrentTimeInMinutes(selectedDate) < 60) {
         const startTime = getTimeAfter(props?.data?.static.times, 2);
@@ -330,7 +378,7 @@ function Schedule(props) {
     _endTime.setHours(_startTime.getHours());
     _endTime.setMinutes(
       _startTime.getMinutes() +
-        Number(_durationCollection[0].durationDisplay) * 60
+      Number(_durationCollection[0].durationDisplay) * 60
     );
 
     const _startMonth = _endTime.getMonth() + 1;
@@ -448,16 +496,16 @@ function Schedule(props) {
       },
       courseScheduleEndDateStr: schedulerEndOnDate
         ? schedulerEndOnDate.month +
-          schedulerEndOnDate.dateSeparator +
-          schedulerEndOnDate.day +
-          schedulerEndOnDate.dateSeparator +
-          schedulerEndOnDate.year +
-          " " +
-          schedulerEndOnDate.hour +
-          schedulerEndOnDate.hourMinuteSeparator +
-          schedulerEndOnDate.minute +
-          schedulerEndOnDate.hourMinuteSeparator +
-          schedulerEndOnDate.second
+        schedulerEndOnDate.dateSeparator +
+        schedulerEndOnDate.day +
+        schedulerEndOnDate.dateSeparator +
+        schedulerEndOnDate.year +
+        " " +
+        schedulerEndOnDate.hour +
+        schedulerEndOnDate.hourMinuteSeparator +
+        schedulerEndOnDate.minute +
+        schedulerEndOnDate.hourMinuteSeparator +
+        schedulerEndOnDate.second
         : null,
       courseStartDateStr:
         startDate.month +
@@ -512,8 +560,8 @@ function Schedule(props) {
           type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
           schedule: APP.SESSION.DTO.SCHEDULE,
         });
-        if(!isSmallScreen())
-        window.scrollTo(0, 0);
+        if (!isSmallScreen())
+          window.scrollTo(0, 0);
       });
   };
   const handleDurationChange = (event) => {
@@ -602,8 +650,8 @@ function Schedule(props) {
         type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
         schedule: APP.SESSION.DTO.SCHEDULE,
       });
-      if(!isSmallScreen())
-      window.scrollTo(0, 0);
+      if (!isSmallScreen())
+        window.scrollTo(0, 0);
     }, 120);
   };
 
@@ -748,464 +796,575 @@ function Schedule(props) {
       });
     }
   }, []);
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      const scrollheightLimit = 50;
+      if (window.scrollY > scrollheightLimit || repeatChecked) {
+        setSticky(true);
+      } else {
+        setSticky(false);
+      }
+    });
+    return () => {
+      try {
+        window.removeEventListener("scroll");
+      } catch (error) { }
+    };
+  }, []);
   return (
     <Slide direction="left" in={true}>
-    <div
-      className={`p-3 ${processInProgress ? "control__disabled__opaque" : ""}`}
-    >
-      <Box sx={{ width: "100%" }}>
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item sm={12} lg={6} md={6} xs={12}>
-            
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <StaticDatePicker
-                orientation="landscape"
-                
-                disablePast
-                label={
-                  <>
-                    <label
-                      className={
-                        !selectedStartDate instanceof Date ? "text-red-400" : ""
-                      }
-                    >
-                      Start Date
-                    </label>
-                  </>
-                }
-                autoOk
-                openTo="day"
-                value={selectedStartDate}
-                onChange={handleStartDateChange}
-                componentsProps={{
-                  actionBar: {
-                    actions: [],
+      <div
+        className={`p-3 ${processInProgress ? "control__disabled__opaque" : ""}`}
+      >
+        <Box sx={{ width: "100%" }}>
+          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+            <Grid item sm={12} lg={6} md={6} xs={12}>
+              <div className={`${isSticky
+                  ? "md:sticky  lg:sticky  xl:sticky top-12"
+                  : ""
+                }`}>
+                <Box sx={{
+
+
+
+
+                  "& .MuiDatePickerToolbar-root": {
+                    backgroundColor: isDark ? "#111" : "whitesmoke"
                   },
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
 
-<Spacer/>
-            <div className="flex flex-col gap-1 text-xs text-gray-600 leading-tight">
-              <div className="flex gap-1">
-                <InfoIcon size="small" />
-                <Typography gutterBottom component="div">
-                  Your session will start from{" "}
-                  <strong>
-                    {selectedStartDate?.toDateString()}{" "}
-                    {getTimeByID(
-                      startTime?.timeId ? startTime?.timeId : DEFAULTS.TIME_ID
-                    )}
-                  </strong>{" "}
-                  and will end at <strong>{getEndTime()}</strong>
-                </Typography>
-              </div>
+                  "& .MuiDatePickerToolbar-root span>label": {
+                    color: isDark ? 'darkgrey' : ''
+                  },
+                  "&. MuiCalendarPicker-root": {
 
-              
-              <div
-                className="text-center items-center leading-tight 
-              text-xs text-gray-500 font-semibold flex gap-1"
-              >
-                
-                
-                
-                  <Tooltip title="Timezone">
-                    <>
-                      <PublicIcon />
-                      {timezone}
-                    </>
+                  },
 
-                  </Tooltip>
-                
-               
-              </div>
-             
-              {repeatChecked && (
-                <>
-                  <img
-                    alt="user-session-schedule-illustration"
-                    src="/static/images/schedule-session.jpg"
-                    className=" hidden lg:block w-full h-64 -mt-2 shadow-sm border-0 object-contain"
-                  />
-                </>
-              )}
-            </div>
-          </Grid>
+                  "& .MuiPickersCalendarHeader-label": {
+                    color: '#0081CB'
+                  },
 
-          <Grid item sm={12} lg={6} md={6} xs={12}>
-            <div className="flex flex-col">
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                {/* sx={{color: isDark ? deepGray : ""}}  */}
-                <InputLabel required htmlFor="grouped-select-timezone">
-                  Timezone
-                </InputLabel>
-                <Select
-                  value={timezone}
-                  onChange={handleTimezoneChange}
-                  id="grouped-select-timezone"
-                  label="Timezone"
-                >
-                  {TIMEZONE.map((tz, identityTypeIndex) => {
-                    let children = [];
 
-                    children.push(<ListSubheader>{tz.value}</ListSubheader>);
-                    tz.utc.forEach((identity) => {
-                      children.push(
-                        <MenuItem
-                          className="block p-2"
-                          key={identity}
-                          value={identity}
-                        >
-                          {identity}
-                        </MenuItem>
-                      );
-                    });
+                  "& .MuiTypography-caption": {
 
-                    return children;
-                  })}
-                </Select>
-              </FormControl>
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                <InputLabel required id="select-time-label">
-                  Choose start time
-                </InputLabel>
-                <Select
-                  labelId="select-time-label"
-                  id="select-time"
-                  value={startTime.timeId}
-                  onChange={handleStartTime}
-                  label="Start time"
-                >
-                  {props.data?.static.times?.map((time) => (
-                    <MenuItem
-                      className="block p-3"
-                      key={time.timeId}
-                      value={time.timeId}
-                    >
-                      {formatTime(time)}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errorInStartTime && (
-                  <FormHelperText
-                    className="blue-text leading-tight text-red-700 font-semibold"
-                    id="select-time-helper-text"
-                  >
-                    {SCHEDULE_MESSAGES.START_TIME.ERROR}
-                  </FormHelperText>
-                )}
-              </FormControl>
-              <FormControl
-                fullWidth={true}
-                variant="standard"
-                sx={{ marginBottom: 1 }}
-              >
-                <InputLabel required id="select-duration-label">
-                  Duration(hrs)
-                </InputLabel>
-                <Select
-                  labelId="select-duration-label"
-                  id="select-duration"
-                  value={duration}
-                  onChange={handleDurationChange}
-                  label="Duration"
-                >
-                  {props.data?.static.times?.map((time) => (
-                    <MenuItem
-                      disabled={time.timeId === 290}
-                      className={`block p-3 ${
-                        time.timeId === DEFAULTS.DEAD_TIME_ID ? "disabled" : ""
-                      }`}
-                      key={time.timeId}
-                      value={time.timeId}
-                    >
-                      {time.durationDisplay}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                    margin: 0
+                  },
 
-              <div className="flex flex-col">
-                <Spacer />
-                <FormControlLabel
-                  className="text-sm text-gray-700"
-                  disabled={repeatDisabled}
-                  control={
-                    <Checkbox
-                      onChange={handleRepeatCheckChange}
-                      checked={repeatChecked}
-                      size="small"
-                      {...label}
+                  '& .PrivatePickersSlideTransition-root [role="row"]': {
+                    margin: 0
+                  },
+                  "& .MuiPickersDay-dayWithMargin": {
+                    margin: 0,
+
+                  },
+
+                }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <StaticDatePicker
+                      orientation="landscape"
+                      disablePast
+                      label={
+                        <>
+                          <label
+                            className={
+                              !selectedStartDate instanceof Date ? "text-red-400" : ""
+                            }
+                          >
+                            Start Date
+                          </label>
+                        </>
+                      }
+                      autoOk
+                      openTo="day"
+                      value={selectedStartDate}
+                      onChange={handleStartDateChange}
+                      componentsProps={{
+                        actionBar: {
+                          actions: [],
+                        },
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
                     />
-                  }
-                  label="Repeat"
-                  labelPlacement="end"
-                />
-                {scheduleSummary && (
-                  <div className="flex gap-1 text-xs text-gray-600 leading-tight">
+                  </LocalizationProvider>
+                </Box>
+
+
+                <Spacer />
+                <div className="flex flex-col gap-1 text-xs text-gray-600 leading-tight">
+                  <div className="flex gap-1">
                     <InfoIcon size="small" />
-                    <Typography
-                      className="small-text "
-                      gutterBottom
-                      component="div"
-                    >
-                      {scheduleSummary}
+                    <Typography gutterBottom component="div">
+                      Your session will start from{" "}
+                      <strong>
+                        {selectedStartDate?.toDateString()}{" "}
+                        {getTimeByID(
+                          startTime?.timeId ? startTime?.timeId : DEFAULTS.TIME_ID
+                        )}
+                      </strong>{" "}
+                      and will end at <strong>{getEndTime()}</strong>
                     </Typography>
+                  </div>
+                  <div
+                    className="text-center items-center leading-tight 
+              text-xs text-gray-500 font-semibold flex gap-1"
+                  >
+                    <Tooltip title="Timezone">
+                      <div className="flex gap-1">
+
+                        <Typography className="flex gap-1" variant="caption"><PublicIcon />
+                          <div className=" mr-2 mt-0.5">{timezone}</div>
+                        </Typography>
+
+                      </div>
+
+                    </Tooltip>
+                  </div>
+                </div>
+              </div>
+
+            </Grid>
+
+            <Grid item sm={12} lg={6} md={6} xs={12}>
+              <div className="flex flex-col">
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  {/*   */}
+                  <InputLabel sx={{ color: isDark ? deepGray : "" }} required htmlFor="grouped-select-timezone">
+                    Timezone
+                  </InputLabel>
+                  <Select
+                    value={timezone}
+                    onChange={handleTimezoneChange}
+                    id="grouped-select-timezone"
+                    label="Timezone"
+                    inputProps={{
+                      classes: {
+                        icon: classes.icon,
+                      },
+                    }}
+                    className={classes.select}
+                    MenuProps={{
+                      className: classes.paper,
+                    }}
+                  >
+                    {TIMEZONE.map((tz, identityTypeIndex) => {
+                      let children = [];
+
+                      children.push(<ListSubheader>{tz.value}</ListSubheader>);
+                      tz.utc.forEach((identity) => {
+                        children.push(
+                          <MenuItem
+                            dense
+                            className={`${classes.menuItem}   block p-2`}
+
+                            key={identity}
+                            value={identity}
+                          >
+                            {identity}
+                          </MenuItem>
+                        );
+                      });
+
+                      return children;
+                    })}
+                  </Select>
+                </FormControl>
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  <InputLabel sx={{ color: isDark ? deepGray : "" }} required id="select-time-label">
+                    Choose start time
+                  </InputLabel>
+                  <Select
+                    labelId="select-time-label"
+                    id="select-time"
+                    value={startTime.timeId}
+                    onChange={handleStartTime}
+                    label="Start time"
+                    inputProps={{
+                      classes: {
+                        icon: classes.icon,
+                      },
+                    }}
+                    className={classes.select}
+                    MenuProps={{
+                      className: classes.paper,
+                    }}
+                  >
+                    {props.data?.static.times?.map((time) => (
+                      <MenuItem
+
+                        key={time.timeId}
+                        dense
+                        className={`${classes.menuItem}   block p-3`}
+
+                        value={time.timeId}
+                      >
+                        {formatTime(time)}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errorInStartTime && (
+                    <FormHelperText
+                      className="blue-text leading-tight text-red-700 font-semibold"
+                      id="select-time-helper-text"
+                    >
+                      {SCHEDULE_MESSAGES.START_TIME.ERROR}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+                <FormControl
+                  fullWidth={true}
+                  variant="standard"
+                  sx={{ marginBottom: 1 }}
+                >
+                  <InputLabel sx={{ color: isDark ? deepGray : "" }} required id="select-duration-label">
+                    Duration(hrs)
+                  </InputLabel>
+                  <Select
+                    labelId="select-duration-label"
+                    id="select-duration"
+                    value={duration}
+                    onChange={handleDurationChange}
+                    label="Duration"
+                    inputProps={{
+                      classes: {
+                        icon: classes.icon,
+                      },
+                    }}
+                    className={classes.select}
+                    MenuProps={{
+                      className: classes.paper,
+                    }}
+                  >
+                    {props.data?.static.times?.map((time) => (
+                      <MenuItem
+                        disabled={time.timeId === 290}
+
+                        dense
+                        className={`block p-3 ${classes.menuItem} ${time.timeId === DEFAULTS.DEAD_TIME_ID ? "disabled" : ""
+                          }`}
+
+                        key={time.timeId}
+                        value={time.timeId}
+                      >
+                        {time.durationDisplay}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <div className="flex flex-col">
+                  <Spacer />
+                  <FormControlLabel
+                    className="text-sm text-gray-700 dark:text-gray-500"
+                    disabled={repeatDisabled}
+                    control={
+                      <Checkbox
+                        onChange={handleRepeatCheckChange}
+                        checked={repeatChecked}
+                        size="small"
+                        sx={{
+                          "&:hover": {
+                            background: '#E01EE8',
+                            boxShadow: 3
+                          },
+                          color: isDark ? deepGray : "inherit"
+                        }}
+                        {...label}
+
+                      />
+                    }
+                    label="Repeat"
+                    labelPlacement="end"
+                  />
+                  {scheduleSummary && (
+                    <div className="flex gap-1 text-xs text-gray-600 dark:text-gray-500 leading-tight">
+                      <InfoIcon size="small" />
+                      <Typography
+                        className="small-text "
+                        gutterBottom
+                        component="div"
+                      >
+                        {scheduleSummary}
+                      </Typography>
+                    </div>
+                  )}
+                </div>
+
+                {repeatChecked && !scheduleFixed && (
+                  <div className="schedule__repeat__scheduler__wrapper mt-2">
+                    <FormControl
+                      fullWidth={true}
+                      variant="standard"
+                      sx={{ marginBottom: 1 }}
+                    >
+                      <InputLabel sx={{ color: isDark ? deepGray : "" }} id="repeats-label">Repeats</InputLabel>
+                      <Select
+                        labelId="repeats-label"
+                        id="repeats"
+                        value={repeatValue}
+                        label="Repeats"
+                        onChange={handleRepeatsChange}
+                        inputProps={{
+                          classes: {
+                            icon: classes.icon,
+                          },
+                        }}
+                        className={classes.select}
+                        MenuProps={{
+                          className: classes.paper,
+                        }}
+                      >
+                        {schedule
+                          ?.filter((schedule) => schedule.display)
+                          .map((schedule) => (
+                            <MenuItem
+
+                              dense
+                              className={`${classes.menuItem}   block p-3`}
+
+                              key={schedule.id}
+                              value={schedule.value}
+                            >
+                              {schedule.displayValue}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+
+                    {repeatValue !== "" && (
+                      <>
+                        <FormControl
+                          fullWidth={true}
+                          variant="standard"
+                          className={` mt-4`}
+                          sx={{ marginBottom: 1 }}
+                        >
+                          <InputLabel sx={{ color: isDark ? deepGray : "" }} id="repeat-every-label">
+                            Repeat every
+                          </InputLabel>
+                          <Select
+                            labelId="repeat-every-label"
+                            id="repeat-every"
+                            value={repeatEvery}
+                            label="Repeat every"
+                            onChange={handleRepeatEveryChange}
+                            aria-describedby="repeat-every-label-helper-text"
+                            inputProps={{
+                              classes: {
+                                icon: classes.icon,
+                              },
+                            }}
+                            className={classes.select}
+                            MenuProps={{
+                              className: classes.paper,
+                            }}
+                          >
+                            {repeatObject.repeatsEvery.range?.map((obj) => (
+                              <MenuItem
+
+                                dense
+                                className={`${classes.menuItem}   block p-3`}
+
+                                key={obj}
+                                value={obj}
+                              >
+                                {obj}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          <FormHelperText
+                            className={`${ScheduleModuleCSS.schedule__form__helper__text}`}
+                            id="repeat-every-label-helper-text"
+                          >
+                            {parse(repeatObject.repeatsEvery.label)}
+                          </FormHelperText>
+                        </FormControl>
+                        {repeatValue === "Weekly" &&
+                          repeatByDaysOfWeek && repeatByDaysOfWeek.length > 0 && (
+                            <>
+                              <div className="flex flex-col gap-4">
+                                <div className="text-gray-500 dark:text-gray-400 leading-tight clear-both whitespace-nowrap lg:line-clamp-1  overflow-ellipsis text-xs font-semibold lg:text-sm">
+                                  Repeat by
+                                </div>
+                                <div className="flex leading-tight repeat-by-days -mt-2  text-sm   ">
+                                  {repeatByDaysOfWeek
+                                    .filter((obj) => !obj.disabled)
+                                    .map((day, index) => (
+                                      <div key={index}>
+                                        <Tooltip title={day.display.long}>
+                                          <FormControlLabel
+                                            key={day.id}
+                                            className=" text-gray-500 dark:text-gray-400   "
+                                            disabled={false}
+                                            control={
+                                              <Checkbox
+                                                sx={{
+                                                  "&:hover": {
+                                                    background: '#E01EE8',
+                                                    boxShadow: 3
+                                                  },
+                                                  color: isDark ? deepGray : "#111"
+                                                }}
+                                                size="small"
+                                                checked={
+                                                  checkedRepeatByDaysOfWeekState[
+                                                  index
+                                                  ]
+                                                }
+                                                value={day.value}
+                                                onChange={(e) =>
+                                                  handleRepeatByDayOfWeekChange(
+                                                    e,
+                                                    day,
+                                                    index
+                                                  )
+                                                }
+                                              />
+                                            }
+                                            label={day.display.short}
+                                            labelPlacement="end"
+                                          ></FormControlLabel>
+                                        </Tooltip>
+                                      </div>
+
+                                    ))}
+                                </div>
+                                <Spacer />
+                              </div>
+                            </>
+                          )}
+
+                        <FormControl variant="outlined" sx={{ marginBottom: 1 }}>
+                          <div className="flex flex-col gap-2">
+                            <div className="text-sm dark:text-gray-400 text-gray-700 first-letter:underline">Starts on</div>
+                            <Typography className=" italic" variant="subtitle2">{selectedStartDate?.toDateString()}</Typography>
+                          </div>
+                        </FormControl>
+
+                        <div style={{ borderLeft: `1px dotted ${isDark ? '#e2e2e2' : 'grey'}` }}
+                          className={`flex flex-col mt-2 ml-1    `}
+                        >
+                          <FormControl>
+                            <FormLabel className="first-letter:underline text-sm ml-2 text-gray-700 dark:text-gray-500">
+                              Ends
+                            </FormLabel>
+                            <RadioGroup
+                              aria-label="ends-after-on"
+                              name="row-radio-buttons-group"
+                              value={endsOnAfterValue}
+                              onChange={handleEndsOnAfterChange}
+                            >
+                              <div className="mt-1 ml-3">
+                                <FormControlLabel
+                                  value="Occurence"
+                                  control={<Radio />}
+                                  label="After"
+                                  className="ml-2 mt-3 text-xs text-gray-700 dark:text-gray-500"
+                                />
+                                <FormControl
+                                  variant="filled"
+                                  sx={{ marginBottom: 1, marginTop: 1 }}
+                                >
+                                  <TextField
+                                    variant="standard"
+                                    label={<div className="text-gray-700 dark:text-gray-500">Occurences</div>}
+                                    onChange={handleOccurenceCountChange}
+                                    value={occurenceCount}
+                                    id="occurences"
+                                    type="number"
+
+                                    inputProps={{ className: classes.input }}
+                                    className={classes.root}
+                                    disabled={endsOnAfterValue !== "Occurence"}
+
+                                  />
+                                </FormControl>
+                              </div>
+                              <div className="mt-2 ml-3">
+                                <FormControlLabel
+                                  value="OnDate"
+                                  control={<Radio />}
+                                  label="On"
+                                  className="ml-2 mt-2 text-xs text-gray-700 dark:text-gray-500"
+                                />
+                                <LocalizationProvider
+                                  dateAdapter={AdapterDayjs}
+                                >
+                                  <DesktopDatePicker
+                                    disableToolbar
+                                    allowSameDateSelection
+                                    variant="inline"
+
+                                    renderInput={(params) => (
+                                      <TextField
+
+                                        variant="standard"
+                                        {...params}
+                                        sx={{
+                                          svg: { color: isDark ? deepGray : "" },
+                                          input: { color: isDark ? deepGray : "" },
+                                          label: { color: isDark ? deepGray : "" }
+                                        }}
+                                        value={endsOnDate}
+
+                                      />
+                                    )}
+                                    minDate={startMinDate}
+                                    disablePast
+                                    onChange={handleEndsOnChange}
+                                    value={endsOnDate}
+                                    disabled={endsOnAfterValue !== "OnDate"}
+                                    autoFill
+                                    label={<div className="text-gray-700 dark:text-gray-500">Ends on</div>}
+                                    onError={() => setEndsOnDateError(true)}
+                                    onAccept={() => {
+                                      setEndsOnDateError(false);
+                                    }}
+                                  />
+                                </LocalizationProvider>
+                              </div>
+                            </RadioGroup>
+                          </FormControl>
+                        </div>
+                        <div className="schedule-action-buttons float-right">
+                          <Tooltip title={"Fix Schedule"}>
+                            <IconButton
+                              onClick={handleScheduleFixation}
+                              aria-label="schedule-done"
+                              size="small"
+                              disabled={endsOnDateError}
+                            >
+                              <CheckCircleIcon
+                                color={endsOnDateError ? "default" : "primary"}
+                                fontSize="small"
+                              />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title={"Cancel"}>
+                            <IconButton
+                              onClick={handleScheduleCancelation}
+                              aria-label="schedule-cancel"
+                              size="small"
+                            >
+                              <CancelIcon color="warning" fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
-
-              {repeatChecked && !scheduleFixed && (
-                <div className="schedule__repeat__scheduler__wrapper mt-2">
-                  <FormControl
-                    fullWidth={true}
-                    variant="outlined"
-                    sx={{ marginBottom: 1 }}
-                  >
-                    <InputLabel id="repeats-label">Repeats</InputLabel>
-                    <Select
-                      labelId="repeats-label"
-                      id="repeats"
-                      value={repeatValue}
-                      label="Repeats"
-                      onChange={handleRepeatsChange}
-                    >
-                      {schedule
-                        ?.filter((schedule) => schedule.display)
-                        .map((schedule) => (
-                          <MenuItem
-                            className="block p-3"
-                            key={schedule.id}
-                            value={schedule.value}
-                          >
-                            {schedule.displayValue}
-                          </MenuItem>
-                        ))}
-                    </Select>
-                  </FormControl>
-
-                  {repeatValue !== "" && (
-                    <>
-                      <FormControl
-                        fullWidth={true}
-                        variant="outlined"
-                        className={` mt-4`}
-                        sx={{ marginBottom: 1 }}
-                      >
-                        <InputLabel id="repeat-every-label">
-                          Repeat every
-                        </InputLabel>
-                        <Select
-                          labelId="repeat-every-label"
-                          id="repeat-every"
-                          value={repeatEvery}
-                          label="Repeat every"
-                          onChange={handleRepeatEveryChange}
-                          aria-describedby="repeat-every-label-helper-text"
-                        >
-                          {repeatObject.repeatsEvery.range?.map((obj) => (
-                            <MenuItem
-                              className="block p-3"
-                              key={obj}
-                              value={obj}
-                            >
-                              {obj}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        <FormHelperText
-                          className={`${ScheduleModuleCSS.schedule__form__helper__text}`}
-                          id="repeat-every-label-helper-text"
-                        >
-                          {parse(repeatObject.repeatsEvery.label)}
-                        </FormHelperText>
-                      </FormControl>
-                      {repeatValue === "Weekly" &&
-                        repeatByDaysOfWeek.length > 0 && (
-                          <>
-                            <div className="flex flex-col gap-4">
-                              <div className="text-gray-500 leading-tight clear-both whitespace-nowrap lg:line-clamp-1  overflow-ellipsis text-xs font-semibold lg:text-sm">
-                                Repeat by
-                              </div>
-                              <div className="flex leading-tight repeat-by-days -mt-2  text-sm border-dotted border-2 ">
-                                {repeatByDaysOfWeek
-                                  .filter((obj) => !obj.disabled)
-                                  .map((day, index) => (
-                                    <div key={index}>
-                                       <Tooltip title={day.display.long}>
-                                      <FormControlLabel
-                                        key={day.id}
-                                        className=" text-gray-500   "
-                                        disabled={false}
-                                        control={
-                                          <Checkbox
-                                            size="small"
-                                            checked={
-                                              checkedRepeatByDaysOfWeekState[
-                                                index
-                                              ]
-                                            }
-                                            value={day.value}
-                                            onChange={(e) =>
-                                              handleRepeatByDayOfWeekChange(
-                                                e,
-                                                day,
-                                                index
-                                              )
-                                            }
-                                          />
-                                        }
-                                        label={day.display.short}
-                                        labelPlacement="end"
-                                      ></FormControlLabel>
-                                    </Tooltip>
-                                    </div>
-                                   
-                                  ))}
-                              </div>
-                              <Spacer />
-                            </div>
-                          </>
-                        )}
-
-                      <FormControl variant="outlined" sx={{ marginBottom: 1 }}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DesktopDatePicker
-                            disableToolbar
-                            label="Starts on"
-                            variant="inline"
-                            margin="normal"
-                            
-                            renderInput={(params) => <TextField {...params} />}
-                            minDate={startMinDate}
-                            disablePast
-                            value={selectedStartDate}
-                            disabled
-                          />
-                        </LocalizationProvider>
-                      </FormControl>
-
-                      <div
-                        className={`flex flex-col mt-2 ml-1 ${ScheduleModuleCSS.schedule__endsOnWrapper}`}
-                      >
-                        <FormControl>
-                          <FormLabel className="text-sm ml-2 text-gray-700">
-                            {parse(HTMLUnderlineByCharacterIndex("Ends", 0))}
-                          </FormLabel>
-                          <RadioGroup
-                            aria-label="ends-after-on"
-                            name="row-radio-buttons-group"
-                            value={endsOnAfterValue}
-                            onChange={handleEndsOnAfterChange}
-                          >
-                            <div className="mt-1 ml-3">
-                              <FormControlLabel
-                                value="Occurence"
-                                control={<Radio />}
-                                label="After"
-                                className="ml-2 mt-3 text-xs text-gray-700"
-                              />
-                              <FormControl
-                                variant="filled"
-                                sx={{ marginBottom: 1, marginTop: 1 }}
-                              >
-                                <TextField
-                                  variant="standard"
-                                  label="Occurences"
-                                  onChange={handleOccurenceCountChange}
-                                  value={occurenceCount}
-                                  id="occurences"
-                                  type="number"
-                                  disabled={endsOnAfterValue !== "Occurence"}
-                                  className={`${ScheduleModuleCSS.schedule__occurence__select}`}
-                                />
-                              </FormControl>
-                            </div>
-                            <div className="mt-2 ml-3">
-                              <FormControlLabel
-                                value="OnDate"
-                                control={<Radio />}
-                                label="On"
-                                className="ml-2 mt-2 text-xs text-gray-700"
-                              />
-                              <LocalizationProvider
-                                dateAdapter={AdapterDayjs}
-                              >
-                                <DesktopDatePicker
-                                  disableToolbar
-                                  allowSameDateSelection
-                                  variant="inline"
-                                  
-                                  renderInput={(params) => (
-                                    <TextField
-                                      className={classes.root}
-                                      {...params}
-                                      value={endsOnDate}
-                                    />
-                                  )}
-                                  minDate={startMinDate}
-                                  disablePast
-                                  onChange={handleEndsOnChange}
-                                  value={endsOnDate}
-                                  disabled={endsOnAfterValue !== "OnDate"}
-                                  autoFill
-                                  label={
-                                    <>
-                                      <label>Ends on</label>
-                                    </>
-                                  }
-                                  onError={() => setEndsOnDateError(true)}
-                                  onAccept={() => {
-                                    setEndsOnDateError(false);
-                                  }}
-                                />
-                              </LocalizationProvider>
-                            </div>
-                          </RadioGroup>
-                        </FormControl>
-                      </div>
-                      <div className="schedule-action-buttons float-right border-dotted border-2">
-                        <Tooltip title={"Fix Schedule"}>
-                          <IconButton
-                            onClick={handleScheduleFixation}
-                            aria-label="schedule-done"
-                            size="small"
-                            disabled={endsOnDateError}
-                          >
-                            <CheckCircleIcon
-                              color={endsOnDateError ? "default" : "primary"}
-                              fontSize="small"
-                            />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title={"Cancel"}>
-                          <IconButton
-                            onClick={handleScheduleCancelation}
-                            aria-label="schedule-cancel"
-                            size="small"
-                          >
-                            <CancelIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
-    </div>
+        </Box>
+      </div>
     </Slide>
   );
 }

@@ -34,7 +34,7 @@ import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre"
 import QuestionairreService from "../../../../../../pages/api/session/QuestionairreService";
 import ConfirmDialog from "../../../../../shared/modals/ConfirmDialog";
 import { handleResponse } from "../../../../../../toastr-response-handler/handler";
-import { RESPONSE_TYPES } from "../../../../../../constants/constants";
+import { COLOR_CODES, RESPONSE_TYPES } from "../../../../../../constants/constants";
 import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -44,10 +44,16 @@ import { useRouter } from "next/router";
 import { actionTypes } from "../../../../../../context/reducer";
 import { AuthService } from "../../../../../../pages/api/users/auth/AuthService";
 import { SESSION } from "../../../../../../validation/services/auth/ValidationSchema";
-import { infinity, standardStaleTime } from "../../../../../../async/subscriptions";
+import { infinity } from "../../../../../../async/subscriptions";
+import { makeStyles } from "@material-ui/core/styles";
+import { THEME_MODES, useTheme } from "../../../../../../theme/ThemeProvider";
 toast.configure();
 function Participant(props) {
   const Router = useRouter();
+  const [theme, _dispatch] = useTheme();
+  const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
+  const deepGray = COLOR_CODES.GRAY.DEEP;
+  const lightGray = COLOR_CODES.GRAY.LIGHT
   const [data, dispatch] = useDataLayerContextValue();
   const [processing, setProcessing] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -72,6 +78,55 @@ function Participant(props) {
   const label = {
     inputProps: { "aria-label": "Switch for session accessibility" },
   };
+
+  const useStyles = makeStyles((theme) => ({
+    paper: {
+      "& .MuiMenu-paper": {
+        backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      }
+
+    },
+    root: {
+      "& .MuiFormLabel-root": {
+        color: isDark ? deepGray : "", // or black
+      },
+
+
+
+    },
+    input: {
+      color: isDark ? deepGray : "",
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
+      "&:focus": {
+        borderBottom: "none",
+      },
+    },
+    select: {
+      color: isDark ? deepGray : "",
+
+      "&:before": {
+        borderBottom: ` ${isDark ? `1px solid ${lightGray}` : ""}`,
+      },
+    },
+    icon: {
+      fill: isDark ? deepGray : "inherit",
+    },
+
+    menuItem: {
+      backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      color: isDark ? `${deepGray}` : "",
+      "&.Mui-selected": {
+        backgroundColor: `${isDark ? COLOR_CODES.BLUE.DARK : ""}`,
+        color: isDark ? `${deepGray}` : "",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: isDark ? `${COLOR_CODES.BLUE.LIGHT}!important` : "",
+
+      },
+    },
+  }));
+  const classes = useStyles();
   const getLoggedInInformation = async () =>
     (await UserDataService.getLoggedInInformation()).data;
   const USER_LOGIN_INFO = useQuery([KEYS.LOGIN.INFO], getLoggedInInformation, {
@@ -209,7 +264,7 @@ function Participant(props) {
             setProcessing(false);
             setQuestionairreIdentifier(null);
             APP.SESSION.DTO.PARTICIPANTS.questions = null;
-            APP.SESSION.DTO.PARTICIPANTS.questionairre=null
+            APP.SESSION.DTO.PARTICIPANTS.questionairre = null
             dispatch({
               type: actionTypes.CREATE_SESSION_WORKFLOW.PARTICIPANT,
               participant: APP.SESSION.DTO.PARTICIPANTS,
@@ -248,8 +303,8 @@ function Participant(props) {
   };
   const scrollDivToBottom = (div) => {
     var objDiv = document.getElementById(div);
-    if(objDiv)
-    objDiv.scrollTop = objDiv.scrollHeight;
+    if (objDiv)
+      objDiv.scrollTop = objDiv.scrollHeight;
   };
 
   const formOptions = {
@@ -310,14 +365,14 @@ function Participant(props) {
           ? parseInt(data?.participant?.numberOfParticipants)
           : null
       );
-      if(data?.participant?.visibility===true || data?.participant?.visibility===false){
+      if (data?.participant?.visibility === true || data?.participant?.visibility === false) {
         setVisibilityPublic(
           data?.participant?.visibility
         );
-      }else {
+      } else {
         setVisibilityPublic(true)
       }
-     
+
       setSelectedChoiceOfInvitation(
         data?.participant?.choiceOfInvitation
           ? data?.participant?.choiceOfInvitation
@@ -326,7 +381,7 @@ function Participant(props) {
       setQuestionairreIdentifier(
         data?.participant?.questions ? data?.participant?.questions : null
       );
-    
+
       setSelectedItem(
         data?.participant?.cohost ? data?.participant?.cohost : null
       );
@@ -342,11 +397,16 @@ function Participant(props) {
       });
     }
   }, []);
+  useEffect(() => {
+    setDark(theme.mode === THEME_MODES.DARK);
+  }, [theme]);
+
+
 
   return (
     <Slide direction="right" in={true}>
-    <div className={`p-4 ${processing ? "control__disabled__opaque" : ""}`}>
-      
+      <div className={`p-4 ${processing ? "control__disabled__opaque" : ""}`}>
+
         <Box sx={{ width: "100%" }}>
           <Grid
             container
@@ -368,6 +428,8 @@ function Participant(props) {
                     variant="standard"
                     label="Co-Host Name"
                     id="cohost"
+                    inputProps={{ className: classes.input }}
+                    className={classes.root}
                   />
                 </FormControl>
               )}
@@ -407,19 +469,18 @@ function Participant(props) {
 
               {searchResults.length > 0 && (
                 <div
-                  className={`${itemSelected ? "control__disabled" : ""} ${
-                    ParticipantStyles.participant__search__results
-                  } flex flex-col gap-2 pb-2 pt-2  px-2   absolute w-full overflow-y-auto`}
+                  className={`${itemSelected ? "control__disabled" : ""} ${ParticipantStyles.participant__search__results
+                    } flex flex-col gap-2 pb-2 pt-2  px-2   absolute w-full overflow-y-auto`}
                 >
                   {searchResults?.map((searchResult) => (
-                     
-                       <Profile
+
+                    <Profile
                       onSelect={handleSelect}
                       key={searchResult.entityId}
                       data={searchResult}
                     />
-                    
-                   
+
+
                   ))}
                 </div>
               )}
@@ -445,6 +506,8 @@ function Participant(props) {
                   helperText={errors.expectedNumber?.message}
                   error={errors.expectedNumber?.message ? true : false}
                   required
+                  inputProps={{ className: classes.input }}
+                  className={classes.root}
                 />
                 <FormHelperText className=" text-gray-600 leading-tight -ml-1 font-semibold">
                   For 100+ participants, premium membership is required.
@@ -481,12 +544,12 @@ function Participant(props) {
                     />
                   </div>
                   {!publicVisibility && (<>
-                  
+
                     <div className="text-sm text-gray-600 flex">
-                      <InfoIcon fontSize="small"/>
+                      <InfoIcon fontSize="small" />
                       <div>{PARTICIPANT_VISIBILITY.ON_PRIVATE_SESSION}</div></div>
                   </>)}
-                 
+
                 </FormControl>
               </div>
             </Grid>
@@ -538,16 +601,15 @@ function Participant(props) {
             <Grid item xs={12}>
               <div className="flex gap-1">
                 {questionairreIdentifier == null ||
-                questionairreIdentifier == 0 ? (
+                  questionairreIdentifier == 0 ? (
                   <>
                     <button
                       onClick={handleQuestionClick}
                       title="Add custom questions"
-                      className={`app__button app__button__block ${
-                        customQuestionsToParticipants
+                      className={`app__button app__button__block ${customQuestionsToParticipants
                           ? "control__disabled__opaque"
                           : ""
-                      }`}
+                        }`}
                     >
                       {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
                       Add Questionairre
@@ -558,11 +620,10 @@ function Participant(props) {
                     <button
                       onClick={handleQuestionClick}
                       title="Edit custom questions"
-                      className={`app__button app__button__block ${
-                        customQuestionsToParticipants
+                      className={`app__button app__button__block ${customQuestionsToParticipants
                           ? "control__disabled__opaque"
                           : ""
-                      }`}
+                        }`}
                     >
                       {CUSTOM_QUESTION_OPTS.icons.EditQuestion}
                       Edit Questionairre
@@ -609,15 +670,15 @@ function Participant(props) {
             </Grid>
           </Grid>
         </Box>
-     
-      <ConfirmDialog
-        theme="dark"
-        isOpen={showDeleteQuestionairreConfirmDialog}
-        confirmMessage="Delete Questionnaire?"
-        dialogCloseRequest={handleConfirmDialogRequest}
-        title="Confirmation"
-      />
-    </div>
+
+        <ConfirmDialog
+          theme="dark"
+          isOpen={showDeleteQuestionairreConfirmDialog}
+          confirmMessage="Delete Questionnaire?"
+          dialogCloseRequest={handleConfirmDialogRequest}
+          title="Confirmation"
+        />
+      </div>
     </Slide>
   );
 }

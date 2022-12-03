@@ -22,10 +22,12 @@ import { questionValidationSchema } from "../../../validation/services/auth/Vali
 import QuestionairreService from "../../../pages/api/session/QuestionairreService";
 import { handleResponse } from "../../../toastr-response-handler/handler";
 import { getWorkflowError } from "../../../error-handler/handler";
-import { RESPONSE_TYPES } from "../../../constants/constants";
+import { COLOR_CODES, RESPONSE_TYPES } from "../../../constants/constants";
 import { toast } from "react-toastify";
 import { SESSION_ERROR } from "../../../constants/error-messages";
 import { PARTICIPANT_QUESTIONAIRRES } from "../../../constants/userdata";
+import { THEME_MODES, useTheme } from "../../../theme/ThemeProvider";
+import { makeStyles } from "@material-ui/core/styles";
 toast.configure();
 class Question {
   constructor(isRemovable) {
@@ -36,7 +38,7 @@ class Question {
       removable: isRemovable,
       questionnaireType: 1,
       maxRating: 0,
-      optional:true,
+      optional: true,
       options: [],
     };
     this.answer = {
@@ -60,7 +62,7 @@ class Question {
     this.question = {
       val: data.question,
       required: true,
-      optional:data.optional,
+      optional: data.optional,
       removable: isRemovable,
       questionnaireType: data.questionnaireType,
       maxRating: data.maxRating,
@@ -94,11 +96,65 @@ class Option {
   }
 }
 function Questions({ data, mode, onSave, onCancel }) {
+
+  const [theme, _dispatch] = useTheme();
+  const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
+  const deepGray = COLOR_CODES.GRAY.DEEP;
+  const lightGray = COLOR_CODES.GRAY.LIGHT
   // make first question visible by default;
   const [processing, setProcessing] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [questionaireDescription, setQuestionairreDescription] = useState("");
 
+
+  const useStyles = makeStyles((theme) => ({
+    paper: {
+      "& .MuiMenu-paper": {
+        backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      }
+
+    },
+    root: {
+      "& .MuiFormLabel-root": {
+        color: isDark ? deepGray : "", // or black
+      },
+
+
+
+    },
+    input: {
+      color: isDark ? deepGray : "",
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
+      "&:focus": {
+        borderBottom: "none",
+      },
+    },
+    select: {
+      color: isDark ? deepGray : "",
+
+      "&:before": {
+        borderBottom: ` ${isDark ? `1px solid ${lightGray}` : ""}`,
+      },
+    },
+    icon: {
+      fill: isDark ? deepGray : "inherit",
+    },
+
+    menuItem: {
+      backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      color: isDark ? `${deepGray}` : "",
+      "&.Mui-selected": {
+        backgroundColor: `${isDark ? COLOR_CODES.BLUE.DARK : ""}`,
+        color: isDark ? `${deepGray}` : "",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: isDark ? `${COLOR_CODES.BLUE.LIGHT}!important` : "",
+
+      },
+    },
+  }));
+  const classes = useStyles();
   useEffect(() => {
     if (data) {
       reset();
@@ -131,8 +187,12 @@ function Questions({ data, mode, onSave, onCancel }) {
       initialArray = [_question];
       setQuestions(initialArray);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+
+  useEffect(() => {
+    setDark(theme.mode === THEME_MODES.DARK);
+  }, [theme]);
 
   const handleAdd = () => {
     const question = new Question(true);
@@ -337,10 +397,10 @@ function Questions({ data, mode, onSave, onCancel }) {
         });
     }
   };
-  const handleOptionalChoiceChange =(index)=>{
+  const handleOptionalChoiceChange = (index) => {
     var array = [...questions];
     if (index !== -1) {
-      array[index].question.optional= !array[index].question.optional;
+      array[index].question.optional = !array[index].question.optional;
     }
     setQuestions(array);
   }
@@ -369,28 +429,30 @@ function Questions({ data, mode, onSave, onCancel }) {
               variant="filled"
               label="Questionairre Description"
               value={questionaireDescription}
+              inputProps={{ className: classes.input }}
+              className={classes.root}
             />
           </FormControl>
           {questions?.length > 0 && (
             <>
               <div className="flex ml-auto question-options gap-2 mt-4">
-                <div onClick={handleAdd}>
-                  <span
-                    title="Add another question"
-                    className=" cursor-pointer app-anchor-block"
-                  >
+                <Tooltip title="Add another question">
+                  <div className=" cursor-pointer app-anchor-block" onClick={handleAdd}>
+
                     {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
-                  </span>
-                </div>
-                {questions?.length > 1 && (
-                  <div onClick={removeAll}>
-                    <span
-                      title="Remove all questions"
-                      className="cursor-pointer app-anchor-block"
-                    >
-                      {CUSTOM_QUESTION_OPTS.icons.RemoveQuestion}
-                    </span>
+
                   </div>
+                </Tooltip>
+
+                {questions?.length > 1 && (
+                  <Tooltip title="Remove all questions">
+                    <div className="cursor-pointer app-anchor-block" onClick={removeAll}>
+
+                      {CUSTOM_QUESTION_OPTS.icons.RemoveQuestion}
+
+                    </div>
+                  </Tooltip>
+
                 )}
               </div>
             </>
@@ -407,7 +469,7 @@ function Questions({ data, mode, onSave, onCancel }) {
               <Box key={index} sx={{ width: "100%" }}>
                 <Grid
                   container
-                  
+
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
@@ -415,19 +477,17 @@ function Questions({ data, mode, onSave, onCancel }) {
                     <div className="flex gap-2">
                       <div className="flex gap-1">
                         {question?.question?.removable && (
-                          <>
+                          <Tooltip title="Remove this question">
                             <div
                               onClick={() => handleRemove(index)}
-                              className="mt-4 question-options "
+                              className="mt-4 question-options  cursor-pointer app-anchor-block"
+
                             >
-                              <span
-                                title="Remove this question"
-                                className=" cursor-pointer app-anchor-block"
-                              >
-                                {CUSTOM_QUESTION_OPTS.icons.RemoveQuestion}
-                              </span>
+
+                              {CUSTOM_QUESTION_OPTS.icons.RemoveQuestion}
+
                             </div>
-                          </>
+                          </Tooltip>
                         )}
                         <div className="text-lg text-gray-600 mt-4">
                           Q#{index + 1}
@@ -453,6 +513,8 @@ function Questions({ data, mode, onSave, onCancel }) {
                               setQuestionText(index, event.target.value);
                             },
                           })}
+                          inputProps={{ className: classes.input }}
+                          className={classes.root}
                         />
                       </FormControl>
                     </div>
@@ -460,13 +522,12 @@ function Questions({ data, mode, onSave, onCancel }) {
 
                   <Grid item lg={3} xs={12}>
                     <div className=" flex-col">
-                      <div className=" flex gap-1 text-sm text-gray-600 font-normal">
+                      <div className=" flex gap-1 text-sm text-gray-600 dark:text-gray-200 font-normal">
                         <div>Answer type</div>
                       </div>
                       <FormControl fullWidth variant="filled">
                         <Select
                           labelId="select-answer-type-label"
-                          className="-mt-2"
                           variant="standard"
                           value={getSelectedAnswerTypeCode(index)}
                           label="Answer type"
@@ -479,10 +540,20 @@ function Questions({ data, mode, onSave, onCancel }) {
                               );
                             },
                           })}
+                          inputProps={{
+                            classes: {
+                              icon: classes.icon,
+                            },
+                          }}
+                          className={`-mt-2 ${classes.select}`}
+                          MenuProps={{
+                            className: classes.paper,
+                          }}
                         >
                           {question.answer.typeCodeOpts.map((options) => (
                             <MenuItem
-                              className="block p-3"
+                              dense
+                              className={`${classes.menuItem}   block p-3`}
                               key={options.id}
                               value={options.value}
                             >
@@ -493,30 +564,30 @@ function Questions({ data, mode, onSave, onCancel }) {
                       </FormControl>
 
                       <FormControl
-                className="flex"
-                variant="filled"
-                sx={{ marginBottom: 1, width: "100%" }}
-              >
-                <div className="flex">
-                  <FormControlLabel
-                    className="text-xs text-gray-600"
-                    control={
-                      <Switch
-                        size="small"
-                        checked={question.question.optional}
-                        inputProps={{ "aria-label": "controlled" }}
-                        name={`questions[${index}]optional`}
-                        {...register(`questions.${index}.optional`, {
-                          onChange: (event) => {
-                            handleOptionalChoiceChange(index);
-                          },
-                        })}
-                      />
-                    }
-                    label={<><Typography color="text.secondary" variant="body2">Optional</Typography></>}
-                  />
-                </div>
-              </FormControl>
+                        className="flex"
+                        variant="filled"
+                        sx={{ marginBottom: 1, width: "100%" }}
+                      >
+                        <div className="flex">
+                          <FormControlLabel
+                            className="text-xs text-gray-600"
+                            control={
+                              <Switch
+                                size="small"
+                                checked={question.question.optional}
+                                inputProps={{ "aria-label": "controlled" }}
+                                name={`questions[${index}]optional`}
+                                {...register(`questions.${index}.optional`, {
+                                  onChange: (event) => {
+                                    handleOptionalChoiceChange(index);
+                                  },
+                                })}
+                              />
+                            }
+                            label={<><Typography variant="body2">Optional</Typography></>}
+                          />
+                        </div>
+                      </FormControl>
                     </div>
                   </Grid>
                   <Grid item lg={3} xs={12}>
@@ -552,6 +623,8 @@ function Questions({ data, mode, onSave, onCancel }) {
                                 ? true
                                 : false
                             }
+                            inputProps={{ className: classes.input }}
+                            className={classes.root}
                           />
                         </FormControl>
                       </>
@@ -568,16 +641,17 @@ function Questions({ data, mode, onSave, onCancel }) {
                             </div>
 
                             <div className="flex ml-auto question-option-options gap-2">
-                              <div
-                                onClick={() => handleAddOption(question, index)}
-                              >
-                                <span
-                                  title="Add another option"
+                              <Tooltip title="Add another option" >
+                                <div
+                                  onClick={() => handleAddOption(question, index)}
                                   className=" cursor-pointer app-anchor-block"
                                 >
+
                                   {CUSTOM_QUESTION_OPTS.icons.AddQuestion}
-                                </span>
-                              </div>
+
+                                </div>
+                              </Tooltip>
+
                             </div>
                           </div>
                         </Grid>
@@ -624,23 +698,25 @@ function Questions({ data, mode, onSave, onCancel }) {
                               }
                               variant="standard"
                               label="Option"
+                              inputProps={{ className: classes.input }}
+                              className={classes.root}
                             />
                           </FormControl>
                           <div className="flex ml-auto">
                             {option.option.removable && (
-                              <div
-                                onClick={() =>
-                                  handleRemoveOption(index, optIndex, option)
-                                }
-                                className="mt-4 question-option-options "
-                              >
-                                <span
-                                  title="Remove this option"
-                                  className=" cursor-pointer app-anchor-block"
+                              <Tooltip title="Remove this option">
+                                <div
+                                  onClick={() =>
+                                    handleRemoveOption(index, optIndex, option)
+                                  }
+                                  className="mt-4 question-option-options cursor-pointer app-anchor-block "
                                 >
+
                                   {CUSTOM_QUESTION_OPTS.icons.RemoveQuestion}
-                                </span>
-                              </div>
+
+                                </div>
+                              </Tooltip>
+
                             )}
                           </div>
                         </div>

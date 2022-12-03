@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import {
   Box,
   Button,
@@ -19,7 +21,6 @@ import {
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import AdapterDateFns from "@mui/x-date-pickers/AdapterDateFns";
-import TokenIcon from "@mui/icons-material/Token";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import React, { useEffect, useState } from "react";
 import InfoIcon from "@mui/icons-material/Info";
@@ -34,10 +35,8 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import {
   download,
   getFileExtension,
-  getRandomArrayElement,
   getTimezone,
   HTMLUnderlineByCharacterIndex,
-  parseMarkdownToHTML,
 } from "../../../../../../utils/utility";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import ReactPlayer from "react-player";
@@ -59,7 +58,7 @@ import {
 import Plans from "../../../../Sponsorships/Plans";
 import EditIcon from "@mui/icons-material/Edit";
 import {
-  USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION,
+  COLOR_CODES,
   USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION,
 } from "../../../../../../constants/constants";
 import ReplayIcon from "@mui/icons-material/Replay";
@@ -72,12 +71,73 @@ import WarningIcon from "@mui/icons-material/Warning";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { CUSTOM_QUESTION_OPTS } from "../../../../../../constants/questionairre";
+import ReadMore from "../../../../../shared/ReadMore";
+import { THEME_MODES, useTheme } from "../../../../../../theme/ThemeProvider";
+import { makeStyles } from "@material-ui/core/styles";
 function Final(props) {
   const [data, dispatch] = useDataLayerContextValue();
 
   const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [timeDisplay, setTimeDisplay] = useState(null);
+  const [theme, _dispatch] = useTheme();
+  const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
+  const deepGray = COLOR_CODES.GRAY.DEEP;
+  const lightGray = COLOR_CODES.GRAY.LIGHT
+  const [isSticky, setSticky] = useState(false);
+  const useStyles = makeStyles((theme) => ({
+    paper: {
+      "& .MuiMenu-paper": {
+        backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      }
+
+    },
+    root: {
+
+      '& .MuiInputBase-root.Mui-disabled': {
+        color: '#fff',
+
+      }
+
+    },
+    input: {
+      color: isDark ? deepGray : "",
+      borderBottom: `1px solid ${isDark ? deepGray : "none"}`,
+      "&:focus": {
+        borderBottom: "none",
+      },
+
+    },
+    select: {
+      color: isDark ? deepGray : "",
+
+      "&:before": {
+        borderBottom: ` ${isDark ? `1px solid ${lightGray}` : ""}`,
+      },
+    },
+    icon: {
+      fill: isDark ? deepGray : "inherit",
+    },
+
+    menuItem: {
+      backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
+      color: isDark ? `${deepGray}` : "",
+      "&.Mui-selected": {
+        backgroundColor: `${isDark ? COLOR_CODES.BLUE.DARK : ""}`,
+        color: isDark ? `${deepGray}` : "",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: isDark ? `${COLOR_CODES.BLUE.LIGHT}!important` : "",
+
+      },
+    },
+  }));
+
+  const classes = useStyles();
+  useEffect(() => {
+    setDark(theme.mode === THEME_MODES.DARK);
+  }, [theme])
   const getIconPerFileExtension = (ext) => {
     const icons = SESSION_DOCUMENT.icons;
     switch (ext) {
@@ -144,9 +204,10 @@ function Final(props) {
     return _err;
   };
   const getCompletionMessage = () => {
-    const randomString = getRandomArrayElement(
-      USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION
-    );
+    const randomString=USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION[4]
+    // const randomString = getRandomArrayElement(
+    //   USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION
+    // );
     const _user = props?.data?.user?.data?.firstName;
     const message = APP.MESSAGES.INFO.FINAL_STEP_COMPLETED.replace(
       "<user>",
@@ -155,13 +216,7 @@ function Final(props) {
     return randomString + message;
   };
 
-  const getCompletionImage = () => {
-    const randomString = getRandomArrayElement(
-      USER_CONFIDENCE_IMAGES_ON_WORKFLOW_COMPLETION
-    );
-
-    return `/static/images/${randomString}`;
-  };
+  
 
   const getStartDate = () => {
     return data?.schedule?.startDate.getDate();
@@ -299,6 +354,7 @@ function Final(props) {
               </Typography>
             </div>
 
+            
             <img
               alt="something-went-wrong-illustration"
               src="/static/images/something-wrong-illustration-1.webp"
@@ -341,51 +397,55 @@ function Final(props) {
           <>
             {showCompletionMessage && (
               <>
-                <div className="mb-2 flex gap-1 text-md text-blue-500 font-semibold">
-                  <TokenIcon className="mt-1" />
-                  <Typography className=" " variant="div">
-                    {getCompletionMessage()}
+                <div className="mb-2 flex gap-1 text-md font-semibold">
+                  
+                  <Typography className=" dark:text-gray-500 text-gray-700" variant="h6">
+                  🚀{getCompletionMessage()}
                   </Typography>
                 </div>
-                <Divider className=" text-gray-500"></Divider>
+                <Divider className=""></Divider>
               </>
             )}
 
             <Box sx={{ width: "100%", mt: 1 }}>
               <div className="flex gap-1 ">
                 <div className="flex flex-col mt-1">
-                  <div className="lg:text-xl text-lg font-medium">
-                    {getStartDate()}
-                  </div>
-                  <div className="lg:text-lg text-sm  text-gray-600">
-                    {getStartMonth()}
-                  </div>
+                  <Typography variant="h3">  {getStartDate()}</Typography>
+                   <Typography className=" " variant="h5">
+                   {getStartMonth()}
+                   </Typography>
+                  
                 </div>
-                <div className="flex gap-1 lg:w-1/2 w-11/12">
+                <div>
                   <Typography
-                    variant="h6"
-                    className=" line-clamp-1  mt-1 text-gray-800"
+                    variant="h5"
+                    className=" line-clamp-1  mt-3  "
                   >
                     {data?.basic?.name}
+
                   </Typography>
-                  <div
-                    className="ml-auto flex mt-2.5 text-blue-600
-                              app-anchor-block cursor-pointer"
-                  >
-                    <Tooltip title="Change">
+                  
+                 
+                </div>
+
+                <div className={`ml-auto`}>
+                  <div className="flex gap-2">
+                    <div className="mt-2.5 text-blue-600
+                              app-anchor-block cursor-pointer">
+                                 <Tooltip title="Change">
                       <EditIcon
                         onClick={() => {
                           props.onNavigate ? props.onNavigate(0) : null;
                         }}
-                        fontSize="small"
-                        className=" leading-3 font-semibold  text-sm"
+                         
+                        className=" leading-3 font-semibold"
                       />
                     </Tooltip>
-                  </div>
-                </div>
-
-                <div className={`ml-auto`}>
+                              </div>
+                 
                   {generateMonetizationAmountOnCard(data?.fees)}
+                  </div>
+              
                 </div>
               </div>
 
@@ -423,13 +483,12 @@ function Final(props) {
 
                     {data?.basic?.summary?.html && (
                       <div>
-                        <Typography
-                          variant="div"
-                          className="  font-normal line-clamp-3 text-sm mb-3  leading-snug text-black-600"
-                        >
-                          {parseMarkdownToHTML(data?.basic?.summary?.html)}
-                         
-                        </Typography>
+                        <ReadMore parseHtml initialReadLimit={250}
+                      
+                    >
+                      {data?.basic?.summary?.html}
+                    </ReadMore>
+                       
                       </div>
                     )}
 
@@ -953,11 +1012,7 @@ function Final(props) {
                         </div>
                       </div>
                     )}
-                  <img
-                    alt="all-done-illustration"
-                    src={getCompletionImage()}
-                    className=" mt-3  w-full h-60 object-contain"
-                  />
+                   
                   <Box sx={{ display: "flex", flexDirection: "row" }}>
                     {props.allStepsCompletedExceptFinalStep && (
                       <div className="flex ml-2 gap-1 mt-1">
