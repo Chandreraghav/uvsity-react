@@ -28,11 +28,12 @@ import { BrowserRouter } from "react-router-dom";
 import ClientDeviceProvider from "../components/Device/HOC/ClientDeviceProvider";
 import CountryService from "./api/countries/CountryService";
 import ThemeProvider, { getMode, initialTheme, themeReducer } from "../theme/ThemeProvider";
+import { registerLicense } from '@syncfusion/ej2-base';
 function MyApp({ Component, pageProps }) {
   const [queryClient] = React.useState(() => new QueryClient());
   const [verified, setVerified] = useState(true);
   const [loading, setLoading] = useState(true);
-
+  registerLicense(process.env.NEXT_PUBLIC_RTE_COMMUNITY_LICENSE);
   //MANDATORY PWA ENABLER ON TOP OF EVERY COMPONENT
   useEffect(() => {
     let controller = new AbortController();
