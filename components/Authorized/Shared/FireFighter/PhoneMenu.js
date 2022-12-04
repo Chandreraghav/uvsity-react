@@ -25,7 +25,7 @@ function PhoneMenu(props) {
           <div className="zoom-9" key={data.id}>
           <HeaderOption
             
-            oid={props?.data?.data.userDetailsId}
+            oid={props?.data?.data?.userDetailsId}
             isAuthorizedProfile={data.hasAvatar}
             hidden={data.hidden}
             avatar={props?.data?.data?.profilePicName}

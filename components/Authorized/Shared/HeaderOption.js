@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import UserDataService from "../../../pages/api/users/data/UserDataService";
 import { openNewTab } from "./Navigator";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
+import { useDataLayerContextValue } from "../../../context/DataLayer";
 function HeaderOption({
   avatar,
   oid,
@@ -26,6 +27,7 @@ function HeaderOption({
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
   const [publicProfileCalendarIdentifier, setPublicProfileCalendarIdentifier] = useState(null)
   const handleClick = (event, remoteRequestReceived) => {
     if (event) setAnchorEl(event.currentTarget);
@@ -33,6 +35,8 @@ function HeaderOption({
     if (remoteRequestReceived !== undefined) setOpen(!remoteRequestReceived);
     else setOpen(!open);
   };
+  
+  const isItMe=()=>ctxUserdata?.userdata?.userDetailsId===oid
   useEffect(()=>{
     // get public calendar profile of user on load of header options.
     UserDataService.getUserProfileBy(oid).then((res) =>{
@@ -53,12 +57,15 @@ function HeaderOption({
     }
     if (title === "Calendar") {
       if(publicProfileCalendarIdentifier){
+        const url = isItMe()?`${process.env.NEXT_PUBLIC_CALENDAR_APP_URL}calendar-profile/home`:process.env.NEXT_PUBLIC_CALENDAR_APP_URL +
+        publicProfileCalendarIdentifier
+      
         openNewTab(
-          process.env.NEXT_PUBLIC_CALENDAR_APP_URL +
-          publicProfileCalendarIdentifier
+          url
         );
         return
       }
+      
       // attempt to call service once again and refill the calendar profile of user.
       UserDataService.getUserProfileBy(oid)
         .then((res) => {

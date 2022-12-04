@@ -12,7 +12,7 @@ import {
 import Paper from "@mui/material/Paper";
 import Container from "@mui/material/Container";
 import AddTaskIcon from "@mui/icons-material/AddTask";
-import { blue, green } from "@mui/material/colors";
+import { blue, green, purple } from "@mui/material/colors";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import React, { useState, useEffect } from "react";
 import {
@@ -64,7 +64,7 @@ import SkillSets from "./Areas/SkillSets";
 import WorkExperience from "./Areas/WorkExperience";
 import Interests from "./Areas/Interests";
 import RecommendationsFeed from "./Areas/RecommendationsFeed";
-import { redirectToURI } from "../Shared/Navigator";
+import { openNewTab, redirectToURI } from "../Shared/Navigator";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import Education from "./Areas/Education";
 import RecommendedSessions from "./Areas/RecommendedSessions";
@@ -90,6 +90,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { actionTypes } from "../../../context/reducer";
 import ChangeHighestEducationDegreeModal from "../../shared/modals/ChangeHighestEducationDegreeModal";
+import DateRangeIcon from "@mui/icons-material/DateRange";
 toast.configure();
 
 function MacroProfile(props) {
@@ -1105,6 +1106,13 @@ function MacroProfile(props) {
     if (isProfileQualifiedForStateChange) setSocialProfiles(_social_profiles);
   };
 
+  const handleOpenMyCalendar = () => {
+    openNewTab(
+      process.env.NEXT_PUBLIC_CALENDAR_APP_URL +
+      "calendar-profile/home"
+    );
+  };
+
   return (
     <>
       {!show ? (
@@ -1127,6 +1135,7 @@ function MacroProfile(props) {
                 alt="profile-cover-image"
               />
               {isItMe && (
+                <Box> 
                 <Tooltip title={`${USER_PROFILE.CHANGE_PROFILE_HEADLINE}`}>
                   <div className="absolute md:top-36 top-16 right-4">
                     <Button
@@ -1138,6 +1147,19 @@ function MacroProfile(props) {
                     </Button>
                   </div>
                 </Tooltip>
+
+                <Tooltip
+            title={`My calendar`}
+          >
+                <div onClick={handleOpenMyCalendar} className="absolute md:top-32 top-12 mt-2 right-48">
+          
+            <IconButton aria-label="my-meeting-link" size="large">
+              <DateRangeIcon sx={{ color: purple[500] }} fontSize="inherit" />
+            </IconButton>
+          
+        </div>
+        </Tooltip>
+                </Box>
               )}
             </div>
 
@@ -1150,6 +1172,8 @@ function MacroProfile(props) {
                 alt="profile-cover-image"
               />
               {isItMe && (
+                <Box>
+
                 <Tooltip title={`${USER_PROFILE.CHANGE_PROFILE_HEADLINE}`}>
                   <div className="absolute top-40 right-4">
                     <Button
@@ -1161,6 +1185,20 @@ function MacroProfile(props) {
                     </Button>
                   </div>
                 </Tooltip>
+
+                <Tooltip
+            title={`My calendar`}
+          >
+                <div onClick={handleOpenMyCalendar} className="absolute top-36 mt-2.5 right-48">
+          
+            <IconButton aria-label="my-meeting-link" size="large">
+              <DateRangeIcon sx={{ color: purple[500] }} fontSize="inherit" />
+            </IconButton>
+          
+        </div>
+        </Tooltip>
+
+                </Box>
               )}
             </div>
 
