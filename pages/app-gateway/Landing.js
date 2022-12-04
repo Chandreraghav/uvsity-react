@@ -101,7 +101,8 @@ function Landing() {
         onHeaderNavigationError={handleNavigationError}
         data={getData.USER_PROFILE_SUMMARY}
       />
-      <div className="main">
+       <div className="main">
+        
         <Dashboard data={getData} />
       </div>
 

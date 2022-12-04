@@ -352,7 +352,7 @@ export const COLOR_CODES = {
   GRAY: {
     LIGHT: "dimgray",
     DEEP: "#e2e2e2",
-    
+
   },
   BLUE: {
     LIGHT: "#029BFE",
@@ -362,4 +362,14 @@ export const COLOR_CODES = {
     DARK: "#111",
   },
 };
+export const RTE_TOOLBAR = {
+  ADVANCED: ['Bold', 'Italic', 'Underline', 'StrikeThrough', '|', 'Cut', 'Copy', 'Paste', '|', 'Image', 'CreateLink',
+    'FontName', 'FontSize', 'FontColor', 'BackgroundColor',
+    'LowerCase', 'UpperCase', 'SuperScript', 'SubScript', 'createTable', '|',
+    'Formats', 'Alignments', 'OrderedList', 'UnorderedList',
+    'Outdent', 'Indent', '|',
+    'ClearFormat', 'ClearAll', 'Print',
+    'SourceCode', 'FullScreen', '|', 'Undo', 'Redo'],
+  CLASSIC: ['Bold', 'Italic', 'Underline', 'StrikeThrough', '|', 'Cut', 'Copy', 'Paste', '|', 'Image', 'CreateLink', '|', 'SourceCode', 'FullScreen', '|', 'Undo', 'Redo']
+}
 
