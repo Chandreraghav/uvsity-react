@@ -3,6 +3,7 @@ import { TIME_OF_DAY_GREETING } from "../constants/constants";
 import { getLocalStorageObject } from "../localStorage/local-storage";
 import parse from "html-react-parser";
 import convertToHTML from "markdown-to-html-converter";
+import { SESSION_DOCUMENT } from "../constants/userdata";
 export const truncate = (str, n) => {
   try {
     return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -377,4 +378,25 @@ export const isValidDatePeriod = (start, end) => {
     return true;
   }
   return false;
+};
+export const getIconPerFileExtension = (ext) => {
+  const icons = SESSION_DOCUMENT.icons;
+  switch (ext) {
+    case "docx":
+    case "doc":
+      return icons.DOCX;
+    case "txt":
+      return icons.TXT;
+    case "pdf":
+      return icons.PDF;
+    case "zip":
+      return icons.ZIP;
+    case "jpg":
+    case "png":
+    case "webp":
+    case "gif":
+      return icons.IMG;
+    default:
+      return icons.TXT;
+  }
 };

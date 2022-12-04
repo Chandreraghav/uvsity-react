@@ -405,7 +405,7 @@ function Participant(props) {
 
   return (
     <Slide direction="right" in={true}>
-      <div className={`p-4 ${processing ? "control__disabled__opaque" : ""}`}>
+      <div className={`min-h-screen p-4 ${processing ? "control__disabled__opaque" : ""}`}>
 
         <Box sx={{ width: "100%" }}>
           <Grid
