@@ -23,7 +23,6 @@ import { useRouter } from "next/router";
 import { handleResponse } from "../../../../../../toastr-response-handler/handler";
 import { COLOR_CODES, RESPONSE_TYPES } from "../../../../../../constants/constants";
 import ReactMarkdown from "react-markdown";
-import CEditor from "../../../../../Thirdparty/Editor/CKEditor";
 import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
 import { actionTypes } from "../../../../../../context/reducer";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -32,6 +31,7 @@ import { SESSION } from "../../../../../../validation/services/auth/ValidationSc
 import { AuthService } from "../../../../../../pages/api/users/auth/AuthService";
 import { THEME_MODES, useTheme } from "../../../../../../theme/ThemeProvider";
 import { makeStyles } from "@material-ui/core/styles";
+import SyncFusionRTE from "../../../../../Thirdparty/Editor/SyncFusionRTE";
 toast.configure();
 function Fee() {
   const Router = useRouter();
@@ -165,7 +165,10 @@ function Fee() {
   };
 
   const handleEditorDataOnChange = (data) => {
-    const _data = data.length;
+    const _sponsorshipLevelOnEdit=sponsorshipLevelOnEdit;
+    _sponsorshipLevelOnEdit.current.featured.html=data||"";
+    _sponsorshipLevelOnEdit.current.featured.text=data||"";
+    setSponsorshipLevelOnEdit(_sponsorshipLevelOnEdit)
     setEditorData(data);
   };
 
@@ -638,14 +641,21 @@ function Fee() {
                       </Tooltip>
                     </div>
 
-                    <CEditor
-                      getDataOnChange={handleEditorDataOnChange}
-                      data={
-                        sponsorshipLevelOnEdit?.current?.featured?.text
-                          ? sponsorshipLevelOnEdit.current?.featured.text
-                          : sponsorshipLevelOnEdit.defaults?.featured.text
-                      }
-                    />
+                     
+
+<SyncFusionRTE  
+                     
+                    placeholder="Pre-customized offering Template"
+                    data={
+                      sponsorshipLevelOnEdit?.current?.featured?.text
+                        ? sponsorshipLevelOnEdit.current?.featured.text
+                        : sponsorshipLevelOnEdit.defaults?.featured.text
+                    }
+                    height={300}
+                     
+                    getDataOnChange={handleEditorDataOnChange}/>
+
+
                   </FormControl>
 
                   <div className="save-sponsorship-action-buttons  ">

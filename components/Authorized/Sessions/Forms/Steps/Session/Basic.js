@@ -18,7 +18,7 @@ import Spacer from "../../../../../shared/Spacer";
 import Overlay from "../../../../../shared/Overlay";
 import ReactPlayer from "react-player";
 import { isValidURL } from "../../../../../../utils/utility";
-import CEditor from "../../../../../Thirdparty/Editor/CKEditor";
+import SyncFusionRTE from "../../../../../Thirdparty/Editor/SyncFusionRTE"
 import { toast } from "react-toastify";
 import UserDataService from "../../../../../../pages/api/users/data/UserDataService";
 import { handleResponse } from "../../../../../../toastr-response-handler/handler";
@@ -576,8 +576,7 @@ function Basic(props) {
 
               <Grid item xs={12}>
                 {/* Summary */}
-                {/* You are ready now to use CEDITOR, using onChange, value , placeholder props */}
-
+                
                 <FormControl
                   fullWidth={true}
                   variant="standard"
@@ -602,13 +601,14 @@ function Basic(props) {
                     </span>
                   </div>
 
-                  <CEditor
-                    required
+                    <SyncFusionRTE required
                     errorText="Summary is required"
+                    placeholder="Write a summary for the session..."
                     data={summary}
+                    height={300}
                     onError={handleOnSummaryError}
-                    getDataOnChange={handleEditorDataOnChange}
-                  />
+                    getDataOnChange={handleEditorDataOnChange}/>
+                 
                 </FormControl>
               </Grid>
 

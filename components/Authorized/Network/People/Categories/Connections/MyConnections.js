@@ -7,13 +7,15 @@ import SearchService from "../../../../../../pages/api/people/network/Search/Sea
 import LoadMore from "../../../../../shared/LoadMore";
 import Sidebar from "../../Filter/Sidebar";
 import { WORKFLOW_CODES } from "../../../../../../constants/workflow-codes";
+import { useRouter } from "next/router";
 function MyConnections(props) {
-  const [student, setStudent] = useState(false);
-  const [professors, setProfessors] = useState(false);
-  const [alumni, setAlumni] = useState(false);
+  const [student, setStudent] = useState(CONNECTIONS[0].title === props.filter);
+  const [professors, setProfessors] = useState(CONNECTIONS[1].title === props.filter);
+  const [alumni, setAlumni] = useState(CONNECTIONS[2].title === props.filter);
   const [additionalTitle, setAdditionalTitle] = useState(null)
   const [inMyNetworkFilterCriteria, setInMyNetworkFilter] = useState(true);
   const [onlyFriendsRequired, setOnlyFriendsRequired] = useState(true);
+  const [isDataChangedFromFilter, dataChangedFromFilter] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [data, setData] = useState([]);
@@ -22,22 +24,31 @@ function MyConnections(props) {
   const [loadError, setLoadError] = useState(false);
   const [count, setCount] = useState(0)
   const [subCount, setSubCount] = useState(0)
-
-  const getConnectionsData = async () =>
-    (
+  const router = useRouter();
+  const getConnectionsData = async (data) =>{
+    const payload =data?{
+      isOnlyFriendsRequired: onlyFriendsRequired,
+      inMyNetworkFilterCriteria:data.categoryData.inMyNetworkFilterCriteria,
+      professors:data.categoryData.professors,
+      students:data.categoryData.students,
+      alumni:data.categoryData.alumni
+    }:{
+      isOnlyFriendsRequired: onlyFriendsRequired,
+      inMyNetworkFilterCriteria,
+      professors,
+      students:student,
+      alumni
+    }
+   return (
       await SearchService.searchPeople(
-        {
-          isOnlyFriendsRequired: onlyFriendsRequired,
-          inMyNetworkFilterCriteria,
-          professors,
-          student,
-          alumni
-        },
+        payload,
         loadMore
       )
     ).data;
-  const setConnectionData = () => {
-    getConnectionsData().then((res) => {
+  }
+    
+  const setConnectionData = (data) => {
+    getConnectionsData(data).then((res) => {
       if (!loadMore) {
         setData(res);
         setLoading(false);
@@ -64,9 +75,7 @@ function MyConnections(props) {
     });
   }
   useEffect(() => {
-    setStudent(CONNECTIONS[0].title === props.filter)
-    setProfessors(CONNECTIONS[1].title === props.filter)
-    setAlumni(CONNECTIONS[2].title === props.filter)
+    
     setLoading(true);
     setConnectionData();
 
@@ -74,6 +83,9 @@ function MyConnections(props) {
   }, [props.filter])
 
   useEffect(() => {
+    if(isDataChangedFromFilter){
+      return;
+    }
     if (props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS) {
       const count =
         parseInt(props.userdata?.data?.studentConnectionCount) +
@@ -100,15 +112,30 @@ function MyConnections(props) {
     else {
       setAdditionalTitle(null)
     }
-
-
-  }, [student, alumni, professors, props.workflow, props.userdata?.data?.studentConnectionCount, props.userdata?.data?.professorConnectionCount, props.userdata?.data?.alumniConnectionCount])
+  }, [student, alumni, professors, props.workflow, props.userdata?.data?.studentConnectionCount, props.userdata?.data?.professorConnectionCount, props.userdata?.data?.alumniConnectionCount, isDataChangedFromFilter])
 
   useEffect(() => {
-    if (loadMore === true)
+    if (loadMore === true){
       setConnectionData();
+      dataChangedFromFilter(false)
+    }
+      
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadMore])
+
+  const handleComponentDataEvent =(data)=>{
+    if(data.categoryData){
+    dataChangedFromFilter(true)
+    setStudent(data.categoryData.students)
+    setProfessors(data.categoryData.professors)
+    setAlumni(data.categoryData.alumni)
+    setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
+    setError(false)
+    setLoading(true);
+    setConnectionData(data);
+    }
+    
+  }
 
   const handleLoadMore = (obj) => {
     setLoadMore(true)
@@ -126,7 +153,7 @@ function MyConnections(props) {
 
           <>
 
-            <Connections error={loadError} loading={loading} workflow={props.workflow} userdata={props.userdata?.data} _data={data} 
+            <Connections filters={null}  error={loadError} loading={loading} workflow={props.workflow} userdata={props.userdata?.data} _data={data} 
             properties={{ title: HEADER_OPTIONS[1].title,
                subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon,
                 count , subCount}} />
@@ -138,7 +165,7 @@ function MyConnections(props) {
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
-          <Sidebar workflow={props.workflow} userdata={props.userdata?.data}/>
+          <Sidebar selectedCategory={router.query?.filter || null} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={props.userdata?.data}/>
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />
           <Spacer count={2} />

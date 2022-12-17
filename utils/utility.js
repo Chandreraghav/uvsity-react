@@ -107,7 +107,7 @@ export const avatarToString = (name) => {
       },
       children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
     };
-  } catch (error) {}
+  } catch (error) { }
   return null;
 };
 export const localTZDate = (data) => {
@@ -242,7 +242,7 @@ export const isToday = (someDate) => {
       someDate.$d.getFullYear() == today.getFullYear()
     );
   }
-  
+
 };
 
 export const getFileExtension = (fileName, separator, limit) => {
@@ -273,7 +273,7 @@ export const isEmptyObject = (obj) => {
     }
     return Object.keys(obj).length === 0 && obj.constructor === Object;
   } catch (error) {
-     
+
   }
   return true;
 };
@@ -326,7 +326,7 @@ export const timestamp = () => {
     return null
   }
 
- 
+
 };
 
 export const shouldDialogAppearInFullScreen = () => {
@@ -374,7 +374,7 @@ export const isValidDatePeriod = (start, end) => {
       return true;
     }
   }
-  if(start instanceof Date || end instanceof Date){
+  if (start instanceof Date || end instanceof Date) {
     return true;
   }
   return false;
@@ -400,3 +400,23 @@ export const getIconPerFileExtension = (ext) => {
       return icons.TXT;
   }
 };
+
+export const isValidYear = (year,stringify=true) => {
+  var text = /^[0-9]+$/;
+  if(stringify) year=year.toString();
+  if (year.length == 4) {
+    if (year != 0) {
+      if ((year != "") && (!text.test(year))) {
+        return false;
+      }
+
+      if (year.length != 4) {
+        return false;
+      }
+      if ((year < 1920)) {
+        return false;
+      }
+      return true;
+    }
+  }
+}

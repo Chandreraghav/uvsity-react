@@ -12,8 +12,10 @@ import React from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { SPONSORSHIP } from "../../../constants/userdata";
 import Popover from '@mui/material/Popover';
-
+import { parseMarkdownToHTML } from "../../../utils/utility";
+ 
 function Plans(props) {
+   
   const editSponsorshipdata = (data) => {
     if (props.showOnlyHeader) {
       return;
@@ -43,7 +45,7 @@ function Plans(props) {
   const id = open ? 'simple-popover' : undefined;
   return (
     <Grid item lg={4} xs={12} sm={6} md={4}>
-      <Card className=" bg-gray-100 dark:bg-gray-950 shadow-xl" sx={{ maxWidth: 345 }}>
+      <Card className="  bg-gray-100 dark:bg-gray-950 shadow-xl" sx={{ maxWidth: 345,  }}>
         <CardMedia
           component="img"
           alt={props.data.alias}
@@ -53,7 +55,7 @@ function Plans(props) {
             height: "40px",
           }}
         />
-        <CardContent>
+        <CardContent sx={{minHeight:props.showOnlyHeader?'auto':300, maxHeight:props.showOnlyHeader?'auto':300}} className=" overflow-auto">
           <div className={`${props.showOnlyHeader ? "" : "flex"}`}>
             <Typography className=" dark:text-gray-400" gutterBottom variant="h5" component="div">
               {props.showOnlyHeader ? props.data.alias : props.data.alias}
@@ -75,11 +77,10 @@ function Plans(props) {
             </div>
           </div>
           {!props.showOnlyHeader && (
-            <div>
-              {props?.data?.current?.featured?.html
-                ? props.data.current.featured.html
-                : props.data.defaults.featured.html}
-            </div>
+            <Typography variant="caption" className="leading-loose text-sm text-gray-600">
+              {props?.data?.current?.featured?.html?.props?.children?parseMarkdownToHTML(props?.data?.current?.featured?.html?.props?.children):props.data.defaults.featured.html}
+            
+            </Typography>
           )}
           {props.showOnlyHeader && (
             <div>
@@ -101,9 +102,7 @@ function Plans(props) {
                 }}
               >
                 <div className=" dark:bg-gray-dark text-gray-400 p-2">
-              {props?.data?.current?.featured?.html
-                ? props.data.current.featured.html
-                : props.data.defaults.featured.html}
+              {props?.data?.current?.featured?.html?.props?.children?parseMarkdownToHTML(props?.data?.current?.featured?.html?.props?.children):props.data.defaults.featured.html}
             </div>
                  
               </Popover>

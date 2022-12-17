@@ -52,7 +52,6 @@ export const ENDPOINTS = {
       SEARCH:{
         ATTENDEES:'universalsearch/attendees/',
         PEOPLE:"search"
-        
       },
       VIEW:'view/profile/',
       MESSAGING:{
@@ -114,9 +113,6 @@ export const ENDPOINTS = {
       ROOT: "/courses/metadata",
       STATIC: "/courses/staticmetadata",
     },
-    
-    
-    
   },
   METADATA:{
     GET_COUNTRIES:'/data/countries'
