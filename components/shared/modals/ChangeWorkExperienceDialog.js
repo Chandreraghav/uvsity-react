@@ -4,7 +4,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ScienceIcon from "@mui/icons-material/Science";
 import HelpIcon from "@mui/icons-material/Help";
-import CEditor from "../../Thirdparty/Editor/CKEditor";
 import {
   Box,
   Button,
@@ -35,6 +34,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { WORK_EXPERIENCE_FORM_ERRORS } from "../../../constants/error-messages";
+import SyncFusionRTE from "../../Thirdparty/Editor/SyncFusionRTE";
 
 function ChangeWorkExperience(props) {
   if (!props.isOpen) return "";
@@ -707,12 +707,16 @@ function ChangeWorkExperience(props) {
                  <Tooltip title={`${props.mode==='add'?'You may write something about your work experience here...':'Your work experience summary'}`}><HelpIcon fontSize="small"/></Tooltip>
                   </label>
                     </div>
+
+                    <SyncFusionRTE  
+                   
+                    placeholder="Write something about your work experience here..."
+                    data={description}
+                    height={300}
+                    onError={handleDescriptionError}
+                  getDataOnChange={handleEditorDataOnChange}/>
               
-                <CEditor
-                  data={description}
-                  onError={handleDescriptionError}
-                  getDataOnChange={handleEditorDataOnChange}
-                />
+                 
                 </Grid>
               </Grid>
             </Box>

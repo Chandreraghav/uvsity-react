@@ -327,8 +327,6 @@ function Connections(props) {
             );
           }
 
-          //props.dataChange(false)
-
         })
     }
   };
@@ -385,7 +383,8 @@ function Connections(props) {
                     {props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS && count > 0 && (<div>({count})</div>)}
                   </div>
 
-                  {props.properties.subtitle && (
+                  {/* Subtitle block is not needed to show as we have sidebar filters for that */}
+                  {false && props.properties.subtitle && (
                     <div className="flex  dark:text-gray-500 text-gray-700">
                       <div className=" space-x-2 px-2">&raquo;</div>
                       <div className=" ml-auto leading-tight mt-0.5 ">{props.properties.subtitle}</div>
@@ -424,7 +423,9 @@ function Connections(props) {
               />
             </Grid>
 
-            <Spacer/>
+            <Spacer />
+
+            Hakunamatata
 
           </Grid>
 

@@ -2,7 +2,9 @@ import { Typography } from "@mui/material";
 import React, { useState } from "react";
 import { READ_LESS, READ_MORE } from "../../constants/constants";
 import { parseMarkdownToHTML } from "../../utils/utility";
-const ReadMore = ({ children, coded, color, initialReadLimit,parseHtml }) => {
+import { parseHtml as syncFusionParse } from "@syncfusion/ej2-react-richtexteditor";
+
+const ReadMore = ({ children, coded, color, initialReadLimit,parseHtml,parseAdvancedHTML }) => {
   const text =children;
   const [isReadMore, setIsReadMore] = useState(true);
   const limit= initialReadLimit || 50
@@ -23,6 +25,8 @@ const ReadMore = ({ children, coded, color, initialReadLimit,parseHtml }) => {
           ? text.slice(0, limit)
           : text
       }
+
+ 
         
       </Typography>
       {coded ? (

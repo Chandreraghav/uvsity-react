@@ -221,6 +221,7 @@ export const CONNECTIONS = [
     tooltip: "Connections who are students",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.STUDENT,
+    selected:false,
   },
   {
     id: 2,
@@ -229,6 +230,7 @@ export const CONNECTIONS = [
     tooltip: "Connections who are professors",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.PROFESSOR,
+    selected:false,
   },
   {
     id: 3,
@@ -237,6 +239,7 @@ export const CONNECTIONS = [
     tooltip: "Connections who are alumni",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.ALUMNI,
+    selected:false,
   },
 
   {
@@ -246,6 +249,7 @@ export const CONNECTIONS = [
     tooltip: "People who are awaiting a response from you",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.AWAITING,
+    selected:false,
   },
 
   {
@@ -255,6 +259,7 @@ export const CONNECTIONS = [
     tooltip: "Connections who are in my network",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.IN_MY_NETWORK,
+    selected:false,
   },
 ];
 export const INTRO_ACTIONS = [
@@ -782,8 +787,8 @@ export const SPONSORSHIP = {
           display: "$500",
         },
         featured: {
-          text: `<p><span style="color:hsl(0, 0%, 0%);"><strong>Example:</strong></span></p>
-          <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li></ul>`,
+          text: `<p><span><strong>Example:</strong></span></p>
+          <ul><li><span>Company logo and link on this session</span></li><li><span>Announcement by session owner during the session</span></li></ul>`,
           html: (
             <>
               <h3 className="dark:text-gray-400 text-bold font-semibold text-xl mb-1">
@@ -829,8 +834,8 @@ export const SPONSORSHIP = {
           display: "$1000",
         },
         featured: {
-          text: `<p><span style="color:hsl(0, 0%, 0%);"><strong>Example:</strong></span></p>
-          <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li><li><span style="color:hsl(0, 0%, 0%);">2 min time during the session to showcase your company or product</span></li></ul>`,
+          text: `<p><span><strong>Example:</strong></span></p>
+          <ul><li><span>Company logo and link on this session</span></li><li><span>Announcement by session owner during the session</span></li><li><span>2 min time during the session to showcase your company or product</span></li></ul>`,
           html: (
             <>
               <h3  className="dark:text-gray-400 text-bold font-semibold text-xl mb-1">
@@ -877,8 +882,8 @@ export const SPONSORSHIP = {
           display: "$5000",
         },
         featured: {
-          text: `<p><span style="color:hsl(0, 0%, 0%);"><strong>Example:</strong></span></p>
-          <ul><li><span style="color:hsl(0, 0%, 0%);">Company logo and link on this session</span></li><li><span style="color:hsl(0, 0%, 0%);">Announcement by session owner during the session</span></li><li><span style="color:hsl(0, 0%, 0%);">5 min time during the session to showcase your company or product</span></li><li><span style="color:hsl(0, 0%, 0%);">Include company logo and link in social media as proud sponsor</span></li></ul>`,
+          text: `<p><span><strong>Example:</strong></span></p>
+          <ul><li><span>Company logo and link on this session</span></li><li><span>Announcement by session owner during the session</span></li><li><span>5 min time during the session to showcase your company or product</span></li><li><span>Include company logo and link in social media as proud sponsor</span></li></ul>`,
           html: (
             <>
               <h3 className="dark:text-gray-400 text-bold font-semibold text-xl mb-1">
