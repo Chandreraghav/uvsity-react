@@ -25,6 +25,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import { makeStyles } from "@material-ui/core/styles"
+import Breadcrumb from "../../Filter/Breadcrumb";
 
 toast.configure();
 
@@ -61,7 +62,7 @@ function Connections(props) {
     event: null,
   };
   const [messageEvent, setMessageEvent] = useState(_messageEvent);
-
+  const [filterBreadCrumbs, setFilterBreadCrumbs]=useState([])
   const [connData, setConnectionData] = useState([])
   const profilePrimaryLine = (firstName, lastName) =>
     formattedName(firstName, lastName);
@@ -348,6 +349,7 @@ function Connections(props) {
     }
 
     setCount(props.properties?.count || 0)
+    setFilterBreadCrumbs(props.filters)
     return () => {
       setCount(0)
       setConnectionData([])
@@ -357,6 +359,9 @@ function Connections(props) {
   useEffect(() => {
     setDark(ctxTheme.mode === THEME_MODES.DARK);
   }, [ctxTheme]);
+  const handleDelete = () => {
+
+  }
   return (
     <div className="py-2 px-4">
 
@@ -425,8 +430,8 @@ function Connections(props) {
 
             <Spacer />
 
-            Hakunamatata
-
+            {/* Filter Breadcrumbs */}
+           {filterBreadCrumbs && filterBreadCrumbs.length>0 && (<div className="p-2"><Breadcrumb data={filterBreadCrumbs} /></div>)}
           </Grid>
 
         </Box>

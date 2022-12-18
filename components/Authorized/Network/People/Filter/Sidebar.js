@@ -16,13 +16,6 @@ function Sidebar(props) {
   const [ctxTheme, dispatch] = useTheme();
   const [isDark, setDark] = useState(ctxTheme.mode === THEME_MODES.DARK);
   const [showMoreFilter, setShowMoreFilter] = useState(false)
-  const [filterData, setFilterData] = useState({
-    educationalInstitutionFullName: null,
-    specialization: null,
-    educationalInstitutionCampus: null,
-    countryFullName: null,
-    cityFullName: null
-  })
   const [connectionsCategory, setConnectionsCategory] = useState(CONNECTIONS)
   useEffect(() => {
     setDark(ctxTheme.mode === THEME_MODES.DARK);
@@ -65,6 +58,16 @@ function Sidebar(props) {
   const handleApplyFilter = (data) => {
     if (data) {
       sendFilterDataEventToParent(data);
+    }
+    if(!data){
+      if (props.workflow !== WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS )
+      {
+        const tempCategory = connectionsCategory.slice();
+        tempCategory.map((category)=>category.selected=false)
+        setShowMoreFilter(false)
+        sendFilterDataEventToParent(null,true);
+      }
+      
     }
   }
 
@@ -118,16 +121,12 @@ function Sidebar(props) {
     const tempCategory = connectionsCategory.slice()
     tempCategory[index].selected = e.target.checked
     setConnectionsCategory(tempCategory)
-
     if (props.onDataEvent) {
-
       sendFilterDataEventToParent(); // if more filter is not visible on DOM, then send filter data immediately to parent.
-
-
     }
   }
 
-  const sendFilterDataEventToParent = (filterData) => {
+  const sendFilterDataEventToParent = (filterData,resetRequest) => {
     const categoryData = {
       "isOnlyFriendsRequired": false,
       "inMyNetworkFilterCriteria": connectionsCategory[4].selected,
@@ -148,7 +147,8 @@ function Sidebar(props) {
     }
     const obj = {
       filterData: filterObj,
-      categoryData
+      categoryData,
+      resetRequest
     };
     props.onDataEvent(obj);
     window.scrollTo(0, 0)

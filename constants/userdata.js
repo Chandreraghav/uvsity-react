@@ -222,6 +222,7 @@ export const CONNECTIONS = [
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.STUDENT,
     selected:false,
+    deleteable:true,
   },
   {
     id: 2,
@@ -231,6 +232,7 @@ export const CONNECTIONS = [
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.PROFESSOR,
     selected:false,
+    deleteable:true,
   },
   {
     id: 3,
@@ -240,6 +242,7 @@ export const CONNECTIONS = [
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.ALUMNI,
     selected:false,
+    deleteable:true,
   },
 
   {
@@ -250,6 +253,7 @@ export const CONNECTIONS = [
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.AWAITING,
     selected:false,
+    deleteable:true,
   },
 
   {
@@ -260,6 +264,7 @@ export const CONNECTIONS = [
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.IN_MY_NETWORK,
     selected:false,
+    deleteable:true,
   },
 ];
 export const INTRO_ACTIONS = [

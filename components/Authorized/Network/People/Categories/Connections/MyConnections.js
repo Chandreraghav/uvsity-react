@@ -19,34 +19,35 @@ function MyConnections(props) {
   const [loadMore, setLoadMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [data, setData] = useState([]);
+  const [breadCrumbFilter, setBreadCrumbFilter] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [count, setCount] = useState(0)
   const [subCount, setSubCount] = useState(0)
   const router = useRouter();
-  const getConnectionsData = async (data) =>{
-    const payload =data?{
+  const getConnectionsData = async (data) => {
+    const payload = data ? {
       isOnlyFriendsRequired: onlyFriendsRequired,
-      inMyNetworkFilterCriteria:data.categoryData.inMyNetworkFilterCriteria,
-      professors:data.categoryData.professors,
-      students:data.categoryData.students,
-      alumni:data.categoryData.alumni
-    }:{
+      inMyNetworkFilterCriteria: data.categoryData.inMyNetworkFilterCriteria,
+      professors: data.categoryData.professors,
+      students: data.categoryData.students,
+      alumni: data.categoryData.alumni
+    } : {
       isOnlyFriendsRequired: onlyFriendsRequired,
       inMyNetworkFilterCriteria,
       professors,
-      students:student,
+      students: student,
       alumni
     }
-   return (
+    return (
       await SearchService.searchPeople(
         payload,
         loadMore
       )
     ).data;
   }
-    
+
   const setConnectionData = (data) => {
     getConnectionsData(data).then((res) => {
       if (!loadMore) {
@@ -75,15 +76,36 @@ function MyConnections(props) {
     });
   }
   useEffect(() => {
-    
     setLoading(true);
+    const connectionCategory = CONNECTIONS.at(4)
+    connectionCategory.selected = true;
+    connectionCategory.deleteable=false;
+    const tempBreadCrumbs = [connectionCategory]
+    if(router.query?.filter ===CONNECTIONS.at(0).title){
+      const _students = CONNECTIONS.at(0)
+      _students.selected=true
+      _students.deleteable=false
+      tempBreadCrumbs.push(_students)
+    }
+    else if(router.query?.filter ===CONNECTIONS.at(1).title){
+      const _professors = CONNECTIONS.at(1)
+      _professors.selected=true
+      _professors.deleteable=false
+      tempBreadCrumbs.push(_professors)
+    }
+    else if(router.query?.filter ===CONNECTIONS.at(2).title){
+      const _alumni = CONNECTIONS.at(2)
+      _alumni.selected=true
+      _alumni.deleteable=false
+      tempBreadCrumbs.push(_alumni)
+    }
+    setBreadCrumbFilter(tempBreadCrumbs)
     setConnectionData();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.filter])
 
   useEffect(() => {
-    if(isDataChangedFromFilter){
+    if (isDataChangedFromFilter) {
       return;
     }
     if (props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS) {
@@ -91,7 +113,7 @@ function MyConnections(props) {
         parseInt(props.userdata?.data?.studentConnectionCount) +
         parseInt(props.userdata?.data?.alumniConnectionCount) +
         parseInt(props.userdata?.data?.professorConnectionCount)
-        setCount(count)
+      setCount(count)
       if (student) {
         setAdditionalTitle(CONNECTIONS[0].title)
         setSubCount(props.userdata?.data?.studentConnectionCount)
@@ -115,32 +137,58 @@ function MyConnections(props) {
   }, [student, alumni, professors, props.workflow, props.userdata?.data?.studentConnectionCount, props.userdata?.data?.professorConnectionCount, props.userdata?.data?.alumniConnectionCount, isDataChangedFromFilter])
 
   useEffect(() => {
-    if (loadMore === true){
+    if (loadMore === true) {
       setConnectionData();
       dataChangedFromFilter(false)
     }
-      
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadMore])
 
-  const handleComponentDataEvent =(data)=>{
-    if(data.categoryData){
-    dataChangedFromFilter(true)
-    setStudent(data.categoryData.students)
-    setProfessors(data.categoryData.professors)
-    setAlumni(data.categoryData.alumni)
-    setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
-    setError(false)
-    setLoading(true);
-    setConnectionData(data);
+  const handleComponentDataEvent = (data) => {
+    if (data.categoryData) {
+      dataChangedFromFilter(true)
+      setStudent(data.categoryData.students)
+      setProfessors(data.categoryData.professors)
+      setAlumni(data.categoryData.alumni)
+      setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
+      setError(false)
+      setLoading(true);
+      setData([])
+      let tempBreadCrumbFilter = breadCrumbFilter.slice()
+      let connectionCategory = null;
+      for (const [key, value] of Object.entries(data.categoryData)) {
+        if (key === 'students') {
+          connectionCategory = CONNECTIONS.slice().at(0)
+        }
+        else if (key === 'professors') {
+          connectionCategory = CONNECTIONS.slice().at(1)
+        }
+        else if (key === 'alumni') {
+          connectionCategory = CONNECTIONS.slice().at(2)
+        }
+        if (key === 'students' || key === 'professors' || key === 'alumni') {
+          const idx = tempBreadCrumbFilter.findIndex((crumb) => crumb.id == connectionCategory.id)
+          if (idx == -1) {
+            connectionCategory.selected = value;
+            tempBreadCrumbFilter.push(connectionCategory)
+          }
+          else {
+            tempBreadCrumbFilter[idx].selected = value
+          }
+        }
+      }
+      tempBreadCrumbFilter = tempBreadCrumbFilter.filter((crumb) => crumb.selected === true)
+      setBreadCrumbFilter(tempBreadCrumbFilter)
+      setConnectionData(data);
     }
-    
   }
 
   const handleLoadMore = (obj) => {
     setLoadMore(true)
     setLoadingMore(true)
   }
+
   return (
     <>
       <div
@@ -153,10 +201,12 @@ function MyConnections(props) {
 
           <>
 
-            <Connections filters={null}  error={loadError} loading={loading} workflow={props.workflow} userdata={props.userdata?.data} _data={data} 
-            properties={{ title: HEADER_OPTIONS[1].title,
-               subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon,
-                count , subCount}} />
+            <Connections filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={props.userdata?.data} _data={data}
+              properties={{
+                title: HEADER_OPTIONS[1].title,
+                subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon,
+                count, subCount
+              }} />
 
             {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
             <Spacer count={2} />
@@ -165,7 +215,7 @@ function MyConnections(props) {
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
-          <Sidebar selectedCategory={router.query?.filter || null} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={props.userdata?.data}/>
+          <Sidebar selectedCategory={router.query?.filter || null} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={props.userdata?.data} />
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />
           <Spacer count={2} />

@@ -212,6 +212,24 @@ function FilterForm(props) {
 
     }
 
+    const handleResetFilter =()=>{
+        if(props.onApplyFilter){
+            setEducationInstitution(null)
+            setCampus(null)
+            setSpecialization(null)
+            setFilteredEducationalInstituitons([])
+            setFromYearChange(null)
+            setToYearChange(null)
+            setCountryId("")
+            setCity(null)
+            if(filterDirty===true)
+            setFilterDirty(false)
+            props.onApplyFilter(null)
+        }
+        
+    }
+    
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
@@ -520,7 +538,7 @@ function FilterForm(props) {
             <div className="flex space-x-2 py-2 justify-center">
                 <AppButton icon={BoltIcon} ripple color={isDark ? THEME_MODES.DARK : THEME_MODES.LIGHT} label="Apply Filter" event={handleFilterSubmit} />
                 <Tooltip title='Reset all filters'>
-                <div role="button" className="mt-2 inline-block"><RestartAltIcon/></div>
+                <div onClick={()=>handleResetFilter()}  role="button" className="mt-2 inline-block"><RestartAltIcon/></div>
                 
                 </Tooltip>
                
