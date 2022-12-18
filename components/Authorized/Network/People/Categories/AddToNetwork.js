@@ -78,7 +78,7 @@ function AddToNetwork(props) {
 
   const setConnectionData = (data,customPaylod) => {
     getConnectionsData(data,customPaylod).then((res) => {
-      res=res.filter((r)=>r.invitationAction===NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT || r.invitationAction===NETWORK.CONNECTION_RELATION_STATE.CONNECT)
+      res=res.filter((r)=>r.invitationAction===NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT || r.invitationAction===NETWORK.CONNECTION_RELATION_STATE.CONNECT || r.invitationAction===NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE || r.invitationAction===NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE)
      
       if (!loadMore) {
         setLoading(false);
@@ -126,7 +126,43 @@ function AddToNetwork(props) {
       setConnectionData()
   }
 
+  const handleResetFilter = () => {
+    // on reset filter request
+    setStudent(false)
+    setProfessors(false)
+    setAlumni(false)
+    setInMyNetworkFilter(false)
+    setAwaitingResponse(false)
+    setOnlyFriendsRequired(false)
+    setEducationInstitution(null)
+    setCampus(null)
+    setSpecialization(null)
+    setCountry(null)
+    setCity(null)
+
+    setLoading(true);
+    const payload = {
+      baseSearchActionType: props.filter,
+      isOnlyFriendsRequired: false,
+      inMyNetworkFilterCriteria: false,
+      professors: false,
+      students: false,
+      alumni: false,
+      awaitingResponseFilterCriteria: false,
+      educationalInstitutionFullName: null,
+      specialization: null,
+      educationalInstitutionCampus: null,
+      countryFullName: null,
+      cityFullName: null
+    }
+    setData([])
+    setConnectionData(payload, true)
+  }
   const handleComponentDataEvent = (data) => {
+    if (data.resetRequest) {
+      handleResetFilter()
+      return
+    }
     setProcessingFilterRequest(true)
     if (data.filterData && data.categoryData) {
       const customPayload = {
@@ -156,6 +192,7 @@ function AddToNetwork(props) {
       setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
       setLoading(true);
       setError(false)
+      setData([])
       setConnectionData(customPayload,true);
       return;
     }
@@ -168,6 +205,7 @@ function AddToNetwork(props) {
       setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
       setLoading(true);
       setError(false)
+      setData([])
       setConnectionData(data);
     }
   }
