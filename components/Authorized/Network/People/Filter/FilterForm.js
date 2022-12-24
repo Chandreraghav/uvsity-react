@@ -35,7 +35,7 @@ function FilterForm(props) {
     const selected_country = countries.find(
         (country) =>
             country.countryFullName.toLowerCase() ===
-            props?.data?.country.toLowerCase()
+            props.advancedFilterOptionValues?.country?.toLowerCase()
     );
 
     const [country, setCountry] = useState(
@@ -126,7 +126,7 @@ function FilterForm(props) {
         const value = (e.target.value).trim() || ""
         setCampus(value)
         if (value !== "") {
-          
+
             if (!filterDirty)
                 setFilterDirty(true)
         }
@@ -136,7 +136,7 @@ function FilterForm(props) {
         const value = (e.target.value).trim() || ""
         setCity(value)
         if (value !== "") {
-           
+
             if (!filterDirty)
                 setFilterDirty(true)
         }
@@ -212,8 +212,8 @@ function FilterForm(props) {
 
     }
 
-    const handleResetFilter =()=>{
-        if(props.onApplyFilter){
+    const handleResetFilter = () => {
+        if (props.onApplyFilter) {
             setEducationInstitution(null)
             setCampus(null)
             setSpecialization(null)
@@ -222,13 +222,20 @@ function FilterForm(props) {
             setToYearChange(null)
             setCountryId("")
             setCity(null)
-            if(filterDirty===true)
-            setFilterDirty(false)
+            if (filterDirty === true)
+                setFilterDirty(false)
             props.onApplyFilter(null)
         }
-        
+
     }
-    
+
+    useEffect(() => {
+
+        if (props.resetField === 'City') {
+            setCity(null)
+        }
+    }, [props])
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -538,10 +545,10 @@ function FilterForm(props) {
             <div className="flex space-x-2 py-2 justify-center">
                 <AppButton icon={BoltIcon} ripple color={isDark ? THEME_MODES.DARK : THEME_MODES.LIGHT} label="Apply Filter" event={handleFilterSubmit} />
                 <Tooltip title='Reset all filters'>
-                <div onClick={()=>handleResetFilter()}  role="button" className="mt-2 inline-block"><RestartAltIcon/></div>
-                
+                    <div onClick={() => handleResetFilter()} role="button" className="mt-2 inline-block"><RestartAltIcon /></div>
+
                 </Tooltip>
-               
+
 
             </div>
 

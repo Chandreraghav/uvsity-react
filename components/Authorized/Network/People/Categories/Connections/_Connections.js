@@ -359,8 +359,12 @@ function Connections(props) {
   useEffect(() => {
     setDark(ctxTheme.mode === THEME_MODES.DARK);
   }, [ctxTheme]);
-  const handleDelete = () => {
-
+  const handleBreadCrumbEvent = (obj, event) => {
+      if(event==='delete'){
+         if(props.handleDeleteBreadCrumb){
+          props.handleDeleteBreadCrumb(obj)
+         }
+      }
   }
   return (
     <div className="py-2 px-4">
@@ -381,8 +385,6 @@ function Connections(props) {
                 {<props.properties.icon fontSize="large" className="mt-1" />}
                 <div className=" space-x-2 px-2 w-2"></div>
                 <div className="mt-2 flex">
-
-
                   <div className="flex gap-1">
                     <div>{props.properties.title}</div>
                     {props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS && count > 0 && (<div>({count})</div>)}
@@ -431,7 +433,7 @@ function Connections(props) {
             <Spacer />
 
             {/* Filter Breadcrumbs */}
-           {filterBreadCrumbs && filterBreadCrumbs.length>0 && (<div className="p-2"><Breadcrumb data={filterBreadCrumbs} /></div>)}
+           {filterBreadCrumbs && filterBreadCrumbs.length>0 && (<div className="p-2"><Breadcrumb handleEvent={handleBreadCrumbEvent} showKeys data={filterBreadCrumbs} /></div>)}
           </Grid>
 
         </Box>

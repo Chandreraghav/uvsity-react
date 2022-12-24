@@ -1,10 +1,13 @@
-import { Box, Chip, Stack } from '@mui/material'
+import { Box, Chip, Tooltip } from '@mui/material'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 
 function Breadcrumb(props) {
-    const handleDelete = (e) => {
 
+    const handleDelete = (e, object) => {
+        if (props.handleEvent) {
+            props.handleEvent(object, 'delete')
+        }
     }
     const [breadcrumbs, setBreadCrumbs] = useState([])
     useEffect(() => {
@@ -13,12 +16,13 @@ function Breadcrumb(props) {
     return (
         <>
             {breadcrumbs.length > 0 && (
-
                 <Box className="flex-wrap flex gap-2">
-                    {breadcrumbs.map((crumb, idx) => (<>
-                        {crumb.deleteable ? (<Chip key={idx} color="primary" label={crumb.title} variant="outlined" onDelete={handleDelete} />) : (<Chip key={idx} color="primary" label={crumb.title} variant="outlined" />)}
-
-                    </>))}
+                    {breadcrumbs.filter((crumb) => crumb.title).map((crumb, idx) => (
+                        <Tooltip title={crumb.title} key={idx}>
+                            {crumb.deleteable ? (<Chip style={{ maxWidth: props.width ?? 300 }} color={props.color ?? 'primary'}
+                                label={props.showKeys ? (<>{crumb.key && (<strong>{crumb.key}:</strong>)}{crumb.title}</>) : (<>{crumb.title}</>)} variant={props.variant ?? 'outlined'} onDelete={(e) => handleDelete(e, crumb)} />)
+                                : (<Chip style={{ maxWidth: props.width ?? 300 }} color={props.color ?? 'primary'} label={props.showKeys ? (<>{crumb.key && (<strong>{crumb.key}:</strong>)}{crumb.title}</>) : (<>{crumb.title}</>)} variant={props.variant ?? 'outlined'} />)}
+                        </Tooltip>))}
                 </Box>
             )}
 
