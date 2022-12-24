@@ -30,9 +30,14 @@ function ProfileVisits(props) {
     null
   );
   const [city, setCity] = useState(null)
+  const [resetFilterField, setFilterFieldReset] = useState(null)
   const [isDataChangedFromFilter, dataChangedFromFilter] = useState(false);
+  const [isBreadCrumbsDeleted, setBreadCrumbsDeleted] = useState(false);
+
   const [error, setError] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [connectionsCategory, setConnectionsCategory] = useState(CONNECTIONS)
+
   const getConnectionsData = async (filterData, customPaylod) => {
     let payload = null;
     if (customPaylod) {
@@ -112,6 +117,8 @@ function ProfileVisits(props) {
   useEffect(() => {
     if (loadMore === true)
       setConnectionData();
+    dataChangedFromFilter(false)
+    setBreadCrumbsDeleted(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadMore])
 
@@ -161,13 +168,13 @@ function ProfileVisits(props) {
     let tempBreadCrumbFilter = breadCrumbFilter.slice()
     let connectionCategory = null;
     for (const [key, value] of Object.entries(data.categoryData)) {
-      if (key === 'students') {
+      if (key === CONNECTIONS.at(0).title.toLowerCase()) {
         connectionCategory = CONNECTIONS.at(0)
       }
-      else if (key === 'professors') {
+      else if (key === CONNECTIONS.at(1).title.toLowerCase()) {
         connectionCategory = CONNECTIONS.at(1)
       }
-      else if (key === 'alumni') {
+      else if (key === CONNECTIONS.at(2).title.toLowerCase()) {
         connectionCategory = CONNECTIONS.at(2)
       }
       else if (key === 'awaitingResponseFilterCriteria') {
@@ -292,6 +299,72 @@ function ProfileVisits(props) {
       return;
     }
   }
+  const handleDeleteBreadCrumb = (obj) => {
+    if (obj) {
+      setLoading(true);
+      const connectionCategories = connectionsCategory.slice()
+      const targetSidebarSelectionIdx = connectionCategories.findIndex((category) => category.id === obj.id)
+      if (targetSidebarSelectionIdx !== -1) {
+        connectionCategories[targetSidebarSelectionIdx].selected = false
+        setConnectionsCategory(connectionCategories)
+      }
+      let tempBreadCrumbFilter = breadCrumbFilter.slice()
+      const targetBreadCrumbDeleteIdx = tempBreadCrumbFilter.findIndex((crumb) => crumb.id === obj.id)
+      if (targetBreadCrumbDeleteIdx !== -1) {
+        tempBreadCrumbFilter[targetBreadCrumbDeleteIdx].selected = false
+        tempBreadCrumbFilter = tempBreadCrumbFilter.filter((crumb) => crumb.selected === true)
+        setBreadCrumbFilter(tempBreadCrumbFilter)
+      }
+      if (obj.title === CONNECTIONS.at(0).title) {
+        setStudent(false)
+      }
+      else if (obj.title === CONNECTIONS.at(1).title) {
+        setProfessors(false)
+      }
+      else if (obj.title === CONNECTIONS.at(2).title) {
+        setAlumni(false)
+      }
+
+      else if (obj.title === CONNECTIONS.at(3).title) {
+        setAwaitingResponse(false)
+      }
+      else if (obj.title === CONNECTIONS.at(4).title) {
+        setInMyNetworkFilter(false)
+      }
+      else if(obj.key==='City'){
+       
+        setCity(null)
+      }
+      else if(obj.key==='Institution'){
+       setEducationInstitution(null)
+      }
+
+      else if(obj.key==='Campus'){
+        setCampus(null)
+       }
+       else if(obj.key==='Specialization'){
+        setSpecialization(null)
+       }
+
+       else if(obj.key==='Country'){
+        setCountry(null)
+       }
+       setFilterFieldReset(obj.key)
+      setBreadCrumbsDeleted(true)
+
+    }
+  }
+
+  useEffect(() => {
+    if (isBreadCrumbsDeleted) {
+      setConnectionData();
+      return
+    }
+    if (isDataChangedFromFilter) {
+      return;
+    }
+  }, [isDataChangedFromFilter, isBreadCrumbsDeleted, student, alumni, professors, awaitingResponseFilterCriteria, inMyNetworkFilterCriteria, city, country, specialization,campus,educationInstitution])
+
   return (
     <>
       <div
@@ -302,18 +375,13 @@ function ProfileVisits(props) {
       >
         <Overlay message={LOADING_MESSAGE_DEFAULT} open={processingFilterRequest} />
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
-
-
-          <Connections filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={props?.userdata?.data} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PEOPLE_WHO_VIEWED_YOU, icon: PeopleAltIcon }} />
-
+          <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={props?.userdata?.data} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PEOPLE_WHO_VIEWED_YOU, icon: PeopleAltIcon }} />
           {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
           <Spacer count={2} />
-
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
-          <Sidebar onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={props.userdata?.data} />
-
+          <Sidebar connections={connectionsCategory} resetField={resetFilterField} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={props.userdata?.data} />
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />
           <Spacer count={2} />

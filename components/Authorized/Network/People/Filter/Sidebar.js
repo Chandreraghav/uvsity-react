@@ -16,7 +16,7 @@ function Sidebar(props) {
   const [ctxTheme, dispatch] = useTheme();
   const [isDark, setDark] = useState(ctxTheme.mode === THEME_MODES.DARK);
   const [showMoreFilter, setShowMoreFilter] = useState(false)
-  const [connectionsCategory, setConnectionsCategory] = useState(CONNECTIONS)
+  const [connectionsCategory, setConnectionsCategory] = useState(props.connections??CONNECTIONS)
   useEffect(() => {
     setDark(ctxTheme.mode === THEME_MODES.DARK);
   }, [ctxTheme]);
@@ -202,7 +202,7 @@ function Sidebar(props) {
               <AppButton event={handleAppButtonClick} ripple color={isDark ? THEME_MODES.DARK : THEME_MODES.LIGHT} label="More" />
             </div>)}
 
-            {showMoreFilter && <FilterForm onApplyFilter={handleApplyFilter} />}
+            {showMoreFilter && <FilterForm resetField={props.resetField} onApplyFilter={handleApplyFilter} />}
 
           </>)}
         </>
