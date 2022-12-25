@@ -55,6 +55,9 @@ function MyConnections(props) {
 
   const setConnectionData =
     (data) => {
+      if(loadError){
+        setLoadError(false)
+      }
       getConnectionsData(data).then((res) => {
         if (!loadMore) {
           setData(res);
@@ -78,6 +81,7 @@ function MyConnections(props) {
         }
 
         setError(true);
+        setData([])
         setLoadingMore(false)
       });
     }
@@ -204,12 +208,6 @@ function MyConnections(props) {
     if (obj) {
       setBreadCrumbsDeleted(true)
       setLoading(true);
-      const connectionCategories = connectionsCategory.slice()
-      const targetSidebarSelectionIdx = connectionCategories.findIndex((category) => category.id === obj.id)
-      if (targetSidebarSelectionIdx !== -1) {
-        connectionCategories[targetSidebarSelectionIdx].selected = false
-        setConnectionsCategory(connectionCategories)
-      }
       let tempBreadCrumbFilter = breadCrumbFilter.slice()
       const targetBreadCrumbDeleteIdx = tempBreadCrumbFilter.findIndex((crumb) => crumb.id === obj.id)
       if (targetBreadCrumbDeleteIdx !== -1) {
@@ -217,6 +215,13 @@ function MyConnections(props) {
         tempBreadCrumbFilter = tempBreadCrumbFilter.filter((crumb) => crumb.selected === true)
         setBreadCrumbFilter(tempBreadCrumbFilter)
       }
+      const connectionCategories = connectionsCategory.slice()
+      const targetSidebarSelectionIdx = connectionCategories.findIndex((category) => category.id === obj.id)
+      if (targetSidebarSelectionIdx !== -1) {
+        connectionCategories[targetSidebarSelectionIdx].selected = false
+        setConnectionsCategory(connectionCategories)
+      }
+     
       if (obj.title === CONNECTIONS.at(0).title) {
         setStudent(false)
       }

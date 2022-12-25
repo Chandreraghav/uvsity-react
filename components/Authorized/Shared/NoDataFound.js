@@ -7,11 +7,11 @@ import { GENERIC_NO_DATA_ERROR } from '../../../constants/error-messages';
 function NoDataFound(props) {
     return (
         <>
-            <div className="  flex gap-1 text-sm text-md justify-center items-center text-gray-600 font-normal">
+            <div className=" p-2 flex gap-1 text-sm text-md justify-center items-center text-gray-600 font-normal">
 
-                <InfoIcon className="mt-1" />
-                <Typography className=" mt-1 text-md leading-snug font-medium" variant="subtitle">
-                {props.message ? props.message : GENERIC_NO_DATA_ERROR}
+                
+                <Typography className=" flex gap-2 mt-1 text-md leading-snug font-medium" variant="subtitle">
+                <InfoIcon/> <div className=" mt-0.5">{props.message ? props.message : GENERIC_NO_DATA_ERROR}</div>
                 </Typography>
                  
             </div>
