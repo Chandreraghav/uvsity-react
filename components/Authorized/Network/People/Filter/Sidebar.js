@@ -16,6 +16,7 @@ function Sidebar(props) {
   const [ctxTheme, dispatch] = useTheme();
   const [isDark, setDark] = useState(ctxTheme.mode === THEME_MODES.DARK);
   const [showMoreFilter, setShowMoreFilter] = useState(false)
+  const [resetField, setResetField] = useState(null)
   const [connectionsCategory, setConnectionsCategory] = useState(props.connections??CONNECTIONS)
   useEffect(() => {
     setDark(ctxTheme.mode === THEME_MODES.DARK);
@@ -150,9 +151,19 @@ function Sidebar(props) {
       categoryData,
       resetRequest
     };
+    setResetField(null)
     props.onDataEvent(obj);
     window.scrollTo(0, 0)
   }
+
+  useEffect(() => {
+    if (props.resetField) {
+      setResetField(props.resetField)
+    }
+    return (()=>{
+      setResetField(null)
+    })
+}, [props.resetField])
 
   return (
     <div className={`px-4  ${isSticky
@@ -202,7 +213,7 @@ function Sidebar(props) {
               <AppButton event={handleAppButtonClick} ripple color={isDark ? THEME_MODES.DARK : THEME_MODES.LIGHT} label="More" />
             </div>)}
 
-            {showMoreFilter && <FilterForm resetField={props.resetField} onApplyFilter={handleApplyFilter} />}
+            {showMoreFilter && <FilterForm resetField={resetField} onApplyFilter={handleApplyFilter} />}
 
           </>)}
         </>

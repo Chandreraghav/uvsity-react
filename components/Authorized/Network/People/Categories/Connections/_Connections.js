@@ -441,6 +441,7 @@ function Connections(props) {
       {props.error === true && (<>
         <Error message={CUSTOM_ERRORS.SOMETHING_WENT_WRONG} />
       </>)}
+      
       {props.loading === false && props.error === false && connData.length == 0 && (<>
         <NoDataFound src={IMAGE_PATHS.NO_DATA.PEOPLE} message={CUSTOM_ERRORS.NOTHING_TO_SHOW} />
       </>)}

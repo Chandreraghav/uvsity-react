@@ -123,9 +123,9 @@ function FilterForm(props) {
         };
     };
     const handleCampusChange = (e) => {
-        const value = (e.target.value).trim() || ""
+        const value = (e.target.value) || ""
         setCampus(value)
-        if (value !== "") {
+        if (value && value.trim() !== "") {
 
             if (!filterDirty)
                 setFilterDirty(true)
@@ -133,9 +133,9 @@ function FilterForm(props) {
 
     }
     const handleCityChange = (e) => {
-        const value = (e.target.value).trim() || ""
+        const value = (e.target.value) || ""
         setCity(value)
-        if (value !== "") {
+        if (value && value.trim() !== "") {
 
             if (!filterDirty)
                 setFilterDirty(true)
@@ -146,19 +146,23 @@ function FilterForm(props) {
         const idx = countries.findIndex(
             (country) => country.countryId === e.target.value
         );
-        if (idx !== -1) setCountry(countries[idx].countryFullName);
+        if (idx !== -1) {
+            setCountry(countries[idx].countryFullName); if (!filterDirty)
+                setFilterDirty(true)
+        }
+
 
     };
     const handleSpecialization = (e) => {
-        const value = (e.target.value).trim() || ""
+        const value = (e.target.value) || ""
         setSpecialization(value)
-        if (value !== "") {
+        if (value && value.trim() !== "") {
             if (!filterDirty)
                 setFilterDirty(true)
         }
     }
     const handleEducationInstitutionChange = (e) => {
-        const value = (e.target.value).trim() || ""
+        const value = (e.target.value) || ""
         setEducationInstitution(value)
         if (value !== "") {
             clearTimeout(filterTimeout);
@@ -222,6 +226,7 @@ function FilterForm(props) {
             setToYearChange(null)
             setCountryId("")
             setCity(null)
+
             if (filterDirty === true)
                 setFilterDirty(false)
             props.onApplyFilter(null)
@@ -230,11 +235,29 @@ function FilterForm(props) {
     }
 
     useEffect(() => {
+        if (props.resetField) {
+            if (props.resetField === 'City') {
+                setCity("")
+            }
+            else if (props.resetField === 'Campus') {
+                setCampus("")
+            }
+            else if (props.resetField === 'Institution') {
+                setEducationInstitution("")
+            }
+            else if (props.resetField === 'Specialization') {
+                setSpecialization("")
+            }
+            else if (props.resetField === 'Country') {
+                setCountryId("")
+            }
 
-        if (props.resetField === 'City') {
-            setCity(null)
+            if (city === "" && campus === "" && educationInstitution === "" && specialization == "" && countryId === "") {
+                setFilterDirty(false)
+            }
         }
-    }, [props])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.resetField])
 
 
     useEffect(() => {
@@ -313,7 +336,8 @@ function FilterForm(props) {
                     )}
                 </Grid>
 
-                <Grid item lg={6} md={6} sm={12} xs={12}>
+                {/* Date filter is unused as of now as no API calls are made using date filter. */}
+                {false && <Grid item lg={6} md={6} sm={12} xs={12}>
                     {/* From Year */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
@@ -369,9 +393,9 @@ function FilterForm(props) {
                             }}
                         />
                     </LocalizationProvider>
-                </Grid>
+                </Grid>}
 
-                <Grid item lg={6} md={6} sm={12} xs={12}>
+                {false && <Grid item lg={6} md={6} sm={12} xs={12}>
                     {/* To Year */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
@@ -428,7 +452,7 @@ function FilterForm(props) {
 
                         />
                     </LocalizationProvider>
-                </Grid>
+                </Grid>}
 
                 <Grid item xs={12}>
                     <FormControl

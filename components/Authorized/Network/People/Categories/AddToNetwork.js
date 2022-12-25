@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { NETWORK, TITLES } from '../../../../../constants/userdata';
+import { CONNECTIONS, NETWORK, TITLES } from '../../../../../constants/userdata';
 import SearchService from '../../../../../pages/api/people/network/Search/SearchService';
 import LoadMore from '../../../../shared/LoadMore';
 import MiniFooter from '../../../../shared/MiniFooter';
@@ -11,10 +11,13 @@ import { asyncSubscriptions } from '../../../../../async/subscriptions';
 import Overlay from '../../../../shared/Overlay';
 import { LOADING_MESSAGE_DEFAULT } from '../../../../../constants/constants';
 function AddToNetwork(props) {
+
   const [loadMore, setLoadMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [resetFilterField, setFilterFieldReset] = useState(null)
+  const [breadCrumbFilter, setBreadCrumbFilter] = useState([]);
   const [processingFilterRequest, setProcessingFilterRequest] = useState(false);
   const [error, setError] = useState(false);
   const [loadError, setLoadError] = useState(false);
@@ -32,10 +35,12 @@ function AddToNetwork(props) {
   );
   const [city, setCity] = useState(null)
   const [isDataChangedFromFilter, dataChangedFromFilter] = useState(false);
-  
-  const getConnectionsData = async (filterData,customPaylod) => {
-    let payload=null;
-    if(customPaylod){
+  const [connectionsCategory, setConnectionsCategory] = useState(CONNECTIONS)
+  const [isBreadCrumbsDeleted, setBreadCrumbsDeleted] = useState(false);
+
+  const getConnectionsData = async (filterData, customPaylod) => {
+    let payload = null;
+    if (customPaylod) {
       payload = filterData;
     }
     else {
@@ -47,7 +52,7 @@ function AddToNetwork(props) {
         students: filterData.categoryData.students,
         alumni: filterData.categoryData.alumni,
         awaitingResponseFilterCriteria: filterData.categoryData.awaitingResponseFilterCriteria,
-        educationalInstitutionFullName:educationInstitution,
+        educationalInstitutionFullName: educationInstitution,
         specialization,
         educationalInstitutionCampus: campus,
         countryFullName: country,
@@ -60,14 +65,14 @@ function AddToNetwork(props) {
         students: student,
         alumni,
         awaitingResponseFilterCriteria,
-        educationalInstitutionFullName:educationInstitution,
+        educationalInstitutionFullName: educationInstitution,
         specialization,
         educationalInstitutionCampus: campus,
         countryFullName: country,
         cityFullName: city
       }
     }
-     
+
     return (
       await SearchService.searchPeople(
         payload,
@@ -76,10 +81,13 @@ function AddToNetwork(props) {
     ).data;
   }
 
-  const setConnectionData = (data,customPaylod) => {
-    getConnectionsData(data,customPaylod).then((res) => {
-      res=res.filter((r)=>r.invitationAction===NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT || r.invitationAction===NETWORK.CONNECTION_RELATION_STATE.CONNECT || r.invitationAction===NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE || r.invitationAction===NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE)
-     
+  const setConnectionData = (data, customPaylod) => {
+    if (loadError) {
+      setLoadError(false)
+    }
+    getConnectionsData(data, customPaylod).then((res) => {
+      res = res.filter((r) => r.invitationAction === NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT || r.invitationAction === NETWORK.CONNECTION_RELATION_STATE.CONNECT || r.invitationAction === NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE || r.invitationAction === NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE)
+
       if (!loadMore) {
         setLoading(false);
         setData(res);
@@ -102,6 +110,7 @@ function AddToNetwork(props) {
         setLoadMore(false)
       }
       setError(true);
+      setData([])
       setLoadingMore(false)
     });
   }
@@ -114,6 +123,8 @@ function AddToNetwork(props) {
   useEffect(() => {
     if (loadMore === true)
       setConnectionData();
+    dataChangedFromFilter(false)
+    setBreadCrumbsDeleted(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadMore])
 
@@ -139,7 +150,7 @@ function AddToNetwork(props) {
     setSpecialization(null)
     setCountry(null)
     setCity(null)
-
+    setFilterFieldReset(null)
     setLoading(true);
     const payload = {
       baseSearchActionType: props.filter,
@@ -158,9 +169,88 @@ function AddToNetwork(props) {
     setData([])
     setConnectionData(payload, true)
   }
+
+  const populateFilterOptionsBreadCrumb = (data) => {
+    let tempBreadCrumbFilter = breadCrumbFilter.slice()
+    let connectionCategory = null;
+    for (const [key, value] of Object.entries(data.categoryData)) {
+      if (key === CONNECTIONS.at(0).title.toLowerCase()) {
+        connectionCategory = CONNECTIONS.at(0)
+      }
+      else if (key === CONNECTIONS.at(1).title.toLowerCase()) {
+        connectionCategory = CONNECTIONS.at(1)
+      }
+      else if (key === CONNECTIONS.at(2).title.toLowerCase()) {
+        connectionCategory = CONNECTIONS.at(2)
+      }
+      else if (key === 'awaitingResponseFilterCriteria') {
+        connectionCategory = CONNECTIONS.at(3)
+      }
+      else if (key === 'inMyNetworkFilterCriteria') {
+        connectionCategory = CONNECTIONS.at(4)
+      }
+      if (connectionCategory) {
+        const idx = tempBreadCrumbFilter.findIndex((crumb) => crumb.id == connectionCategory.id)
+        if (idx == -1) {
+          connectionCategory.selected = value;
+          connectionCategory.deleteable = true
+          tempBreadCrumbFilter.push(connectionCategory)
+        }
+        else {
+          tempBreadCrumbFilter[idx].deleteable = true
+          tempBreadCrumbFilter[idx].selected = value
+        }
+      }
+
+    }
+    if (data.filterData) {
+      let filteredChipObject = {}
+      for (const [key, value] of Object.entries(data.filterData)) {
+        filteredChipObject = {}
+        filteredChipObject.title = value
+        filteredChipObject.selected = value !== null && value !== "" ? true : false;
+        filteredChipObject.deleteable = true
+        if (key === 'educationalInstitutionFullName') {
+          filteredChipObject.id = 6
+          filteredChipObject.key = 'Institution'
+        }
+        else if (key === 'specialization') {
+          filteredChipObject.id = 7
+          filteredChipObject.key = 'Specialization'
+
+        }
+        else if (key === 'educationalInstitutionCampus') {
+          filteredChipObject.id = 8
+          filteredChipObject.key = 'Campus'
+
+        }
+        else if (key === 'countryFullName') {
+          filteredChipObject.id = 9
+          filteredChipObject.key = 'Country'
+
+        }
+        else if (key === 'cityFullName') {
+          filteredChipObject.id = 10
+          filteredChipObject.key = 'City'
+        }
+        if (filteredChipObject.key) {
+          const idx = tempBreadCrumbFilter.findIndex((crumb) => crumb.id == filteredChipObject.id)
+          if (idx == -1) {
+            tempBreadCrumbFilter.push(filteredChipObject)
+          }
+          else {
+            tempBreadCrumbFilter[idx].title = value
+          }
+        }
+      }
+    }
+    tempBreadCrumbFilter = tempBreadCrumbFilter.filter((crumb) => crumb.selected === true)
+    setBreadCrumbFilter(tempBreadCrumbFilter)
+  }
   const handleComponentDataEvent = (data) => {
     if (data.resetRequest) {
       handleResetFilter()
+      setBreadCrumbFilter([])
       return
     }
     setProcessingFilterRequest(true)
@@ -193,7 +283,8 @@ function AddToNetwork(props) {
       setLoading(true);
       setError(false)
       setData([])
-      setConnectionData(customPayload,true);
+      populateFilterOptionsBreadCrumb(data)
+      setConnectionData(customPayload, true);
       return;
     }
     if (data.categoryData) {
@@ -206,9 +297,77 @@ function AddToNetwork(props) {
       setLoading(true);
       setError(false)
       setData([])
+      populateFilterOptionsBreadCrumb(data)
       setConnectionData(data);
     }
   }
+
+  const handleDeleteBreadCrumb = (obj) => {
+    if (obj) {
+      setLoading(true);
+      let tempBreadCrumbFilter = breadCrumbFilter.slice()
+      const targetBreadCrumbDeleteIdx = tempBreadCrumbFilter.findIndex((crumb) => crumb.id === obj.id)
+      if (targetBreadCrumbDeleteIdx !== -1) {
+        tempBreadCrumbFilter[targetBreadCrumbDeleteIdx].selected = false
+        tempBreadCrumbFilter = tempBreadCrumbFilter.filter((crumb) => crumb.selected === true)
+        setBreadCrumbFilter(tempBreadCrumbFilter)
+      }
+      const connectionCategories = connectionsCategory.slice()
+      const targetSidebarSelectionIdx = connectionCategories.findIndex((category) => category.id === obj.id)
+      if (targetSidebarSelectionIdx !== -1) {
+        connectionCategories[targetSidebarSelectionIdx].selected = false
+        setConnectionsCategory(connectionCategories)
+      }
+
+      if (obj.title === CONNECTIONS.at(0).title) {
+        setStudent(false)
+      }
+      else if (obj.title === CONNECTIONS.at(1).title) {
+        setProfessors(false)
+      }
+      else if (obj.title === CONNECTIONS.at(2).title) {
+        setAlumni(false)
+      }
+
+      else if (obj.title === CONNECTIONS.at(3).title) {
+        setAwaitingResponse(false)
+      }
+      else if (obj.title === CONNECTIONS.at(4).title) {
+        setInMyNetworkFilter(false)
+      }
+      else if (obj.key === 'City') {
+
+        setCity(null)
+      }
+      else if (obj.key === 'Institution') {
+        setEducationInstitution(null)
+      }
+
+      else if (obj.key === 'Campus') {
+        setCampus(null)
+      }
+      else if (obj.key === 'Specialization') {
+        setSpecialization(null)
+      }
+
+      else if (obj.key === 'Country') {
+        setCountry(null)
+      }
+      setFilterFieldReset(obj.key)
+      setBreadCrumbsDeleted(true)
+
+    }
+  }
+  useEffect(() => {
+    if (isBreadCrumbsDeleted) {
+      setConnectionData();
+      return
+    }
+    if (isDataChangedFromFilter) {
+      return;
+    }
+  }, [isDataChangedFromFilter, isBreadCrumbsDeleted, student, alumni, professors, awaitingResponseFilterCriteria, inMyNetworkFilterCriteria, city, country, specialization, campus, educationInstitution])
+
   return (
     <>
       <div
@@ -218,21 +377,21 @@ function AddToNetwork(props) {
   xl:grid-cols-8 2xl:px-5 "
       >
         <Overlay message={LOADING_MESSAGE_DEFAULT} open={processingFilterRequest} />
-        
+
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
-         <>
-            
-              <Connections filters={null}   error={loadError} loading={loading}  workflow={props.workflow} userdata={props?.userdata?.data} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PROBABLE_INTERESTING_CONNECTIONS, icon: PeopleAltIcon }} />
-            
+          <>
+
+            <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={props?.userdata?.data} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PROBABLE_INTERESTING_CONNECTIONS, icon: PeopleAltIcon }} />
+
             {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
             <Spacer count={2} />
           </>
-         
+
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
-          <Sidebar onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={props.userdata?.data}/>
-         
+          <Sidebar connections={connectionsCategory} resetField={resetFilterField} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={props.userdata?.data} />
+
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />
           <Spacer count={2} />

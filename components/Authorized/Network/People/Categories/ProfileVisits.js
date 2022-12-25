@@ -82,6 +82,10 @@ function ProfileVisits(props) {
   }
 
   const setConnectionData = (data, customPaylod) => {
+    if(loadError){
+      setLoadError(false)
+    }
+    
     getConnectionsData(data, customPaylod).then((res) => {
       if (!loadMore) {
         setLoading(false);
@@ -105,6 +109,7 @@ function ProfileVisits(props) {
         setLoadMore(false)
       }
       setError(true);
+      setData([])
       setLoadingMore(false)
     });
   }
@@ -144,7 +149,8 @@ function ProfileVisits(props) {
     setSpecialization(null)
     setCountry(null)
     setCity(null)
-
+    setFilterFieldReset(null)
+     
     setLoading(true);
     const payload = {
       baseSearchActionType: props.filter,
@@ -250,6 +256,7 @@ function ProfileVisits(props) {
         return
       }
       setProcessingFilterRequest(true)
+      setFilterFieldReset(null)
       if (data.filterData && data.categoryData) {
         const customPayload = {
           baseSearchActionType: asyncSubscriptions.INTERESTING_CONNECTIONS.alias,
@@ -302,12 +309,6 @@ function ProfileVisits(props) {
   const handleDeleteBreadCrumb = (obj) => {
     if (obj) {
       setLoading(true);
-      const connectionCategories = connectionsCategory.slice()
-      const targetSidebarSelectionIdx = connectionCategories.findIndex((category) => category.id === obj.id)
-      if (targetSidebarSelectionIdx !== -1) {
-        connectionCategories[targetSidebarSelectionIdx].selected = false
-        setConnectionsCategory(connectionCategories)
-      }
       let tempBreadCrumbFilter = breadCrumbFilter.slice()
       const targetBreadCrumbDeleteIdx = tempBreadCrumbFilter.findIndex((crumb) => crumb.id === obj.id)
       if (targetBreadCrumbDeleteIdx !== -1) {
@@ -315,6 +316,13 @@ function ProfileVisits(props) {
         tempBreadCrumbFilter = tempBreadCrumbFilter.filter((crumb) => crumb.selected === true)
         setBreadCrumbFilter(tempBreadCrumbFilter)
       }
+      const connectionCategories = connectionsCategory.slice()
+      const targetSidebarSelectionIdx = connectionCategories.findIndex((category) => category.id === obj.id)
+      if (targetSidebarSelectionIdx !== -1) {
+        connectionCategories[targetSidebarSelectionIdx].selected = false
+        setConnectionsCategory(connectionCategories)
+      }
+    
       if (obj.title === CONNECTIONS.at(0).title) {
         setStudent(false)
       }
@@ -350,7 +358,7 @@ function ProfileVisits(props) {
         setCountry(null)
        }
        setFilterFieldReset(obj.key)
-      setBreadCrumbsDeleted(true)
+       setBreadCrumbsDeleted(true)
 
     }
   }
