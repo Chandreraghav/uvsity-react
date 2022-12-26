@@ -22,6 +22,7 @@ export const ENDPOINTS = {
     }
   },
   SEARCH:{
+    GENERIC:'universalsearch/',
     COMMON:{
       DATA:{
         USERTYPE:'data/filteredUserTypes?queryUsertype=',

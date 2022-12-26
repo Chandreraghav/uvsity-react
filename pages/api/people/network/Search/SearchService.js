@@ -20,4 +20,17 @@ export default class SearchService {
     }
     return await asyncInstance.post(endpoint, payload);
   }
+
+  static async searchByKeywords(keyword) {
+    if (!keyword) return null;
+    return await asyncInstance.get(
+      ENDPOINTS.SEARCH.GENERIC + keyword,
+      {
+        data: null,
+      }
+    );
+  }
+
+
+
 }
