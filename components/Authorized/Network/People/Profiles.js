@@ -10,7 +10,6 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { IMAGE_PATHS, PLACEHOLDERS } from "../../../../constants/userdata";
 import Shimmer from "../Shimmers/Shimmer";
 import {
-  getMode,
   THEME_MODES,
   useTheme,
 } from "../../../../theme/ThemeProvider";
@@ -18,35 +17,44 @@ import { navigateToPath } from "../../Shared/Navigator";
 import { useRouter } from "next/router";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import { v4 as uuidv4 } from "uuid";
+import UserDataService from "../../../../pages/api/users/data/UserDataService";
+import { asyncSubscriptions } from "../../../../async/subscriptions";
+import { useQuery } from "react-query";
+import { KEYS } from "../../../../async/queries/keys/unique-keys";
 function Profiles({
   options,
   title,
   tooltip,
   icon,
-  dashboardPreview,
   workflowRoute,
   sticky,
-  data,
+  userdata,
 }) {
   const [bo, setBO] = useState([]);
   const [ctxTheme, dispatch] = useTheme();
   const [theme, setTheme] = useState(ctxTheme.mode);
   const router = useRouter();
+
+  const getProfileVisits = async () =>
+    (await UserDataService.getProfileVisits()).data;
+  const getSuggestedFriends = async () =>
+    (await UserDataService.getSuggestedFriends()).data;
+  const getProfilesData = async () => workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING ? getSuggestedFriends() : getProfileVisits()
+
   useEffect(() => {
     setTheme(ctxTheme.mode);
   }, [ctxTheme]);
 
-  const getProfileCollection = () => {
-    switch (workflowRoute) {
-      case WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING:
-        return data?.SUGGESTED_FRIENDS?.data;
-
-      case WORKFLOW_CODES.PEOPLE.WHO_VIEWED_ME:
-        return data?.PROFILE_VISITS?.data;
-      default:
-        break;
+  const PROFILES_DATA = useQuery(
+    workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING ? [KEYS.NETWORK.PEOPLE.INTERESTING] : [KEYS.PROFILE.VISITS],
+    getProfilesData,
+    {
+      staleTime: workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING ? asyncSubscriptions.INTERESTING_CONNECTIONS.staleTime : asyncSubscriptions.PROFILE_VISITS.staleTime,
+      refetchInterval:workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING?asyncSubscriptions.INTERESTING_CONNECTIONS.pollEvery: false
     }
-  };
+  );
+
+ 
 
   useEffect(() => {
     let controller = new AbortController();
@@ -54,12 +62,11 @@ function Profiles({
     if (isSubscribed) {
       let _bo = [];
       try {
-        getProfileCollection()?.map((value) => {
+        PROFILES_DATA.data && PROFILES_DATA.data.map((value) => {
           if (workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING) {
             _bo.push(value.suggestedFriend.webTO);
           } else if (workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_VIEWED_ME) {
             value.visitorUserSummary.invitationAction = value.invitationAction;
-
             _bo.push(value.visitorUserSummary);
           }
         });
@@ -73,7 +80,7 @@ function Profiles({
       controller?.abort();
       isSubscribed = false;
     };
-  }, [data?.PROFILE_VISITS?.data, data?.SUGGESTED_FRIENDS?.data]);
+  }, [PROFILES_DATA.data, workflowRoute]);
 
   const handleViewMore = () => {
     if (bo.length > 0) {
@@ -89,22 +96,14 @@ function Profiles({
     return null;
   };
 
-  if (!dashboardPreview) {
-    return (
-      <h1>
-        Component to show all profiles listing according to specific workflow
-        route
-      </h1>
-    );
-  }
+
   return (
     <div
-      
-      className={`uvsity__card uvsity__card__border__theme ${
-        sticky && bo.length > 0
-          ? "md:sticky  lg:sticky  xl:sticky top-20  "
-          : ""
-      }`}
+
+      className={`uvsity__card uvsity__card__border__theme ${sticky && bo.length > 0
+        ? "md:sticky  lg:sticky  xl:sticky top-20  "
+        : ""
+        }`}
     >
       <Tooltip
         title={
@@ -113,22 +112,21 @@ function Profiles({
               ? tooltip
               : TOOLTIPS.VIEW_MORE
             : workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
-            ? bo?.isLoading
-              ? "Searching interesting profiles for you..."
-              : TOOLTIPS.NO_INTERESTING_PROFILE
-            : bo?.isLoading
-            ? "Finding people who viewed you..."
-            : TOOLTIPS.NO_PEOPLE_VIEWED_YOU
+              ? PROFILES_DATA?.isLoading
+                ? "Searching interesting profiles for you..."
+                : TOOLTIPS.NO_INTERESTING_PROFILE
+              : PROFILES_DATA?.isLoading
+                ? "Finding people who viewed you..."
+                : TOOLTIPS.NO_PEOPLE_VIEWED_YOU
         }
       >
         <div
-        onClick={() => handleViewMore()}
+          onClick={() => handleViewMore()}
           className={`flex flex-row items-center px-2 pt-2 pb-2  gap-1
-         text-gray-600 dark:hover:text-gray-100 hover:text-gray-900 font-medium leading-snug  ${
-           workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
-             ? "text-sm"
-             : ""
-         }  ${bo.length > 0 ? ProfileStyle.profiles__header__text : ""}`}
+         text-gray-600 dark:hover:text-gray-100 hover:text-gray-900 font-medium leading-snug  ${workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
+              ? "text-sm"
+              : ""
+            }  ${bo.length > 0 ? ProfileStyle.profiles__header__text : ""}`}
         >
           {icon ? (
             <>
@@ -136,30 +134,30 @@ function Profiles({
               {bo.length > 0
                 ? title
                 : workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
-                ? bo?.isLoading
-                  ? "Searching interesting profiles for you..."
-                  : TOOLTIPS.NO_INTERESTING_PROFILE
-                : bo?.isLoading
-                ? "Finding people who viewed you..."
-                : TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
+                  ? PROFILES_DATA?.isLoading
+                    ? "Searching interesting profiles for you..."
+                    : TOOLTIPS.NO_INTERESTING_PROFILE
+                  : PROFILES_DATA?.isLoading
+                    ? "Finding people who viewed you..."
+                    : TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
             </>
           ) : (
             <>
               {bo.length > 0
                 ? title
                 : WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING
-                ? bo?.isLoading
-                  ? "Searching interesting profiles for you..."
-                  : TOOLTIPS.NO_INTERESTING_PROFILE
-                : bo?.isLoading
-                ? "Finding people who viewed you..."
-                : TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
+                  ? PROFILES_DATA?.isLoading
+                    ? "Searching interesting profiles for you..."
+                    : TOOLTIPS.NO_INTERESTING_PROFILE
+                  : PROFILES_DATA?.isLoading
+                    ? "Finding people who viewed you..."
+                    : TOOLTIPS.NO_PEOPLE_VIEWED_YOU}
             </>
           )}
         </div>
       </Tooltip>
       <Divider className="divider" />
-      {bo?.isLoading && (
+      {PROFILES_DATA?.isLoading && (
         <div className="px-1 text-base">
           <Spacer />
           {[1, 2, 3, 4, 5].map((shim, index) => (
@@ -187,12 +185,12 @@ function Profiles({
               metaData={value}
               sticky
               dark={theme === THEME_MODES.DARK}
-              userdata={data?.USER_LOGIN_INFO?.data}
+              userdata={userdata}
             />
           ))}
         </div>
       )}
-      {bo.length === 0 && !bo?.isLoading && (
+      {bo.length === 0 && !PROFILES_DATA?.isLoading && (
         <>
           <img
             className={"object-contain"}

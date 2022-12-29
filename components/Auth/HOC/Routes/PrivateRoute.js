@@ -36,6 +36,7 @@ const PrivateRoute = (WrappedComponent, verifyToken) => {
           .then((data) => {
             // if token was verified we set the state.
             if (data.status === 200) {
+              
               setVerified(true);
             } else {
               // If the token was fraud/session is invalid we remove it from localStorage/erase context, invalidate queries, and then redirect to "/"

@@ -17,9 +17,11 @@ import { AUTHORIZED_ROUTES } from "../../../constants/routes";
 import { v4 as uuidv4 } from "uuid";
 import Shimmer from "./Shimmer/Shimmer";
 import IntroShimmer from "./Shimmer/IntroShimmer";
+import { useDataLayerContextValue } from "../../../context/DataLayer";
 
 function Intro(props) {
-  const userdata = props.data;
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [userdata, setUserData] = useState(null);
   const router = useRouter();
   const [introMoodColor, setIntroMoodColor] = useState(null);
   const introObject = INTRO_TEXT_KEYWORDS[0];
@@ -62,6 +64,9 @@ function Intro(props) {
       }
     };
   }, []);
+  useEffect(()=>{
+    setUserData(ctxUserdata?.userdata)
+     },[ctxUserdata?.userdata])
 
   const invokeIntroAction = (code) => {
     if (code === WORKFLOW_CODES.USER.INTRO_PATHS.SESSION) {
@@ -78,28 +83,18 @@ function Intro(props) {
       <div
         className={`flex flex-row items-center h-10 overflow-auto ${introMoodColor}`}
       >
-        {userdata.isLoading && (
-          <div className="px-2">
-            <Shimmer visible />
-          </div>
-        )}
-        {userdata.isSuccess && (
-          <p
-            className=" text-lg  place-content-center font-semibold  
+        <p
+          className=" text-lg  place-content-center font-semibold  
               leading-none xl:block text-gray-700 dark:text-gray-800"
-          >
-            👋 {GREETING.replace("<user>", userdata.data?.firstName)}
-          </p>
-        )}
-        
+        >
+          👋 {GREETING.replace("<user>", userdata?.firstName)}
+        </p>
+
+
       </div>
 
       <Spacer />
-      {userdata.isLoading && (
-        <div className="px-2">
-          <IntroShimmer visible />
-        </div>
-      )}
+
       <header
         className={IntroStyles.intro__banner}
         style={{
@@ -107,7 +102,7 @@ function Intro(props) {
           backgroundPosition: "center center",
           backgroundAttachment: "fixed",
           backgroundRepeat: "no-repeat",
-          display: userdata.isLoading ? "none" : "block",
+          display: "block"
         }}
       >
         <div className={IntroStyles.intro__contents}>

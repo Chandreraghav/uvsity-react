@@ -646,6 +646,7 @@ export const SESSION_ACTIONS = [
     size: "small",
     tooltip: TOOLTIPS.REGISTER_SESSION,
     code: WORKFLOW_CODES.USER.SESSION.REGISTER,
+    
   },
   {
     id: 2,

@@ -12,7 +12,6 @@ import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 function HeaderOption({
   avatar,
-  oid,
   Icon,
   title,
   tooltip,
@@ -20,14 +19,12 @@ function HeaderOption({
   isAuthorizedProfile,
   hidden,
   redirectTo,
-  phoneMenu,
-  errorOnRedirect,
-  
-}) {
+  phoneMenu}) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [open, setOpen] = useState(false);
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [userdata, setUserData] = useState(null);
+  const [open, setOpen] = useState(false);
   const [publicProfileCalendarIdentifier, setPublicProfileCalendarIdentifier] = useState(null)
   const handleClick = (event, remoteRequestReceived) => {
     if (event) setAnchorEl(event.currentTarget);
@@ -35,57 +32,24 @@ function HeaderOption({
     if (remoteRequestReceived !== undefined) setOpen(!remoteRequestReceived);
     else setOpen(!open);
   };
-  
-  const isItMe=()=>ctxUserdata?.userdata?.userDetailsId===oid
-  useEffect(()=>{
+  useEffect(() => {
+    setUserData(ctxUserdata?.userdata)
     // get public calendar profile of user on load of header options.
-    UserDataService.getUserProfileBy(oid).then((res) =>{
-     if(res?.data && res?.data?.publicCalendarProfileIdentifier){
-      setPublicProfileCalendarIdentifier(res.data.publicCalendarProfileIdentifier)
-     }
-    }).catch(()=>{
-      setPublicProfileCalendarIdentifier(null)
-    })
-    return()=>{
-      setPublicProfileCalendarIdentifier(null)
-    }
-  },[])
+
+  }, [ctxUserdata?.userdata])
+
   const handleRedirects = () => {
     if (redirectTo) {
       router.push(redirectTo);
       return;
     }
     if (title === "Calendar") {
-      if(publicProfileCalendarIdentifier){
-        const url = isItMe()?`${process.env.NEXT_PUBLIC_CALENDAR_APP_URL}calendar-profile/home`:process.env.NEXT_PUBLIC_CALENDAR_APP_URL +
-        publicProfileCalendarIdentifier
-      
+        const url = `${process.env.NEXT_PUBLIC_CALENDAR_APP_URL}calendar-profile/home`
         openNewTab(
           url
         );
         return
-      }
-      
-      // attempt to call service once again and refill the calendar profile of user.
-      UserDataService.getUserProfileBy(oid)
-        .then((res) => {
-          if(!publicProfileCalendarIdentifier){
-            if(res.data && res.data.publicCalendarProfileIdentifier){
-              setPublicProfileCalendarIdentifier(res.data.publicCalendarProfileIdentifier)
-            }
-          }
-        })
-        .catch((err) => {
-          const requestErr = {
-            code: WORKFLOW_CODES.USER.ADHOC_LINKS_OPENER.CALENDAR,
-            url: process.env.NEXT_PUBLIC_CALENDAR_APP_URL,
-            message: "The requested link could not be opened.",
-            diagnostics: err?.toString(),
-          };
-          if (errorOnRedirect) {
-            errorOnRedirect(requestErr);
-          }
-        });
+       
     }
     return;
   };
@@ -118,7 +82,7 @@ function HeaderOption({
         ) : (
           <div>
             <Tooltip title={tooltip}>
-              <Avatar  onClick={(e) => handleClick(e)} className={HeaderOptionsStyle.headerOption__avatar} {...avatarToString(`${name}`)} />
+              <Avatar onClick={(e) => handleClick(e)} className={HeaderOptionsStyle.headerOption__avatar} {...avatarToString(`${name}`)} />
             </Tooltip>
             <AccountMenu
               isOpen={open}

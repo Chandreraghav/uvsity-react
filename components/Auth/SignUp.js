@@ -36,11 +36,12 @@ import { useDataLayerContextValue } from "../../context/DataLayer";
 import { actionTypes } from "../../context/reducer";
 import { AUTHORIZED_ROUTES } from "../../constants/routes";
 import { getLocalStorageObject } from "../../localStorage/local-storage";
+import UserDataService from "../../pages/api/users/data/UserDataService";
 toast.configure();
 
 function SignUp({ stayInRegistrationForm }) {
   const router = useRouter();
-  const [{}, authorize] = useDataLayerContextValue();
+  const [{ }, authorize] = useDataLayerContextValue();
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -77,19 +78,30 @@ function SignUp({ stayInRegistrationForm }) {
       model.prepareRegistrationData(model, credentials, formData, ipData);
       await new RegistrationService()
         .register(model.getStagedRegistrationData(model, credentials))
-        .then((res) => {
+        .then(async (res) => {
           authorize({
             type: actionTypes.SET_USER,
             user: res, //bearer token response
           });
           AuthService.setAuthorization(LOGIN_SOURCE.UVSITY, res);
+          const userdata = await UserDataService.getSummary();
+          authorize({
+            type: actionTypes.SET_USERDATA,
+            userdata:userdata.data
+          });
+          const logged_in_info = await UserDataService.getLoggedInInformation();
+          authorize({
+            type: actionTypes.SET_USER_LOGIN_INFO,
+            logged_in_info:logged_in_info.data
+          });
+
           AuthGuardService.isVerifiedLogin()
             ? router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD)
             : handleResponse(
-                getWorkflowError(LOGIN_ERRORS.UVSITY.LOGIN_FAILED),
-                RESPONSE_TYPES.ERROR,
-                toast.POSITION.BOTTOM_CENTER
-              );
+              getWorkflowError(LOGIN_ERRORS.UVSITY.LOGIN_FAILED),
+              RESPONSE_TYPES.ERROR,
+              toast.POSITION.BOTTOM_CENTER
+            );
         })
         .catch((err) => {
           handleResponse(
@@ -215,14 +227,13 @@ function SignUp({ stayInRegistrationForm }) {
               maxLength="50"
               autoComplete="true"
               title="First name"
-              className={`${SignUpStyle.signup__registration__input} ${
-                errors.firstname?.message
+              className={`${SignUpStyle.signup__registration__input} ${errors.firstname?.message
                   ? SignUpStyle.signupDialog__input__error
                   : dirtyFields.firstname &&
                     (!firstName || isStringEmpty(firstName))
-                  ? SignUpStyle.signupDialog__input__validated
-                  : ""
-              }`}
+                    ? SignUpStyle.signupDialog__input__validated
+                    : ""
+                }`}
             />
           </div>
 
@@ -251,14 +262,13 @@ function SignUp({ stayInRegistrationForm }) {
               placeholder="Last name"
               autoComplete="true"
               title="Last name"
-              className={`${SignUpStyle.signup__registration__input} ${
-                errors.lastname?.message
+              className={`${SignUpStyle.signup__registration__input} ${errors.lastname?.message
                   ? SignUpStyle.signupDialog__input__error
                   : dirtyFields.lastname &&
                     (!lastName || isStringEmpty(lastName))
-                  ? SignUpStyle.signupDialog__input__validated
-                  : ""
-              }`}
+                    ? SignUpStyle.signupDialog__input__validated
+                    : ""
+                }`}
             />
           </div>
           <div className="flex flex-col">
@@ -286,13 +296,12 @@ function SignUp({ stayInRegistrationForm }) {
               onChange={(e) => setEmail(e.target.value)}
               {...register("email")}
               placeholder="Email"
-              className={`${SignUpStyle.signup__registration__input} ${
-                errors.email?.message
+              className={`${SignUpStyle.signup__registration__input} ${errors.email?.message
                   ? SignUpStyle.signupDialog__input__error
                   : dirtyFields.email && (!email || isStringEmpty(email))
-                  ? SignUpStyle.signupDialog__input__validated
-                  : ""
-              }`}
+                    ? SignUpStyle.signupDialog__input__validated
+                    : ""
+                }`}
             />
           </div>
           <div className="flex flex-col">
@@ -336,14 +345,13 @@ function SignUp({ stayInRegistrationForm }) {
               onChange={(e) => setPassword(e.target.value)}
               {...register("password")}
               placeholder="Password"
-              className={`${SignUpStyle.signup__registration__input} ${
-                errors.password?.message
+              className={`${SignUpStyle.signup__registration__input} ${errors.password?.message
                   ? SignUpStyle.signupDialog__input__error
                   : dirtyFields.password &&
                     (!password || isStringEmpty(password))
-                  ? SignUpStyle.signupDialog__input__validated
-                  : ""
-              }`}
+                    ? SignUpStyle.signupDialog__input__validated
+                    : ""
+                }`}
             />
           </div>
           <div className="flex flex-col">
@@ -371,14 +379,13 @@ function SignUp({ stayInRegistrationForm }) {
               onChange={(e) => setCPassword(e.target.value)}
               {...register("cpassword")}
               placeholder="Re-enter Password"
-              className={`${SignUpStyle.signup__registration__input} ${
-                errors.cpassword?.message
+              className={`${SignUpStyle.signup__registration__input} ${errors.cpassword?.message
                   ? SignUpStyle.signupDialog__input__error
                   : dirtyFields.cpassword &&
                     (!cpassword || isStringEmpty(cpassword))
-                  ? SignUpStyle.signupDialog__input__validated
-                  : ""
-              }`}
+                    ? SignUpStyle.signupDialog__input__validated
+                    : ""
+                }`}
             />
           </div>
           <div>

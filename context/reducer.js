@@ -1,6 +1,7 @@
 export const initialState = {
   user: null,
   userdata: null,
+  logged_in_info:null,
   selected_past_session: null,
   basic: null,
   schedule: null,
@@ -11,6 +12,7 @@ export const initialState = {
 export const actionTypes = {
   SET_USER: "SET_USER",
   SET_USERDATA: "SET_USERDATA",
+  SET_USER_LOGIN_INFO: "SET_USER_LOGIN_INFO",
   CREATE_SESSION_WORKFLOW: {
     SELECTED_PAST_SESSION: "SELECTED_PAST_SESSION",
     BASIC: "BASIC",
@@ -25,6 +27,11 @@ const reducer = (state, action) => {
 
   //action has 2 types-> type, [payload]
   switch (action.type) {
+    case "SET_USER_LOGIN_INFO":
+      return {
+        ...state,
+        logged_in_info: action.logged_in_info,
+      };
     case "SET_USERDATA":
       return {
         ...state,

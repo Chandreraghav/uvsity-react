@@ -1,4 +1,4 @@
-export const standardSubscriptionPollDelay = 600000;
+export const standardSubscriptionPollDelay =  600000;
 export const sessionValidityPollDelay = 60000;
 export const standardStaleTime=5000
 export const infinity = Infinity;

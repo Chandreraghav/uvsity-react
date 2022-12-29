@@ -13,12 +13,13 @@ import { actionTypes } from "../../../context/reducer";
 import { getWorkflowError } from "../../../error-handler/handler";
 import { toast } from "react-toastify";
 import Overlay from "../../../components/shared/Overlay";
+import UserDataService from "../../../pages/api/users/data/UserDataService";
 toast.configure();
 
 function GoogleAuth() {
   const router = useRouter();
   const [showOverlay, setShowOverlay] = useState(false);
-  const [{}, authorize] = useDataLayerContextValue();
+  const [{ }, authorize] = useDataLayerContextValue();
 
   useEffect(() => {
     gapi.signin2.render("g-signin2", {
@@ -37,13 +38,24 @@ function GoogleAuth() {
       setShowOverlay(true);
       new LoginService()
         .socialLogin(LOGIN_SOURCE.GOOGLE)
-        .then((response) => {
+        .then(async (response) => {
           authorize({
             type: actionTypes.SET_USER,
             user: response, //bearer token response
           });
+
           AuthService.setAuthorization(LOGIN_SOURCE.GOOGLE, response);
-          if(AuthGuardService.isVerifiedLogin(true)){
+          const userdata = await UserDataService.getSummary();
+          authorize({
+            type: actionTypes.SET_USERDATA,
+            userdata:userdata.data
+          });
+          const logged_in_info = await UserDataService.getLoggedInInformation();
+          authorize({
+            type: actionTypes.SET_USER_LOGIN_INFO,
+            logged_in_info:logged_in_info.data
+          });
+          if (AuthGuardService.isVerifiedLogin(true)) {
             setShowOverlay(false)
             router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD)
           }
@@ -54,7 +66,7 @@ function GoogleAuth() {
               toast.POSITION.BOTTOM_CENTER
             );
           }
-         
+
         })
         .catch(() => {
           handleResponse(
@@ -92,7 +104,7 @@ function GoogleAuth() {
     handleSignIn();
   }
 
-  return (<><div id="g-signin2" data-onsuccess="onSignIn"></div><Overlay message='Authenticating..' open={showOverlay}/></>);
+  return (<><div id="g-signin2" data-onsuccess="onSignIn"></div><Overlay message='Authenticating..' open={showOverlay} /></>);
 }
 
 export default GoogleAuth;

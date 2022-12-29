@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HEADER_OPTIONS } from "../../../../constants/userdata";
+import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import ThemeSwitcher from "../../../../theme/Theme";
 import { formattedName } from "../../../../utils/utility";
 import HeaderOption from "../HeaderOption";
 import Shimmer from "../Shimmer/Shimmer";
 
 function PhoneMenu(props) {
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [userdata, setUserData] = useState(ctxUserdata?.userdata);
+
   const handleErrorOnRedirect = (obj) => {
     if (props.onHeaderNavigationError) {
       props.onHeaderNavigationError(obj);
@@ -14,36 +18,30 @@ function PhoneMenu(props) {
   return (
     <div className=" max-h-10  dark:bg-gray-dark bg-gray-100 border-t-1  flex md:hidden  mt-auto clear-both bottom-0 left-0 z-50 text-center justify-center items-center  
     p-4 w-screen    fixed">
-      {props?.data?.isLoading ? (
-        <>
-          <div className={` hidden md:flex items-center`}>
-            <Shimmer visible />
-          </div>
-        </>
-      ) : (
-        HEADER_OPTIONS.map((data) => (
-          <div className="zoom-9" key={data.id}>
+
+      {HEADER_OPTIONS.map((data) => (
+        <div className="zoom-9" key={data.id}>
           <HeaderOption
-            
-            oid={props?.data?.data?.userDetailsId}
+
+            oid={userdata?.userDetailsId}
             isAuthorizedProfile={data.hasAvatar}
             hidden={data.hidden}
-            avatar={props?.data?.data?.profilePicName}
+            avatar={userdata?.profilePicName}
             title={data.title}
             Icon={data.icon}
             name={formattedName(
-              props?.data?.data?.firstName,
-              props?.data?.data?.lastName
+              userdata?.firstName,
+              userdata?.lastName
             )}
             tooltip={data.tooltip}
             redirectTo={data.redirectTo}
             phoneMenu
             errorOnRedirect={handleErrorOnRedirect}
           />
-          </div>
-        ))
-      )}
-      <div className="-mt-3 ml-2"><ThemeSwitcher/></div> 
+        </div>
+      ))}
+
+      <div className="-mt-3 ml-2"><ThemeSwitcher /></div>
     </div>
   );
 }

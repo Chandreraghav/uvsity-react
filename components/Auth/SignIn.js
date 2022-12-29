@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import * as React from "react";
-import {useState} from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form";
 import LoginService from "../../pages/api/users/auth/LoginService";
 import Dialog from "@mui/material/Dialog";
@@ -11,7 +11,7 @@ import { useTheme } from "@mui/material/styles";
 import SignInStyle from "../../styles/SignIn.module.css";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Tooltip from "@mui/material/Tooltip";
-import { LOGIN_POLICY_ACCEPTANCE,LOGIN_SOURCE } from "../../constants/constants";
+import { LOGIN_POLICY_ACCEPTANCE, LOGIN_SOURCE } from "../../constants/constants";
 import parse from "html-react-parser";
 import SignUp from "./SignUp";
 import Slide from "@mui/material/Slide";
@@ -26,21 +26,21 @@ import { handleResponse } from "../../toastr-response-handler/handler";
 import { toast } from "react-toastify";
 import GoogleAuth from "../../social_auth/services/google/GoogleAuth";
 import { AuthService } from "../../pages/api/users/auth/AuthService";
-import {AuthGuardService} from '../../auth-guard/service/AuthGuardService'
+import { AuthGuardService } from '../../auth-guard/service/AuthGuardService'
 import { useRouter } from "next/router";
 import { useDataLayerContextValue } from '../../context/DataLayer'
 import { actionTypes } from "../../context/reducer";
-import {AUTHORIZED_ROUTES} from "../../constants/routes";
+import { AUTHORIZED_ROUTES } from "../../constants/routes";
 import Overlay from "../shared/Overlay";
+import UserDataService from "../../pages/api/users/data/UserDataService";
 
 toast.configure();
 
 function SignIn({ dialogCloseRequest, isOpen }) {
- const router = useRouter();
- const [{}, authorize] = useDataLayerContextValue();
+  const router = useRouter();
+  const [{ }, authorize] = useDataLayerContextValue();
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const [isBackDropClicked, setBackDropClicked] =useState(true);
+  const [isBackDropClicked, setBackDropClicked] = useState(true);
   const [signInButtonPressed, setSignInButtonPressed] = useState(false);
   const [signUpButtonPressed, setSignUpButtonPressed] = useState(false);
   const [email, setEmail] = useState("");
@@ -50,13 +50,10 @@ function SignIn({ dialogCloseRequest, isOpen }) {
     mode: "all",
   };
 
-  const { register, handleSubmit, reset, formState, clearErrors } =
+  const { register, handleSubmit, reset, formState } =
     useForm(formOptions);
   const { errors } = formState;
   const { dirtyFields } = formState;
-  const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
   const handleIsolatedComponentInvocation = () => {
     if (dialogCloseRequest && !isBackDropClicked) dialogCloseRequest();
   };
@@ -77,20 +74,28 @@ function SignIn({ dialogCloseRequest, isOpen }) {
         encodeURIComponent(formData.email),
         encodeURIComponent(formData.password)
       )
-      .then((res) => {
+      .then(async (res) => {
         authorize({
           type: actionTypes.SET_USER,
           user: res, //bearer token response
         });
-
         AuthService.setAuthorization(LOGIN_SOURCE.UVSITY, res)
-        AuthGuardService.isVerifiedLogin(true)?router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD):
-        handleResponse(
-          getWorkflowError(LOGIN_ERRORS.UVSITY.LOGIN_FAILED),
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.BOTTOM_CENTER
-        );
-
+        const userdata = await UserDataService.getSummary();
+        authorize({
+          type: actionTypes.SET_USERDATA,
+          userdata:userdata.data
+        });
+        const logged_in_info = await UserDataService.getLoggedInInformation();
+        authorize({
+          type: actionTypes.SET_USER_LOGIN_INFO,
+          logged_in_info:logged_in_info.data
+        });
+        AuthGuardService.isVerifiedLogin(true) ? router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD) :
+          handleResponse(
+            getWorkflowError(LOGIN_ERRORS.UVSITY.LOGIN_FAILED),
+            RESPONSE_TYPES.ERROR,
+            toast.POSITION.BOTTOM_CENTER
+          );
       })
       .catch((err) => {
         handleResponse(
@@ -111,14 +116,14 @@ function SignIn({ dialogCloseRequest, isOpen }) {
   return (
     <div className={`${SignInStyle.signin__root} `}>
       <Dialog
-         
+
         open={isOpen}
         onClose={handleIsolatedComponentInvocation}
         disableEscapeKeyDown
         onBackdropClick={handleBackdropClick}
         aria-labelledby="responsive-dialog-title"
       >
-        
+
         <div className={` bg-gradient-to-r dark:from-gray-900  dark:to-gray-900`}>
           <Tooltip
             className={`${SignInStyle.signin__Dialog__cancelButtonRoot} `}
@@ -127,9 +132,8 @@ function SignIn({ dialogCloseRequest, isOpen }) {
             placement="bottom"
           >
             <div
-              className={`flex flex-2 float-right m-2 cursor-pointer ${
-                signInButtonPressed ? "control__disabled" : ""
-              }`}
+              className={`flex flex-2 float-right m-2 cursor-pointer ${signInButtonPressed ? "control__disabled" : ""
+                }`}
             >
               <CancelIcon
                 onClick={handleDirectClose}
@@ -145,9 +149,8 @@ function SignIn({ dialogCloseRequest, isOpen }) {
             className={`${SignInStyle.signin__Dialog} bg-gradient-to-r dark:from-gray-900  dark:to-gray-900`}
           >
             <form
-              className={`form ${
-                signInButtonPressed ? "control__disabled" : ""
-              }`}
+              className={`form ${signInButtonPressed ? "control__disabled" : ""
+                }`}
               onSubmit={handleSubmit(signIn)}
             >
               <div className="flex">
@@ -176,10 +179,10 @@ function SignIn({ dialogCloseRequest, isOpen }) {
                 <div
                   className={`${SignInStyle.signin__Dialog__signin__with__google__option}`}
                 >
-                   
-                   <GoogleAuth/>
-                   
-                
+
+                  <GoogleAuth />
+
+
                 </div>
               </div>
               <div className="flex flex-col">
@@ -207,13 +210,12 @@ function SignIn({ dialogCloseRequest, isOpen }) {
                   onChange={(e) => setEmail(e.target.value)}
                   {...register("email")}
                   placeholder="Email"
-                  className={`${SignInStyle.signin__registration__input} ${
-                    errors.email?.message
+                  className={`${SignInStyle.signin__registration__input} ${errors.email?.message
                       ? SignInStyle.signinDialog__input__error
                       : dirtyFields.email && (!email || isStringEmpty(email))
-                      ? SignInStyle.signinDialog__input__validated
-                      : ""
-                  }`}
+                        ? SignInStyle.signinDialog__input__validated
+                        : ""
+                    }`}
                 />
               </div>
               <div className="flex flex-col">
@@ -258,22 +260,21 @@ function SignIn({ dialogCloseRequest, isOpen }) {
                   onChange={(e) => setPassword(e.target.value)}
                   {...register("password")}
                   placeholder="Password"
-                  className={`${SignInStyle.signin__registration__input} ${
-                    errors.password?.message
+                  className={`${SignInStyle.signin__registration__input} ${errors.password?.message
                       ? SignInStyle.signinDialog__input__error
                       : dirtyFields.password &&
                         (!password || isStringEmpty(password))
-                      ? SignInStyle.signinDialog__input__validated
-                      : ""
-                  }`}
+                        ? SignInStyle.signinDialog__input__validated
+                        : ""
+                    }`}
                 />
               </div>
               <button
                 className={`${SignInStyle.signin__Dialog__submit__btn}`}
                 type="submit"
               >
-               
-                <Overlay message='Authenticating...' open={signInButtonPressed}/>
+
+                <Overlay message='Authenticating...' open={signInButtonPressed} />
                 {!signInButtonPressed && <LoginIcon />} Sign In
               </button>
               <div className="flex flex-col">
@@ -294,9 +295,8 @@ function SignIn({ dialogCloseRequest, isOpen }) {
                     &nbsp;{" "}
                     <span
                       onClick={switchToSignUp}
-                      className={`${SignInStyle.signin__Dialog__link} ${
-                        signInButtonPressed && SignInStyle.disabled
-                      } dark:text-gray-400  text-gray-900`}
+                      className={`${SignInStyle.signin__Dialog__link} ${signInButtonPressed && SignInStyle.disabled
+                        } dark:text-gray-400  text-gray-900`}
                     >
                       Sign Up now.
                     </span>
