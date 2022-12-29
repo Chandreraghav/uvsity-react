@@ -23,22 +23,42 @@ import Spacer from "../../shared/Spacer";
 import CompletionDetailShimmer from "./Shimmer/CompletionDetailShimmer";
 import { navigateToProfile } from "../Shared/Navigator";
 import { useRouter } from "next/router";
-function CompletionDetail({ data }) {
+import { KEYS } from "../../../async/queries/keys/unique-keys";
+import { standardStaleTime } from "../../../async/subscriptions";
+import { useQuery } from "react-query";
+import { isEmptyObject } from "../../../utils/utility";
+import UserDataService from "../../../pages/api/users/data/UserDataService";
+import { useDataLayerContextValue } from "../../../context/DataLayer";
+function CompletionDetail(props) {
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [loginInfo, setLoginInfo] = useState(ctxUserdata?.logged_in_info);
+  const getProfilePercentageCompletion = async () =>
+    (await UserDataService.getProfilePercentageCompletion()).data;
+  
+    const USER_PROFILE_PERCENTAGE_COMPLETION = useQuery(
+    [KEYS.PROFILE.COMPLETION],
+    getProfilePercentageCompletion,
+    { staleTime: standardStaleTime }
+  );
+
   const router = useRouter();
   const [suggestionShowed, setSuggestionShown] = useState(false);
   const [completionTextObject, setCompletionTextObject] = useState({});
   const handleProfileEdit = () => {
-    navigateToProfile(data?.USER_LOGIN_INFO?.data?.userDetailsId, router);
+    navigateToProfile(loginInfo?.userDetailsId, router);
   };
   const toggleSuggestions = (e) => {
     setSuggestionShown(!suggestionShowed);
   };
 
   useEffect(() => {
-    setCompletionTextObject(
-      getProfileCompletionTexts(data?.USER_PROFILE_PERCENTAGE_COMPLETION?.data)
-    );
-  }, [data?.USER_PROFILE_PERCENTAGE_COMPLETION]);
+     
+      setCompletionTextObject(
+        getProfileCompletionTexts(USER_PROFILE_PERCENTAGE_COMPLETION?.data)
+      );
+    
+
+  }, [USER_PROFILE_PERCENTAGE_COMPLETION?.data]);
 
   const getRGBColor = () => {
     if (completionTextObject.alertLevel === RESPONSE_TYPES.SUCCESS) {
@@ -87,11 +107,11 @@ function CompletionDetail({ data }) {
     <div>
       <Spacer count={2} />
 
-      {data?.USER_PROFILE_PERCENTAGE_COMPLETION.isLoading && (
+      {USER_PROFILE_PERCENTAGE_COMPLETION.isLoading && (
         <CompletionDetailShimmer visible />
       )}
 
-      {data?.USER_PROFILE_PERCENTAGE_COMPLETION.isSuccess && (
+      {USER_PROFILE_PERCENTAGE_COMPLETION.isSuccess && (
         <div
           style={{ borderBottom: `5px solid ${getColor()}` }}
           className={` uvsity__card`}
@@ -109,7 +129,7 @@ function CompletionDetail({ data }) {
               <CompletionProgress
                 color={getRGBColor()}
                 percentage={
-                  data?.USER_PROFILE_PERCENTAGE_COMPLETION?.data
+                  USER_PROFILE_PERCENTAGE_COMPLETION?.data
                     ?.percentageOfProfileAlreadyCompleted
                 }
               />
@@ -130,7 +150,7 @@ function CompletionDetail({ data }) {
                     `${ProfileCompletionDetailStyle.profile__completion__detail__explanation__text} dark:text-gray-500 text-gray-600`
                   }
                   variant="body2"
-                   
+
                 >
                   {completionTextObject.icon}{" "}
                   {completionTextObject.guidanceText}
@@ -178,11 +198,11 @@ function CompletionDetail({ data }) {
                     </Tooltip>
                   ) : (
                     <div className="line-clamp-1">
-                    <Tooltip title={`${action.tooltip}`}>
-                      <Button endIcon={action.icon} size={action.size}>
-                        {action.title}
-                      </Button>
-                    </Tooltip>
+                      <Tooltip title={`${action.tooltip}`}>
+                        <Button endIcon={action.icon} size={action.size}>
+                          {action.title}
+                        </Button>
+                      </Tooltip>
                     </div>
                   )}
                 </div>

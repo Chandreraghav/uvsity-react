@@ -22,7 +22,10 @@ import UserDataService from "../../../../pages/api/users/data/UserDataService";
 import Actions from "../ActionableItems/Actions";
 import { parseMarkdownToHTML } from "../../../../utils/utility";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
-function Preview({ data, authorized, userdata }) {
+import { useDataLayerContextValue } from "../../../../context/DataLayer";
+function Preview({ data, authorized }) {
+  const [context, dispatch] = useDataLayerContextValue();
+  const [userdata, setUserData] = useState(null);
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
   const [attendees, setAttendees] = useState([]);
   const [sessionDetail, setSessionDetail] = useState({});
@@ -237,7 +240,9 @@ function Preview({ data, authorized, userdata }) {
     );
   };
    
-
+  useEffect(() => {
+    setUserData(context?.logged_in_info)
+  }, [context?.logged_in_info])
   return (
     <div className=" uvsity__card__border__theme bg-gray-100 dark:bg-gray-950 w-full rounded-bl-lg rounded-br-lg px-2">
       {/* EVENT/SESSION/AUTHOR NAME */}

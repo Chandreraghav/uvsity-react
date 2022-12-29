@@ -6,8 +6,7 @@ import { TITLES } from "../../constants/userdata";
 import Spacer from "../shared/Spacer";
 import MiniFooter from "../shared/MiniFooter";
 
-function Dashboard({ data }) {
-  
+function Dashboard(props) {
   return (
     <div
       className=" 
@@ -16,17 +15,17 @@ function Dashboard({ data }) {
     xl:grid-cols-8 2xl:px-5 "
     >
       <div className="relative py-2 z-50 col-span-12 md:col-span-3 lg:col-span-3 xl:col-span-2">
-        <Sidebar data={data} type="left" />
+        <Sidebar align="left" />
       </div>
       <div className="z-40 col-span-12 md:pt-2 md:col-span-6 lg:col-span-6 xl:col-span-4">
-        <Intro data={data?.USER_PROFILE_SUMMARY} />
-        <Spacer count={2}/>
-        <CompactCard data={data} title={TITLES.POPULAR_SESSION} />
+        <Intro />
+        <Spacer count={2} />
+        <CompactCard title={TITLES.POPULAR_SESSION} />
       </div>
       <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
-        <Sidebar data={data} type="right" />
+        <Sidebar align="right" />
         <Spacer count={2} />
-        <MiniFooter showOnSmallScreens/>
+        <MiniFooter showOnSmallScreens />
         <Spacer count={2} />
       </div>
       <Spacer count={6} />

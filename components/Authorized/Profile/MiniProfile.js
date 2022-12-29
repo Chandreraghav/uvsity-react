@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   avatarToString,
   formattedProfileSubtitle,
@@ -11,10 +11,10 @@ import { IMAGE_PATHS, TOOLTIPS } from "../../../constants/userdata";
 import Spacer from "../../shared/Spacer";
 import PeekProfile from "../Network/People/Peek/Profile";
 import { makeStyles } from "@material-ui/core/styles";
-import MiniProfileShimmer from "./Shimmer/MiniProfileShimmer";
 import { useRouter } from "next/router";
 import { navigateToProfile } from "../Shared/Navigator";
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
+import { useDataLayerContextValue } from "../../../context/DataLayer";
 const useStyles = makeStyles((theme) => ({
   popover: {
     pointerEvents: "none",
@@ -33,10 +33,11 @@ function MiniProfile({
   name,
   title,
   metaData,
-  masterData,
 }) {
   const router = useRouter();
   const classes = useStyles();
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [userdata, setUserData] = useState(null);
   const popoverAnchor = useRef(null);
   const [openedPopover, setOpenedPopover] = useState(false);
   const handlePopoverOpen = (event) => {
@@ -47,11 +48,12 @@ function MiniProfile({
     setOpenedPopover(false);
   };
 
-  const goToProfile=(masterData,router)=>{
-    
-    navigateToProfile(masterData.data.userDetailsId, router)
+  const goToProfile = (userdata, router) => {
+    navigateToProfile(userdata.userDetailsId, router)
   }
-
+  useEffect(() => {
+    setUserData(ctxUserdata?.userdata)
+  }, [ctxUserdata?.userdata])
   if (!name) return "";
   return (
     <div>
@@ -80,7 +82,7 @@ function MiniProfile({
       >
         <PeekProfile
           isOpen={openedPopover}
-          dark={getMode()===THEME_MODES.DARK?true:false}
+          dark={getMode() === THEME_MODES.DARK ? true : false}
           data={{
             avatar: profileImage,
             primary: name,
@@ -90,16 +92,12 @@ function MiniProfile({
               metaData?.country
             ),
             isItMe: true,
-            oid:masterData.data.userDetailsId
+            oid: userdata?.userDetailsId
           }}
         />
       </Popover>
-      {masterData.isLoading && (
-        <>
-          <MiniProfileShimmer visible />
-        </>
-      )}
-      {masterData.isSuccess && (
+
+      {true && (
         <div
           className={`uvsity__card  uvsity__card__border__theme ${ProfileStyle.profile__mini}`}
         >
@@ -113,7 +111,7 @@ function MiniProfile({
           />
 
           {profileImage &&
-          !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
+            !profileImage.includes(IMAGE_PATHS.NO_PROFILE_PICTURE) ? (
             <Avatar
               ref={popoverAnchor}
               onTouchStart={handlePopoverOpen}
@@ -138,7 +136,7 @@ function MiniProfile({
             <Tooltip title={TOOLTIPS.GO_TO_PROFILE}>
               <h2 className={`dark:text-gray-100 text-gray-900`}
                 onClick={() =>
-                  goToProfile(masterData, router)
+                  goToProfile(userdata, router)
                 }
               >
                 {name}

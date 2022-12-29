@@ -1,5 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import { Divider, Tooltip, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   CONNECTIONS,
   IMAGE_PATHS,
@@ -16,11 +17,13 @@ import { navigateToPath } from "../../Shared/Navigator";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
-function Stats({ data }) {
-  let tooltip, title, Icon, summary;
+import { useDataLayerContextValue } from "../../../../context/DataLayer";
+function Stats(props) {
+  let tooltip, title, Icon;
 
   const router = useRouter();
-  summary = data?.USER_PROFILE_SUMMARY;
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [summary, setSummary] = useState(null);
   title = TITLES.CONNECTIONS;
   Icon = SupervisorAccountIcon;
   tooltip = TOOLTIPS.VIEW_ALL_CONNECTIONS;
@@ -28,9 +31,9 @@ function Stats({ data }) {
   const getTotalStatCount = () => {
     try {
       const count =
-        parseInt(summary?.data?.studentConnectionCount) +
-        parseInt(summary?.data?.alumniConnectionCount) +
-        parseInt(summary?.data?.professorConnectionCount);
+        parseInt(summary?.studentConnectionCount) +
+        parseInt(summary?.alumniConnectionCount) +
+        parseInt(summary?.professorConnectionCount);
       if (isNaN(count)) {
         return 0;
       }
@@ -43,16 +46,19 @@ function Stats({ data }) {
     if (!type) return 0;
     switch (type) {
       case WORKFLOW_CODES.USER.CONNECTION_TYPES.ALUMNI:
-        return summary?.data?.alumniConnectionCount;
+        return summary?.alumniConnectionCount;
       case WORKFLOW_CODES.USER.CONNECTION_TYPES.STUDENT:
-        return summary?.data?.studentConnectionCount;
+        return summary?.studentConnectionCount;
       case WORKFLOW_CODES.USER.CONNECTION_TYPES.PROFESSOR:
-        return summary?.data?.professorConnectionCount;
+        return summary?.professorConnectionCount;
       default:
         return 0;
     }
   };
 
+  useEffect(() => {
+    setSummary(ctxUserdata?.userdata)
+  }, [ctxUserdata?.userdata])
   return (
     <div>
       <Spacer />
@@ -77,16 +83,7 @@ function Stats({ data }) {
         </Tooltip>
 
         <Divider className={StatStyle.stat__divider} />
-        {summary?.isLoading && (
-          <>
-            {[1, 2, 3].map((shim, index) => (
-              <div key={index} className={StatStyle.stat}>
-                <Shimmer key={index} visible />
-                <Spacer />
-              </div>
-            ))}
-          </>
-        )}
+       
         {getTotalStatCount() > 0 &&
           CONNECTIONS.filter((hidden) => hidden !== true).map(
             (connection) =>
@@ -103,7 +100,7 @@ function Stats({ data }) {
                 </div>
               )
           )}
-        {getTotalStatCount() === 0 && summary?.isSuccess && (
+        {getTotalStatCount() === 0 && (
           <div>
             <img
               className={"object-contain"}

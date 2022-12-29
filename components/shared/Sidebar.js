@@ -13,15 +13,13 @@ import { WORKFLOW_CODES } from "../../constants/workflow-codes";
 import Spacer from "./Spacer";
 import Stats from "../Authorized/Profile/Connection/Stats";
 import { useDataLayerContextValue } from "../../context/DataLayer";
-
-
-function Sidebar({ data, type }) {
+function Sidebar(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [userdata, setUserData] = useState(null);
   const [isSticky, setSticky] = useState(false);
-   
   useEffect(() => {
     window.addEventListener("scroll", () => {
-      const scrollheightLimit = type === "left" ? 500 : data?.TOP_SESSIONS.data?.length>0?700:300;
+      const scrollheightLimit = props?.align === "left" ? 500 : 300;
       if (window.scrollY > scrollheightLimit) {
         setSticky(true);
       } else {
@@ -31,32 +29,32 @@ function Sidebar({ data, type }) {
     return () => {
       try {
         window.removeEventListener("scroll");
-      } catch (error) {}
+      } catch (error) { }
     };
-  }, [data?.TOP_SESSIONS.data?.length, type]);
+  }, [props.align]);
 
-  
-  if (type === "left") {
+  useEffect(() => {
+    setUserData(ctxUserdata?.userdata)
+  }, [ctxUserdata?.userdata])
+  if (props.align === "left") {
     return (
       <>
-        
-          <MiniProfile
-            name={formattedName(
-              data?.USER_PROFILE_SUMMARY?.data?.firstName,
-              data?.USER_PROFILE_SUMMARY?.data?.lastName
-            )}
-            title={data?.USER_PROFILE_SUMMARY?.data?.userType}
-            metaData={{
-              company: data?.USER_PROFILE_SUMMARY?.data?.educationalInstitution,
-              location: data?.USER_PROFILE_SUMMARY?.data?.city,
-              city: data?.USER_PROFILE_SUMMARY?.data?.city,
-              country: data?.USER_PROFILE_SUMMARY?.data?.country,
-            }}
-            coverImage={DEFAULT_COVER_IMAGE}
-            profileImage={ctxUserdata?.userdata?.profilePicName || data?.USER_PROFILE_SUMMARY?.data?.profilePicName}
-            masterData={data?.USER_PROFILE_SUMMARY}
-          />
-        <CompletionDetail data={data ? data : null} />
+        <MiniProfile
+          name={formattedName(
+            userdata?.firstName,
+            userdata?.lastName
+          )}
+          title={userdata?.userType}
+          metaData={{
+            company: userdata?.educationalInstitution,
+            location: userdata?.city,
+            city: userdata?.city,
+            country: userdata?.country,
+          }}
+          coverImage={DEFAULT_COVER_IMAGE}
+          profileImage={ctxUserdata?.userdata?.profilePicName || userdata?.profilePicName}
+        />
+        <CompletionDetail />
         {/* People who viewed you */}
         <Spacer count={3} />
 
@@ -68,14 +66,13 @@ function Sidebar({ data, type }) {
           icon={ICONS.PEOPLE_WHO_VIEWED_YOU}
           dashboardPreview
           sticky={isSticky}
-          data={data ? data : null}
         />
       </>
     );
   } else {
     return (
       <>
-        <Stats data={data ? data : null} />
+        <Stats />
         <Spacer />
         <Profiles
           options={{ connect: true, mixedMode: false }}
@@ -84,8 +81,6 @@ function Sidebar({ data, type }) {
           tooltip={TOOLTIPS.PROBABLE_INTERESTING_CONNECTIONS}
           dashboardPreview
           sticky={isSticky}
-          data={data ? data : null}
-          
         />
       </>
     );
