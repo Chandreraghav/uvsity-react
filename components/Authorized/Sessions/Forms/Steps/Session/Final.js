@@ -124,9 +124,46 @@ function Final(props) {
       props.onRetry(0);
     }
   };
+  if (props.sessionProfile) {
+    return (
+      <Slide direction="left" in={true}>
+        <Box className={`p-4 min-h-screen`}>
+          <Box sx={{ width: "100%", mt: 1 }}>
+            <BannerDetail banner={data?.basic} secondary={{ schedule: data?.schedule, fees: data?.fees }} onNavigate={props.onNavigate} />
+            <Grid
+              className="py-2"
+              container
+              rowSpacing={1}
+              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            >
+              <Grid item lg={6} sm={12} md={6} xs={12}>
+                <PreviewCoverDetail bgBlur cover={data?.basic?.binary} />
+                <AuthorDetail author={props?.data?.user} />
+                <SummaryDetail summary={data?.basic?.summary} />
+                <CohostDetail cohost={data?.participant?.cohost} onNavigate={props.onNavigate} />
+                <SponsorshipDetail isDark={isDark} sponsor={data?.sponsor} onNavigate={props.onNavigate} />
+              </Grid>
+              <Grid item lg={6} sm={12} md={6} xs={12}>
+                <ScheduleDetail schedule={data?.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone timeDisplay={timeDisplay} onNavigate={props.onNavigate} />
+                <AttachmentDetail isDark={isDark} attachment={data?.basic} onNavigate={props.onNavigate} />
+                <QuestionairreDetail participant={data?.participant} onNavigate={props.onNavigate} />
+              </Grid>
+            </Grid>
+          </Box>
+          <TimezoneBrowseDialog
+            selectedTimezone={data?.schedule?.timezone || getTimezone()}
+            dialogCloseRequest={handleTimezoneCloseRequest}
+            isOpen={timezoneBrowserOpened}
+          />
+        </Box>
+      </Slide>
+    )
+  }
   return (
     <Slide direction="left" in={true}>
       <Box className={`p-4 min-h-screen`}>
+
+
         {props.hasErrors ? (
           <SweetMessageStrip type='error' dark={isDark} message={getErrorMessage()} retry onRetry={sendRetryRequest} />
         ) : !props.preRequisiteSessionAPIComplete ? (
@@ -137,7 +174,7 @@ function Final(props) {
               <SweetMessageStrip type='message' dark={isDark} message={getCompletionMessage()} subtitle={APP.MESSAGES.INFO.FINAL_STEP_EDITS_HELP_TEXT} />
             )}
             <Box sx={{ width: "100%", mt: 1 }}>
-              <BannerDetail banner={data?.basic} secondary={{ schedule: data?.schedule, fees: data?.fees }} onNavigate={props.onNavigate}/>
+              <BannerDetail banner={data?.basic} secondary={{ schedule: data?.schedule, fees: data?.fees }} onNavigate={props.onNavigate} />
               <Grid
                 className="py-2"
                 container
