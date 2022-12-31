@@ -18,6 +18,13 @@ export const asyncSubscriptions = {
     model: false,
     staleTime: 5000 // 5 seconds
   },
+   SESSION_VIEWS: {
+    enabled: false,
+    subscribed: false,
+    pollEvery: standardSubscriptionPollDelay,
+    model: false,
+    staleTime: 5000 // 5 seconds
+  },
   INTERESTING_CONNECTIONS: {
     enabled: true,
     subscribed: false,

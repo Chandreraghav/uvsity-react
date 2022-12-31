@@ -376,7 +376,9 @@ export const TOOLTIPS = {
   YOU_HAVE_REACHED_END: "You're all Caught Up.",
   COME_BACK_AGAIN: "Come back again later.",
   SEEN_ALL_FEEDS: "You've seen all new feeds.",
-  PROFILE_NOT_FOUND: "The profile you are looking for could not be found."
+  PROFILE_NOT_FOUND: "The profile you are looking for could not be found.",
+  SESSION_NOT_FOUND: "The session you are looking for could not be found."
+
 };
 
 export const GREETING = `${timeOfDay()} <user>`;
@@ -696,6 +698,7 @@ export const SESSION_POSTER = {
 
 export const SESSION_DOCUMENT = {
   id: "session-document",
+  name:null,
   title: "Document",
   description: "Drag and drop a doc or click to select one",
   preview: true,

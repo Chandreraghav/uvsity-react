@@ -52,7 +52,8 @@ function AttachmentDetail(props) {
                     </>
                 )}
 
-                {props.attachment?.binary?.documents?.consent && (
+                {props.attachment?.binary?.documents?.consent && props.attachment?.binary?.documents?.data?.binary
+                                            ?.name && (
                     <>
                     <Spacer/>
                         <Divider sx={{ borderColor: props?.isDark ? 'lightgrey' : 'darkgrey' }} variant="fullWidth" light={!props?.isDark}></Divider>
