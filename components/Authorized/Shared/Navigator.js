@@ -4,6 +4,10 @@ export const navigateToProfile = (id, router) => {
   router.push(AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.PROFILE + id);
 };
 
+export const navigateToSessionProfile = (id, router) => {
+  router.push(AUTHORIZED_ROUTES.AUTHORIZED.SESSION.PROFILE_INDEX + id);
+};
+
 export const navigateToPath = (router, path, query) => {
   if (!query) {
     router.push(path);

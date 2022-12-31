@@ -5,10 +5,6 @@ import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
 import PhoneMenu from "../../components/Authorized/Shared/FireFighter/PhoneMenu";
 import { Box } from "@mui/material";
 import Dashboard from "../../components/Authorized/Dashboard"
-import { useDataLayerContextValue } from "../../context/DataLayer";
-import { useEffect } from "react";
-import UserDataService from "../api/users/data/UserDataService";
-import { actionTypes } from "../../context/reducer";
 
 function Landing() {
   const layoutObj = {

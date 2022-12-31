@@ -23,7 +23,11 @@ import {
 } from "../../../../localStorage/local-storage";
 import { Typography } from "@mui/material";
 import { IMAGE_PATHS, TOOLTIPS } from "../../../../constants/userdata";
+import { useDataLayerContextValue } from '../../../../context/DataLayer'
+
 const UserProfile = () => {
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [loginData, setLoginData] = useState(null);
   const router = useRouter();
   const { profileId } = router.query;
   const [isProfileOwner, setProfileOwner] = useState(false);
@@ -35,8 +39,7 @@ const UserProfile = () => {
   const [layoutObject, setLayoutObject] = useState(null);
   const [responseError, setResponseError] = useState(null);
   const [hasChangeEventTriggered, setChangeEventTriggered] = useState(false);
-  const getLoggedInUserSummary = async () =>
-    (await UserDataService.getSummary()).data;
+
   const getProfileSummary = async () =>
     await UserDataService.getUserProfileBy(profileId);
 
@@ -46,11 +49,7 @@ const UserProfile = () => {
     await UserDataService.getWorkExperience();
   const getUserAcceptedRecommendations = async () =>
     await UserDataService.getUserAcceptedRecommendations();
-  const LOGGED_IN_USER_SUMMARY = useQuery(
-    [KEYS.PROFILE.SUMMARY],
-    getLoggedInUserSummary,
-    { staleTime: standardStaleTime }
-  );
+
 
   const PAST_EDUCATION_DETAIL = useQuery(
     [KEYS.PROFILE.EDUCATION],
@@ -98,7 +97,6 @@ const UserProfile = () => {
   );
 
   const getData = {
-    LOGGED_IN_USER_SUMMARY: LOGGED_IN_USER_SUMMARY,
     PROFILE_SUMMARY: data,
     PAST_EDUCATION_DETAIL: PAST_EDUCATION_DETAIL,
     WORK_EXPERIENCE: WORK_EXPERIENCE,
@@ -107,7 +105,7 @@ const UserProfile = () => {
 
   const isOwner = () => {
     return (
-      Number(profileId) === getData.LOGGED_IN_USER_SUMMARY.data?.userDetailsId
+      Number(profileId) === loginData?.userDetailsId
     );
   };
   const profileName = () => {
@@ -155,12 +153,16 @@ const UserProfile = () => {
   const handleNavigationError = (obj) => {
     console.log(obj);
   };
-  
+
+  useEffect(() => {
+    setLoginData(ctxUserdata?.logged_in_info)
+  }, [ctxUserdata?.logged_in_info])
+
   return (
     <Layout private lowZoom={false} options={layoutObject}>
       <Header
         onHeaderNavigationError={handleNavigationError}
-        data={getData.LOGGED_IN_USER_SUMMARY}
+
       />
       {isSuccess && (
         <div className="main xl:w-3/4 xl:mx-auto lg:w-3/4 lg:mx-auto">
@@ -180,7 +182,7 @@ const UserProfile = () => {
                 ? getData.USER_ACCEPTED_RECOMMENDATIONS.data
                 : getData.PROFILE_SUMMARY?.data?.recommendationsReceived,
             }}
-            loggedInUser={getData.LOGGED_IN_USER_SUMMARY?.data}
+            loggedInUser={loginData}
           />
         </div>
       )}
@@ -206,7 +208,7 @@ const UserProfile = () => {
       {isLoading && (
         <div className="  min-h-screen dark:bg-gray-dark bg-gray-100"></div>
       )}
-      <PhoneMenu data={getData.LOGGED_IN_USER_SUMMARY} />
+      <PhoneMenu />
       <Footer minimizeOnSmallScreens />
     </Layout>
   );

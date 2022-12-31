@@ -582,7 +582,7 @@ function CreateSession(props) {
     }
 
     if (showToast) {
-      const _user = props.data.user.data.firstName;
+      const _user = props.data.user.firstName;
       const _err = msg.replace("<user>", _user);
       handleResponse(_err, RESPONSE_TYPES.ERROR, toast.POSITION.TOP_CENTER);
     }
@@ -854,7 +854,7 @@ function CreateSession(props) {
     closeConfirmSessionSubmitDialog();
 
     const sponsorshipLevels = getPlans();
-    const user = props.data.user.data;
+    const user = props.data.user;
     const categories = [
       {
         courseCategoryName: "",
@@ -1070,7 +1070,7 @@ function CreateSession(props) {
           if (res.data.success) {
             toggleDirty(false);
             setHasErrors(false);
-            const _user = props.data.user.data.firstName;
+            const _user = props.data.user.firstName;
             const msg = SESSION.CREATED.replace("<user>", _user);
             handleResponse(
               msg,

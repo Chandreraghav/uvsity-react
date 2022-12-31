@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { KEYS } from "../../async/queries/keys/unique-keys";
-import { asyncSubscriptions, standardStaleTime } from "../../async/subscriptions";
+import { asyncSubscriptions } from "../../async/subscriptions";
 import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
 import AddToNetwork from "../../components/Authorized/Network/People/Categories/AddToNetwork";
 import MyConnections from "../../components/Authorized/Network/People/Categories/Connections/MyConnections";
@@ -13,9 +11,7 @@ import { navigateToPath } from "../../components/Authorized/Shared/Navigator";
 import Layout from "../../components/Main/Layout";
 import Footer from "../../components/shared/Footer";
 import { AUTHORIZED_ROUTES } from "../../constants/routes";
-import { CONNECTIONS } from "../../constants/userdata";
 import { WORKFLOW_CODES } from "../../constants/workflow-codes";
-import UserDataService from "../api/users/data/UserDataService";
 
 function People() {
   const router = useRouter();
@@ -25,15 +21,7 @@ function People() {
   const handleNavigationError = (obj) => {
     console.log(obj);
   };
-  const getSummary = async () => (await UserDataService.getSummary()).data;
-  const USER_PROFILE_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], getSummary, {
-    refetchOnWindowFocus: false,
-    staleTime: standardStaleTime,
-  });
-  const getData = {
-    USER_PROFILE_SUMMARY,
-  };
-
+   
   const setLayout = () => {
     const utrn = router.query.utrn;
     if (utrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS) {
@@ -77,23 +65,24 @@ function People() {
       setLayoutObject(null);
     };
   }, [router]);
+
+
   return (
     <Layout private options={layoutObj}>
       <Header
         onHeaderNavigationError={handleNavigationError}
-        data={getData.USER_PROFILE_SUMMARY}
       />
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS && (
-        <MyConnections workflow={WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS} userdata={getData.USER_PROFILE_SUMMARY} filter={routeFilter??'all'} />
+        <MyConnections workflow={WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS}   filter={routeFilter??'all'} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.PROFILE_VISITS && (
-        <ProfileVisits workflow={WORKFLOW_CODES.PEOPLE.PROFILE_VIEW} userdata={getData.USER_PROFILE_SUMMARY} filter ={asyncSubscriptions.PROFILE_VISITS.alias} />
+        <ProfileVisits workflow={WORKFLOW_CODES.PEOPLE.PROFILE_VIEW}  filter ={asyncSubscriptions.PROFILE_VISITS.alias} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ADD_TO_NETWORK && (
-        <AddToNetwork workflow={WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING} userdata={getData.USER_PROFILE_SUMMARY} filter ={asyncSubscriptions.INTERESTING_CONNECTIONS.alias}  />
+        <AddToNetwork workflow={WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING}   filter ={asyncSubscriptions.INTERESTING_CONNECTIONS.alias}  />
       )}
 
-      <PhoneMenu data={getData.USER_PROFILE_SUMMARY} />
+      <PhoneMenu />
       <Footer minimizeOnSmallScreens />
     </Layout>
   );

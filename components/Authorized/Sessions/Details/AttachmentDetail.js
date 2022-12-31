@@ -4,10 +4,10 @@ import VideocamIcon from "@mui/icons-material/Videocam";
 import ReactPlayer from "react-player";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import EditIcon from "@mui/icons-material/Edit";
-import { download, getFileExtension, getIconPerFileExtension } from '../../../../utils/utility';
+import { download, getFileExtension, getIconPerFileExtension, isEmptyObject } from '../../../../utils/utility';
 import Spacer from '../../../shared/Spacer';
 function AttachmentDetail(props) {
-    if (!props.attachment) return (<></>)
+    if (!props.attachment || (!props.attachment?.url && !props.attachment?.binary?.documents?.consent)) return (<></>)
     return (
         <div className="flex flex-col gap-2 bg-gray-100 dark:bg-gray-950 px-4 p-4 mt-1 rounded-lg border-1 border-spacing-2 shadow-md bg-repeat-round">
             <div className="flex flex-col gap-1">

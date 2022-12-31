@@ -44,13 +44,13 @@ function Final(props) {
   const getErrorMessage = () => {
     let msg = APP.MESSAGES.ERRORS.FINAL_STEP_COMPLETION_FAILED;
     if (props.errorMessage) msg = props.errorMessage;
-    const _user = props.data.user.data.firstName;
+    const _user = props.data.user.firstName;
     const _err = msg.replace("<user>", _user);
     return _err;
   };
   const getCompletionMessage = () => {
     const randomString = USER_CONFIDENCE_KEYWORDS_ON_WORKFLOW_COMPLETION[4]
-    const _user = props?.data?.user?.data?.firstName;
+    const _user = props?.data?.user?.firstName;
     const message = APP.MESSAGES.INFO.FINAL_STEP_COMPLETED.replace(
       "<user>",
       _user
@@ -146,7 +146,7 @@ function Final(props) {
               >
                 <Grid item lg={6} sm={12} md={6} xs={12}>
                   <PreviewCoverDetail bgBlur cover={data?.basic?.binary} />
-                  <AuthorDetail author={props?.data?.user?.data} />
+                  <AuthorDetail author={props?.data?.user} />
                   <SummaryDetail summary={data?.basic?.summary} />
                   <CohostDetail cohost={data?.participant?.cohost} onNavigate={props.onNavigate} />
                   <SponsorshipDetail isDark={isDark} sponsor={data?.sponsor} onNavigate={props.onNavigate} />

@@ -50,7 +50,8 @@ function Profiles({
     getProfilesData,
     {
       staleTime: workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING ? asyncSubscriptions.INTERESTING_CONNECTIONS.staleTime : asyncSubscriptions.PROFILE_VISITS.staleTime,
-      refetchInterval:workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING?asyncSubscriptions.INTERESTING_CONNECTIONS.pollEvery: false
+      refetchInterval:workflowRoute === WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING?asyncSubscriptions.INTERESTING_CONNECTIONS.pollEvery: false,
+      refetchOnWindowFocus:false
     }
   );
 

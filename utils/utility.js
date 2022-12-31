@@ -1,6 +1,6 @@
 import moment from "moment";
 import { TIME_OF_DAY_GREETING } from "../constants/constants";
-import { getLocalStorageObject } from "../localStorage/local-storage";
+import { getLocalStorageObject, setLocalStorageObject } from "../localStorage/local-storage";
 import parse from "html-react-parser";
 import convertToHTML from "markdown-to-html-converter";
 import { SESSION_DOCUMENT } from "../constants/userdata";
@@ -124,9 +124,27 @@ export const localTZDate = (data) => {
 
 export const getTimezone = () => {
   try {
+    const globalTimezone = JSON.parse(getLocalStorageObject("uvsity-timezone"))
+    if(globalTimezone && globalTimezone.timezone){
+        return globalTimezone.timezone
+    }
     return JSON.parse(getLocalStorageObject("uvsity-ipData")).time_zone.name;
   } catch (error) {
     return "America/New_York";
+  }
+};
+export const setGlobalTimezone = (tz, force=false) => {
+  try {
+    if(force){
+      setLocalStorageObject("uvsity-timezone", {timezone:tz});
+      return;
+    }
+    const ipdata = JSON.parse(getLocalStorageObject("uvsity-ipData"))
+    if(tz==ipdata.time_zone.name){
+      return;
+    }
+    setLocalStorageObject("uvsity-timezone", {timezone:tz});
+     } catch (error) {
   }
 };
 
@@ -419,4 +437,12 @@ export const isValidYear = (year,stringify=true) => {
       return true;
     }
   }
+}
+
+export const getLocalTimezone=()=>{
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+export const setLocalTimezone=()=>{
+  setGlobalTimezone(getLocalTimezone(),true)
 }

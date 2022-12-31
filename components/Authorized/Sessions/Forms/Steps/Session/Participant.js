@@ -15,8 +15,6 @@ import Profile from "../../../../Network/People/Listing/Search/Profile";
 import SearchService from "../../../../../../pages/api/people/network/Search/SearchService";
 import SnapProfile from "../../../../Network/People/Listing/Snap/Profile";
 import UserDataService from "../../../../../../pages/api/users/data/UserDataService";
-import { useQuery } from "react-query";
-import { KEYS } from "../../../../../../async/queries/keys/unique-keys";
 import ParticipantStyles from "../../../../../../styles/Participant.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Switch from "@mui/material/Switch";
@@ -44,11 +42,11 @@ import { useRouter } from "next/router";
 import { actionTypes } from "../../../../../../context/reducer";
 import { AuthService } from "../../../../../../pages/api/users/auth/AuthService";
 import { SESSION } from "../../../../../../validation/services/auth/ValidationSchema";
-import { infinity } from "../../../../../../async/subscriptions";
 import { makeStyles } from "@material-ui/core/styles";
 import { THEME_MODES, useTheme } from "../../../../../../theme/ThemeProvider";
 toast.configure();
 function Participant(props) {
+  const [loginData, setLoginData] = useState(null);
   const Router = useRouter();
   const [theme, _dispatch] = useTheme();
   const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
@@ -127,12 +125,10 @@ function Participant(props) {
     },
   }));
   const classes = useStyles();
-  const getLoggedInInformation = async () =>
-    (await UserDataService.getLoggedInInformation()).data;
-  const USER_LOGIN_INFO = useQuery([KEYS.LOGIN.INFO], getLoggedInInformation, {
-    refetchOnWindowFocus: false,
-    staleTime: infinity
-  });
+   
+  useEffect(() => {
+    setLoginData(data?.logged_in_info)
+  }, [data?.logged_in_info])
   const changeHandler = (event) => {
     setQuery(event.target.value);
     setTimeout(() => {
@@ -452,7 +448,7 @@ function Participant(props) {
                       userType={selectedItem.userType}
                       instituition={selectedItem.eduIns}
                       oid={selectedItem.userDetailsId}
-                      userdata={USER_LOGIN_INFO?.data}
+                      userdata={loginData}
                     />
                     <div className="ml-auto">
                       <Tooltip title="Remove co-host">

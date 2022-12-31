@@ -38,7 +38,7 @@ function CompletionDetail(props) {
     const USER_PROFILE_PERCENTAGE_COMPLETION = useQuery(
     [KEYS.PROFILE.COMPLETION],
     getProfilePercentageCompletion,
-    { staleTime: standardStaleTime }
+    { staleTime: standardStaleTime ,refetchOnWindowFocus:false}
   );
 
   const router = useRouter();

@@ -2,7 +2,8 @@ export const AUTHORIZED_ROUTES={
    AUTHORIZED:{
     DASHBOARD: '/app-gateway/Landing',
     SESSION:{
-       CREATE:"/app-gateway/Session/Create"
+       CREATE:"/app-gateway/Session/Create",
+       PROFILE_INDEX:"/app-gateway/Session/"
     },
     PEOPLE:{
        PROFILE:'/app-gateway/User/Profile/',
