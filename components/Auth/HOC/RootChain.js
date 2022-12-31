@@ -51,9 +51,7 @@ function RootChain(props) {
   };
 
   const activeTimeEmitter = (activeTimeEvent) => { };
-
-
-
+  
   const fetchSummary = async () => {
     return (await UserDataService.getSummary()).data
   }
@@ -63,10 +61,12 @@ function RootChain(props) {
 
   const USER_SUMMARY = useQuery([KEYS.PROFILE.SUMMARY], fetchSummary, {
     staleTime: standardStaleTime,
+    refetchOnWindowFocus:false
   });
 
   const USER_LOGIN_INFO = useQuery([KEYS.LOGIN.INFO], fetchLoggedInInfo, {
     staleTime: standardStaleTime,
+    refetchOnWindowFocus:false
   });
   
   useEffect(() => {

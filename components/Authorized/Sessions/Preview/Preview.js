@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { Tooltip } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -8,6 +8,7 @@ import StarRateIcon from "@mui/icons-material/StarRate";
 import CoPresentIcon from "@mui/icons-material/CoPresent";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { SESSION_REVIEW_MAX_STAR_COUNT } from "../../../../constants/constants";
+import { v4 as uuidv4 } from "uuid";
 import {
   IMAGE_PATHS,
   PLACEHOLDERS,
@@ -23,7 +24,11 @@ import Actions from "../ActionableItems/Actions";
 import { parseMarkdownToHTML } from "../../../../utils/utility";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
+import { useRouter } from "next/router";
+import { navigateToPath } from "../../Shared/Navigator";
+import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 function Preview({ data, authorized }) {
+  const router = useRouter();
   const [context, dispatch] = useDataLayerContextValue();
   const [userdata, setUserData] = useState(null);
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
@@ -31,8 +36,8 @@ function Preview({ data, authorized }) {
   const [sessionDetail, setSessionDetail] = useState({});
   const [sessionCreatorDetail, setSessionCreatorDetail] = useState({});
   const [cohostDetail, setCoHostDetail] = useState({});
-  const [eventPosterSrc, setEventPosterSrc] = useState(data.imageURL?data.imageURL:IMAGE_PATHS.NO_DATA.EVENT_POSTER);
- 
+  const [eventPosterSrc, setEventPosterSrc] = useState(data.imageURL ? data.imageURL : IMAGE_PATHS.NO_DATA.EVENT_POSTER);
+
   // THE NEEDFUL OR DEPENDENT DATA FOR EACH SESSION PREVIEW
   // ARE BEING CALLED VIA USE EFFECT AND NOT WITH REACT QUERY BECAUSE WE CANNOT DO
   // THAT AND IF DONE WILL HAVE SLOWNESS AND ENORMOUS PERFORMANCE IMPACT.
@@ -57,16 +62,16 @@ function Preview({ data, authorized }) {
     };
   }, [data]);
 
-  useEffect( () => {
+  useEffect(() => {
     let isSubscribed = true;
     let controller = new AbortController();
-    
-    async function evalAttendees(){
-      if (openAttendeesDialog===true && data.numberOfAttendees > 0 && isSubscribed) {
+
+    async function evalAttendees() {
+      if (openAttendeesDialog === true && data.numberOfAttendees > 0 && isSubscribed) {
         await UserDataService.getAttendeesPerCourse(data.courseId).then((response) => {
-         setAttendees(response?.data?.users);
-       });
-     }
+          setAttendees(response?.data?.users);
+        });
+      }
     }
     evalAttendees()
     return () => {
@@ -131,7 +136,7 @@ function Preview({ data, authorized }) {
   }, [data.coHosts]);
   if (!data) return "";
 
-  
+
 
   const amIAttending = () => {
     const index = attendees?.findIndex((x) => {
@@ -156,9 +161,8 @@ function Preview({ data, authorized }) {
     return (
       <>
         <div
-          className={` ${
-            amITheOnlyOneAttending ? "" : "dialog-title"
-          }  text-xs font-medium leading-tight`}
+          className={` ${amITheOnlyOneAttending ? "" : "dialog-title"
+            }  text-xs font-medium leading-tight`}
         >
           {amIAttending() && data?.numberOfAttendees > 1 ? (
             <>
@@ -239,17 +243,18 @@ function Preview({ data, authorized }) {
       </Tooltip>
     );
   };
-   
+
   useEffect(() => {
     setUserData(context?.logged_in_info)
   }, [context?.logged_in_info])
   return (
-    <div className=" uvsity__card__border__theme bg-gray-100 dark:bg-gray-950 w-full rounded-bl-lg rounded-br-lg px-2">
+    <div className=" shadow-lg py-2 uvsity__card__border__theme bg-gray-100 dark:bg-gray-900 w-full px-2 rounded-lg">
       {/* EVENT/SESSION/AUTHOR NAME */}
       <div className="flex flex-row flex-wrap flex-grow-0">
         <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5 px-2 py-2">
           <Tooltip title={data?.courseFullName}>
-            <h1
+            <h1  onClick={() => navigateToPath(router,AUTHORIZED_ROUTES.AUTHORIZED.SESSION.PROFILE_INDEX + data?.courseId, {  token: uuidv4() }
+                )}
               className={`${SessionStyle.preview__session__title} line-clamp-2 mb-1 text-3xl font-semibold leading-tight tracking-tight text-gray-900 dark:text-gray-100`}
             >
               {data?.courseFullName}
@@ -268,7 +273,7 @@ function Preview({ data, authorized }) {
               isVisibleOnSessionCard
               metaData={data}
               userdata={userdata}
-              dark={getMode()===THEME_MODES.DARK?true:false}
+              dark={getMode() === THEME_MODES.DARK ? true : false}
               options={{ connect: false, mixedMode: true }}
             />
             <div
@@ -306,7 +311,7 @@ function Preview({ data, authorized }) {
                     metaData={{ associatedCoHostData: cohostDetail }}
                     options={{ connect: false, mixedMode: true }}
                     userdata={userdata}
-                    dark={getMode()===THEME_MODES.DARK?true:false}
+                    dark={getMode() === THEME_MODES.DARK ? true : false}
                   />
                 </div>
               </div>
@@ -330,19 +335,20 @@ function Preview({ data, authorized }) {
               {getAttendanceJSX()}
             </div>
           )}
+
+          <Box className="flex ml-auto">
+            {generateMonetizationAmountOnCard(data.cost)}
+          </Box>
         </div>
+
         <Spacer />
         <div>
           <Divider className={SessionStyle.preview__card__divider} />
         </div>
       </div>
       {/* Session Actions */}
-      <div className="flex flex-wrap px-2 py-2 gap-4">
-        {generateMonetizationAmountOnCard(data.cost)}
+      {sessionDetail && (<Actions data={sessionDetail} />)}
 
-        <Actions data={sessionDetail} />
-        
-      </div>
 
       <CustomDialog
         dialogCloseRequest={handleAttendeesDialogClose}
@@ -351,8 +357,8 @@ function Preview({ data, authorized }) {
         data={data}
         secondaryData={attendees}
         workflow_code={WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION}
-        name="Attendees-Dialog"         
-        dark={getMode()===THEME_MODES.DARK?true:false}
+        name="Attendees-Dialog"
+        dark={getMode() === THEME_MODES.DARK ? true : false}
       />
     </div>
   );

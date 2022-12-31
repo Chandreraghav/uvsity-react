@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
 import Preview from "./Preview";
-import { Divider, Typography } from "@mui/material";
+import { Box, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import Spacer from "../../../shared/Spacer";
 import Shimmer from "./Shimmer/Shimmer";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -13,15 +13,24 @@ import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { useQuery } from "react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
-import { standardStaleTime } from "../../../../async/subscriptions";
+import { standardSubscriptionPollDelay, standardStaleTime } from "../../../../async/subscriptions";
 import UserDataService from "../../../../pages/api/users/data/UserDataService";
+import { getLocalTimezone, getTimezone, setGlobalTimezone, setLocalTimezone } from "../../../../utils/utility";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import TimezoneStrip from "../../Shared/TimezoneStrip";
+import TimezoneBrowseDialog from "../../../shared/modals/TimezoneBrowseDialog";
 function CompactCard({ title }) {
+
   const [isSticky, setSticky] = useState(false);
+  const [timezone, setTimezone] = useState(getTimezone());
+  const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
+  
   const getTopCourses = async () =>
     (await UserDataService.getTopCourses()).data;
 
   const TOP_SESSIONS = useQuery([KEYS.SESSION.TOP], getTopCourses, {
     staleTime: standardStaleTime,
+    refetchOnWindowFocus: false
   });
   useEffect(() => {
     window.addEventListener("scroll", () => {
@@ -38,31 +47,59 @@ function CompactCard({ title }) {
       } catch (error) { }
     };
   }, []);
+  const handleTimeZoneBrowse = (obj) => {
+    if(obj==='revert'){
+      setLocalTimezone();
+      setTimezone(getLocalTimezone())
+      return;
+    }
+    setTimezoneBrowser(true)
+  }
+
+  const handleTimezoneCloseRequest = (obj) => {
+    setTimezoneBrowser(false);
+    if (obj?.timezone) {
+      setTimezone(obj.timezone)
+      setGlobalTimezone(obj.timezone)
+    }
+  };
   return (
     <>
-      {TOP_SESSIONS.data?.length > 0 ? (
-        <div className="flex flex-col">
+      <div className="flex flex-col">
+        <Box className="flex">
           <Typography className="font-bold text-lg pr-8" variant="subtitle"><TrendingUpIcon />&nbsp;{title}</Typography>
-          <Spacer />
-          <Divider />
-          <div
-            className="grid items-stretch grid-cols-1 gap-2 px-2 
+          {TOP_SESSIONS.data && TOP_SESSIONS.data?.length > 0 && (
+           <>
+            <TimezoneStrip onTimezoneBrowse={handleTimeZoneBrowse} timezone={timezone} />
+            <TimezoneBrowseDialog
+              selectedTimezone={timezone}
+              dialogCloseRequest={handleTimezoneCloseRequest}
+              isOpen={timezoneBrowserOpened}
+            />
+          </>)}
+        </Box>
+        <Spacer />
+        <Divider />
+        <div
+          className="grid items-stretch grid-cols-1 gap-2 px-2 
        py-4 xl:container md:gap-4 xl:grid-cols-1 2xl:px-5 "
-          >
-            {[1, 2].map((i, v) => (
-              <Shimmer key={v} visible={TOP_SESSIONS.isLoading} />
+        >
+          {[1, 2].map((i, v) => (
+            <Shimmer key={v} visible={TOP_SESSIONS.isLoading} />
+          ))}
+
+          {TOP_SESSIONS.isSuccess &&
+            TOP_SESSIONS.data.length > 0 &&
+            TOP_SESSIONS?.data?.map((value) => (
+              <Stack key={value.courseId}>
+                <Preview
+                  data={value}
+                />
+                <Spacer />
+              </Stack>
             ))}
 
-            {TOP_SESSIONS.isSuccess &&
-              TOP_SESSIONS.data.length > 0 &&
-              TOP_SESSIONS?.data?.map((value) => (
-                <div key={value.courseId}>
-                  <Preview
-                    data={value}
-                  />
-                  <Spacer />
-                </div>
-              ))}
+          {TOP_SESSIONS?.data?.length > 0 && (
             <EndOfFeed
               src={IMAGE_PATHS.NO_DATA.FEED}
               title={TOOLTIPS.YOU_HAVE_REACHED_END}
@@ -70,19 +107,23 @@ function CompactCard({ title }) {
               color="text-blue-700"
               icon={CheckCircleIcon}
             />
-          </div>
+          )}
+          {TOP_SESSIONS?.data?.length == 0 && (<div className={`mb-4 ${isSticky ? 'sticky top-20' : ''}`}>
+            <EndOfFeed
+              src={IMAGE_PATHS.NO_DATA.SESSION}
+              title={TOOLTIPS.NO_POPULAR_SESSIONS}
+              subtitle={TOOLTIPS.COME_BACK_AGAIN}
+              color={getMode() === THEME_MODES.DARK ? ' text-gray-600' : 'text-gray-800'}
+              icon={InfoIcon}
+            />
+          </div>)}
+
+
         </div>
-      ) : (
-        <div className={`mb-4 ${isSticky ? 'sticky top-20' : ''}`}>
-          <EndOfFeed
-            src={IMAGE_PATHS.NO_DATA.SESSION}
-            title={TOOLTIPS.NO_POPULAR_SESSIONS}
-            subtitle={TOOLTIPS.COME_BACK_AGAIN}
-            color={getMode() === THEME_MODES.DARK ? ' text-gray-600' : 'text-gray-800'}
-            icon={InfoIcon}
-          />
-        </div>
-      )}
+      </div>
+
+
+
     </>
   );
 }

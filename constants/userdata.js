@@ -599,7 +599,7 @@ export const IMAGE_PATHS = {
       "/static/images/nodata-illustrations/broken-bike-3488525-2922411.webp",
 
     FEED: "/static/images/nodata-illustrations/all-done-illustration-woman-1-removebg-preview.png",
-    EVENT_POSTER: "/static/images/session-poster-not-found.jpg",
+    EVENT_POSTER: "/static/images/session-poster-broken.jfif",
     NO_PROFILE:"/static/images/nodata-illustrations/no-results.webp"
   },
   NO_PROFILE_PICTURE: "profilebig.png",
@@ -1060,6 +1060,24 @@ export const APP = {
       user: null,
       requestPath: null,
     },
+    ACTIONS:{
+      STATUS:{
+        OWNER:'OWNER',
+        ALREADY_REGISTERED:'ALREADY_REGISTERED',
+        REGISTRATION_FULL:'REGISTRATION_FULL',
+        PAID:'PAID',
+        FREE:'FREE',
+        SESSION_EXPIRED:'SESSION_EXPIRED',
+        SESSION_EXPIRED_V2:'Expired',
+        APPROVED:'Approved',
+        ACTIVE:'Active',
+        REGISTERED:'Registered'
+      },
+      ALIAS:{
+        REGISTRATION:'registration',
+        SPONSORSHIP:'sponsorship'
+      }
+    }
   },
 };
 export const AUTH_TOKENS = {

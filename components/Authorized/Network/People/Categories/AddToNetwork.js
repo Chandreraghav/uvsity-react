@@ -10,8 +10,10 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { asyncSubscriptions } from '../../../../../async/subscriptions';
 import Overlay from '../../../../shared/Overlay';
 import { LOADING_MESSAGE_DEFAULT } from '../../../../../constants/constants';
+import { useDataLayerContextValue } from '../../../../../context/DataLayer';
 function AddToNetwork(props) {
-
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [userdata, setUserData] = useState(null);
   const [loadMore, setLoadMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [data, setData] = useState([]);
@@ -368,6 +370,9 @@ function AddToNetwork(props) {
     }
   }, [isDataChangedFromFilter, isBreadCrumbsDeleted, student, alumni, professors, awaitingResponseFilterCriteria, inMyNetworkFilterCriteria, city, country, specialization, campus, educationInstitution])
 
+  useEffect(() => {
+    setUserData(ctxUserdata?.userdata)
+  }, [ctxUserdata?.userdata])
   return (
     <>
       <div
@@ -381,7 +386,7 @@ function AddToNetwork(props) {
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
           <>
 
-            <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={props?.userdata?.data} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PROBABLE_INTERESTING_CONNECTIONS, icon: PeopleAltIcon }} />
+            <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={userdata} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PROBABLE_INTERESTING_CONNECTIONS, icon: PeopleAltIcon }} />
 
             {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
             <Spacer count={2} />
@@ -390,7 +395,7 @@ function AddToNetwork(props) {
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
-          <Sidebar connections={connectionsCategory} resetField={resetFilterField} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={props.userdata?.data} />
+          <Sidebar connections={connectionsCategory} resetField={resetFilterField} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={userdata} />
 
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />

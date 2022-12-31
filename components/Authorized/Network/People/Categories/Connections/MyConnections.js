@@ -8,7 +8,10 @@ import LoadMore from "../../../../../shared/LoadMore";
 import Sidebar from "../../Filter/Sidebar";
 import { WORKFLOW_CODES } from "../../../../../../constants/workflow-codes";
 import { useRouter } from "next/router";
+import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
 function MyConnections(props) {
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  const [userdata, setUserData] = useState(null);
   const [student, setStudent] = useState(CONNECTIONS[0].title === props.filter);
   const [professors, setProfessors] = useState(CONNECTIONS[1].title === props.filter);
   const [alumni, setAlumni] = useState(CONNECTIONS[2].title === props.filter);
@@ -55,7 +58,7 @@ function MyConnections(props) {
 
   const setConnectionData =
     (data) => {
-      if(loadError){
+      if (loadError) {
         setLoadError(false)
       }
       getConnectionsData(data).then((res) => {
@@ -125,21 +128,21 @@ function MyConnections(props) {
 
     if (props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS) {
       const count =
-        parseInt(props.userdata?.data?.studentConnectionCount) +
-        parseInt(props.userdata?.data?.alumniConnectionCount) +
-        parseInt(props.userdata?.data?.professorConnectionCount)
+        parseInt(userdata?.studentConnectionCount) +
+        parseInt(userdata?.alumniConnectionCount) +
+        parseInt(userdata?.professorConnectionCount)
       setCount(count)
       if (student) {
         setAdditionalTitle(CONNECTIONS[0].title)
-        setSubCount(props.userdata?.data?.studentConnectionCount)
+        setSubCount(userdata?.studentConnectionCount)
       }
       else if (professors) {
         setAdditionalTitle(CONNECTIONS[1].title)
-        setSubCount(props.userdata?.data?.professorConnectionCount)
+        setSubCount(userdata?.professorConnectionCount)
       }
       else if (alumni) {
         setAdditionalTitle(CONNECTIONS[2].title)
-        setSubCount(props.userdata?.data?.alumniConnectionCount)
+        setSubCount(userdata?.alumniConnectionCount)
       }
       else {
         setAdditionalTitle(null)
@@ -149,7 +152,7 @@ function MyConnections(props) {
     else {
       setAdditionalTitle(null)
     }
-  }, [student, alumni, professors, props.workflow, props.userdata?.data?.studentConnectionCount, props.userdata?.data?.professorConnectionCount, props.userdata?.data?.alumniConnectionCount, isDataChangedFromFilter, isBreadCrumbsDeleted])
+  }, [student, alumni, professors, props.workflow, userdata?.studentConnectionCount, userdata?.professorConnectionCount, userdata?.alumniConnectionCount, isDataChangedFromFilter, isBreadCrumbsDeleted])
 
   useEffect(() => {
     if (loadMore === true) {
@@ -221,7 +224,7 @@ function MyConnections(props) {
         connectionCategories[targetSidebarSelectionIdx].selected = false
         setConnectionsCategory(connectionCategories)
       }
-     
+
       if (obj.title === CONNECTIONS.at(0).title) {
         setStudent(false)
       }
@@ -231,9 +234,13 @@ function MyConnections(props) {
       else if (obj.title === CONNECTIONS.at(2).title) {
         setAlumni(false)
       }
-      
+
     }
   }
+
+  useEffect(() => {
+    setUserData(ctxUserdata?.userdata)
+  }, [ctxUserdata?.userdata])
 
   return (
     <>
@@ -247,7 +254,7 @@ function MyConnections(props) {
 
           <>
 
-            <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={props.userdata?.data} _data={data}
+            <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={userdata} _data={data}
               properties={{
                 title: HEADER_OPTIONS[1].title,
                 subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon,
@@ -261,7 +268,7 @@ function MyConnections(props) {
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
-          <Sidebar connections={connectionsCategory} selectedCategory={router.query?.filter || null} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={props.userdata?.data} />
+          <Sidebar connections={connectionsCategory} selectedCategory={router.query?.filter || null} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={userdata} />
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />
           <Spacer count={2} />

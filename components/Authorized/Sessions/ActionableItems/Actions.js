@@ -1,56 +1,62 @@
-import { Box, Tooltip, Typography } from "@mui/material";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { SESSION_ACTIONS } from "../../../../constants/userdata";
+import { Box, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
+import React, { useMemo, useState } from "react";
+import { APP, SESSION_ACTIONS } from "../../../../constants/userdata";
 import SessionStyle from "../../../../styles/Session.module.css";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useRouter } from "next/router";
+import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
+import { v4 as uuidv4 } from "uuid";
+import { navigateToPath } from "../../Shared/Navigator";
 function Actions(props) {
-  const [actions, setActions] = useState([])
-  const isSessionRegistrationPossible = useCallback(() => {
+  const [actions, setActions] = useState(SESSION_ACTIONS)
+  const router = useRouter();
+  const isSessionRegistrationPossible = () => {
     if (props.data.owner) {
       //you the owner of the session
       return {
-        status: "OWNER",
-        action: 'registration',
+        status: APP.SESSION.ACTIONS.STATUS.OWNER,
+        action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
         flag: false,
       };
     }
     if (props.data.userRegistered) {
       //you have registered already
       return {
-        status: "ALREADY_REGISTERED",
-        action: 'registration',
+        status: APP.SESSION.ACTIONS.STATUS.ALREADY_REGISTERED,
+        action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
+        icon: <CheckCircleIcon />,
         flag: false,
       };
     }
-    if (!props.data.userRegistered && props.data.courseStatus == "Expired") {
+    if (!props.data.userRegistered && props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.SESSION_EXPIRED_V2) {
       //session has expired
       return {
-        status: "SESSION_EXPIRED",
-        action: 'registration',
+        status: APP.SESSION.ACTIONS.STATUS.SESSION_EXPIRED,
+        action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
         flag: false,
       };
     }
 
     if (
       !props.data.userRegistered &&
-      (props.data.courseStatus == "Approved" ||
-        props.data.courseStatus == "Active") &&
+      (props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.APPROVED ||
+        props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.ACTIVE) &&
       !props.data.isRegistrationPossible
     ) {
       //  Registration Full. The owner of this session is not accepting any new registration.
       if (!props.data.owner) {
         return {
-          status: "REGISTRATION_FULL",
+          status: APP.SESSION.ACTIONS.STATUS.REGISTRATION_FULL,
           flag: false,
-          action: 'registration',
+          action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
         };
       }
     }
 
     if (
       !props.data.userRegistered &&
-      (props.data.courseStatus == "Approved" ||
-        props.data.courseStatus == "Active") &&
+      (props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.APPROVED ||
+        props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.ACTIVE) &&
       props.data.isRegistrationPossible
     ) {
       if (
@@ -62,10 +68,10 @@ function Actions(props) {
       ) {
         //paid without questionaire
         return {
-          status: "PAID",
+          status: APP.SESSION.ACTIONS.STATUS.PAID,
           questionaire: false,
           flag: true,
-          action: 'registration',
+          action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
         };
       }
       if (
@@ -76,10 +82,10 @@ function Actions(props) {
       ) {
         //paid with questionaire
         return {
-          status: "PAID",
+          status: APP.SESSION.ACTIONS.STATUS.PAID,
           questionaire: true,
           flag: true,
-          action: 'registration',
+          action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
         };
       }
 
@@ -91,10 +97,10 @@ function Actions(props) {
       ) {
         // free with questionaire
         return {
-          status: "FREE",
+          status: APP.SESSION.ACTIONS.STATUS.FREE,
           questionaire: true,
           flag: true,
-          action: 'registration',
+          action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
         };
       }
 
@@ -107,10 +113,10 @@ function Actions(props) {
       ) {
         // free without questionaire
         return {
-          status: "FREE",
+          status: APP.SESSION.ACTIONS.STATUS.FREE,
           questionaire: false,
           flag: true,
-          action: 'registration',
+          action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
         };
       }
     }
@@ -118,58 +124,58 @@ function Actions(props) {
     return {
       status: null,
       flag: false,
-      action: 'registration',
+      action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
     };
-  }, [props.data.cost, props.data.courseStatus, props.data.isRegistrationPossible, props.data.owner, props.data.registrationQuestionnaireId, props.data.userRegistered]);
-  const isSessionSponsorshipPossible = useCallback(() => {
+  }
+  const isSessionSponsorshipPossible = () => {
     if (
       !props.data.userRegistered &&
-      (props.data.courseStatus == "Approved" ||
-        props.data.courseStatus == "Active") &&
+      (props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.APPROVED ||
+        props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.ACTIVE) &&
       props.data.isRegistrationPossible
     ) {
       if (props.data.sponsorshipRequired) {
         return {
           flag: true,
-          action: 'sponsorship',
+          action: APP.SESSION.ACTIONS.ALIAS.SPONSORSHIP,
         };
       }
     }
 
     if (
       !props.data.userRegistered &&
-      (props.data.courseStatus == "Approved" ||
-        props.data.courseStatus == "Active")
+      (props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.APPROVED ||
+        props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.ACTIVE)
     ) {
       if (props.data.sponsorshipRequired) {
         return {
           flag: true,
-          action: 'sponsorship',
+          action: APP.SESSION.ACTIONS.ALIAS.SPONSORSHIP,
         };
       }
       if (
         props.data.userRegistered &&
-        (props.data.courseStatus == "Approved" ||
-          props.data.courseStatus == "Active")
+        (props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.APPROVED ||
+          props.data.courseStatus == APP.SESSION.ACTIONS.STATUS.ACTIVE)
       ) {
         if (props.data.sponsorshipRequired) {
           return {
             flag: true,
-            action: 'sponsorship',
+            action: APP.SESSION.ACTIONS.ALIAS.SPONSORSHIP,
           };
         }
       }
       return {
         flag: false,
-        action: 'sponsorship',
+        action: APP.SESSION.ACTIONS.ALIAS.SPONSORSHIP,
       };
     }
     return {
       flag: false,
-      action: 'sponsorship',
+      action: APP.SESSION.ACTIONS.ALIAS.SPONSORSHIP,
     };
-  }, [props.data.courseStatus, props.data.isRegistrationPossible, props.data.sponsorshipRequired, props.data.userRegistered]);
-  const getStatus = useCallback((action, returnType) => {
+  }
+  const getStatus = (action, returnType) => {
     if (returnType === "action-request-status") {
       switch (action.id) {
         case 1:
@@ -198,13 +204,13 @@ function Actions(props) {
           const registrationObject = isSessionRegistrationPossible();
           if (!registrationObject?.flag) {
             if (
-              registrationObject.status === "OWNER" ||
-              registrationObject.status === "SESSION_EXPIRED" ||
-              registrationObject.status === "REGISTRATION_FULL"
+              registrationObject.status === APP.SESSION.ACTIONS.STATUS.OWNER ||
+              registrationObject.status === APP.SESSION.ACTIONS.STATUS.SESSION_EXPIRED ||
+              registrationObject.status === APP.SESSION.ACTIONS.STATUS.REGISTRATION_FULL
             )
               return null;
-            if (registrationObject.status === "ALREADY_REGISTERED")
-              return "Registered";
+            if (registrationObject.status === APP.SESSION.ACTIONS.STATUS.ALREADY_REGISTERED)
+              return APP.SESSION.ACTIONS.STATUS.REGISTERED;
           }
           return action.title;
         case 2:
@@ -214,46 +220,83 @@ function Actions(props) {
       }
     }
     return action.title;
-  }, [isSessionRegistrationPossible, isSessionSponsorshipPossible]);
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initiateActionRequest = (action) => {
-    console.log(getStatus(action, "action-request-status"));
+    if(action.id===3){
+      console.log(props.data)
+      navigateToPath(router,AUTHORIZED_ROUTES.AUTHORIZED.SESSION.PROFILE_INDEX + props.data?.courseId, {  token: uuidv4() })
+   return;
+    }
+       console.log(getStatus(action, "action-request-status"));
   };
 
-  const getEligibleActions = useCallback(() => {
-    const tempActions = SESSION_ACTIONS.slice()
-    tempActions.at(0).hidden = !isSessionRegistrationPossible().flag
-    if (!tempActions.at(0).hidden) {
-      const registration_status = getStatus(tempActions.at(0), 'text')
-      if (registration_status && registration_status === 'Registered') {
-        tempActions.at(0).title = registration_status
-        tempActions.at(0).icon = <CheckCircleIcon />
-        tempActions.at(0).tooltip = "You have registered for this session"
-      }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const isEligibleAction = (action) => {
+    if (!action) return false
+    switch (action.id) {
+      case 1:
+        const sessionRegistrationPossible = isSessionRegistrationPossible();
+        if (sessionRegistrationPossible.status === APP.SESSION.ACTIONS.STATUS.ALREADY_REGISTERED) {
+          const tempActions = actions.slice();
+          tempActions.at(0).disabled = true;
+          tempActions.at(0).title = APP.SESSION.ACTIONS.STATUS.REGISTERED
+          tempActions.at(0).tooltip = "You've already registered for this session"
+          setActions(tempActions);
+          return true;
+        }
+        return sessionRegistrationPossible.flag;
+      case 2:
+        return isSessionSponsorshipPossible().flag;
+
+      default:
+        return true;
     }
-    tempActions.at(1).hidden = !isSessionSponsorshipPossible().flag
-    setActions(tempActions);
-  }, [getStatus, isSessionRegistrationPossible, isSessionSponsorshipPossible]);
+  }
 
+  const ActionStack = useMemo(
+    () => {
+      if (props.data) {
+        return (
+          <React.Fragment>
+            {actions.filter((action) => action.hidden === false).map((_action, index) => {
+              if (isEligibleAction(_action)) {
+                return (<Stack role="button" className={` flex ${_action.disabled ? 'disabled' : 'cursor-pointer'}`} key={_action.id} onClick={() => initiateActionRequest(_action)}>
+                  <Tooltip title={_action.tooltip}>
+                    <Typography className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2" variant="caption">
+                      {_action.icon} {_action.title}
+                    </Typography>
+                  </Tooltip>
+                </Stack>)
+              }
+            }
+            )}
+          </React.Fragment>
+        );
+      }
+      else {
+        <React.Fragment>
+          {[1, 2, 3].map((_, index) => {
+            return (<Skeleton key={index}
+              animation={animation ? animation : "wave"}
+              variant="text"
+              height={30}
+              className={'dark:bg-gray-600 '}
+            />)
 
-  useEffect(() => {
-    // 👇️ this only runs once
-    getEligibleActions();
-    // 👇️ include it in the dependencies array
-  }, [getEligibleActions]);
+          }
+          )}
+        </React.Fragment>
+      }
+    },
+    [actions, initiateActionRequest, isEligibleAction, props.data]
+  );
+
   return (
     <Box
-      className={`${SessionStyle.session__actions} flex text-sm px-2 py-2 gap-2`}
+      className={`${SessionStyle.session__actions} flex px-1 justify-start align-middle items-start py-2 gap-2`}
     >
-      {actions.filter((action) => action.hidden === false).map((_action, index) => (
-        <div className='flex cursor-pointer' onClick={() => initiateActionRequest(_action)} key={_action.id}>
-          <Tooltip title={_action.tooltip}>
-            <Typography className="dark:text-gray-500 text-gray-700" variant="body2">
-              {_action.icon} {_action.title}
-            </Typography>
-          </Tooltip>
-
-        </div>
-      ))}
+      {ActionStack}
     </Box>
   );
 }
