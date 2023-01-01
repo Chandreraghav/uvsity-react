@@ -24,6 +24,7 @@ export const KEYS = {
     },
     BY_USER: "session-by-user",
     BY_SESSION_ID: "session-by-id",
+    QUESTIONAIRRE_BY_ID:'questionairre-by-id',
     DETAIL: { PER_COURSE: "detail-per-course" },
     COHOST:{
       USER:{

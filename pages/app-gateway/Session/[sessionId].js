@@ -36,7 +36,6 @@ const SessionProfile = () => {
     const getSessionDetail = async () =>
         await UserDataService.getSessionDetailPerCourse(sessionId);
 
-
     const { data, isError, isSuccess, isLoading } = useQuery(
         [KEYS.SESSION.BY_SESSION_ID + "_" + sessionId],
         getSessionDetail,
@@ -60,6 +59,7 @@ const SessionProfile = () => {
                     removeLocalStorageObject("uvsity-internal-error-response");
                 }
             },
+            refetchOnWindowFocus:false
         }
     );
 
