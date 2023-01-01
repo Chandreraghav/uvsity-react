@@ -15,7 +15,7 @@ function ScheduleDetail(props) {
         if (props.handleTimezoneBrowserChange) {
             props.handleTimezoneBrowserChange()
         }
-        
+
     };
     const resetTimezoneToDefault = () => {
         if (props.resetTimezoneToDefault) {
@@ -23,8 +23,11 @@ function ScheduleDetail(props) {
         }
     };
 
-     
+
     const getScheduleText = () => {
+        if (props?.schedule?.viewScheduleFromSessionProfile) {
+            return props?.schedule?.courseScheduleSummaryShort
+        }
         if (props?.schedule?.repeats) {
             return props?.schedule?.repeatObject?.displayValue;
         }
@@ -66,16 +69,31 @@ function ScheduleDetail(props) {
             endDisplay = obj.endTime;
         }
 
+    if(props?.schedule?.startDate instanceof Date && props?.schedule?.endDate instanceof Date) {
+        const startdate =   props?.schedule?.startDate
+        startdate.setHours(parseInt(props?.schedule?.startTime.hour.replace(/^0+/, "")))
+        startdate.setMinutes(parseInt(props?.schedule?.startTime.minute))
+        const endDate = props?.schedule?.endDate
+        endDate.setHours(parseInt(props?.schedule?.endTime.hour.replace(/^0+/, "")))
+        endDate.setMinutes(parseInt(props?.schedule?.endTime.minute))
+        const start_date_am_pm = startdate.getHours() >= 12 ? " PM" : " AM";
+        startDisplay+=start_date_am_pm
+        const end_date_am_pm = endDate.getHours() >= 12 ? " PM" : " AM";
+        endDisplay+=end_date_am_pm
+    }
         return `${startDisplay} - ${endDisplay}`;
     };
 
-    const getEffectiveDate = () => {
+    const getEffectiveDate = (forcePartition=false) => {
         let startMonth = getStartMonth();
         let startYear = getStartYear();
         let startDate = getStartDate();
         let endDate = getEndDate();
         let endMonth = getEndMonth();
         let endYear = getEndYear();
+        if(forcePartition){
+            return `${startMonth} ${startDate},${startYear} - ${endMonth} ${endDate},${endYear}`;
+        }
         const effectiveDate =
             startDate === endDate
                 ? `${startMonth} ${startDate},${startYear}`
@@ -114,52 +132,112 @@ function ScheduleDetail(props) {
                     </Tooltip>
                 </div>
             </div>
-            <div>
-                {!props?.schedule?.repeats && (
-                    <div className="flex gap-1">
-                        <DateRangeIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
-                        <Typography
-                            variant="div"
-                            className="  font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
-                        >
-                            Effective:
-                        </Typography>
 
-                        <Typography
-                            variant="div"
-                            className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800 dark:text-gray-500"
-                        >
-                            {getEffectiveDate()}
-                        </Typography>
-                    </div>
-                )}
+            {!props?.schedule?.viewScheduleFromSessionProfile && (
 
-                {props?.schedule?.repeats &&
-                    props?.schedule?.repeatScheduleSummary && (
-                        <div className="flex gap-1 ">
-                            <EventRepeatIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                <div>
+                    {!props?.schedule?.repeats && (
+                        <div className="flex gap-1">
+                            <DateRangeIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                             <Typography
                                 variant="div"
-                                className="  font-semibold  text-md  leading-tight w-20 text-gray-600"
+                                className="  font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
                             >
-                                Occurence:
+                                Effective:
                             </Typography>
 
                             <Typography
                                 variant="div"
-                                className=" text-xs font-normal line-clamp-2 italic  leading-tight  text-gray-800 dark:text-gray-500"
+                                className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800 dark:text-gray-500"
                             >
-                                {props?.schedule?.repeatScheduleSummary.substring(
-                                    0,
-                                    props?.schedule?.repeatScheduleSummary.indexOf(
-                                        "from"
-                                    ) - 1
-                                )}
-                                .
+                                {getEffectiveDate()}
                             </Typography>
                         </div>
                     )}
-            </div>
+
+                    {props?.schedule?.repeats &&
+                        props?.schedule?.repeatScheduleSummary && (
+                            <div className="flex gap-1 ">
+                                <EventRepeatIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                                <Typography
+                                    variant="div"
+                                    className="  font-semibold  text-md  leading-tight w-20 text-gray-600"
+                                >
+                                    Occurence:
+                                </Typography>
+                                <Typography
+                                    variant="div"
+                                    className=" text-xs font-normal line-clamp-2 italic  leading-tight  text-gray-800 dark:text-gray-500"
+                                >
+                                    {props?.schedule?.repeatScheduleSummary.substring(
+                                        0,
+                                        props?.schedule?.repeatScheduleSummary.indexOf(
+                                            "from"
+                                        ) - 1
+                                    )}
+                                    .
+                                </Typography>
+
+                            </div>
+                        )}
+                </div>
+            )}
+
+
+
+            {props?.schedule?.viewScheduleFromSessionProfile &&
+
+                (<>
+                <div className="flex gap-1">
+
+                     <DateRangeIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                    <Typography
+                        variant="div"
+                        className="  font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
+                    >
+                        Effective:
+                    </Typography>
+
+                      
+
+                    <Typography
+                        variant="div"
+                        className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800 dark:text-gray-500"
+                    >
+                        {getEffectiveDate(true)}
+                    </Typography>
+
+                     
+                  
+                </div>
+                {props?.schedule?.courseScheduleSummaryLong && (
+                    <div className="flex gap-1 ">
+                    <EventRepeatIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                    <Typography
+                        variant="div"
+                        className="  font-semibold  text-md  leading-tight w-20 text-gray-600"
+                    >
+                        Occurence:
+                    </Typography>
+                    <Typography
+                        variant="div"
+                        className=" text-xs font-normal line-clamp-2 italic  leading-tight  text-gray-800 dark:text-gray-500"
+                    >
+                         
+                       {props?.schedule?.courseScheduleSummaryLong}.
+                    </Typography>
+
+                </div>
+                )}
+                
+                </>
+                )
+            }
+
+            
+
+
+
             <div className="flex gap-1">
                 <PublicIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                 <Typography

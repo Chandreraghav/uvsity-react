@@ -38,10 +38,10 @@ ml-auto app-anchor-block cursor-pointer"
                     <SnapProfile
                         firstName={props.cohost?.firstName}
                         lastName={props.cohost?.lastName}
-                        avatar={props.cohost?.profilepicName}
+                        avatar={props.cohost?.profilepicName || props.cohost?.profilePicName }
                         oid={props.cohost?.userDetailsId}
-                        userType={props.cohost?.userType}
-                        instituition={props.cohost?.eduIns}
+                        userType={props.cohost?.userType || props.cohost?.userBaseType}
+                        instituition={props.cohost?.eduIns || props.cohost?.educationalInstitution}
                     />
                 </div>
             </div>

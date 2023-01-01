@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import { Tooltip, Typography } from '@mui/material';
 import EditIcon from "@mui/icons-material/Edit";
@@ -6,7 +6,12 @@ import Plans from '../../Sponsorships/Plans';
 import { SPONSORSHIP } from '../../../../constants/userdata';
 
 function SponsorshipDetail(props) {
+    const [sponsorshipLevels, setSponsorshipLevels] = useState([])
+    useEffect(() => {
+        setSponsorshipLevels(props?.sponsor?.sponsorshipLevels && props?.sponsor?.sponsorshipLevels instanceof Array && props?.sponsor?.sponsorshipLevels.length > 0 ? props?.sponsor?.sponsorshipLevels : SPONSORSHIP?.LEVELS)
+          }, [props?.sponsor?.sponsorshipLevels])
     if (!props.sponsor) return (<></>)
+
     return (
         props.sponsor?.sponsorShipInd && (
             <div className="flex flex-col gap-2 py-3">
@@ -36,14 +41,19 @@ ml-auto app-anchor-block cursor-pointer"
                 </div>
 
                 <div className="flex gap-2  lg:ml-0 md:ml-0">
-                    {SPONSORSHIP?.LEVELS?.map((level) => (
+
+                    {sponsorshipLevels?.map((level) => (
                         <Plans
                             showOnlyHeader={true}
                             key={level.id}
                             data={level}
                             dark={props?.isDark}
-                        />
-                    ))}
+                            showOnlyHTML={props?.sponsor?.viewSponsorshipsFromSessionProfile}
+                               />
+                    ))
+                    }
+
+
                 </div>
             </div>
         )
