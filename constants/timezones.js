@@ -1433,3 +1433,5 @@ export const TIMEZONE = [
       ]
     }
   ]
+export const LOCALE="en-US"
+export const RESET_TO_LOCAL_TZ='Change to local timezone'

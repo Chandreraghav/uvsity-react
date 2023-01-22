@@ -6,15 +6,15 @@ import { PLACEHOLDERS, TOOLTIPS } from '../../../../constants/userdata';
 import SessionStyle from "../../../../styles/Session.module.css";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 function BannerDetail(props) {
-
     if (!props.banner) return (<></>)
+     
     const getStartDate = () => {
         return props.secondary?.schedule?.startDate.getDate();
     };
     const getStartMonth = () => {
         const date = props.secondary?.schedule?.startDate;
         const month = date?.toLocaleString("default", { month: "short" });
-        return month;
+        return month; 
     };
 
     const isFreeSession = (data) => {
@@ -63,9 +63,10 @@ function BannerDetail(props) {
     return (
         <>
             <div className="flex gap-3 ">
-                {props.secondary?.schedule?.startDate && (<div className="flex flex-col mt-1 bg-blue-800 p-4">
+                {props.secondary?.schedule?.startDate && (
+                <div className="flex flex-col mt-1 bg-blue-800 p-4 justify-center items-center">
                     <Typography variant="h3">  {getStartDate()}</Typography>
-                    <Typography variant="subtitle">
+                    <Typography variant="h6">
                         {getStartMonth()}
                     </Typography>
 

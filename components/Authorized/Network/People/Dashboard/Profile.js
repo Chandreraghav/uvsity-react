@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Popover, Tooltip } from "@mui/material";
+import { Avatar, IconButton, Popover, Tooltip, Typography } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import {
   IMAGE_PATHS,
@@ -40,6 +40,7 @@ import PolyMessagingDialog from "../../../../shared/modals/PolyMessagingDialog";
 import MessagingService from "../../../../../pages/api/people/Messaging/MessageService";
 import { WORKFLOW_CODES } from "../../../../../constants/workflow-codes";
 import { getMode, THEME_MODES } from "../../../../../theme/ThemeProvider";
+import PublicIcon from "@mui/icons-material/Public";
 toast.configure();
 const useStyles = makeStyles((theme) => ({
   popover: {
@@ -425,11 +426,11 @@ function Profile({
               onMouseEnter={handlePopoverOpen}
               onMouseLeave={handlePopoverClose}
               className={`${isVisibleOnSessionCard
-                  ? "avatar-sm"
-                  : isVisibleAsCoHost ||
-                    (origin && origin === "recommendation_feed")
-                    ? "avatar-xs"
-                    : "avatar-dashboard"
+                ? "avatar-sm"
+                : isVisibleAsCoHost ||
+                  (origin && origin === "recommendation_feed")
+                  ? "avatar-xs"
+                  : "avatar-dashboard"
                 }`}
               alt={`${profilePrimaryLine}`}
               src={avatar}
@@ -442,11 +443,11 @@ function Profile({
               onMouseEnter={handlePopoverOpen}
               onMouseLeave={handlePopoverClose}
               className={`${isVisibleOnSessionCard
-                  ? "avatar-sm"
-                  : isVisibleAsCoHost ||
-                    (origin && origin === "recommendation_feed")
-                    ? "avatar-xs"
-                    : "avatar-dashboard"
+                ? "avatar-sm"
+                : isVisibleAsCoHost ||
+                  (origin && origin === "recommendation_feed")
+                  ? "avatar-xs"
+                  : "avatar-dashboard"
                 }`}
               {...avatarToString(`${profilePrimaryLine}`)}
             />
@@ -485,7 +486,7 @@ function Profile({
                     fontSize="small"
                     color="primary"
                     aria-label="connect-to-person"
-                  > 
+                  >
                     <ClipLoader color={`${dark ? "#fff" : "#111"}`} size={20} />
                   </IconButton>
                 ) : isConnectionRequestSent ? (
@@ -579,22 +580,22 @@ function Profile({
                         </IconButton>
                       ) : isConnectionAcceptRequestSent ? (
                         <>
-                       <Tooltip title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
-                          "#X#",
-                          firstName
-                        )}`}>
-                          <div className="flex">
-                          <CheckCircleIcon
-                            sx={{ color: "green" }}
-                            fontSize="small"
-                          />
-                          <small className="mt-0.5 md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
-                            {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
-                          </small>
-                          </div>
-                          
-                        </Tooltip>
-                         
+                          <Tooltip title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
+                            "#X#",
+                            firstName
+                          )}`}>
+                            <div className="flex">
+                              <CheckCircleIcon
+                                sx={{ color: "green" }}
+                                fontSize="small"
+                              />
+                              <small className="mt-0.5 md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
+                                {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
+                              </small>
+                            </div>
+
+                          </Tooltip>
+
                         </>
                       ) : (
                         <Tooltip title={`Accept connection request from ${firstName}`}>
@@ -625,18 +626,18 @@ function Profile({
                         sx={{ color: NETWORK.COLOR_VARIANTS.CONNECTED }}
                         aria-label="connected-to-person"
                       >
-                        
+
                         <Tooltip title={`${TITLES.CONNECTED_PEOPLE_LATENT.replace(
                           "#X#",
                           firstName
                         )}`}>
                           <div className="flex">
-                          <CheckCircleIcon fontSize="small" />
-                           <small className="mt-0.5 md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
-                            {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
-                          </small>
+                            <CheckCircleIcon fontSize="small" />
+                            <small className="mt-0.5 md:hidden lg:inline xl:inline sm:inline xs:inline text-sm  font-small text-green-600">
+                              {NETWORK.CONNECTION_ACTION_STATUS.CONNECTED}
+                            </small>
                           </div>
-                          
+
                         </Tooltip>
 
                       </IconButton>
@@ -655,15 +656,15 @@ function Profile({
                         sx={{ color: NETWORK.COLOR_VARIANTS.PENDING }}
                         aria-label="awaiting-connection-response-from-person"
                       >
-                       
+
                         <Tooltip title={`${TITLES.CONNECTION_REQUEST_PENDING}${firstName}`}>
-                        <div className="flex"> 
-                          <PendingIcon fontSize="small" />
-                          <small className="mt-0.5 text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
-                            {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
-                          </small>
+                          <div className="flex">
+                            <PendingIcon fontSize="small" />
+                            <small className="mt-0.5 text-sm font-small md:hidden lg:inline xl:inline sm:inline xs:inline">
+                              {NETWORK.CONNECTION_ACTION_STATUS.PENDING}
+                            </small>
                           </div>
-                       
+
                         </Tooltip>
 
                       </IconButton>
@@ -697,15 +698,19 @@ function Profile({
               className={` ${ProfileStyle.profile__event__time__subtitle} 
           sm:line-clamp-1  event-date text-brand-grey-700 dark:text-brand-grey-500`}
             >
-              <div className="flex text-xs  ">
+              <Typography className="flex text-xs gap-1  ">
                 <EventIcon
                   className={` ${ProfileStyle.profile__event__time__subtitle__icon}`}
                 />
                 <div className="mt-0 leading-tight text-xs">
+
                   {localTZDate(sessionStartDTime)}
                 </div>
-              </div>
-              <div>{getTimezone()}</div>
+              </Typography>
+              <Typography className="flex text-xs gap-1  "><PublicIcon className={` ${ProfileStyle.profile__event__time__subtitle__icon}`} />
+                <div className="mt-0 leading-tight text-xs">  {getTimezone()}
+                </div>
+              </Typography>
             </div>
           )}
 

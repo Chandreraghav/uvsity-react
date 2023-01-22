@@ -46,7 +46,7 @@ function ServerWrapper(props) {
   
   useEffect(async () => {
     if (unauthorizedResponseReceived()) {
-      console.log("SERVER: Unauthorzed signal received. Logging off session.");
+      console.log("SERVER: Unauthorized signal received. Logging off session.");
       SignOffUser(queryClient, Router, unauthorize, true);
       return;
     }

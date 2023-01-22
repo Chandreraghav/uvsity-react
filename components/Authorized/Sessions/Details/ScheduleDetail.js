@@ -1,15 +1,23 @@
 import { Tooltip } from '@material-ui/core';
-import React from 'react'
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import React, { useEffect, useState } from 'react'
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import { Box, Typography } from '@mui/material';
 import EditIcon from "@mui/icons-material/Edit";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
 import PublicIcon from "@mui/icons-material/Public";
-import { getTimezone } from '../../../../utils/utility';
+import { getLocalTimezone, localTZDate } from '../../../../utils/utility';
+import Spacer from '../../../shared/Spacer';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import { RESET_TO_LOCAL_TZ } from '../../../../constants/timezones';
+
 
 function ScheduleDetail(props) {
+    const [schedule, setSchedule] = useState(null)
+    useEffect(() => {
+        setSchedule(props.schedule)
+        return (() => setSchedule(null))
+    }, [props.schedule])
     if (!props.schedule) return (<></>)
     const handleTimezoneBrowserChange = () => {
         if (props.handleTimezoneBrowserChange) {
@@ -25,73 +33,54 @@ function ScheduleDetail(props) {
 
 
     const getScheduleText = () => {
-        if (props?.schedule?.viewScheduleFromSessionProfile) {
-            return props?.schedule?.courseScheduleSummaryShort
+        if (schedule?.viewScheduleFromSessionProfile) {
+            return schedule?.courseScheduleSummaryShort
         }
-        if (props?.schedule?.repeats) {
-            return props?.schedule?.repeatObject?.displayValue;
+        if (schedule?.repeats) {
+            return schedule?.repeatObject?.displayValue;
         }
         return "Once";
     };
     const getStartDate = () => {
-        return props?.schedule?.startDate.getDate();
+        return schedule?.startDate?.getDate()
+
     };
     const getEndDate = () => {
-        return props?.schedule?.endDate.getDate();
+        return schedule?.endDate.getDate();
     };
 
     const getEndYear = () => {
-        return props?.schedule?.endDate.getFullYear();
+        return schedule?.endDate.getFullYear();
     };
 
     const getStartYear = () => {
-        return props?.schedule?.startDate.getFullYear();
+        return schedule?.startDate.getFullYear();
+
     };
     const getStartMonth = () => {
-        const date = props?.schedule?.startDate;
+        const date = schedule?.startDate
         const month = date?.toLocaleString("default", { month: "short" });
         return month;
     };
     const getEndMonth = () => {
-        const date = props?.schedule?.endDate;
+        const date = schedule?.endDate;
         const month = date?.toLocaleString("default", { month: "short" });
         return month;
     };
-    const getTime = (obj) => {
-        let startDisplay, endDisplay;
-        if (!obj) {
-            startDisplay = props?.schedule?.startTime.display;
-            endDisplay = props?.schedule?.endTime.display;
-            startDisplay = startDisplay.replace(/^0+/, "");
-            endDisplay = endDisplay.replace(/^0+/, "");
-        } else {
-            startDisplay = obj.startTime;
-            endDisplay = obj.endTime;
-        }
-
-    if(props?.schedule?.startDate instanceof Date && props?.schedule?.endDate instanceof Date) {
-        const startdate =   props?.schedule?.startDate
-        startdate.setHours(parseInt(props?.schedule?.startTime.hour.replace(/^0+/, "")))
-        startdate.setMinutes(parseInt(props?.schedule?.startTime.minute))
-        const endDate = props?.schedule?.endDate
-        endDate.setHours(parseInt(props?.schedule?.endTime.hour.replace(/^0+/, "")))
-        endDate.setMinutes(parseInt(props?.schedule?.endTime.minute))
-        const start_date_am_pm = startdate.getHours() >= 12 ? " PM" : " AM";
-        startDisplay+=start_date_am_pm
-        const end_date_am_pm = endDate.getHours() >= 12 ? " PM" : " AM";
-        endDisplay+=end_date_am_pm
-    }
-        return `${startDisplay} - ${endDisplay}`;
+    const getTime = () => {
+        let startDate = localTZDate(schedule?.startDate, schedule?.timezone, true)
+        let endDate = localTZDate(schedule?.endDate, schedule?.timezone, true)
+        return `${startDate} - ${endDate}`
     };
 
-    const getEffectiveDate = (forcePartition=false) => {
+    const getEffectiveDate = (forcePartition = false) => {
         let startMonth = getStartMonth();
         let startYear = getStartYear();
         let startDate = getStartDate();
         let endDate = getEndDate();
         let endMonth = getEndMonth();
         let endYear = getEndYear();
-        if(forcePartition){
+        if (forcePartition) {
             return `${startMonth} ${startDate},${startYear} - ${endMonth} ${endDate},${endYear}`;
         }
         const effectiveDate =
@@ -133,7 +122,7 @@ function ScheduleDetail(props) {
                 </div>
             </div>
 
-            {!props?.schedule?.viewScheduleFromSessionProfile && (
+            {!schedule?.viewScheduleFromSessionProfile && (
 
                 <div>
                     {!props?.schedule?.repeats && (
@@ -155,8 +144,8 @@ function ScheduleDetail(props) {
                         </div>
                     )}
 
-                    {props?.schedule?.repeats &&
-                        props?.schedule?.repeatScheduleSummary && (
+                    {schedule?.repeats &&
+                        schedule?.repeatScheduleSummary && (
                             <div className="flex gap-1 ">
                                 <EventRepeatIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                                 <Typography
@@ -166,12 +155,12 @@ function ScheduleDetail(props) {
                                     Occurence:
                                 </Typography>
                                 <Typography
-                                    variant="div"
-                                    className=" text-xs font-normal line-clamp-2 italic  leading-tight  text-gray-800 dark:text-gray-500"
+                                    variant="subtitle2"
+                                    className=" font-normal line-clamp-2 italic  leading-tight  text-gray-800 dark:text-gray-500"
                                 >
-                                    {props?.schedule?.repeatScheduleSummary.substring(
+                                    {schedule?.repeatScheduleSummary.substring(
                                         0,
-                                        props?.schedule?.repeatScheduleSummary.indexOf(
+                                        schedule?.repeatScheduleSummary.indexOf(
                                             "from"
                                         ) - 1
                                     )}
@@ -182,99 +171,87 @@ function ScheduleDetail(props) {
                         )}
                 </div>
             )}
-
-
-
-            {props?.schedule?.viewScheduleFromSessionProfile &&
+            {schedule?.viewScheduleFromSessionProfile &&
 
                 (<>
-                <div className="flex gap-1">
+                    <div className="flex gap-1">
 
-                     <DateRangeIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
-                    <Typography
-                        variant="div"
-                        className="  font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
-                    >
-                        Effective:
-                    </Typography>
+                        <DateRangeIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                        <Typography
+                            variant="div"
+                            className="  font-semibold line-clamp-1 text-md  leading-snug text-gray-600"
+                        >
+                            Effective:
+                        </Typography>
+                        <Typography
+                            variant="div"
+                            className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800 dark:text-gray-500"
+                        >
+                            {getEffectiveDate()}
+                        </Typography>
+                    </div>
+                    {schedule?.courseScheduleSummaryLong && (
+                        <div className="flex gap-1 ">
+                            <EventRepeatIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
+                            <Typography
+                                variant="div"
+                                className="  font-semibold  text-md  leading-tight w-20 text-gray-600"
+                            >
+                                Occurence:
+                            </Typography>
+                            <Typography
+                                variant="subtitle2"
+                                className="   font-normal line-clamp-2 italic  leading-tight  text-gray-800 dark:text-gray-500"
+                            >
 
-                      
+                                {schedule?.courseScheduleSummaryLong}.
+                            </Typography>
 
-                    <Typography
-                        variant="div"
-                        className="  font-normal line-clamp-1 text-md  leading-tight  text-gray-800 dark:text-gray-500"
-                    >
-                        {getEffectiveDate(true)}
-                    </Typography>
+                        </div>
+                    )}
 
-                     
-                  
-                </div>
-                {props?.schedule?.courseScheduleSummaryLong && (
-                    <div className="flex gap-1 ">
-                    <EventRepeatIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
-                    <Typography
-                        variant="div"
-                        className="  font-semibold  text-md  leading-tight w-20 text-gray-600"
-                    >
-                        Occurence:
-                    </Typography>
-                    <Typography
-                        variant="div"
-                        className=" text-xs font-normal line-clamp-2 italic  leading-tight  text-gray-800 dark:text-gray-500"
-                    >
-                         
-                       {props?.schedule?.courseScheduleSummaryLong}.
-                    </Typography>
-
-                </div>
-                )}
-                
                 </>
                 )
             }
 
-            
-
-
-
-            <div className="flex gap-1">
-                <PublicIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
-                <Typography
-                    variant="div"
-                    className="  font-semibold line-clamp-1 text-sm  leading-snug text-gray-600"
-                >
-                    Time:
-                </Typography>
-
-                <Typography
-                    variant="div"
-                    className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-800 dark:text-gray-400"
-                >
-                    {getTime(props?.timeDisplay)}(
-                    {props?.schedule?.timezone || getTimezone()})
-                </Typography>
-                {props.showTimeZone && (<Box className=" ml-auto flex gap-1">
+            <div className="flex flex-col">
+                <div className="flex gap-1">
+                    <PublicIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                     <Typography
-                        onClick={() => handleTimezoneBrowserChange()}
-                        variant="caption"
-                        className="text-xs app-anchor-block cursor-pointer font-normal line-clamp-1 text-gray-500    leading-tight  ml-auto"
+                        variant="div"
+                        className="  font-semibold line-clamp-1 text-sm  leading-snug text-gray-600"
                     >
-                        See other timezones
+                        Time:
                     </Typography>
 
-                    {props?.schedule &&
-                        props?.schedule?.timezone !== getTimezone() && (
-                            <Tooltip title="Reset to region timezone">
+                    <Typography
+                        variant="div"
+                        className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-800 dark:text-gray-400"
+                    >
+                        {getTime()}
+                        ({schedule?.timezone})
+                    </Typography>
+                </div>
+                <Spacer />
+                {props.showTimeZone && (
 
-                                <RestartAltIcon onClick={() => resetTimezoneToDefault()}
-                                    className="text-gray-600  cursor-pointer" fontSize="small" />
+                    <Box className=" py-1 flex gap-1">
+                        <Typography
+                            onClick={() => handleTimezoneBrowserChange()}
+                            variant="caption"
+                            className="text-xs app-anchor-block cursor-pointer font-normal line-clamp-1 text-gray-500    leading-tight"
+                        >
+                            See other timezones
+                        </Typography>
 
-                            </Tooltip>
-                        )}
-                </Box>)}
-
-
+                        {schedule &&
+                            schedule?.timezone !== getLocalTimezone() && (
+                                <Tooltip title={RESET_TO_LOCAL_TZ}>
+                                    <SettingsBackupRestoreIcon onClick={() => resetTimezoneToDefault()}
+                                        className="text-gray-600  cursor-pointer" fontSize="small" />
+                                </Tooltip>
+                            )}
+                    </Box>)}
             </div>
         </div>
     )

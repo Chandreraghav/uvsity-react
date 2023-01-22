@@ -1,7 +1,5 @@
 import { Box, Grid, Slide } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react'
-import { useQuery } from 'react-query';
-import { KEYS } from '../../../async/queries/keys/unique-keys';
+import React, { useEffect, useState } from 'react'
 import AttachmentDetail from '../../../components/Authorized/Sessions/Details/AttachmentDetail';
 import AuthorDetail from '../../../components/Authorized/Sessions/Details/AuthorDetail';
 import BannerDetail from '../../../components/Authorized/Sessions/Details/BannerDetail';
@@ -11,34 +9,21 @@ import QuestionairreDetail from '../../../components/Authorized/Sessions/Details
 import ScheduleDetail from '../../../components/Authorized/Sessions/Details/ScheduleDetail';
 import SponsorshipDetail from '../../../components/Authorized/Sessions/Details/SponsorshipDetail';
 import SummaryDetail from '../../../components/Authorized/Sessions/Details/SummaryDetail';
-import Final from '../../../components/Authorized/Sessions/Forms/Steps/Session/Final'
 import TimezoneBrowseDialog from '../../../components/shared/modals/TimezoneBrowseDialog';
-import { APP, SESSION_DOCUMENT, SESSION_POSTER, SPONSORSHIP } from '../../../constants/userdata';
-import { useDataLayerContextValue } from '../../../context/DataLayer';
-import { actionTypes } from '../../../context/reducer';
+import { SPONSORSHIP } from '../../../constants/userdata';
 import { THEME_MODES, useTheme } from '../../../theme/ThemeProvider';
 import { getTimezone, setGlobalTimezone, setLocalTimezone } from '../../../utils/utility';
 import QuestionairreService from '../../api/session/QuestionairreService';
-import moment from "moment-timezone";
 function SessionProfileDetail(props) {
   const [ctxTheme, dispatch] = useTheme();
-  const [session, setSession] = useState(null)
   const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
   const [segregatedSessionData, setSegregatedSessionData] = useState({ basic: null, schedule: null, fees: null, cohost: null, sponsor: null, participant: null, })
   const [isDark, setDark] = useState(ctxTheme.mode === THEME_MODES.DARK);
-  const [timeDisplay, setTimeDisplay] = useState(null);
+  const [tz, setTz] = useState(null);
   const handleNavigate = (navigationObject) => {
   }
-  const getQuestionairre = async () =>
-    await QuestionairreService.getQuestionairre(props.session_data?.registrationQuestionnaireId);
 
-  const QUESTIONAIRRE = useQuery(
-    [KEYS.SESSION.QUESTIONAIRRE_BY_ID + "_" + props.session_data?.registrationQuestionnaireId],
-    getQuestionairre,
-    {
-      refetchOnWindowFocus: false
-    }
-  );
+
   useEffect(() => {
     setDark(ctxTheme.mode === THEME_MODES.DARK);
   }, [ctxTheme]);
@@ -76,8 +61,9 @@ function SessionProfileDetail(props) {
       courseScheduleSummaryLong: props.session_data?.courseScheduleSummaryLong || null,
       courseScheduleSummaryShort: props.session_data?.courseScheduleSummaryShort || null,
       viewScheduleFromSessionProfile: true,
-      timezone: getTimezone(),
+      timezone: getTimezone()
     }
+
     const fees = {
       paidInd: !isNaN(props.session_data?.cost) && props.session_data?.cost > 0,
       amount: props.session_data?.cost,
@@ -99,57 +85,49 @@ function SessionProfileDetail(props) {
       })
       sponsor.sponsorshipLevels = SPONSORSHIP.LEVELS
     }
-    const participant = {
-      questionairre: QUESTIONAIRRE.isSuccess ? QUESTIONAIRRE.data.data : {},
-      questions: QUESTIONAIRRE.isSuccess
+
+    let participant = null;
+
+    async function getQuestionairre() {
+      const response = await QuestionairreService.getQuestionairre(props.session_data?.registrationQuestionnaireId);
+      if (response.status === 200) {
+        participant = {
+          questionairre: response.data,
+          questions: true
+        }
+        setSegregatedSessionData({ basic, schedule, fees, cohost, sponsor, participant })
+      }
+    }
+    if (props.session_data?.registrationQuestionnaireId) {
+      getQuestionairre();
+      return
     }
     setSegregatedSessionData({ basic, schedule, fees, cohost, sponsor, participant })
-  }, [QUESTIONAIRRE.data?.data, QUESTIONAIRRE.isSuccess, props.session_data])
-
-  const resetDefaultTimeDisplay = () => {
-    const defaultTimezone = getTimezone();
-    const start = moment(segregatedSessionData?.schedule?.startDate);
-    const end = moment(segregatedSessionData?.schedule?.endDate);
-    const startTime = start.tz(defaultTimezone).format("HH:mm");
-    const endTime = end.tz(defaultTimezone).format("HH:mm");
-    const _obj = { startTime, endTime };
-    setTimeDisplay(_obj);
-  };
-
+    return (() => { setSegregatedSessionData(null); })
+  }, [props.session_data])
 
   const resetTimezoneToDefault = () => {
     setLocalTimezone()
-    resetDefaultTimeDisplay();
+    const tempSession = segregatedSessionData
+    tempSession.schedule.timezone = getTimezone()
+    setSegregatedSessionData(tempSession);
+    setTz(tempSession.schedule.timezone)
   };
   const handleTimezoneBrowserChange = () => {
     setTimezoneBrowser(true);
   };
-  const setDynamicTimeDisplay = (obj) => {
-    const defaultTimezone = getTimezone();
-    if (
-      obj?.timezone !== defaultTimezone
-    ) {
-      const start = moment(segregatedSessionData?.schedule?.startDate);
-      const end = moment(segregatedSessionData?.schedule?.endDate);
-      const startTime = start.tz(obj?.timezone).format("HH:mm");
-      const endTime = end.tz(obj?.timezone).format("HH:mm");
-      const _obj = { startTime, endTime };
-      setTimeDisplay(_obj);
-      return;
-    }
-    // for default time zone.
-    resetDefaultTimeDisplay();
-  };
+
   const handleTimezoneCloseRequest = (obj) => {
     setTimezoneBrowser(false);
     if (obj?.timezone) {
+      const tempSession = segregatedSessionData
+      tempSession.schedule.timezone = obj?.timezone
+      setSegregatedSessionData(tempSession);
       setGlobalTimezone(obj?.timezone, true)
-      setDynamicTimeDisplay(obj);
     }
   };
   return (
-    <div>
-
+    <React.Fragment>
       <Slide direction="left" in={true}>
         <Box className={`p-4 min-h-screen`}>
           <Box sx={{ width: "100%", mt: 1 }}>
@@ -169,7 +147,7 @@ function SessionProfileDetail(props) {
               </Grid>
 
               <Grid item lg={6} sm={12} md={6} xs={12}>
-                <ScheduleDetail schedule={segregatedSessionData?.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone timeDisplay={timeDisplay} onNavigate={props.onNavigate} />
+                <ScheduleDetail schedule={segregatedSessionData.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone onNavigate={props.onNavigate} />
                 <AttachmentDetail isDark={isDark} attachment={segregatedSessionData?.basic?.attachment} onNavigate={props.onNavigate} />
                 <QuestionairreDetail participant={segregatedSessionData?.participant} onNavigate={props.onNavigate} />
               </Grid>
@@ -183,7 +161,7 @@ function SessionProfileDetail(props) {
           />
         </Box>
       </Slide>
-    </div>
+    </React.Fragment>
 
   )
 }

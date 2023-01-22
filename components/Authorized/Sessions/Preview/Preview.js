@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { Box, Tooltip } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -162,25 +162,25 @@ function Preview({ data, authorized }) {
       <>
         <div
           className={` ${amITheOnlyOneAttending ? "" : "dialog-title"
-            }  text-xs font-medium leading-tight`}
+            }  text-xs font-medium leading-tight mt-0.5`}
         >
           {amIAttending() && data?.numberOfAttendees > 1 ? (
             <>
-              <span>
+              <Typography variant="caption">
                 You and {data?.numberOfAttendees - 1}{" "}
                 {data?.numberOfAttendees - 1 === 1 ? "other" : "others"}{" "}
                 {PLACEHOLDERS.ATTENDING}
-              </span>
+              </Typography>
             </>
           ) : amITheOnlyOneAttending ? (
-            <>
+            <Typography variant="caption">
               <span>You are {PLACEHOLDERS.ATTENDING}</span>
-            </>
+            </Typography>
           ) : (
             <>
-              <span>
+              <Typography variant="caption">
                 {data?.numberOfAttendees} {PLACEHOLDERS.ATTENDING}
-              </span>
+              </Typography>
             </>
           )}
         </div>
@@ -247,6 +247,7 @@ function Preview({ data, authorized }) {
   useEffect(() => {
     setUserData(context?.logged_in_info)
   }, [context?.logged_in_info])
+    
   return (
     <div className=" shadow-lg py-2 uvsity__card__border__theme bg-gray-100 dark:bg-gray-900 w-full px-2 rounded-lg">
       {/* EVENT/SESSION/AUTHOR NAME */}
@@ -267,7 +268,7 @@ function Preview({ data, authorized }) {
               firstName={data.creator.firstName}
               lastName={data.creator.lastName}
               avatar={data.courseCreatorImageURL}
-              sessionStartDTime={data.displayStartDate}
+              sessionStartDTime={data.courseStartDTime}
               userType={data.creator.userType}
               instituition={data.creator.educationalInstitute}
               isVisibleOnSessionCard

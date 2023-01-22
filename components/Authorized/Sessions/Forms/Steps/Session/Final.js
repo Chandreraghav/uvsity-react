@@ -8,7 +8,7 @@ import Slide from "@mui/material/Slide";
 import React, { useEffect, useState } from "react";
 import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
 import {
-  getTimezone,
+  getTimezone, setLocalTimezone,
 } from "../../../../../../utils/utility";
 import {
   APP,
@@ -35,9 +35,9 @@ function Final(props) {
   const [data, dispatch] = useDataLayerContextValue();
   const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
-  const [timeDisplay, setTimeDisplay] = useState(null);
   const [theme, _dispatch] = useTheme();
   const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
+  const [tz, setTz] = useState(null);
   useEffect(() => {
     setDark(theme.mode === THEME_MODES.DARK);
   }, [theme])
@@ -64,36 +64,9 @@ function Final(props) {
     setTimezoneBrowser(false);
     if (obj?.timezone) {
       setNewTimezone(obj);
-      setDynamicTimeDisplay(obj);
     }
   };
-  const setDynamicTimeDisplay = (obj) => {
-    const defaultTimezone = getTimezone();
-    if (
-      data?.schedule &&
-      data?.schedule?.timezone !== defaultTimezone &&
-      obj?.timezone !== defaultTimezone
-    ) {
-      const start = moment(data?.schedule?.startDate);
-      const end = moment(data?.schedule?.endDate);
-      const startTime = start.tz(obj?.timezone).format("HH:mm");
-      const endTime = end.tz(obj?.timezone).format("HH:mm");
-      const _obj = { startTime, endTime };
-      setTimeDisplay(_obj);
-      return;
-    }
-    // for default time zone.
-    resetDefaultTimeDisplay();
-  };
-  const resetDefaultTimeDisplay = () => {
-    const defaultTimezone = getTimezone();
-    const start = moment(data?.schedule?.startDate);
-    const end = moment(data?.schedule?.endDate);
-    const startTime = start.tz(defaultTimezone).format("HH:mm");
-    const endTime = end.tz(defaultTimezone).format("HH:mm");
-    const _obj = { startTime, endTime };
-    setTimeDisplay(_obj);
-  };
+  
   const setNewTimezone = (obj) => {
     APP.SESSION.DTO.SCHEDULE.dirty = true;
     APP.SESSION.DTO.SCHEDULE.timezone = obj.timezone;
@@ -101,17 +74,14 @@ function Final(props) {
       type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
       schedule: APP.SESSION.DTO.SCHEDULE,
     });
+    setTz(obj.timezone) 
   };
   const resetTimezoneToDefault = () => {
+    setLocalTimezone()
     setNewTimezone({ timezone: getTimezone() });
-    resetDefaultTimeDisplay();
   };
 
   useEffect(() => {
-    if (!props.hasErrors) {
-      const obj = { timezone: data?.schedule?.timezone || getTimezone() };
-      setDynamicTimeDisplay(obj);
-    }
     setShowCompletionMessage(props.showCompletionMessage);
   }, []);
 
@@ -155,7 +125,7 @@ function Final(props) {
                   <SponsorshipDetail isDark={isDark} sponsor={data?.sponsor} onNavigate={props.onNavigate} />
                 </Grid>
                 <Grid item lg={6} sm={12} md={6} xs={12}>
-                  <ScheduleDetail schedule={data?.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone timeDisplay={timeDisplay} onNavigate={props.onNavigate} />
+                  <ScheduleDetail schedule={data?.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone onNavigate={props.onNavigate} />
                   <AttachmentDetail isDark={isDark} attachment={data?.basic} onNavigate={props.onNavigate} />
                   <QuestionairreDetail participant={data?.participant} onNavigate={props.onNavigate} />
                 </Grid>
