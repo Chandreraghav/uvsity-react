@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -11,13 +11,17 @@ import Select from "@mui/material/Select";
 import ListSubheader from "@mui/material/ListSubheader";
 import { TIMEZONE } from "../../../../../../constants/timezones";
 import {
+  datesAreOnSameDay,
   formatTime,
   getDateAfter,
-  getDifferenceOfTimeWithCurrentTimeInMinutes,
+  getFormattedHoursFromDate,
+  getFormattedMinutesFromDate,
   getTimeAfter,
   getTimezone,
+  isEmptyObject,
   isSmallScreen,
   isToday,
+  localTZDate,
 } from "../../../../../../utils/utility";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -61,6 +65,9 @@ toast.configure();
 function Schedule(props) {
   const [theme, _dispatch] = useTheme();
   const [isDark, setDark] = useState(theme.mode === THEME_MODES.DARK);
+  useEffect(() => {
+    setDark(theme.mode === THEME_MODES.DARK);
+  }, [theme])
   const deepGray = COLOR_CODES.GRAY.DEEP;
   const lightGray = COLOR_CODES.GRAY.LIGHT
   const [isSticky, setSticky] = useState(false);
@@ -69,15 +76,11 @@ function Schedule(props) {
       "& .MuiMenu-paper": {
         backgroundColor: isDark ? COLOR_CODES.BLACK.DARK : "",
       }
-
     },
     root: {
-
       '& .MuiInputBase-root.Mui-disabled': {
         color: '#fff',
-
       }
-
     },
     input: {
       color: isDark ? deepGray : "",
@@ -112,24 +115,25 @@ function Schedule(props) {
       },
     },
   }));
-
   const classes = useStyles();
-  useEffect(() => {
-    setDark(theme.mode === THEME_MODES.DARK);
-  }, [theme])
-
+  const label = {
+    inputProps: {
+      "aria-label": "controlled repeat checkbox",
+      id: "repeat-label",
+    },
+  };
   const Router = useRouter();
   const [data, dispatch] = useDataLayerContextValue();
   const [timezone, setTimeZone] = useState(getTimezone());
   const [schedule, setSchedule] = useState(SCHEDULE);
-  const [duration, setDuration] = useState(DEFAULTS.TIME_ID); // 291 is the default time id for duration
+  const [duration, setDuration] = useState(DEFAULTS.TIME_ID); // 291 is the default time id for duration(0.5h)
   const [startTime, setStartTime] = useState(
-    getTimeAfter(props.data?.static.times, 1, true)
+    getTimeAfter(props.data?.static?.times, 1, true)
   );
   const [endTime, setEndTime] = useState(null);
+  const [startDate, setStartDate] = React.useState(new Date());
+  const [endDate, setEndDate] = useState(null);
   const [errorInStartTime, setErrorInStartTime] = useState(false);
-  const [selectedStartDate, setSelectedStartDate] = React.useState(new Date());
-  const [calculatedEndDate, setEndDate] = useState(null);
   const [repeatObject, setRepeatObject] = useState(null);
   const [repeatChecked, setRepeatChecked] = useState(false);
   const [repeatDisabled, setRepeatDisabled] = useState(true);
@@ -140,546 +144,139 @@ function Schedule(props) {
   const [checkedRepeatByDaysOfWeekState, setCheckedRepeatByDaysOfWeekState] =
     useState(new Array(repeatByDaysOfWeek?.length).fill(true));
   const [startMinDate, setStartMinDate] = useState(new Date());
-  const [endsOnAfterValue, setEndsOnAfterValue] = React.useState("Occurence");
-  const [endsOnDate, setEndsOnDate] = React.useState(new Date());
+  const [endsOnORAfterValue, setEndsOnAfterValue] = React.useState("Occurence");
+  const [endsOnDate, setEndsOnDate] = React.useState(null);
   const [endsOnDateError, setEndsOnDateError] = React.useState(false);
   const [scheduleFixed, setScheduleFixed] = useState(false);
   const [processInProgress, setProcessInProgress] = useState(false);
   const [scheduleSummary, setScheduleSummary] = useState(null);
   const [scheduleFixatedObject, setScheduleFixatedObject] = useState({});
+
   useEffect(() => {
-    canRepeatBeEnabled();
-  }, [props.data?.static.times]);
-  useEffect(() => {
-    calculateEndDate(true);
-  }, [selectedStartDate, duration, startTime, scheduleFixatedObject]);
-  const calculateEndDate = (triggerDispatch) => {
-    const _startTimeCollection = props.data?.static.times.filter(
-      (time) => time.timeId === startTime.timeId
-    );
-    const _durationCollection = props.data?.static.times.filter(
-      (time) => time.timeId === duration
-    );
-
-    const _startTime = new Date(selectedStartDate);
-
-    _startTime.setHours(parseInt(_startTimeCollection[0].hour));
-    _startTime.setMinutes(parseInt(_startTimeCollection[0].minute));
-
-    const _endTime = new Date(selectedStartDate);
-
-    _endTime.setHours(_startTime.getHours());
-    _endTime.setMinutes(
-      _startTime.getMinutes() +
-      Number(_durationCollection[0].durationDisplay) * 60
-    );
-    const endDate = {
-      hour:
-        _endTime.getHours() < 10
-          ? "0" + _endTime.getHours().toString()
-          : _endTime.getHours().toString(),
-      minute:
-        _endTime.getMinutes() < 10
-          ? "0" + _endTime.getMinutes().toString()
-          : _endTime.getMinutes().toString(),
+    window.addEventListener("scroll", () => {
+      const scrollheightLimit = 50;
+      if (window.scrollY > scrollheightLimit || repeatChecked) {
+        setSticky(true);
+      } else {
+        setSticky(false);
+      }
+    });
+    return () => {
+      try {
+        window.removeEventListener("scroll");
+      } catch (error) { }
     };
-    setEndDate(_endTime);
-    const endTimeIdObject = props.data?.static.times.filter(
-      (time) => time.hour === endDate.hour && time.minute === endDate.minute
-    );
-    setEndTime(endTimeIdObject[0]);
-    APP.SESSION.DTO.SCHEDULE.endDate = _endTime;
-    APP.SESSION.DTO.SCHEDULE.endTime = endTimeIdObject[0];
-    setDirty();
-    if (triggerDispatch) {
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-        schedule: APP.SESSION.DTO.SCHEDULE,
-      });
+  }, [repeatChecked]);
+  const defaultDuration = useMemo(() => {
+    return {
+      "timeId": 291,
+      "hour": "00",
+      "minute": "30",
+      "hourMinuteSeparator": ":",
+      "display": "00:30",
+      "durationDisplay": "0.5"
     }
-  };
-  const handleTimezoneChange = (event) => {
-    setTimeZone(event.target.value);
-    APP.SESSION.DTO.SCHEDULE.timezone = event.target.value;
-    setDirty();
+  }, []);
+
+  const dispatchToStore = useCallback(() => {
     dispatch({
       type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
       schedule: APP.SESSION.DTO.SCHEDULE,
     });
-    canRepeatBeEnabled();
-  };
+  }, [dispatch])
 
-  const handleRepeatCheckChange = (event) => {
-    setRepeatChecked(event.target.checked);
-
-    setTimeout(() => {
-      if (!event.target.checked) {
-        setRepeatObject(null);
-        APP.SESSION.DTO.SCHEDULE.repeatObject = null;
-      }
-      APP.SESSION.DTO.SCHEDULE.repeats = event.target.checked;
-      setDirty();
-      if (!event.target.checked) {
-        setRepeatValue("");
-        APP.SESSION.DTO.SCHEDULE.repeatValue = "";
-        setScheduleFixed(false);
-        APP.SESSION.DTO.SCHEDULE.repeatScheduleFixed = false;
-        setScheduleSummary(null);
-        APP.SESSION.DTO.SCHEDULE.repeatScheduleSummary = null;
-        setScheduleFixatedObject({});
-        APP.SESSION.DTO.SCHEDULE.repeatSchedule = {};
-      }
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-        schedule: APP.SESSION.DTO.SCHEDULE,
-      });
-    }, 120);
-  };
-  const handleOccurenceCountChange = (event) => {
-    setOccurenceCount(event.target.value);
-    setDirty();
-    APP.SESSION.DTO.SCHEDULE.occurenceCount = event.target.value;
-    dispatch({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: APP.SESSION.DTO.SCHEDULE,
-    });
-  };
-  const handleRepeatsChange = (event) => {
-    const repeatObject = schedule.find(
-      (_sch) => _sch.value === event.target.value
-    );
-
-    setDirty();
-    if (repeatObject.weeklyRepeatBy.length > 0) {
-      const weeklyRepeatObject = repeatObject.weeklyRepeatBy;
-      setRepeatByDaysOfWeek(weeklyRepeatObject);
-      APP.SESSION.DTO.SCHEDULE.repeatByDaysOfWeek = weeklyRepeatObject;
-      const weeklyRepeatsOn = new Array(
-        repeatObject.weeklyRepeatBy.length
-      ).fill(true);
-      setCheckedRepeatByDaysOfWeekState(weeklyRepeatsOn);
-      APP.SESSION.DTO.SCHEDULE.repeatByDaysOfWeekChecked = weeklyRepeatsOn;
-    }
-
-    const occurences = repeatObject.endAfter.occurences;
-    setOccurenceCount(occurences);
-    APP.SESSION.DTO.SCHEDULE.occurenceCount = occurences;
-
-    setRepeatObject(repeatObject);
-    APP.SESSION.DTO.SCHEDULE.repeatObject = repeatObject;
-    setRepeatValue(event.target.value);
-    APP.SESSION.DTO.SCHEDULE.repeatValue = event.target.value;
-    dispatch({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: APP.SESSION.DTO.SCHEDULE,
-    });
-  };
-  const handleRepeatEveryChange = (event) => {
-    setRepeatEvery(event.target.value);
-    setDirty();
-    APP.SESSION.DTO.SCHEDULE.repeatEvery = event.target.value;
-    dispatch({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: APP.SESSION.DTO.SCHEDULE,
-    });
-  };
-  const handleEndsOnAfterChange = (event) => {
-    setDirty();
-    if (event.target.value === "OnDate") {
-      const getOnDate = getDateAfter(occurenceCount, selectedStartDate);
-      setEndsOnDate(getOnDate);
-      APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = getOnDate;
-    }
-
-    setEndsOnAfterValue(event.target.value);
-    APP.SESSION.DTO.SCHEDULE.repeatEndsAfter = event.target.value;
-
-    dispatch({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: APP.SESSION.DTO.SCHEDULE,
-    });
-  };
-  const label = {
-    inputProps: {
-      "aria-label": "controlled repeat checkbox",
-      id: "repeat-label",
-    },
-  };
 
   const setDirty = () => {
-    APP.SESSION.DTO.SCHEDULE.dirty = true;
+    if (!APP.SESSION.DTO.SCHEDULE.dirty)
+      APP.SESSION.DTO.SCHEDULE.dirty = true;
   };
+  const getTimeBasedCurrentDuration = useCallback(() => {
+    try {
+      return props.data?.static?.times.find(
+        (time) => time.timeId === duration
+      );
+    } catch (error) {
 
-  const handleStartDateChange = (event) => {
-    let startDate = event.$d;
-    startDate.setHours(parseInt(Number(startTime.hour)));
-    startDate.setMinutes(parseInt(Number(startTime.minute)));
-    startDate.setSeconds(0);
-    setSelectedStartDate(startDate);
-    APP.SESSION.DTO.SCHEDULE.startDate = startDate;
-    setDirty();
-    dispatch({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: APP.SESSION.DTO.SCHEDULE,
-    });
-    if (isToday(event)) {
-      const p = props?.data?.static.times.find(
+    }
+    return defaultDuration;
+  }, [defaultDuration, duration, props.data?.static?.times]);
+
+  const getTimeBasedStartTimeObject = useCallback((startTime) => {
+    try {
+      return props?.data?.static?.times.find(
         (obj) => obj?.timeId === startTime?.timeId
       );
-      const selectedDate = event.$d;
-      const selectedHour = parseInt(p?.hour);
-      selectedDate.setHours(selectedHour);
-      const selectedMinute = parseInt(p?.minute);
-      selectedDate.setMinutes(selectedMinute);
-      if (getDifferenceOfTimeWithCurrentTimeInMinutes(selectedDate) < 60) {
-        const startTime = getTimeAfter(props?.data?.static.times, 2);
-        setStartTime(startTime);
-        APP.SESSION.DTO.SCHEDULE.startTime = startTime;
-        setDirty();
-        dispatch({
-          type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-          schedule: APP.SESSION.DTO.SCHEDULE,
-        });
-      }
-    } else {
-      setErrorInStartTime(false);
+    } catch (error) {
+
     }
-    canRepeatBeEnabled();
-  };
-  const handleRepeatByDayOfWeekChange = (event, day, position) => {
-    const updatedCheckedState = checkedRepeatByDaysOfWeekState.map(
-      (item, index) => (index === position ? !item : item)
-    );
+    return null;
 
-    setCheckedRepeatByDaysOfWeekState(updatedCheckedState);
-    setDirty();
-    APP.SESSION.DTO.SCHEDULE.repeatByDaysOfWeekChecked = updatedCheckedState;
-    dispatch({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: APP.SESSION.DTO.SCHEDULE,
-    });
-  };
-  const handleScheduleFixation = () => {
-    setProcessInProgress(true);
-    const _startTimeCollection = props.data?.static.times.filter(
-      (time) => time.timeId === startTime.timeId
-    );
-    const _durationCollection = props.data?.static.times.filter(
-      (time) => time.timeId === duration
-    );
+  }, [props?.data?.static?.times])
 
-    const _startTime = new Date(selectedStartDate);
+  const getTimeBasedStartDate = (date, startTimeObject) => {
+    date.setHours(parseInt(startTimeObject?.hour));
+    date.setMinutes(parseInt(startTimeObject?.minute));
+    date.setSeconds(0)
+    return date;
+  }
 
-    _startTime.setHours(parseInt(_startTimeCollection[0].hour));
-    _startTime.setMinutes(parseInt(_startTimeCollection[0].minute));
-
-    const _endTime = new Date(selectedStartDate);
-
-    _endTime.setHours(_startTime.getHours());
-    _endTime.setMinutes(
-      _startTime.getMinutes() +
-      Number(_durationCollection[0].durationDisplay) * 60
-    );
-
-    const _startMonth = _endTime.getMonth() + 1;
-    const startDate = {
-      day:
-        _startTime.getDate() < 10
-          ? "0" + _startTime.getDate().toString()
-          : _startTime.getDate().toString(),
-      month:
-        _startMonth < 10
-          ? "0" + _startMonth.toString()
-          : _startMonth.toString(),
-      year: _startTime.getFullYear().toString(),
-      hour:
-        _startTime.getHours() < 10
-          ? "0" + _startTime.getHours().toString()
-          : _startTime.getHours().toString(),
-      minute:
-        _startTime.getMinutes() < 10
-          ? "0" + _startTime.getMinutes().toString()
-          : _startTime.getMinutes().toString(),
-      second: "00",
-      dateSeparator: "/",
-      hourMinuteSeparator: ":",
-    };
-    const _endMonth = _endTime.getMonth() + 1;
-    const endDate = {
-      day:
-        _endTime.getDate() < 10
-          ? "0" + _endTime.getDate().toString()
-          : _endTime.getDate().toString(),
-      month: _endMonth < 10 ? "0" + _endMonth.toString() : _endMonth.toString(),
-      year: _endTime.getFullYear().toString(),
-      hour:
-        _endTime.getHours() < 10
-          ? "0" + _endTime.getHours().toString()
-          : _endTime.getHours().toString(),
-      minute:
-        _endTime.getMinutes() < 10
-          ? "0" + _endTime.getMinutes().toString()
-          : _endTime.getMinutes().toString(),
-      second: "00",
-      dateSeparator: "/",
-      hourMinuteSeparator: ":",
-    };
-    const daysOfWeekSelected = repeatByDaysOfWeek?.filter((obj) => obj.checked);
-    let daysOfWeek = [];
-    daysOfWeekSelected?.map((day, index) => {
-      if (checkedRepeatByDaysOfWeekState[index]) {
-        daysOfWeek.push(day.value);
-      }
-    });
-    if (repeatValue === "Weekly" && daysOfWeek.length == 0) {
-      checkedRepeatByDaysOfWeekState[0] = true;
-      daysOfWeek.push("Sun");
+  const calculateEndTimeFromEndDate = useCallback((_endDate) => {
+    const _endTime = {
+      "timeId": null,
+      "hour": getFormattedHoursFromDate(_endDate),
+      "minute": getFormattedMinutesFromDate(_endDate),
+      "hourMinuteSeparator": ":",
+      "display": null,
+      "durationDisplay": null
     }
-    let schedulerEndOnDate = null;
-    if (endsOnAfterValue === "OnDate") {
-      endsOnDate.setHours(_endTime.getHours());
-      endsOnDate.setMinutes(_endTime.getMinutes());
-      const _endOnDayMonth = endsOnDate.getMonth() + 1;
-      schedulerEndOnDate = {
-        day:
-          endsOnDate.getDate() < 10
-            ? "0" + endsOnDate.getDate().toString()
-            : endsOnDate.getDate().toString(),
-        month:
-          _endOnDayMonth < 10
-            ? "0" + _endOnDayMonth.toString()
-            : _endOnDayMonth.toString(),
-        year: endsOnDate.getFullYear().toString(),
-        hour:
-          endsOnDate.getHours() < 10
-            ? "0" + endsOnDate.getHours().toString()
-            : endsOnDate.getHours().toString(),
-        minute:
-          endsOnDate.getMinutes() < 10
-            ? "0" + endsOnDate.getMinutes().toString()
-            : endsOnDate.getMinutes().toString(),
-        second: "00",
-        dateSeparator: "/",
-        hourMinuteSeparator: ":",
-      };
+    _endTime.display = `${_endTime.hour}${_endTime.hourMinuteSeparator}${_endTime.minute}`
+    const endTimeObject = props.data?.static?.times?.find((time) => time.display === _endTime.display)
+    if (endTimeObject) {
+      setEndTime(endTimeObject)
+      APP.SESSION.DTO.SCHEDULE.endTime = endTimeObject;
     }
+  }, [props.data?.static?.times])
+  const calculateEndDate = useCallback(() => {
+    const timeBasedDurationObject = getTimeBasedCurrentDuration();
+    const durationInHours = Number(timeBasedDurationObject.durationDisplay)
+    const durationInMins = durationInHours * 60;
+    const durationInMillis = durationInMins * 60 * 1000
+    let _endDate = new Date(startDate.getTime() + durationInMillis);
+    if (repeatChecked && !isEmptyObject(APP.SESSION.DTO.SCHEDULE.repeatSchedule)) {
+      const e = new Date(APP.SESSION.DTO.SCHEDULE.repeatSchedule?.courseEndDateStr)
+      _endDate = new Date(e.getTime() + durationInMillis); // the course end date added with the selected duration would be the end date in case the schedule is fixed.
+    }
+    setEndDate(_endDate);
+    setEndsOnDate(_endDate)
+    calculateEndTimeFromEndDate(_endDate)
+    APP.SESSION.DTO.SCHEDULE.endDate = _endDate;
+    APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = APP.SESSION.DTO.SCHEDULE.endDate;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calculateEndTimeFromEndDate, getTimeBasedCurrentDuration, startDate])
 
-    const obj = {
-      timeZone: timezone,
-      startTime: {
-        timeId: _startTimeCollection[0].timeId,
-        hour: _startTimeCollection[0].hour,
-        minute: _startTimeCollection[0].minute,
-        hourMinuteSeparator: _startTimeCollection[0].hourMinuteSeparator,
-      },
-      endTime: {
-        timeId: _startTimeCollection[0].timeId,
-        hour:
-          _endTime.getHours() < 10
-            ? "0" + _endTime.getHours().toString()
-            : _endTime.getHours().toString(),
-        minute:
-          _endTime.getMinutes() < 10
-            ? "0" + _endTime.getMinutes().toString()
-            : _endTime.getMinutes().toString(),
-        hourMinuteSeparator: _startTimeCollection[0].hourMinuteSeparator,
-      },
-      currentSchedule: {
-        repeateEveryCount: repeatEvery === 0 ? 1 : repeatEvery,
-        monthlyRepeatTypeStr: "DayOfMonth",
-        endOfMeetingTypeStr: endsOnAfterValue,
-        isScheduleValid: true,
-        occurence:
-          endsOnAfterValue === "Occurence" ? occurenceCount.toString() : "0",
-        repeatTypeStr: repeatValue,
-        selectedDaysOfWeekStr: repeatValue === "Weekly" ? daysOfWeek : [],
-      },
-      courseScheduleEndDateStr: schedulerEndOnDate
-        ? schedulerEndOnDate.month +
-        schedulerEndOnDate.dateSeparator +
-        schedulerEndOnDate.day +
-        schedulerEndOnDate.dateSeparator +
-        schedulerEndOnDate.year +
-        " " +
-        schedulerEndOnDate.hour +
-        schedulerEndOnDate.hourMinuteSeparator +
-        schedulerEndOnDate.minute +
-        schedulerEndOnDate.hourMinuteSeparator +
-        schedulerEndOnDate.second
-        : null,
-      courseStartDateStr:
-        startDate.month +
-        startDate.dateSeparator +
-        startDate.day +
-        startDate.dateSeparator +
-        startDate.year +
-        " " +
-        startDate.hour +
-        startDate.hourMinuteSeparator +
-        startDate.minute +
-        startDate.hourMinuteSeparator +
-        startDate.second,
-
-      courseEndDateStr:
-        endDate.month +
-        endDate.dateSeparator +
-        endDate.day +
-        endDate.dateSeparator +
-        endDate.year +
-        " " +
-        endDate.hour +
-        endDate.hourMinuteSeparator +
-        endDate.minute +
-        endDate.hourMinuteSeparator +
-        endDate.second,
-    };
-
-    ScheduleService.postScheduleAndreceiveSchedulingInformation(obj)
-      .then((res) => {
-        setDirty();
-        setScheduleFixed(true);
-        APP.SESSION.DTO.SCHEDULE.repeatScheduleFixed = true;
-        setScheduleFixatedObject(obj);
-        APP.SESSION.DTO.SCHEDULE.repeatSchedule = obj;
-        setScheduleSummary(res.data.value.summary);
-        APP.SESSION.DTO.SCHEDULE.repeatScheduleSummary = res.data.value.summary;
-      })
-      .catch((err) => {
-        setDirty();
-        setScheduleFixed(false);
-        APP.SESSION.DTO.SCHEDULE.repeatScheduleFixed = false;
-        handleResponse(
-          getWorkflowError(GENERIC_INTERNAL_ERROR),
-          RESPONSE_TYPES.ERROR,
-          toast.POSITION.TOP_RIGHT
-        );
-      })
-      .finally(() => {
-        setProcessInProgress(false);
-        dispatch({
-          type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-          schedule: APP.SESSION.DTO.SCHEDULE,
-        });
-        if (!isSmallScreen())
-          window.scrollTo(0, 0);
-      });
-  };
-  const handleDurationChange = (event) => {
-    setDuration(event.target.value);
-    APP.SESSION.DTO.SCHEDULE.duration = event.target.value;
-    setDirty();
-    dispatch({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: APP.SESSION.DTO.SCHEDULE,
-    });
-    canRepeatBeEnabled();
-  };
-  const handleStartTime = (event) => {
-    const p = props.data?.static.times.filter(
-      (obj) => obj.timeId === event.target.value
-    );
-    const selectedDate = new Date(selectedStartDate);
-    const selectedHour = parseInt(p[0].hour);
-    selectedDate.setHours(selectedHour);
-    const selectedMinute = parseInt(p[0].minute);
-    selectedDate.setMinutes(selectedMinute);
-    if (getDifferenceOfTimeWithCurrentTimeInMinutes(selectedDate) < 60) {
-      const startTime = getTimeAfter(props.data?.static.times, 2, true);
-      setStartTime(startTime);
-      APP.SESSION.DTO.SCHEDULE.startTime = startTime;
+  useEffect(() => {
+    if (!scheduleFixed) {
+      calculateEndDate()
       setDirty();
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-        schedule: APP.SESSION.DTO.SCHEDULE,
-      });
-      setErrorInStartTime(true);
-      return;
+      dispatchToStore()
     }
-    setErrorInStartTime(false);
-    setStartTime(p[0]);
-    APP.SESSION.DTO.SCHEDULE.startTime = p[0];
-    setDirty();
-    dispatch({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: APP.SESSION.DTO.SCHEDULE,
-    });
-    canRepeatBeEnabled();
-  };
-  const canRepeatBeEnabled = () => {
-    if (selectedStartDate && startTime && duration && timezone) {
-      setRepeatDisabled(false);
-    } else {
-      setRepeatDisabled(true);
-    }
-  };
-  const handleEndsOnChange = (event) => {
-    setEndsOnDate(event.$d);
-    APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = event;
-    setDirty();
-    dispatch({
-      type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-      schedule: APP.SESSION.DTO.SCHEDULE,
-    });
-  };
-
-  const getTimeByID = (id) => {
-    const _time = props.data?.static.times.filter((time) => time.timeId === id);
-    return formatTime(_time[0]);
-  };
-
-  const getEndTime = () => {
-    return formatTime(endTime);
-  };
-
-  const handleScheduleCancelation = () => {
-    setProcessInProgress(true);
-    setDirty();
-    setRepeatChecked(false);
-    APP.SESSION.DTO.SCHEDULE.repeats = false;
-    setTimeout(() => {
-      setRepeatValue("");
-      APP.SESSION.DTO.SCHEDULE.repeatValue = "";
-      setScheduleFixed(false);
-      APP.SESSION.DTO.SCHEDULE.repeatScheduleFixed = false;
-      setScheduleSummary(null);
-      APP.SESSION.DTO.SCHEDULE.repeatScheduleSummary = null;
-      setScheduleFixatedObject({});
-      APP.SESSION.DTO.SCHEDULE.repeatSchedule = {};
-      setProcessInProgress(false);
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-        schedule: APP.SESSION.DTO.SCHEDULE,
-      });
-      if (!isSmallScreen())
-        window.scrollTo(0, 0);
-    }, 120);
-  };
+  }, [startDate, startTime, duration, props.data.static.times, scheduleFixed, getTimeBasedCurrentDuration, dispatchToStore, calculateEndTimeFromEndDate, calculateEndDate])
 
   useEffect(() => {
     if (data.schedule) {
       const starttime = data?.schedule?.startTime
         ? data?.schedule?.startTime
-        : getTimeAfter(props.data?.static.times, 1, true);
+        : getTimeAfter(props.data?.static?.times, 1, true);
       setStartTime(starttime);
       APP.SESSION.DTO.SCHEDULE.startTime = starttime;
-      // fetch data from context on load of form step.
-      const startDate = data?.schedule?.startDate
-        ? data?.schedule?.startDate
-        : new Date();
-      startDate.setHours(parseInt(data?.schedule?.startTime?.hour));
-      startDate.setMinutes(parseInt(data?.schedule?.startTime?.minute));
-      startDate.setSeconds(0);
-      setSelectedStartDate(startDate);
-      APP.SESSION.DTO.SCHEDULE.startDate = startDate;
-
+      const startTimeObject = getTimeBasedStartTimeObject(starttime)
+      setDefaultStartDate(startTimeObject)
       setEndsOnDateError(false);
-
       const duration = data?.schedule?.duration
         ? data?.schedule?.duration
         : DEFAULTS.TIME_ID;
       setDuration(duration);
       APP.SESSION.DTO.SCHEDULE.duration = duration;
-      calculateEndDate();
       const timezone = data?.schedule?.timezone
         ? data?.schedule?.timezone
         : getTimezone();
@@ -693,7 +290,7 @@ function Schedule(props) {
         APP.SESSION.DTO.SCHEDULE.repeatEndsAfter = endsOnAfter;
 
         if (endsOnAfter === "OnDate") {
-          const getOnDate = getDateAfter(occurenceCount, selectedStartDate);
+          const getOnDate = getDateAfter(occurenceCount, data?.schedule?.startDate || new Date());
           setEndsOnDate(getOnDate);
           APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = getOnDate;
         }
@@ -738,7 +335,7 @@ function Schedule(props) {
         const weeklyRepeatObject = data?.schedule?.repeatByDaysOfWeek
           ? data?.schedule?.repeatByDaysOfWeek
           : [];
-        setRepeatByDaysOfWeek();
+        setRepeatByDaysOfWeek(weeklyRepeatObject);
         APP.SESSION.DTO.SCHEDULE.repeatByDaysOfWeek = weeklyRepeatObject;
         const weeklyRepeatsOn = data?.schedule?.repeatByDaysOfWeekChecked
           ? data?.schedule?.repeatByDaysOfWeekChecked
@@ -760,57 +357,471 @@ function Schedule(props) {
           new Array(repeatByDaysOfWeek.length).fill(true)
         );
       }
-
       setDirty();
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-        schedule: APP.SESSION.DTO.SCHEDULE,
-      });
+      dispatchToStore()
     } else {
       const starttime = data?.schedule?.startTime
         ? data?.schedule?.startTime
-        : getTimeAfter(props.data?.static.times, 1, true);
+        : getTimeAfter(props.data?.static?.times, 1, true);
       setStartTime(starttime);
       APP.SESSION.DTO.SCHEDULE.startTime = starttime;
-      // fetch data from context on load of form step.
-      const startDate = data?.schedule?.startDate
-        ? data?.schedule?.startDate
-        : new Date();
-
-      startDate.setHours(Number(starttime.hour));
-      startDate.setMinutes(Number(starttime.minute));
-      startDate.setSeconds(0);
-      setSelectedStartDate(startDate);
-      APP.SESSION.DTO.SCHEDULE.startDate = startDate;
-
+      const startTimeObject = getTimeBasedStartTimeObject(starttime)
+      setDefaultStartDate(startTimeObject)
       setDuration(DEFAULTS.TIME_ID);
-      APP.SESSION.DTO.SCHEDULE.duration = duration;
+      APP.SESSION.DTO.SCHEDULE.duration = DEFAULTS.TIME_ID;
       APP.SESSION.DTO.SCHEDULE.timezone = getTimezone();
-      setTimeZone(getTimezone());
+      setTimeZone(APP.SESSION.DTO.SCHEDULE.timezone);
       setDirty();
       APP.SESSION.DTO.requestPath = Router.asPath;
       APP.SESSION.DTO.user = AuthService.getCurrentUser();
-      dispatch({
-        type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
-        schedule: APP.SESSION.DTO.SCHEDULE,
-      });
+      dispatchToStore()
     }
-  }, []);
-  useEffect(() => {
-    window.addEventListener("scroll", () => {
-      const scrollheightLimit = 50;
-      if (window.scrollY > scrollheightLimit || repeatChecked) {
-        setSticky(true);
-      } else {
-        setSticky(false);
+    canRepeatBeEnabled()
+  }, [Router.asPath, canRepeatBeEnabled, data.schedule, dispatchToStore, getTimeBasedStartTimeObject, props.data?.static?.times, repeatByDaysOfWeek?.length, setDefaultStartDate]);
+
+  const setDefaultStartDate = useCallback((startTimeObject) => {
+    const defaultStartDate = getTimeBasedStartDate(new Date(), startTimeObject)
+    setStartDate(defaultStartDate);
+    APP.SESSION.DTO.SCHEDULE.startDate = defaultStartDate;
+  }, [])
+
+
+
+  const handleStartDateChange = (event) => {
+    if (scheduleFixed) {
+      handleScheduleCancelation()
+      //setStartTime(getTimeAfter(props.data?.static?.times, 1, true)) 
+    }
+    const startTimeObject = getTimeBasedStartTimeObject(startTime)
+    if (startTimeObject) {
+      const selectedStartDate = getTimeBasedStartDate(event.$d, startTimeObject)
+      setStartDate(selectedStartDate);
+      APP.SESSION.DTO.SCHEDULE.startDate = selectedStartDate;
+      if (isToday(selectedStartDate)) {
+        if (selectedStartDate instanceof Date && selectedStartDate.getTime() < new Date()) {
+          // if start time selected is in past then select a future time.
+          setStartTime(getTimeAfter(props.data?.static?.times, 2, true))
+          setErrorInStartTime(true)
+          //setStartDate(getTimeBasedStartDate(event.$d, getTimeBasedStartTimeObject(startTime)));
+        }
+        else {
+          setStartTime(startTimeObject)
+          setErrorInStartTime(false)
+        }
+      }
+      setDirty()
+      dispatchToStore()
+    }
+    else {
+      handleResponse(
+        'Start date could not be selected. Please try again.',
+        RESPONSE_TYPES.WARNING,
+        toast.POSITION.BOTTOM_CENTER
+      );
+    }
+  }
+
+  const handleTimezoneChange = (event) => {
+    setTimeZone(event.target.value);
+    APP.SESSION.DTO.SCHEDULE.timezone = event.target.value;
+    setDirty();
+    dispatchToStore()
+    canRepeatBeEnabled();
+  };
+  const revertToOneDaySchedule = () => {
+    if (scheduleFixed) {
+      const startTimeObject = getTimeBasedStartTimeObject(startTime)
+      setDefaultStartDate(startTimeObject)
+      handleScheduleCancelation()
+    }
+  }
+  const handleStartTime = (event) => {
+    let _startTimeObject = props?.data?.static?.times.find(
+      (obj) => obj?.timeId === event.target.value
+    )
+    if (_startTimeObject) {
+      const _startDate = startDate;
+      const _timeBasedStartDate = getTimeBasedStartDate(_startDate, _startTimeObject)
+      if (_timeBasedStartDate instanceof Date && _timeBasedStartDate.getTime() < new Date()) {
+        // if start time selected is in past then select a future time.
+        _startTimeObject = getTimeAfter(props.data?.static?.times, 2, true)
+        setStartTime(_startTimeObject)
+        setErrorInStartTime(true)
+      }
+      else {
+        setStartTime(_startTimeObject)
+        setErrorInStartTime(false)
+      }
+      revertToOneDaySchedule()
+      APP.SESSION.DTO.SCHEDULE.startTime = _startTimeObject;
+      setDirty();
+      dispatchToStore()
+    }
+  };
+
+  const canRepeatBeEnabled = useCallback(() => {
+    if (startDate && startTime && duration && timezone) {
+      if (repeatDisabled)
+        setRepeatDisabled(false);
+    } else {
+      setRepeatDisabled(true);
+    }
+  }, [duration, repeatDisabled, startDate, startTime, timezone]);
+  const handleDurationChange = (event) => {
+    setDuration(event.target.value);
+    revertToOneDaySchedule()
+    APP.SESSION.DTO.SCHEDULE.duration = event.target.value;
+    setDirty();
+    dispatchToStore()
+    canRepeatBeEnabled();
+  }
+
+  const handleRepeatCheckChange = (event) => {
+    setRepeatChecked(event.target.checked);
+    APP.SESSION.DTO.SCHEDULE.repeats = event.target.checked;
+    setTimeout(() => {
+      setDirty();
+      if (!event.target.checked) {
+        setRepeatObject(null);
+        APP.SESSION.DTO.SCHEDULE.repeatObject = null;
+        setRepeatValue("");
+        APP.SESSION.DTO.SCHEDULE.repeatValue = "";
+        setScheduleFixed(false);
+        APP.SESSION.DTO.SCHEDULE.repeatScheduleFixed = false;
+        setScheduleSummary(null);
+        APP.SESSION.DTO.SCHEDULE.repeatScheduleSummary = null;
+        setScheduleFixatedObject({});
+        APP.SESSION.DTO.SCHEDULE.repeatSchedule = {};
+        setEndsOnDate(null)
+        APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = null
+      }
+      dispatchToStore()
+    }, 120);
+  }
+
+  const handleRepeatsChange = (event) => {
+    const repeatObject = schedule.find(
+      (_sch) => _sch.value === event.target.value
+    );
+    setDirty();
+    if (repeatObject && repeatObject.weeklyRepeatBy.length > 0) {
+      const weeklyRepeatObject = repeatObject.weeklyRepeatBy;
+      setRepeatByDaysOfWeek(weeklyRepeatObject);
+      APP.SESSION.DTO.SCHEDULE.repeatByDaysOfWeek = weeklyRepeatObject;
+      const weeklyRepeatsOn = new Array(
+        repeatObject.weeklyRepeatBy.length
+      ).fill(true);
+      setCheckedRepeatByDaysOfWeekState(weeklyRepeatsOn);
+      APP.SESSION.DTO.SCHEDULE.repeatByDaysOfWeekChecked = weeklyRepeatsOn;
+    }
+
+    const occurences = repeatObject.endAfter.occurences;
+    setOccurenceCount(occurences);
+    APP.SESSION.DTO.SCHEDULE.occurenceCount = occurences;
+
+    setRepeatObject(repeatObject);
+    APP.SESSION.DTO.SCHEDULE.repeatObject = repeatObject;
+    setRepeatValue(event.target.value);
+    APP.SESSION.DTO.SCHEDULE.repeatValue = event.target.value;
+    dispatchToStore()
+
+  }
+  const handleRepeatEveryChange = (event) => {
+    setRepeatEvery(event.target.value);
+    setDirty();
+    APP.SESSION.DTO.SCHEDULE.repeatEvery = event.target.value;
+    dispatchToStore()
+  }
+
+  const handleRepeatByDayOfWeekChange = (event, day, position) => {
+    const updatedCheckedState = checkedRepeatByDaysOfWeekState.map(
+      (item, index) => (index === position ? !item : item)
+    );
+
+    setCheckedRepeatByDaysOfWeekState(updatedCheckedState);
+    setDirty();
+    APP.SESSION.DTO.SCHEDULE.repeatByDaysOfWeekChecked = updatedCheckedState;
+    dispatchToStore()
+  }
+  const handleOccurenceCountChange = (event) => {
+    setOccurenceCount(event.target.value);
+    setDirty();
+    APP.SESSION.DTO.SCHEDULE.occurenceCount = event.target.value;
+    dispatchToStore()
+  };
+  const handleEndsOnChange = (event) => {
+    setEndsOnDate(event.$d);
+    APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = event.$d;
+    setDirty();
+    dispatchToStore()
+  }
+  const handleScheduleFixation = () => {
+    setProcessInProgress(true);
+    const startTimeObject = getTimeBasedStartTimeObject(startTime)
+    const _startTime = getTimeBasedStartDate(startDate, startTimeObject)
+    calculateEndDate()
+    const _endDate = endDate;
+    const _startMonth = _endDate.getMonth() + 1;
+    const _startDate = {
+      day:
+        _startTime.getDate() < 10
+          ? "0" + _startTime.getDate().toString()
+          : _startTime.getDate().toString(),
+      month:
+        _startMonth < 10
+          ? "0" + _startMonth.toString()
+          : _startMonth.toString(),
+      year: _startTime.getFullYear().toString(),
+      hour:
+        _startTime.getHours() < 10
+          ? "0" + _startTime.getHours().toString()
+          : _startTime.getHours().toString(),
+      minute:
+        _startTime.getMinutes() < 10
+          ? "0" + _startTime.getMinutes().toString()
+          : _startTime.getMinutes().toString(),
+      second: "00",
+      dateSeparator: "/",
+      hourMinuteSeparator: ":",
+    };
+    const _endMonth = _endDate.getMonth() + 1;
+    const __endDate = {
+      day:
+        _endDate.getDate() < 10
+          ? "0" + _endDate.getDate().toString()
+          : _endDate.getDate().toString(),
+      month: _endMonth < 10 ? "0" + _endMonth.toString() : _endMonth.toString(),
+      year: _endDate.getFullYear().toString(),
+      hour:
+        _endDate.getHours() < 10
+          ? "0" + _endDate.getHours().toString()
+          : _endDate.getHours().toString(),
+      minute:
+        _endDate.getMinutes() < 10
+          ? "0" + _endDate.getMinutes().toString()
+          : _endDate.getMinutes().toString(),
+      second: "00",
+      dateSeparator: "/",
+      hourMinuteSeparator: ":",
+    };
+    const daysOfWeekSelected = repeatByDaysOfWeek?.filter((obj) => obj.checked);
+    let daysOfWeek = [];
+    daysOfWeekSelected?.map((day, index) => {
+      if (checkedRepeatByDaysOfWeekState[index]) {
+        daysOfWeek.push(day.value);
       }
     });
-    return () => {
-      try {
-        window.removeEventListener("scroll");
-      } catch (error) { }
+    if (repeatValue === "Weekly" && daysOfWeek.length == 0) {
+      checkedRepeatByDaysOfWeekState[0] = true;
+      daysOfWeek.push("Sun");
+    }
+    let schedulerEndOnDate = null;
+    if (endsOnORAfterValue === "OnDate") {
+      endsOnDate.setHours(_endDate.getHours());
+      endsOnDate.setMinutes(_endDate.getMinutes());
+      const _endOnDayMonth = endsOnDate.getMonth() + 1;
+      schedulerEndOnDate = {
+        day:
+          endsOnDate.getDate() < 10
+            ? "0" + endsOnDate.getDate().toString()
+            : endsOnDate.getDate().toString(),
+        month:
+          _endOnDayMonth < 10
+            ? "0" + _endOnDayMonth.toString()
+            : _endOnDayMonth.toString(),
+        year: endsOnDate.getFullYear().toString(),
+        hour:
+          endsOnDate.getHours() < 10
+            ? "0" + endsOnDate.getHours().toString()
+            : endsOnDate.getHours().toString(),
+        minute:
+          endsOnDate.getMinutes() < 10
+            ? "0" + endsOnDate.getMinutes().toString()
+            : endsOnDate.getMinutes().toString(),
+        second: "00",
+        dateSeparator: "/",
+        hourMinuteSeparator: ":",
+      };
+    }
+
+    const obj = {
+      timeZone: timezone,
+      startTime: {
+        timeId: startTimeObject.timeId,
+        hour: startTimeObject.hour,
+        minute: startTimeObject.minute,
+        hourMinuteSeparator: startTimeObject.hourMinuteSeparator,
+      },
+      endTime: {
+        timeId: endTime.timeId,
+        hour:
+          _endDate.getHours() < 10
+            ? "0" + _endDate.getHours().toString()
+            : _endDate.getHours().toString(),
+        minute:
+          _endDate.getMinutes() < 10
+            ? "0" + _endDate.getMinutes().toString()
+            : _endDate.getMinutes().toString(),
+        hourMinuteSeparator: endTime.hourMinuteSeparator,
+      },
+      currentSchedule: {
+        repeateEveryCount: repeatEvery === 0 ? 1 : repeatEvery,
+        monthlyRepeatTypeStr: "DayOfMonth",
+        endOfMeetingTypeStr: endsOnORAfterValue,
+        isScheduleValid: true,
+        occurence:
+          endsOnORAfterValue === "Occurence" ? occurenceCount.toString() : "0",
+        repeatTypeStr: repeatValue,
+        selectedDaysOfWeekStr: repeatValue === "Weekly" ? daysOfWeek : [],
+      },
+      courseScheduleEndDateStr: schedulerEndOnDate
+        ? schedulerEndOnDate.month +
+        schedulerEndOnDate.dateSeparator +
+        schedulerEndOnDate.day +
+        schedulerEndOnDate.dateSeparator +
+        schedulerEndOnDate.year +
+        " " +
+        schedulerEndOnDate.hour +
+        schedulerEndOnDate.hourMinuteSeparator +
+        schedulerEndOnDate.minute +
+        schedulerEndOnDate.hourMinuteSeparator +
+        schedulerEndOnDate.second
+        : __endDate.month +
+        __endDate.dateSeparator +
+        __endDate.day +
+        __endDate.dateSeparator +
+        __endDate.year +
+        " " +
+        __endDate.hour +
+        __endDate.hourMinuteSeparator +
+        __endDate.minute +
+        __endDate.hourMinuteSeparator +
+        __endDate.second,
+      courseStartDateStr:
+        _startDate.month +
+        _startDate.dateSeparator +
+        _startDate.day +
+        _startDate.dateSeparator +
+        _startDate.year +
+        " " +
+        _startDate.hour +
+        _startDate.hourMinuteSeparator +
+        _startDate.minute +
+        _startDate.hourMinuteSeparator +
+        _startDate.second,
+
+      courseEndDateStr:
+        __endDate.month +
+        __endDate.dateSeparator +
+        __endDate.day +
+        __endDate.dateSeparator +
+        __endDate.year +
+        " " +
+        __endDate.hour +
+        __endDate.hourMinuteSeparator +
+        __endDate.minute +
+        __endDate.hourMinuteSeparator +
+        __endDate.second,
     };
-  }, []);
+    ScheduleService.postScheduleAndreceiveSchedulingInformation(obj)
+      .then((res) => {
+        setDirty();
+        setScheduleFixed(true);
+        APP.SESSION.DTO.SCHEDULE.repeatScheduleFixed = true;
+        const fixatedEndDate = new Date(res.data.value.dateValue)
+        fixatedEndDate.setHours(_endDate.getHours());
+        fixatedEndDate.setMinutes(_endDate.getMinutes());
+        const month = fixatedEndDate.getMonth() + 1;
+        __endDate.day = fixatedEndDate.getDate() < 10
+          ? "0" + fixatedEndDate.getDate().toString()
+          : fixatedEndDate.getDate().toString()
+        __endDate.month = month < 10 ? "0" + month.toString() : month.toString();
+        __endDate.year = fixatedEndDate.getFullYear().toString();
+        __endDate.hour =
+          fixatedEndDate.getHours() < 10
+            ? "0" + fixatedEndDate.getHours().toString()
+            : fixatedEndDate.getHours().toString();
+        __endDate.minute =
+          fixatedEndDate.getMinutes() < 10
+            ? "0" + fixatedEndDate.getMinutes().toString()
+            : fixatedEndDate.getMinutes().toString();
+        __endDate.second = "00";
+        __endDate.dateSeparator = "/";
+        __endDate.hourMinuteSeparator = ":";
+        obj.courseEndDateStr = __endDate.month +
+          __endDate.dateSeparator +
+          __endDate.day +
+          __endDate.dateSeparator +
+          __endDate.year +
+          " " +
+          __endDate.hour +
+          __endDate.hourMinuteSeparator +
+          __endDate.minute +
+          __endDate.hourMinuteSeparator +
+          __endDate.second;
+
+        APP.SESSION.DTO.SCHEDULE.endDate = fixatedEndDate
+        APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = fixatedEndDate
+        APP.SESSION.DTO.SCHEDULE.repeatScheduleSummary = res.data.value.summary;
+        APP.SESSION.DTO.SCHEDULE.repeatSchedule = obj;
+        setEndsOnDate(fixatedEndDate)
+        setEndDate(fixatedEndDate)
+        setScheduleFixatedObject(obj);
+        setScheduleSummary(res.data.value.summary);
+      })
+      .catch((err) => {
+        setDirty();
+        setScheduleFixed(false);
+        APP.SESSION.DTO.SCHEDULE.repeatScheduleFixed = false;
+        handleResponse(
+          getWorkflowError(GENERIC_INTERNAL_ERROR),
+          RESPONSE_TYPES.ERROR,
+          toast.POSITION.TOP_RIGHT
+        );
+      })
+      .finally(() => {
+        setProcessInProgress(false);
+        dispatchToStore()
+        if (!isSmallScreen())
+          window.scrollTo(0, 0);
+      });
+  }
+  const handleScheduleCancelation = () => {
+    setProcessInProgress(true);
+    setDirty();
+    setRepeatChecked(false);
+    APP.SESSION.DTO.SCHEDULE.repeats = false;
+    setTimeout(() => {
+      setRepeatValue("");
+      APP.SESSION.DTO.SCHEDULE.repeatValue = "";
+      setScheduleFixed(false);
+      APP.SESSION.DTO.SCHEDULE.repeatScheduleFixed = false;
+      setScheduleSummary(null);
+      APP.SESSION.DTO.SCHEDULE.repeatScheduleSummary = null;
+      setScheduleFixatedObject({});
+      APP.SESSION.DTO.SCHEDULE.repeatSchedule = {};
+      setProcessInProgress(false);
+      dispatchToStore()
+      if (!isSmallScreen())
+        window.scrollTo(0, 0);
+    }, 120);
+  }
+  const handleEndsOnORAfterChange = (event) => {
+
+    setDirty();
+    if (event.target.value === "OnDate") {
+      const getOnDate = getDateAfter(occurenceCount, startDate);
+      setEndsOnDate(getOnDate);
+      APP.SESSION.DTO.SCHEDULE.repeatEndsOnDate = getOnDate;
+    }
+    setEndsOnAfterValue(event.target.value);
+    APP.SESSION.DTO.SCHEDULE.repeatEndsAfter = event.target.value;
+    dispatchToStore()
+  }
+  const getTimeByID = (id) => {
+    const _time = props.data?.static?.times.filter((time) => time.timeId === id);
+    return formatTime(_time[0]);
+  };
   return (
     <Slide direction="left" in={true}>
       <div
@@ -820,14 +831,10 @@ function Schedule(props) {
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             <Grid item sm={12} lg={6} md={6} xs={12}>
               <div className={`${isSticky
-                  ? "md:sticky  lg:sticky  xl:sticky top-12"
-                  : ""
+                ? "md:sticky  lg:sticky  xl:sticky top-12"
+                : ""
                 }`}>
                 <Box sx={{
-
-
-
-
                   "& .MuiDatePickerToolbar-root": {
                     backgroundColor: isDark ? "#111" : "whitesmoke"
                   },
@@ -842,10 +849,7 @@ function Schedule(props) {
                   "& .MuiPickersCalendarHeader-label": {
                     color: '#0081CB'
                   },
-
-
                   "& .MuiTypography-caption": {
-
                     margin: 0
                   },
 
@@ -854,7 +858,6 @@ function Schedule(props) {
                   },
                   "& .MuiPickersDay-dayWithMargin": {
                     margin: 0,
-
                   },
 
                 }}>
@@ -866,7 +869,7 @@ function Schedule(props) {
                         <>
                           <label
                             className={
-                              !selectedStartDate instanceof Date ? "text-red-400" : ""
+                              !startDate instanceof Date ? "text-red-400" : ""
                             }
                           >
                             Start Date
@@ -875,7 +878,7 @@ function Schedule(props) {
                       }
                       autoOk
                       openTo="day"
-                      value={selectedStartDate}
+                      value={startDate}
                       onChange={handleStartDateChange}
                       componentsProps={{
                         actionBar: {
@@ -889,23 +892,27 @@ function Schedule(props) {
 
 
                 <Spacer />
+
+
                 <div className="flex flex-col gap-1 text-xs text-gray-600 leading-tight">
                   <div className="flex gap-1">
                     <InfoIcon size="small" />
                     <Typography gutterBottom component="div">
-                      Your session will start from{" "}
+                      Your session will start from&nbsp;
                       <strong>
-                        {selectedStartDate?.toDateString()}{" "}
-                        {getTimeByID(
-                          startTime?.timeId ? startTime?.timeId : DEFAULTS.TIME_ID
-                        )}
-                      </strong>{" "}
-                      and will end at <strong>{getEndTime()}</strong>
+                        {localTZDate(startDate)}{" "}
+                      </strong>
+                      and will end on&nbsp;
+                      {datesAreOnSameDay(startDate, endDate) ? (<strong>{getTimeByID(
+                        endTime?.timeId ? endTime?.timeId : DEFAULTS.TIME_ID
+                      )}</strong>) : (<strong>
+                        {localTZDate(endDate)}{" "}
+                      </strong>)}
                     </Typography>
                   </div>
                   <div
                     className="text-center items-center leading-tight 
-              text-xs text-gray-500 font-semibold flex gap-1"
+text-xs text-gray-500 font-semibold flex gap-1"
                   >
                     <Tooltip title="Timezone">
                       <div className="flex gap-1">
@@ -919,6 +926,8 @@ function Schedule(props) {
                     </Tooltip>
                   </div>
                 </div>
+
+
               </div>
 
             </Grid>
@@ -1243,7 +1252,7 @@ function Schedule(props) {
                         <FormControl variant="outlined" sx={{ marginBottom: 1 }}>
                           <div className="flex flex-col gap-2">
                             <div className="text-sm dark:text-gray-400 text-gray-700 first-letter:underline">Starts on</div>
-                            <Typography className=" italic" variant="subtitle2">{selectedStartDate?.toDateString()}</Typography>
+                            <Typography className=" italic" variant="subtitle2">{startDate?.toDateString()}</Typography>
                           </div>
                         </FormControl>
 
@@ -1257,8 +1266,8 @@ function Schedule(props) {
                             <RadioGroup
                               aria-label="ends-after-on"
                               name="row-radio-buttons-group"
-                              value={endsOnAfterValue}
-                              onChange={handleEndsOnAfterChange}
+                              value={endsOnORAfterValue}
+                              onChange={handleEndsOnORAfterChange}
                             >
                               <div className="mt-1 ml-3">
                                 <FormControlLabel
@@ -1281,7 +1290,7 @@ function Schedule(props) {
 
                                     inputProps={{ className: classes.input }}
                                     className={classes.root}
-                                    disabled={endsOnAfterValue !== "Occurence"}
+                                    disabled={endsOnORAfterValue !== "Occurence"}
 
                                   />
                                 </FormControl>
@@ -1319,7 +1328,7 @@ function Schedule(props) {
                                     disablePast
                                     onChange={handleEndsOnChange}
                                     value={endsOnDate}
-                                    disabled={endsOnAfterValue !== "OnDate"}
+                                    disabled={endsOnORAfterValue !== "OnDate"}
                                     autoFill
                                     label={<div className="text-gray-700 dark:text-gray-500">Ends on</div>}
                                     onError={() => setEndsOnDateError(true)}

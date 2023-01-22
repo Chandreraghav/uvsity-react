@@ -4,6 +4,8 @@ import { getLocalStorageObject, setLocalStorageObject } from "../localStorage/lo
 import parse from "html-react-parser";
 import convertToHTML from "markdown-to-html-converter";
 import { SESSION_DOCUMENT } from "../constants/userdata";
+import { LOCALE } from "../constants/timezones";
+
 export const truncate = (str, n) => {
   try {
     return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -110,41 +112,43 @@ export const avatarToString = (name) => {
   } catch (error) { }
   return null;
 };
-export const localTZDate = (data) => {
-  let local_date = new Date(data).toLocaleString("en-US", {
-    timeZone: getTimezone(),
+export const localTZDate = (date, timeZone=getTimezone(),requiresTimeOnly=false) => {
+  if(requiresTimeOnly) {
+   return new Date(date).toLocaleTimeString(LOCALE,{timeZone:timeZone?timeZone:getTimezone(),hour: '2-digit', minute: '2-digit'})
+  }
+return new Date(date).toLocaleString(LOCALE, {
+    timeZone:timeZone?timeZone:getTimezone(),
     day: "2-digit",
     month: "long",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
   });
-  return local_date;
 };
 
 export const getTimezone = () => {
   try {
     const globalTimezone = JSON.parse(getLocalStorageObject("uvsity-timezone"))
-    if(globalTimezone && globalTimezone.timezone){
-        return globalTimezone.timezone
+    if (globalTimezone && globalTimezone.timezone) {
+      return globalTimezone.timezone
     }
     return JSON.parse(getLocalStorageObject("uvsity-ipData")).time_zone.name;
   } catch (error) {
     return "America/New_York";
   }
 };
-export const setGlobalTimezone = (tz, force=false) => {
+export const setGlobalTimezone = (tz, force = false) => {
   try {
-    if(force){
-      setLocalStorageObject("uvsity-timezone", {timezone:tz});
+    if (force) {
+      setLocalStorageObject("uvsity-timezone", { timezone: tz });
       return;
     }
     const ipdata = JSON.parse(getLocalStorageObject("uvsity-ipData"))
-    if(tz==ipdata.time_zone.name){
+    if (tz == ipdata.time_zone.name) {
       return;
     }
-    setLocalStorageObject("uvsity-timezone", {timezone:tz});
-     } catch (error) {
+    setLocalStorageObject("uvsity-timezone", { timezone: tz });
+  } catch (error) {
   }
 };
 
@@ -206,7 +210,7 @@ export const getTimeAfter = (time, hourUnits, objectReturnInd) => {
   dt.setHours(dt.getHours() + hourUnits);
 
   const s = roundTimeBy(dt, 30);
-  const _time = time.filter(
+  const _time = time?.filter(
     (t) =>
       parseInt(t.hour) === s.getHours() && parseInt(t.minute) === s.getMinutes()
   );
@@ -419,9 +423,9 @@ export const getIconPerFileExtension = (ext) => {
   }
 };
 
-export const isValidYear = (year,stringify=true) => {
+export const isValidYear = (year, stringify = true) => {
   var text = /^[0-9]+$/;
-  if(stringify) year=year.toString();
+  if (stringify) year = year.toString();
   if (year.length == 4) {
     if (year != 0) {
       if ((year != "") && (!text.test(year))) {
@@ -439,10 +443,26 @@ export const isValidYear = (year,stringify=true) => {
   }
 }
 
-export const getLocalTimezone=()=>{
-  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+export const getLocalTimezone = () => {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone.toString();
 }
 
-export const setLocalTimezone=()=>{
-  setGlobalTimezone(getLocalTimezone(),true)
+export const setLocalTimezone = () => {
+  setGlobalTimezone(getLocalTimezone(), true)
 }
+
+export const getFormattedHoursFromDate = (date) => {
+  return date.getHours() < 10
+    ? "0" + date.getHours().toString()
+    : date.getHours().toString()
+}
+export const getFormattedMinutesFromDate = (date) => {
+  return date.getMinutes() < 10
+    ? "0" + date.getMinutes().toString()
+    : date.getMinutes().toString()
+}
+
+export const datesAreOnSameDay = (first, second) =>
+  first.getFullYear() === second?.getFullYear() &&
+  first.getMonth() === second?.getMonth() &&
+  first.getDate() === second?.getDate();

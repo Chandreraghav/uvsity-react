@@ -22,7 +22,7 @@ const IdleTimeOut = (props) => {
         event,
         remainingTime: getRemainingTime(),
       };
-      console.info(activeObj);
+      //console.info(activeObj);
       props.activeEmitter(activeObj);
     }
   };

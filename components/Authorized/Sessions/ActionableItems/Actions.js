@@ -226,8 +226,7 @@ function Actions(props) {
     if (action.id === 3) {
       navigateToPath(router, AUTHORIZED_ROUTES.AUTHORIZED.SESSION.PROFILE_INDEX + props.data?.courseId, { token: uuidv4() })
       return;
-    }
-    console.log(getStatus(action, "action-request-status"));
+    } 
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

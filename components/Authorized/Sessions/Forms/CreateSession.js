@@ -27,7 +27,9 @@ import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import {
   formatDate,
   formattedName,
+  getLocalTimezone,
   getReadableFormattedDate,
+  getTimezone,
   isEmptyObject,
   isValidURL,
   _delay,
@@ -409,7 +411,7 @@ function CreateSession(props) {
       startDateStr: formatDate(formdata?.schedule?.startDate),
       timeZone: formdata?.schedule?.timezone
         ? formdata?.schedule?.timezone
-        : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
+        : getLocalTimezone(),
       courseToSave: {
         expectedAttendees: formdata?.participant.numberOfParticipants,
         isNewCourse: true,
@@ -435,7 +437,7 @@ function CreateSession(props) {
         sponsorshipLevels: plans,
         timeZone: formdata?.schedule?.timezone
           ? formdata?.schedule?.timezone
-          : Intl.DateTimeFormat().resolvedOptions().timeZone.toString(),
+          : getLocalTimezone(),
         startTime: formdata?.schedule?.startTime
           ? formdata?.schedule?.startTime
           : {},
@@ -818,10 +820,10 @@ function CreateSession(props) {
     });
     return plans;
   };
-  const getTimezone = () => {
+  const __getTimezone = () => {
     return formdata?.schedule?.timezone
       ? formdata?.schedule?.timezone
-      : Intl.DateTimeFormat().resolvedOptions().timeZone.toString();
+      : getTimezone();
   };
   const getImageURL = (finalSubmit) => {
     if (finalSubmit) {
@@ -963,7 +965,7 @@ function CreateSession(props) {
       registrationQuestionnaireId: formdata?.participant?.questions,
       sponsorshipRequired: formdata?.sponsor.sponsorShipInd,
       sponsorshipLevels: sponsorshipLevels,
-      timeZone: getTimezone(),
+      timeZone: __getTimezone(),
       startTime: formdata?.schedule?.startTime
         ? formdata?.schedule?.startTime
         : {},
@@ -1051,7 +1053,7 @@ function CreateSession(props) {
       displayStartDateOnlyConverted: getReadableFormattedDate(
         formdata?.schedule?.startDate
       ),
-      timeZoneConverted: getTimezone(),
+      timeZoneConverted: __getTimezone(),
       displayStopDateOnlyConverted: getReadableFormattedDate(
         formdata?.schedule?.endDate
       ),

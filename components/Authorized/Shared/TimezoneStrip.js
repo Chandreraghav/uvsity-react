@@ -1,8 +1,9 @@
 import { Box, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import { getLocalTimezone } from '../../../utils/utility';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import { RESET_TO_LOCAL_TZ } from '../../../constants/timezones';
 function TimezoneStrip(props) {
     if (!props.timezone) return (<></>)
     const handleTimezoneBrowserChange = (obj) => {
@@ -22,12 +23,12 @@ function TimezoneStrip(props) {
                         <AccessTimeIcon fontSize="small" />
                     </Typography>
                 </Tooltip>
-                <Box className="flex flex-col flex-wrap text-sm text-gray-600">
+                <Box className="flex gap-1 flex-wrap text-sm text-gray-600">
                     <Typography className=" select-none" variant='subtitle2'>{props.timezone}</Typography>
                     {props.timezone !== getLocalTimezone() &&
-                        (<Tooltip title="Change to local timezone">
+                        (<Tooltip title={RESET_TO_LOCAL_TZ}>
                             <Typography onClick={() => handleTimezoneBrowserChange('revert')} variant="caption" className="text-xs cursor-pointer leading-tight italic">
-                                <LocationSearchingIcon fontSize="small" /> Revert</Typography>
+                                <SettingsBackupRestoreIcon fontSize="small" /></Typography>
                         </Tooltip>)}
 
                 </Box>
