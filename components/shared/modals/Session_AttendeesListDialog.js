@@ -60,12 +60,15 @@ export default function Session_Attendees_ListDialog({
 
   useEffect(() => {
     const _attendes = ATTENDEES.data?.users
-    _attendes.forEach((user, _idx) => {
-      user.invitationAction = {
-        invitationAction: user.connectionStatus,
-      }
-    });
-    setAttendees(_attendes)
+    if(_attendes && _attendes instanceof Array){
+      _attendes.forEach((user, _idx) => {
+        user.invitationAction = {
+          invitationAction: user.connectionStatus,
+        }
+      });
+      setAttendees(_attendes)
+    }
+   
   }, [ATTENDEES.data?.users])
 
   useEffect(() => {
