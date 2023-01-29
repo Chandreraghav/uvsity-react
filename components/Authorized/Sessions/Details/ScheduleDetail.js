@@ -6,17 +6,22 @@ import EditIcon from "@mui/icons-material/Edit";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
 import PublicIcon from "@mui/icons-material/Public";
-import { getLocalTimezone, localTZDate } from '../../../../utils/utility';
+import { getLocalTimezone, getTimezone, localTZDate } from '../../../../utils/utility';
 import Spacer from '../../../shared/Spacer';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { RESET_TO_LOCAL_TZ } from '../../../../constants/timezones';
+import { useDataLayerContextValue } from '../../../../context/DataLayer';
+import { actionTypes } from '../../../../context/reducer';
 
 
 function ScheduleDetail(props) {
     const [schedule, setSchedule] = useState(null)
+    const [ctxData, dispatch] = useDataLayerContextValue();
+
     useEffect(() => {
         setSchedule(props.schedule)
         return (() => setSchedule(null))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.schedule])
     if (!props.schedule) return (<></>)
     const handleTimezoneBrowserChange = () => {
@@ -68,8 +73,12 @@ function ScheduleDetail(props) {
         return month;
     };
     const getTime = () => {
-        let startDate = localTZDate(schedule?.startDate, schedule?.timezone, true)
-        let endDate = localTZDate(schedule?.endDate, schedule?.timezone, true)
+        let tz = ctxData?.timezone??getTimezone()
+        if(props.viewScheduleFromFinalPreview){
+            tz= props.schedule?.timezone??ctxData?.timezone
+        }
+        let startDate = localTZDate(schedule?.startDate, tz, true)
+        let endDate = localTZDate(schedule?.endDate, tz, true)
         return `${startDate} - ${endDate}`
     };
 
@@ -229,7 +238,13 @@ function ScheduleDetail(props) {
                         className="  font-normal line-clamp-1 text-sm  leading-tight  text-gray-800 dark:text-gray-400"
                     >
                         {getTime()}
-                        ({schedule?.timezone})
+
+                        {/* Read Timezone from props if schedule is viewed from Final Preview Component. Otherwise, always show timezone from factory context API. */}
+                        {
+                            props.viewScheduleFromFinalPreview && props.schedule?.timezone ? (<>(
+                            {props.schedule?.timezone})
+                            </>):ctxData && ctxData.timezone && (<>({ctxData?.timezone})</>)
+                        }
                     </Typography>
                 </div>
                 <Spacer />
@@ -244,8 +259,8 @@ function ScheduleDetail(props) {
                             See other timezones
                         </Typography>
 
-                        {schedule &&
-                            schedule?.timezone !== getLocalTimezone() && (
+                        {
+                            ctxData?.timezone !== getLocalTimezone() && (
                                 <Tooltip title={RESET_TO_LOCAL_TZ}>
                                     <SettingsBackupRestoreIcon onClick={() => resetTimezoneToDefault()}
                                         className="text-gray-600  cursor-pointer" fontSize="small" />

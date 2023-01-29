@@ -1,4 +1,4 @@
-import React, {  } from "react";
+import React from "react";
 import CommonMetaInfo from "../shared/CommonMetaInfo";
 import RootChain from "../Auth/HOC/RootChain";
 const Layout = (props) => {
@@ -7,6 +7,9 @@ const Layout = (props) => {
     desc: props?.options?.desc,
     poster: props?.options?.poster
   };
+
+ 
+  
  
   return props?.private ? (
     <>

@@ -8,10 +8,12 @@ export const initialState = {
   participant: null,
   fees: null,
   sponsor: null,
+  timezone:null
 };
 export const actionTypes = {
   SET_USER: "SET_USER",
   SET_USERDATA: "SET_USERDATA",
+  TIMEZONE:'TIMEZONE',
   SET_USER_LOGIN_INFO: "SET_USER_LOGIN_INFO",
   CREATE_SESSION_WORKFLOW: {
     SELECTED_PAST_SESSION: "SELECTED_PAST_SESSION",
@@ -74,6 +76,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         selected_past_session: action.selected_past_session,
+      };
+
+      case "TIMEZONE":
+      return {
+        ...state,
+        timezone: action.timezone,
       };
     default:
       return state;

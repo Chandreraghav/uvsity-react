@@ -112,12 +112,12 @@ export const avatarToString = (name) => {
   } catch (error) { }
   return null;
 };
-export const localTZDate = (date, timeZone=getTimezone(),requiresTimeOnly=false) => {
-  if(requiresTimeOnly) {
-   return new Date(date).toLocaleTimeString(LOCALE,{timeZone:timeZone?timeZone:getTimezone(),hour: '2-digit', minute: '2-digit'})
+export const localTZDate = (date, timeZone = getTimezone(), requiresTimeOnly = false) => {
+  if (requiresTimeOnly) {
+    return new Date(date).toLocaleTimeString(LOCALE, { timeZone: timeZone ? timeZone : getTimezone(), hour: '2-digit', minute: '2-digit' })
   }
-return new Date(date).toLocaleString(LOCALE, {
-    timeZone:timeZone?timeZone:getTimezone(),
+  return new Date(date).toLocaleString(LOCALE, {
+    timeZone: timeZone ? timeZone : getTimezone(),
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -219,8 +219,12 @@ export const getTimeAfter = (time, hourUnits, objectReturnInd) => {
   if (differenceOfRoundedTimeWithCurrentTimeInMins < 60) {
     return getTimeAfter(time, 2, objectReturnInd);
   }
-  if (objectReturnInd) return _time[0];
-  return _time[0].timeId;
+  if (_time) {
+    if (objectReturnInd) return _time[0];
+    return _time[0].timeId;
+  }
+  return null;
+
 };
 export const getNearEndTime = (time) => {
   let hours = time.hour;
@@ -462,7 +466,20 @@ export const getFormattedMinutesFromDate = (date) => {
     : date.getMinutes().toString()
 }
 
-export const datesAreOnSameDay = (first, second) =>
-  first.getFullYear() === second?.getFullYear() &&
-  first.getMonth() === second?.getMonth() &&
-  first.getDate() === second?.getDate();
+export const datesAreOnSameDay = (first, second) =>{
+return  first.getFullYear() === second?.getFullYear() &&
+first.getMonth() === second?.getMonth() &&
+first.getDate() === second?.getDate();
+}
+
+export const loadInitialTimezone = () => {
+  setInitialTimezone()
+  return getTimezone()
+}
+
+export const setInitialTimezone = () => {
+  if (getLocalStorageObject("uvsity-timezone") === "null" ||
+    !getLocalStorageObject("uvsity-timezone")) {
+    setLocalTimezone()
+  }
+}

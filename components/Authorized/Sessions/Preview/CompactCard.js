@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
 import Preview from "./Preview";
-import { Box, Divider, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import Spacer from "../../../shared/Spacer";
 import Shimmer from "./Shimmer/Shimmer";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -13,18 +13,20 @@ import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { useQuery } from "react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
-import { standardSubscriptionPollDelay, standardStaleTime } from "../../../../async/subscriptions";
+import { standardStaleTime } from "../../../../async/subscriptions";
 import UserDataService from "../../../../pages/api/users/data/UserDataService";
-import { getLocalTimezone, getTimezone, setGlobalTimezone, setLocalTimezone } from "../../../../utils/utility";
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { getTimezone, setGlobalTimezone, setLocalTimezone } from "../../../../utils/utility";
 import TimezoneStrip from "../../Shared/TimezoneStrip";
 import TimezoneBrowseDialog from "../../../shared/modals/TimezoneBrowseDialog";
+import { actionTypes } from "../../../../context/reducer";
+import { useDataLayerContextValue } from "../../../../context/DataLayer";
 function CompactCard({ title }) {
 
   const [isSticky, setSticky] = useState(false);
   const [timezone, setTimezone] = useState(getTimezone());
   const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
-  
+  const [ctxData, _dispatch] = useDataLayerContextValue();
+ 
   const getTopCourses = async () =>
     (await UserDataService.getTopCourses()).data;
 
@@ -32,6 +34,7 @@ function CompactCard({ title }) {
     staleTime: standardStaleTime,
     refetchOnWindowFocus: false
   });
+  console.log(TOP_SESSIONS.data)
   useEffect(() => {
     window.addEventListener("scroll", () => {
       const scrollheightLimit = 100;
@@ -50,7 +53,11 @@ function CompactCard({ title }) {
   const handleTimeZoneBrowse = (obj) => {
     if(obj==='revert'){
       setLocalTimezone();
-      setTimezone(getLocalTimezone())
+      setTimezone(getTimezone())
+      _dispatch({
+        type: actionTypes.TIMEZONE,
+        timezone:getTimezone() ,
+      });
       return;
     }
     setTimezoneBrowser(true)
@@ -61,6 +68,10 @@ function CompactCard({ title }) {
     if (obj?.timezone) {
       setTimezone(obj.timezone)
       setGlobalTimezone(obj.timezone)
+      _dispatch({
+        type: actionTypes.TIMEZONE,
+        timezone:obj.timezone ,
+      });
     }
   };
   return (
@@ -72,7 +83,7 @@ function CompactCard({ title }) {
            <>
             <TimezoneStrip onTimezoneBrowse={handleTimeZoneBrowse} timezone={timezone} />
             <TimezoneBrowseDialog
-              selectedTimezone={timezone}
+              selectedTimezone={ctxData.timezone ?? timezone}
               dialogCloseRequest={handleTimezoneCloseRequest}
               isOpen={timezoneBrowserOpened}
             />

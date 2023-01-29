@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import {
   getLocalStorageObject,
@@ -14,7 +14,7 @@ function ClientDeviceProvider(props) {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const isPortrait = useMediaQuery({ query: "(orientation: portrait)" });
   const isRetina = useMediaQuery({ query: "(min-resolution: 2dppx)" });
-  useEffect(()=>{
+  useEffect(() => {
     if (!getLocalStorageObject("media-query")) {
       const deviceResolutionInfo = {
         bigScreen: isBigScreen,
@@ -25,11 +25,8 @@ function ClientDeviceProvider(props) {
       };
       setLocalStorageObject("media-query", JSON.stringify(deviceResolutionInfo));
     }
-  },[isBigScreen, isDesktopOrLaptop, isPortrait, isRetina, isTabletOrMobile])
-  
-
- 
-
+  }, [isBigScreen, isDesktopOrLaptop, isPortrait, isRetina, isTabletOrMobile])
+   
   return <>{props.children}</>;
 }
 

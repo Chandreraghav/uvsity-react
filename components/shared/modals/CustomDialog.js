@@ -27,7 +27,7 @@ import UserDataService from "../../../pages/api/users/data/UserDataService";
 import { useQuery } from "react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import { infinity } from "../../../async/subscriptions";
-import { navigateToProfile } from "../../Authorized/Shared/Navigator";
+import { navigateToProfile, navigateToSessionProfile } from "../../Authorized/Shared/Navigator";
 import { useRouter } from "next/router";
 import { COLOR_CODES } from "../../../constants/constants";
 toast.configure();
@@ -99,6 +99,12 @@ export default function CustomDialog({
   const goToProfile = () => {
     const user_id = data?.userDetailsId || data?.creator?.userDetailsId;
     navigateToProfile(user_id, router);
+  };
+
+
+  const goToSession = () => {
+    const session_id = data?.courseId;
+    navigateToSessionProfile(Number(session_id), router)
   };
 
   const populateDialogTitle = () => {
@@ -232,7 +238,7 @@ export default function CustomDialog({
                         : PLACEHOLDERS.VIEW_DETAIL
                     }`}
                   >
-                    <div>{title || "Title"} </div>
+                    <div onClick={goToSession} >{title || "Title"}</div>
                   </Tooltip>
                 ) : (
                   <>{title || "Title"} </>
