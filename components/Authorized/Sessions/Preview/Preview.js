@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import { Box, Tooltip, Typography } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarRateIcon from "@mui/icons-material/StarRate";
@@ -17,9 +17,7 @@ import {
 import SessionStyle from "../../../../styles/Session.module.css";
 import Profile from "../../Network/People/Dashboard/Profile";
 import Spacer from "../../../shared/Spacer";
-import CustomDialog from "../../../shared/modals/CustomDialog";
 import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
-import UserDataService from "../../../../pages/api/users/data/UserDataService";
 import Actions from "../ActionableItems/Actions";
 import { parseMarkdownToHTML } from "../../../../utils/utility";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
@@ -27,162 +25,54 @@ import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import { useRouter } from "next/router";
 import { navigateToPath } from "../../Shared/Navigator";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
-function Preview({ data, authorized }) {
+import Session_Attendees_ListDialog from "../../../shared/modals/Session_AttendeesListDialog";
+function Preview({ data }) {
+
   const router = useRouter();
   const [context, dispatch] = useDataLayerContextValue();
-  const [userdata, setUserData] = useState(null);
+  const [userdata, setUserData] = useState(context?.logged_in_info);
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
-  const [attendees, setAttendees] = useState([]);
   const [sessionDetail, setSessionDetail] = useState({});
-  const [sessionCreatorDetail, setSessionCreatorDetail] = useState({});
-  const [cohostDetail, setCoHostDetail] = useState({});
   const [eventPosterSrc, setEventPosterSrc] = useState(data.imageURL ? data.imageURL : IMAGE_PATHS.NO_DATA.EVENT_POSTER);
+  if (!data) return <></>;
+  // useEffect(() => {
+  //   let isSubscribed = true;
+  //   let controller = new AbortController();
+  //   if (isSubscribed) {
+  //     UserDataService.getSessionDetailPerCourse(data.courseId).then(
+  //       (response) => {
+  //         setSessionDetail(response?.data);
+  //       }
+  //     );
+  //   }
+  //   return () => {
+  //     setSessionDetail({})
+  //     controller?.abort();
+  //     isSubscribed = false;
+  //   };
+  // }, [data]);
 
-  // THE NEEDFUL OR DEPENDENT DATA FOR EACH SESSION PREVIEW
-  // ARE BEING CALLED VIA USE EFFECT AND NOT WITH REACT QUERY BECAUSE WE CANNOT DO
-  // THAT AND IF DONE WILL HAVE SLOWNESS AND ENORMOUS PERFORMANCE IMPACT.
-
-  // Reason of Using UseEffect over UseQuery:
-  // THE TOP LEVEL DATA(data) THAT IS COMING IN HERE IS BEING FETCHED FROM REACT QUERY AND
-  // AS A RESULT THIS USE-EFFECT TAKES CARE OF REFETCHING/CACHING THE DEPENDENT DATA
-  // AS THE MASTER DATA IS CACHED/FETCHED VIA REACT QUERY.
-  // THIS IS A TRANSITIVE REACT QUERY IMPLEMENTATION FOR A ITERATIVE COMPONENT RENDER.
-  useEffect(() => {
-    let isSubscribed = true;
-    let controller = new AbortController();
-    if (data.numberOfAttendees > 0 && isSubscribed) {
-      UserDataService.getAttendeesPerCourse(data.courseId).then((response) => {
-        setAttendees(response?.data?.users);
-      });
-    }
-    return () => {
-      setAttendees([])
-      controller?.abort();
-      isSubscribed = false;
-    };
-  }, [data]);
-
-  useEffect(() => {
-    let isSubscribed = true;
-    let controller = new AbortController();
-
-    async function evalAttendees() {
-      if (openAttendeesDialog === true && data.numberOfAttendees > 0 && isSubscribed) {
-        await UserDataService.getAttendeesPerCourse(data.courseId).then((response) => {
-          setAttendees(response?.data?.users);
-        });
-      }
-    }
-    evalAttendees()
-    return () => {
-      setAttendees([])
-      controller?.abort();
-      isSubscribed = false;
-    };
-  }, [openAttendeesDialog]);
-
-
-
-  useEffect(() => {
-    let isSubscribed = true;
-    let controller = new AbortController();
-    if (isSubscribed) {
-      UserDataService.getSessionDetailPerCourse(data.courseId).then(
-        (response) => {
-          setSessionDetail(response?.data);
-        }
-      );
-    }
-    return () => {
-      setSessionDetail({})
-      controller?.abort();
-      isSubscribed = false;
-    };
-  }, [data]);
-
-  useEffect(() => {
-    let isSubscribed = true;
-    let controller = new AbortController();
-    if (isSubscribed) {
-      UserDataService.getUserById(data.creator.userDetailsId).then(
-        (response) => {
-          setSessionCreatorDetail(response?.data);
-          data.associatedUserData = response?.data;
-        }
-      );
-    }
-    return () => {
-      setSessionCreatorDetail({})
-      controller?.abort();
-      isSubscribed = false;
-    };
-  }, [data]);
-
-  useEffect(() => {
-    let isSubscribed = true;
-    let controller = new AbortController();
-    if (isSubscribed && data.coHosts.length === 1) {
-      UserDataService.getUserById(data.coHosts[0].userDetailsId).then(
-        (response) => {
-          setCoHostDetail(response?.data);
-        }
-      );
-    }
-    return () => {
-      setCoHostDetail({})
-      controller?.abort();
-      isSubscribed = false;
-    };
-  }, [data.coHosts]);
-  if (!data) return "";
-
-
-
-  const amIAttending = () => {
-    const index = attendees?.findIndex((x) => {
-      return x.userDetailsId == userdata?.userDetailsId;
-    });
-    return index !== -1;
-  };
+   
   const handleAttendeesDialogClose = () => {
     setOpenAttendeesDialog(false);
   };
 
-  const amITheOnlyOneAttending = amIAttending() && data?.numberOfAttendees == 1;
-
+ 
   const handleAttendeesDialogOpen = () => {
-    if (amITheOnlyOneAttending) {
-      return;
-    }
-
     setOpenAttendeesDialog(true);
   };
   const getAttendanceJSX = () => {
     return (
       <>
         <div
-          className={` ${amITheOnlyOneAttending ? "" : "dialog-title"
-            }  text-xs font-medium leading-tight mt-0.5`}
+          className={`  dialog-title text-xs font-medium leading-tight mt-0.5`}
         >
-          {amIAttending() && data?.numberOfAttendees > 1 ? (
-            <>
-              <Typography variant="caption">
-                You and {data?.numberOfAttendees - 1}{" "}
-                {data?.numberOfAttendees - 1 === 1 ? "other" : "others"}{" "}
-                {PLACEHOLDERS.ATTENDING}
-              </Typography>
-            </>
-          ) : amITheOnlyOneAttending ? (
-            <Typography variant="caption">
-              <span>You are {PLACEHOLDERS.ATTENDING}</span>
-            </Typography>
-          ) : (
             <>
               <Typography variant="caption">
                 {data?.numberOfAttendees} {PLACEHOLDERS.ATTENDING}
               </Typography>
             </>
-          )}
+          
         </div>
       </>
     );
@@ -243,19 +133,14 @@ function Preview({ data, authorized }) {
       </Tooltip>
     );
   };
-
-  useEffect(() => {
-    setUserData(context?.logged_in_info)
-  }, [context?.logged_in_info])
-    
   return (
     <div className=" shadow-lg py-2 uvsity__card__border__theme bg-gray-100 dark:bg-gray-900 w-full px-2 rounded-lg">
       {/* EVENT/SESSION/AUTHOR NAME */}
       <div className="flex flex-row flex-wrap flex-grow-0">
         <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5 px-2 py-2">
           <Tooltip title={data?.courseFullName}>
-            <h1  onClick={() => navigateToPath(router,AUTHORIZED_ROUTES.AUTHORIZED.SESSION.PROFILE_INDEX + data?.courseId, {  token: uuidv4() }
-                )}
+            <h1 onClick={() => navigateToPath(router, AUTHORIZED_ROUTES.AUTHORIZED.SESSION.PROFILE_INDEX + data?.courseId, { token: uuidv4() }
+            )}
               className={`${SessionStyle.preview__session__title} line-clamp-2 mb-1 text-3xl font-semibold leading-tight tracking-tight text-gray-900 dark:text-gray-100`}
             >
               {data?.courseFullName}
@@ -309,7 +194,7 @@ function Preview({ data, authorized }) {
                     userType={data.coHosts[0]?.userBaseType}
                     instituition={data.coHosts[0]?.educationalInstitution}
                     isVisibleAsCoHost
-                    metaData={{ associatedCoHostData: cohostDetail }}
+                    metaData={{ associatedCoHostData: null }}
                     options={{ connect: false, mixedMode: true }}
                     userdata={userdata}
                     dark={getMode() === THEME_MODES.DARK ? true : false}
@@ -330,7 +215,7 @@ function Preview({ data, authorized }) {
           </div>
           {data?.numberOfAttendees > 0 && (
             <div
-              onClick={(e) => handleAttendeesDialogOpen()}
+              onClick={() => handleAttendeesDialogOpen()}
               className={`flex flex-row cursor-pointer leading-slug px-2 py-2`}
             >
               {getAttendanceJSX()}
@@ -350,17 +235,14 @@ function Preview({ data, authorized }) {
       {/* Session Actions */}
       {sessionDetail && (<Actions data={sessionDetail} />)}
 
-
-      <CustomDialog
+      {data?.numberOfAttendees > 0 && (<Session_Attendees_ListDialog
         dialogCloseRequest={handleAttendeesDialogClose}
         isOpen={openAttendeesDialog}
-        title={data.courseFullName}
         data={data}
-        secondaryData={attendees}
         workflow_code={WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION}
-        name="Attendees-Dialog"
-        dark={getMode() === THEME_MODES.DARK ? true : false}
-      />
+
+      />)}
+
     </div>
   );
 }
