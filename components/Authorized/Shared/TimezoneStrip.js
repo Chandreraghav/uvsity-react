@@ -4,6 +4,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { getLocalTimezone } from '../../../utils/utility';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { RESET_TO_LOCAL_TZ } from '../../../constants/timezones';
+
 function TimezoneStrip(props) {
     if (!props.timezone) return (<></>)
     const handleTimezoneBrowserChange = (obj) => {

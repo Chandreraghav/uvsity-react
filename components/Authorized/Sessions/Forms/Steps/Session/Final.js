@@ -64,6 +64,10 @@ function Final(props) {
     setTimezoneBrowser(false);
     if (obj?.timezone) {
       setNewTimezone(obj);
+      dispatch({
+        type: actionTypes.TIMEZONE,
+        timezone:obj.timezone ,
+      });
     }
   };
   
@@ -79,6 +83,10 @@ function Final(props) {
   const resetTimezoneToDefault = () => {
     setLocalTimezone()
     setNewTimezone({ timezone: getTimezone() });
+    dispatch({
+      type: actionTypes.TIMEZONE,
+      timezone:getTimezone() ,
+    });
   };
 
   useEffect(() => {
@@ -125,14 +133,14 @@ function Final(props) {
                   <SponsorshipDetail isDark={isDark} sponsor={data?.sponsor} onNavigate={props.onNavigate} />
                 </Grid>
                 <Grid item lg={6} sm={12} md={6} xs={12}>
-                  <ScheduleDetail schedule={data?.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone onNavigate={props.onNavigate} />
+                  <ScheduleDetail viewScheduleFromFinalPreview schedule={data?.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone onNavigate={props.onNavigate} />
                   <AttachmentDetail isDark={isDark} attachment={data?.basic} onNavigate={props.onNavigate} />
                   <QuestionairreDetail participant={data?.participant} onNavigate={props.onNavigate} />
                 </Grid>
               </Grid>
             </Box>
             <TimezoneBrowseDialog
-              selectedTimezone={data?.schedule?.timezone || getTimezone()}
+              selectedTimezone={data?.schedule?.timezone ?? data.timezone}
               dialogCloseRequest={handleTimezoneCloseRequest}
               isOpen={timezoneBrowserOpened}
             />

@@ -11,10 +11,13 @@ import SponsorshipDetail from '../../../components/Authorized/Sessions/Details/S
 import SummaryDetail from '../../../components/Authorized/Sessions/Details/SummaryDetail';
 import TimezoneBrowseDialog from '../../../components/shared/modals/TimezoneBrowseDialog';
 import { SPONSORSHIP } from '../../../constants/userdata';
+import { useDataLayerContextValue } from '../../../context/DataLayer';
+import { actionTypes } from '../../../context/reducer';
 import { THEME_MODES, useTheme } from '../../../theme/ThemeProvider';
 import { getTimezone, setGlobalTimezone, setLocalTimezone } from '../../../utils/utility';
 import QuestionairreService from '../../api/session/QuestionairreService';
 function SessionProfileDetail(props) {
+  const [ctxData, _dispatch] = useDataLayerContextValue();
   const [ctxTheme, dispatch] = useTheme();
   const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
   const [segregatedSessionData, setSegregatedSessionData] = useState({ basic: null, schedule: null, fees: null, cohost: null, sponsor: null, participant: null, })
@@ -22,8 +25,6 @@ function SessionProfileDetail(props) {
   const [tz, setTz] = useState(null);
   const handleNavigate = (navigationObject) => {
   }
-
-
   useEffect(() => {
     setDark(ctxTheme.mode === THEME_MODES.DARK);
   }, [ctxTheme]);
@@ -106,12 +107,13 @@ function SessionProfileDetail(props) {
     return (() => { setSegregatedSessionData(null); })
   }, [props.session_data])
 
+
   const resetTimezoneToDefault = () => {
     setLocalTimezone()
-    const tempSession = segregatedSessionData
-    tempSession.schedule.timezone = getTimezone()
-    setSegregatedSessionData(tempSession);
-    setTz(tempSession.schedule.timezone)
+    _dispatch({
+      type: actionTypes.TIMEZONE,
+      timezone:getTimezone() ,
+    });
   };
   const handleTimezoneBrowserChange = () => {
     setTimezoneBrowser(true);
@@ -124,6 +126,10 @@ function SessionProfileDetail(props) {
       tempSession.schedule.timezone = obj?.timezone
       setSegregatedSessionData(tempSession);
       setGlobalTimezone(obj?.timezone, true)
+      _dispatch({
+        type: actionTypes.TIMEZONE,
+        timezone:obj?.timezone ,
+      });
     }
   };
   return (
@@ -155,7 +161,7 @@ function SessionProfileDetail(props) {
 
           </Box>
           <TimezoneBrowseDialog
-            selectedTimezone={getTimezone()}
+            selectedTimezone={ctxData.timezone ?? getTimezone()}
             dialogCloseRequest={handleTimezoneCloseRequest}
             isOpen={timezoneBrowserOpened}
           />

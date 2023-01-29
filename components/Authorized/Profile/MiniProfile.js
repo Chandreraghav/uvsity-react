@@ -15,6 +15,8 @@ import { useRouter } from "next/router";
 import { navigateToProfile } from "../Shared/Navigator";
 import { getMode, THEME_MODES } from "../../../theme/ThemeProvider";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
+import Link from '@mui/material/Link';
+import { AUTHORIZED_ROUTES } from "../../../constants/routes";
 const useStyles = makeStyles((theme) => ({
   popover: {
     pointerEvents: "none",
@@ -134,7 +136,7 @@ function MiniProfile({
 
           <div className={ProfileStyle.profile__mini__information}>
             <Tooltip title={TOOLTIPS.GO_TO_PROFILE}>
-              <h2 className={`dark:text-gray-100 text-gray-900`}
+               <h2 className={`dark:text-gray-100 text-gray-900`}
                 onClick={() =>
                   goToProfile(userdata, router)
                 }

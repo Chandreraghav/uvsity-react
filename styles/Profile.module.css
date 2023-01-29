@@ -53,6 +53,19 @@
   text-overflow: ellipsis;
 }
 
+.profile__mini>div>a {
+  font-size: 18px !important;
+  justify-content: center;
+  align-items: center;
+  place-content: center;
+  text-decoration: none;
+  text-align: center;
+  place-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .profile__mini>div>h2:hover {
   cursor: pointer;
   text-decoration: underline;
@@ -61,7 +74,23 @@
   color: var(--blue) !important;
 }
 
+.profile__mini>div>a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  color: var(--blue) !important;
+}
+
 .profile__mini>div>h2:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  transition-timing-function: ease-in;
+  transition: all 0.8s;
+  color: var(--blue) !important;
+}
+
+.profile__mini>div>a:hover {
   cursor: pointer;
   text-decoration: underline;
   transition-timing-function: ease-in;

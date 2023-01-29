@@ -29,6 +29,7 @@ import ClientDeviceProvider from "../components/Device/HOC/ClientDeviceProvider"
 import CountryService from "./api/countries/CountryService";
 import ThemeProvider, { getMode, initialTheme, themeReducer } from "../theme/ThemeProvider";
 import { registerLicense } from '@syncfusion/ej2-base';
+import { setInitialTimezone } from "../utils/utility";
 function MyApp({ Component, pageProps }) {
   const [queryClient] = React.useState(() => new QueryClient());
   const [verified, setVerified] = useState(true);
@@ -41,8 +42,8 @@ function MyApp({ Component, pageProps }) {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("./serviceworker.js")
-        .then(() => {})
-        .catch(() => {});
+        .then(() => { })
+        .catch(() => { });
     }
     return () => {
       controller?.abort();
@@ -77,6 +78,8 @@ function MyApp({ Component, pageProps }) {
           setLocalStorageObject("uvsity-countries", null);
         });
     }
+    // SET TIMEZONE IF TIMEZONE INFORMATION IS NOT AVAILABLE
+    setInitialTimezone()
   }, []);
 
   // MANDATORY GOOGLE API CLIENT LOAD FOR FACILITATING GOOGLE LOGIN.

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react'
 import { IMAGE_PATHS } from '../../../constants/userdata';
 import { avatarToString } from '../../../utils/utility';
-import { navigateToProfile } from './Navigator';
+import { navigateToProfile, navigateToSessionProfile } from './Navigator';
 function SearchRollDown(props) {
     const router = useRouter();
     const handleClickOnProfile = (e, oid) => {
@@ -19,6 +19,8 @@ function SearchRollDown(props) {
             if (props.onUserClicked) {
                 props.onUserClicked(true)
             }
+
+            navigateToSessionProfile(Number(oid), router)
             // navigateToProfile(Number(oid), router)
         }
     }
