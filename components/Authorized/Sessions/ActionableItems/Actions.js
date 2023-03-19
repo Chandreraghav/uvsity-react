@@ -175,55 +175,9 @@ function Actions(props) {
       action: APP.SESSION.ACTIONS.ALIAS.SPONSORSHIP,
     };
   }
-  const getStatus = (action, returnType) => {
-    if (returnType === "action-request-status") {
-      switch (action.id) {
-        case 1:
-          return isSessionRegistrationPossible();
-        case 2:
-          return isSessionSponsorshipPossible();
-        case 3:
-          return {
-            flag: true,
-            action: 'view-session'
-          };
-      }
-    }
-    if (returnType === "boolean") {
-      switch (action.id) {
-        case 1:
-          return !isSessionRegistrationPossible().flag;
-        case 2:
-          return !isSessionSponsorshipPossible().flag;
-      }
-      return false;
-    }
-    if (returnType === "text") {
-      switch (action.id) {
-        case 1:
-          const registrationObject = isSessionRegistrationPossible();
-          if (!registrationObject?.flag) {
-            if (
-              registrationObject.status === APP.SESSION.ACTIONS.STATUS.OWNER ||
-              registrationObject.status === APP.SESSION.ACTIONS.STATUS.SESSION_EXPIRED ||
-              registrationObject.status === APP.SESSION.ACTIONS.STATUS.REGISTRATION_FULL
-            )
-              return null;
-            if (registrationObject.status === APP.SESSION.ACTIONS.STATUS.ALREADY_REGISTERED)
-              return APP.SESSION.ACTIONS.STATUS.REGISTERED;
-          }
-          return action.title;
-        case 2:
-          const sponsorshipObject = isSessionSponsorshipPossible();
-          if (!sponsorshipObject?.flag) return null;
-          return action.title;
-      }
-    }
-    return action.title;
-  }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initiateActionRequest = (action) => {
-    if (action.id === 3) {
+    if (action.id) {
       navigateToPath(router, AUTHORIZED_ROUTES.AUTHORIZED.SESSION.PROFILE_INDEX + props.data?.courseId, { token: uuidv4() })
       return;
     } 

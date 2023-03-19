@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect,useCallback} from "react";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import { CONNECTIONS, TOOLTIPS } from "../../../../constants/userdata";
 import { Avatar, Tooltip, Typography } from "@mui/material";
@@ -8,7 +8,26 @@ import { navigateToPath } from "../../Shared/Navigator";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
+import { useDataLayerContextValue } from "../../../../context/DataLayer";
 function ProfileStats(props) {
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
+
+  const [userdata, setUserdata]= useState({})
+  const [statHeaderTitle, setStatHeaderTitle]= useState(null)
+  const [statTooltip, setStatTooltip]= useState(null)
+  const [isLoggedInUserOwner, setLoggedInUserAsOwner]= useState(false)
+
+  useEffect(()=>{
+    setUserdata(props.userdata)
+    setLoggedInUserAsOwner(isItMe())
+    setStatTooltip(isItMe()?TOOLTIPS.VIEW_ALL_CONNECTIONS:`${TOOLTIPS.VIEW_ALL_CONNECTIONS} of ${props?.userdata?.firstName}`)
+    setStatHeaderTitle(isItMe()?'My connections':`${props?.userdata?.firstName}'s connections`)
+  },[isItMe, props.userdata])
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const isItMe = useCallback(() => {
+    return userdata?.userDetailsId === ctxUserdata?.userdata?.userDetailsId;
+  });
   const router = useRouter();
   const getCount = (type) => {
     if (!type) return 0;
@@ -23,13 +42,13 @@ function ProfileStats(props) {
         return 0;
     }
   };
-  return (
+   return (
     <div className="flex flex-col gap-3 lg:flex lg:flex-row 2xl:flex 2xl:flex-row xl:flex xl:flex-row md:flex md:flex-row lg:gap-4 md:gap-4 xl:gap-4 2xl:gap-8  ">
-      <Tooltip title={TOOLTIPS.VIEW_ALL_CONNECTIONS}>
+      <Tooltip title={statTooltip}>
         <div onClick={() => navigateToPath(
           router,
           AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
-          { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS, token: uuidv4() }
+          { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS, token: uuidv4(), uid:props.userdata?.userDetailsId, title:statHeaderTitle, owner:isLoggedInUserOwner}
         )} className="app-anchor-block cursor-pointer flex gap-1">
           <Typography
             className="flex gap-1 text-gray-600 font-normal"
@@ -54,7 +73,7 @@ function ProfileStats(props) {
                 <div onClick={() => navigateToPath(
                   router,
                   AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
-                  { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS, filter: connection.title, token: uuidv4() }
+                  { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS, filter: connection.title, token: uuidv4(),uid:props.userdata?.userDetailsId ,title:statHeaderTitle,owner:isLoggedInUserOwner}
                 )} key={connection.id}>
                   <Tooltip
                     title={`${getCount(

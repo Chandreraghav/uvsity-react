@@ -71,7 +71,7 @@ function Stats(props) {
             onClick={()=>navigateToPath(
               router,
               AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
-              {utrn:AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS,token:uuidv4()}
+              {utrn:AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS,token:uuidv4(),owner:true, title:'My connections'}
             )}
             className={`${StatStyle.stat__legend} hover:underline dark:hover:text-gray-100 hover:text-gray-900`}
           >
@@ -91,7 +91,7 @@ function Stats(props) {
                 <div  onClick={()=>navigateToPath(
                   router,
                   AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
-                  {utrn:AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS,filter:connection.title,token:uuidv4()}
+                  {utrn:AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS,filter:connection.title,token:uuidv4(),owner:true,title:'My connections'}
                 )} key={connection.id} className={StatStyle.stat}>
                   <p>{connection.title}</p>
                   <p className={StatStyle.statNumber}>

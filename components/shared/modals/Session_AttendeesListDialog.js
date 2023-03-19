@@ -226,7 +226,8 @@ export default function Session_Attendees_ListDialog({
             className={` overflow-scroll  flex flex-col px-4 mb-2 -mt-3`}
           >
 
-            {attendees && attendees.length > 0 && attendees.map((user, _idx) => (<div key={_idx}>
+            {attendees && attendees.length > 0 && attendees.map((user, _idx) => (
+            <div key={user.userDetailsId}>
               <Profile
                 oid={user.userDetailsId}
                 options={{ connect: false, mixedMode: true }}

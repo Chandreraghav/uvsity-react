@@ -26,16 +26,17 @@ function People() {
     const utrn = router.query.utrn;
     if (utrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS) {
       const subtitle = router.query?.filter;
+      const _title = router.query?.title 
        if(subtitle){
         setLayoutObject({
-          title: `${process.env.NEXT_PUBLIC_APP_NAME} | My Connections | ${subtitle}`,
-          desc: "uvsity lets you easily manage people in your network or rather people who are your connections. Your connections can be of 3 categories, students, professors and alumni.",
+          title: `${process.env.NEXT_PUBLIC_APP_NAME} | ${_title} | ${subtitle}`,
+          desc: "uvsity lets you easily manage people in your network or rather people who are your connections. Connections can be of 3 categories, students, professors and alumni.",
         });
        }
        else{
         setLayoutObject({
-          title: `${process.env.NEXT_PUBLIC_APP_NAME} | My Connections`,
-          desc: "uvsity lets you easily manage people in your network or rather people who are your connections. Your connections can be of 3 categories, students, professors and alumni.",
+          title: `${process.env.NEXT_PUBLIC_APP_NAME} | ${_title}`,
+          desc: "uvsity lets you easily manage people in your network or rather people who are your connections. Connections can be of 3 categories, students, professors and alumni.",
         });
        }
       
@@ -73,7 +74,7 @@ function People() {
         onHeaderNavigationError={handleNavigationError}
       />
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS && (
-        <MyConnections workflow={WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS}   filter={routeFilter??'all'} />
+        <MyConnections targetUID={router.query?.uid} self={router.query?.owner} title={router.query?.title} workflow={WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS}   filter={routeFilter??'all'} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.PROFILE_VISITS && (
         <ProfileVisits workflow={WORKFLOW_CODES.PEOPLE.PROFILE_VIEW}  filter ={asyncSubscriptions.PROFILE_VISITS.alias} />
