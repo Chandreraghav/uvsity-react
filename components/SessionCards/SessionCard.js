@@ -23,7 +23,6 @@ import {
   SESSION_REVIEW_MAX_STAR_COUNT,
   SHIM_MAX_TIMEOUT_IN_MILLIS,
 } from "../../constants/constants";
-import CornerRibbon from "react-corner-ribbon";
 import { IMAGE_PATHS, PLACEHOLDERS, TOOLTIPS } from "../../constants/userdata";
 import { Tooltip } from "@mui/material";
 

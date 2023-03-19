@@ -35,19 +35,26 @@ function MyConnections(props) {
 
   const router = useRouter();
   const getConnectionsData = async (data) => {
+
+    
     const payload = data ? {
       isOnlyFriendsRequired: onlyFriendsRequired,
       inMyNetworkFilterCriteria: data.categoryData.inMyNetworkFilterCriteria,
       professors: data.categoryData.professors,
       students: data.categoryData.students,
-      alumni: data.categoryData.alumni
+      alumni: data.categoryData.alumni,
+      searchUserId:null
     } : {
       isOnlyFriendsRequired: onlyFriendsRequired,
       inMyNetworkFilterCriteria,
       professors,
       students: student,
-      alumni
+      alumni,
+      searchUserId:null
     }
+    console.log(props.self)
+    if(props.targetUID && props.self)
+    payload.searchUserId=props.targetUID
     return (
       await SearchService.searchPeople(
         payload,
@@ -256,7 +263,7 @@ function MyConnections(props) {
 
             <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={userdata} _data={data}
               properties={{
-                title: HEADER_OPTIONS[1].title,
+                title: props.title??HEADER_OPTIONS[1].title,
                 subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon,
                 count, subCount
               }} />

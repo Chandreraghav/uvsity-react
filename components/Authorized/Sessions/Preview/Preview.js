@@ -27,32 +27,13 @@ import { navigateToPath } from "../../Shared/Navigator";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import Session_Attendees_ListDialog from "../../../shared/modals/Session_AttendeesListDialog";
 function Preview({ data }) {
-
   const router = useRouter();
   const [context, dispatch] = useDataLayerContextValue();
   const [userdata, setUserData] = useState(context?.logged_in_info);
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
-  const [sessionDetail, setSessionDetail] = useState({});
   const [eventPosterSrc, setEventPosterSrc] = useState(data.imageURL ? data.imageURL : IMAGE_PATHS.NO_DATA.EVENT_POSTER);
   if (!data) return <></>;
-  // useEffect(() => {
-  //   let isSubscribed = true;
-  //   let controller = new AbortController();
-  //   if (isSubscribed) {
-  //     UserDataService.getSessionDetailPerCourse(data.courseId).then(
-  //       (response) => {
-  //         setSessionDetail(response?.data);
-  //       }
-  //     );
-  //   }
-  //   return () => {
-  //     setSessionDetail({})
-  //     controller?.abort();
-  //     isSubscribed = false;
-  //   };
-  // }, [data]);
-
-   
+    
   const handleAttendeesDialogClose = () => {
     setOpenAttendeesDialog(false);
   };
@@ -233,7 +214,7 @@ function Preview({ data }) {
         </div>
       </div>
       {/* Session Actions */}
-      {sessionDetail && (<Actions data={sessionDetail} />)}
+      <Actions data={data} />
 
       {data?.numberOfAttendees > 0 && (<Session_Attendees_ListDialog
         dialogCloseRequest={handleAttendeesDialogClose}

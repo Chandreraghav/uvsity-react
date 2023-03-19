@@ -32,9 +32,7 @@ function CompactCard({ title }) {
 
   const TOP_SESSIONS = useQuery([KEYS.SESSION.TOP], getTopCourses, {
     staleTime: standardStaleTime,
-    refetchOnWindowFocus: false
   });
-  console.log(TOP_SESSIONS.data)
   useEffect(() => {
     window.addEventListener("scroll", () => {
       const scrollheightLimit = 100;
