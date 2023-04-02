@@ -109,3 +109,5 @@ export const CUSTOM_ERRORS={
   SOMETHING_WENT_WRONG:'Uh! Oh, Something went wrong on our side. Please try again later.',
   NOTHING_TO_SHOW:'We do not have anything to show here right now. Come back later.'
 }
+
+export const NO_RECORDS_TO_LOAD='There are no more records to display for the chosen filters at this point of time.'

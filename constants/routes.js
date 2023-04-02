@@ -11,7 +11,7 @@ export const AUTHORIZED_ROUTES={
        
     },
     UTRN:{ // uvsity target resource name
-      MYCONNECTIONS:'myconnections',
+      CONNECTIONS:'connections',
       PROFILE_VISITS:'profilevisits',
       ADD_TO_NETWORK:'addtonetwork'
     }

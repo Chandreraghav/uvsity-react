@@ -387,7 +387,7 @@ function Connections(props) {
                 <div className="mt-2 flex">
                   <div className="flex gap-1">
                     <div>{props.properties.title}</div>
-                    {props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS && count > 0 && (<div>({count})</div>)}
+                    {false && props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS && count > 0 && (<div>({count})</div>)}
                   </div>
 
                   {/* Subtitle block is not needed to show as we have sidebar filters for that */}
