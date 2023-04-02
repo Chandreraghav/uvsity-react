@@ -9,7 +9,11 @@ import Sidebar from "../../Filter/Sidebar";
 import { WORKFLOW_CODES } from "../../../../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
-function MyConnections(props) {
+import { getLocalStorageObject } from "../../../../../../localStorage/local-storage";
+import { isUvsityLogicalError } from "../../../../../../utils/utility";
+import { getWorkflowError } from "../../../../../../error-handler/handler";
+import { NO_RECORDS_TO_LOAD } from "../../../../../../constants/error-messages";
+function ConnectionsList(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
   const [userdata, setUserData] = useState(null);
   const [student, setStudent] = useState(CONNECTIONS[0].title === props.filter);
@@ -35,8 +39,6 @@ function MyConnections(props) {
 
   const router = useRouter();
   const getConnectionsData = async (data) => {
-
-    
     const payload = data ? {
       isOnlyFriendsRequired: onlyFriendsRequired,
       inMyNetworkFilterCriteria: data.categoryData.inMyNetworkFilterCriteria,
@@ -52,8 +54,8 @@ function MyConnections(props) {
       alumni,
       searchUserId:null
     }
-    console.log(props.self)
-    if(props.targetUID && props.self)
+    
+    if(props.targetUID)
     payload.searchUserId=props.targetUID
     return (
       await SearchService.searchPeople(
@@ -75,24 +77,43 @@ function MyConnections(props) {
         }
 
         else {
-          const _data = data.slice();
-          const merged = [..._data, ...res];
-          setData(merged);
-          setLoadingMore(false)
-          setLoadMore(false)
-          window.scrollTo(0, document.body.scrollHeight);
+          if(data){
+            const _data = data.slice();
+            const merged = [..._data, ...res];
+            setData(merged);
+            setLoadingMore(false)
+            setLoadMore(false)
+            window.scrollTo(0, document.body.scrollHeight);
+          }
+          else{
+            setLoadMore(false)
+            setLoadingMore(false)
+            setLoadError(true)
+          }
+          
         }
       }).catch((err) => {
         setLoading(false);
-        if (loadMore === false) {
-          setLoadError(true)
-        } else {
-          setLoadMore(false)
+        if(loadMore){
+         let error = getLocalStorageObject("uvsity-internal-error-response")
+         if(error){
+          error=JSON.parse(error);
+           const wfError = getWorkflowError(error)
+           if(wfError===NO_RECORDS_TO_LOAD){
+            setLoadingMore(false)
+            setLoadError(true)
+            return
+           }
+           setError(true);
+           setData([])
+           setLoadingMore(false)
+         }
         }
-
-        setError(true);
-        setData([])
-        setLoadingMore(false)
+        else {
+          setError(true);
+          setData([])
+          setLoadingMore(false)
+        }
       });
     }
   useEffect(() => {
@@ -261,14 +282,14 @@ function MyConnections(props) {
 
           <>
 
-            <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={userdata} _data={data}
+            <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={error} loading={loading} workflow={props.workflow} userdata={userdata} _data={data}
               properties={{
                 title: props.title??HEADER_OPTIONS[1].title,
                 subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon,
                 count, subCount
               }} />
 
-            {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
+            {!loadError && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
             <Spacer count={2} />
           </>
 
@@ -285,5 +306,5 @@ function MyConnections(props) {
   );
 }
 
-export default MyConnections;
+export default ConnectionsList;
 

@@ -42,14 +42,41 @@ function ProfileStats(props) {
         return 0;
     }
   };
+  const navigate=(connection=null)=>{
+   if(isItMe()){
+    if(connection){
+      navigateToPath(
+        router,
+        AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
+        { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS, filter: connection.title, token: uuidv4(),uid:null ,title:'My connections',owner:true}
+      )
+      return
+    }
+    navigateToPath(
+      router,
+      AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
+      { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS, token: uuidv4(), uid:null, title:'My connections', owner:true}
+    )
+    return
+   }
+    if(connection){
+      navigateToPath(
+        router,
+        AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
+        { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS, token: uuidv4(), filter: connection.title,uid:props.userdata?.userDetailsId, title:statHeaderTitle, owner:isLoggedInUserOwner}
+      )
+      return
+    }
+    navigateToPath(
+      router,
+      AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
+      { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS, token: uuidv4(), uid:props.userdata?.userDetailsId, title:statHeaderTitle, owner:isLoggedInUserOwner}
+    )
+  }
    return (
     <div className="flex flex-col gap-3 lg:flex lg:flex-row 2xl:flex 2xl:flex-row xl:flex xl:flex-row md:flex md:flex-row lg:gap-4 md:gap-4 xl:gap-4 2xl:gap-8  ">
       <Tooltip title={statTooltip}>
-        <div onClick={() => navigateToPath(
-          router,
-          AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
-          { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS, token: uuidv4(), uid:props.userdata?.userDetailsId, title:statHeaderTitle, owner:isLoggedInUserOwner}
-        )} className="app-anchor-block cursor-pointer flex gap-1">
+        <div onClick={() => navigate()} className="app-anchor-block cursor-pointer flex gap-1">
           <Typography
             className="flex gap-1 text-gray-600 font-normal"
             variant="div"
@@ -70,11 +97,7 @@ function ProfileStats(props) {
           {CONNECTIONS.filter((hidden) => hidden !== true).map(
             (connection) =>
               getCount(connection.code) > 0 && (
-                <div onClick={() => navigateToPath(
-                  router,
-                  AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
-                  { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS, filter: connection.title, token: uuidv4(),uid:props.userdata?.userDetailsId ,title:statHeaderTitle,owner:isLoggedInUserOwner}
-                )} key={connection.id}>
+                <div onClick={() => navigate(connection)} key={connection.id}>
                   <Tooltip
                     title={`${getCount(
                       connection.code

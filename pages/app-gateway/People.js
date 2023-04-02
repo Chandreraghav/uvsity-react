@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { asyncSubscriptions } from "../../async/subscriptions";
 import PrivateRoute from "../../components/Auth/HOC/Routes/PrivateRoute";
-import AddToNetwork from "../../components/Authorized/Network/People/Categories/AddToNetwork";
-import MyConnections from "../../components/Authorized/Network/People/Categories/Connections/MyConnections";
-import ProfileVisits from "../../components/Authorized/Network/People/Categories/ProfileVisits";
+import AddToNetwork from "../../components/Authorized/Network/People/Flows/AddToNetwork";
+import ConnectionsList from "../../components/Authorized/Network/People/Flows/Connections/ConnectionsList";
+import ProfileVisits from "../../components/Authorized/Network/People/Flows/ProfileVisits";
 import PhoneMenu from "../../components/Authorized/Shared/FireFighter/PhoneMenu";
 import Header from "../../components/Authorized/Shared/Header";
 import { navigateToPath } from "../../components/Authorized/Shared/Navigator";
@@ -24,7 +24,7 @@ function People() {
    
   const setLayout = () => {
     const utrn = router.query.utrn;
-    if (utrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS) {
+    if (utrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS) {
       const subtitle = router.query?.filter;
       const _title = router.query?.title 
        if(subtitle){
@@ -73,8 +73,8 @@ function People() {
       <Header
         onHeaderNavigationError={handleNavigationError}
       />
-      {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.MYCONNECTIONS && (
-        <MyConnections targetUID={router.query?.uid} self={router.query?.owner} title={router.query?.title} workflow={WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS}   filter={routeFilter??'all'} />
+      {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS && (
+        <ConnectionsList targetUID={router.query?.uid} self={router.query?.owner} title={router.query?.title} workflow={WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS}   filter={routeFilter??'all'} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.PROFILE_VISITS && (
         <ProfileVisits workflow={WORKFLOW_CODES.PEOPLE.PROFILE_VIEW}  filter ={asyncSubscriptions.PROFILE_VISITS.alias} />

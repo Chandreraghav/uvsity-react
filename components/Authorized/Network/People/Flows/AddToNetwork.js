@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { CONNECTIONS, TITLES } from '../../../../../constants/userdata';
+import { CONNECTIONS, NETWORK, TITLES } from '../../../../../constants/userdata';
 import SearchService from '../../../../../pages/api/people/network/Search/SearchService';
 import LoadMore from '../../../../shared/LoadMore';
 import MiniFooter from '../../../../shared/MiniFooter';
@@ -11,15 +11,18 @@ import { asyncSubscriptions } from '../../../../../async/subscriptions';
 import Overlay from '../../../../shared/Overlay';
 import { LOADING_MESSAGE_DEFAULT } from '../../../../../constants/constants';
 import { useDataLayerContextValue } from '../../../../../context/DataLayer';
-function ProfileVisits(props) {
+function AddToNetwork(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
   const [userdata, setUserData] = useState(null);
   const [loadMore, setLoadMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [data, setData] = useState([]);
-  const [breadCrumbFilter, setBreadCrumbFilter] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [resetFilterField, setFilterFieldReset] = useState(null)
+  const [breadCrumbFilter, setBreadCrumbFilter] = useState([]);
   const [processingFilterRequest, setProcessingFilterRequest] = useState(false);
+  const [error, setError] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [student, setStudent] = useState(false);
   const [professors, setProfessors] = useState(false);
   const [alumni, setAlumni] = useState(false);
@@ -33,13 +36,9 @@ function ProfileVisits(props) {
     null
   );
   const [city, setCity] = useState(null)
-  const [resetFilterField, setFilterFieldReset] = useState(null)
   const [isDataChangedFromFilter, dataChangedFromFilter] = useState(false);
-  const [isBreadCrumbsDeleted, setBreadCrumbsDeleted] = useState(false);
-
-  const [error, setError] = useState(false);
-  const [loadError, setLoadError] = useState(false);
   const [connectionsCategory, setConnectionsCategory] = useState(CONNECTIONS)
+  const [isBreadCrumbsDeleted, setBreadCrumbsDeleted] = useState(false);
 
   const getConnectionsData = async (filterData, customPaylod) => {
     let payload = null;
@@ -85,23 +84,32 @@ function ProfileVisits(props) {
   }
 
   const setConnectionData = (data, customPaylod) => {
-    if(loadError){
+    if (loadError) {
       setLoadError(false)
     }
-    
     getConnectionsData(data, customPaylod).then((res) => {
+      res = res.filter((r) => r.invitationAction === NETWORK.CONNECTION_RELATION_STATE_ALT.CONNECT || r.invitationAction === NETWORK.CONNECTION_RELATION_STATE.CONNECT || r.invitationAction === NETWORK.CONNECTION_RELATION_STATE.AWAITING_RESPONSE || r.invitationAction === NETWORK.CONNECTION_RELATION_STATE_ALT.AWAITING_RESPONSE)
+
       if (!loadMore) {
         setLoading(false);
         setData(res);
         setProcessingFilterRequest(false)
       }
       else {
-        const _data = data.slice();
-        const merged = [..._data, ...res];
-        setData(merged);
-        setLoadingMore(false)
-        setLoadMore(false)
-        window.scrollTo(0, document.body.scrollHeight);
+        if(data){
+          const _data = data.slice();
+          const merged = [..._data, ...res];
+          setData(merged);
+          setLoadingMore(false)
+          setLoadMore(false)
+          window.scrollTo(0, document.body.scrollHeight);
+        }
+        
+        else{
+          setLoadMore(false)
+          setLoadingMore(false)
+          setLoadError(true)
+        }
       }
     }).catch((err) => {
       setLoading(false);
@@ -117,7 +125,7 @@ function ProfileVisits(props) {
     });
   }
   useEffect(() => {
-    setLoading(true);
+    setLoading(true)
     setConnectionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.filter])
@@ -153,7 +161,6 @@ function ProfileVisits(props) {
     setCountry(null)
     setCity(null)
     setFilterFieldReset(null)
-     
     setLoading(true);
     const payload = {
       baseSearchActionType: props.filter,
@@ -206,7 +213,6 @@ function ProfileVisits(props) {
       }
 
     }
-
     if (data.filterData) {
       let filteredChipObject = {}
       for (const [key, value] of Object.entries(data.filterData)) {
@@ -252,63 +258,60 @@ function ProfileVisits(props) {
     setBreadCrumbFilter(tempBreadCrumbFilter)
   }
   const handleComponentDataEvent = (data) => {
-    if (data) {
-      if (data.resetRequest) {
-        handleResetFilter()
-        setBreadCrumbFilter([])
-        return
+    if (data.resetRequest) {
+      handleResetFilter()
+      setBreadCrumbFilter([])
+      return
+    }
+    setProcessingFilterRequest(true)
+    if (data.filterData && data.categoryData) {
+      const customPayload = {
+        baseSearchActionType: asyncSubscriptions.INTERESTING_CONNECTIONS.alias,
+        isOnlyFriendsRequired: onlyFriendsRequired,
+        inMyNetworkFilterCriteria: data.categoryData.inMyNetworkFilterCriteria,
+        professors: data.categoryData.professors,
+        students: data.categoryData.students,
+        alumni: data.categoryData.alumni,
+        awaitingResponseFilterCriteria: data.categoryData.awaitingResponseFilterCriteria,
+        educationalInstitutionFullName: data.filterData.educationalInstitutionFullName,
+        specialization: data.filterData.specialization,
+        educationalInstitutionCampus: data.filterData.educationalInstitutionCampus,
+        countryFullName: data.filterData.countryFullName,
+        cityFullName: data.filterData.cityFullName
       }
-      setProcessingFilterRequest(true)
-      setFilterFieldReset(null)
-      if (data.filterData && data.categoryData) {
-        const customPayload = {
-          baseSearchActionType: asyncSubscriptions.INTERESTING_CONNECTIONS.alias,
-          isOnlyFriendsRequired: onlyFriendsRequired,
-          inMyNetworkFilterCriteria: data.categoryData.inMyNetworkFilterCriteria,
-          professors: data.categoryData.professors,
-          students: data.categoryData.students,
-          alumni: data.categoryData.alumni,
-          awaitingResponseFilterCriteria: data.categoryData.awaitingResponseFilterCriteria,
-          educationalInstitutionFullName: data.filterData.educationalInstitutionFullName,
-          specialization: data.filterData.specialization,
-          educationalInstitutionCampus: data.filterData.educationalInstitutionCampus,
-          countryFullName: data.filterData.countryFullName,
-          cityFullName: data.filterData.cityFullName
-        }
-        dataChangedFromFilter(true)
-        setEducationInstitution(data.filterData.educationalInstitutionFullName)
-        setCampus(data.filterData.educationalInstitutionCampus)
-        setSpecialization(data.filterData.specialization)
-        setCountry(data.filterData.countryFullName)
-        setCity(data.filterData.cityFullName)
-        setStudent(data.categoryData.students)
-        setProfessors(data.categoryData.professors)
-        setAlumni(data.categoryData.alumni)
-        setAwaitingResponse(data.categoryData.awaitingResponseFilterCriteria)
-        setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
-        setLoading(true);
-        setError(false)
-        setData([])
-        populateFilterOptionsBreadCrumb(data)
-        setConnectionData(customPayload, true);
-        return;
-      }
-      if (data.categoryData) {
-        dataChangedFromFilter(true)
-        setStudent(data.categoryData.students)
-        setProfessors(data.categoryData.professors)
-        setAlumni(data.categoryData.alumni)
-        setAwaitingResponse(data.categoryData.awaitingResponseFilterCriteria)
-        setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
-        setLoading(true);
-        setError(false)
-        setData([])
-        populateFilterOptionsBreadCrumb(data)
-        setConnectionData(data);
-      }
+      dataChangedFromFilter(true)
+      setEducationInstitution(data.filterData.educationalInstitutionFullName)
+      setCampus(data.filterData.educationalInstitutionCampus)
+      setSpecialization(data.filterData.specialization)
+      setCountry(data.filterData.countryFullName)
+      setCity(data.filterData.cityFullName)
+      setStudent(data.categoryData.students)
+      setProfessors(data.categoryData.professors)
+      setAlumni(data.categoryData.alumni)
+      setAwaitingResponse(data.categoryData.awaitingResponseFilterCriteria)
+      setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
+      setLoading(true);
+      setError(false)
+      setData([])
+      populateFilterOptionsBreadCrumb(data)
+      setConnectionData(customPayload, true);
       return;
     }
+    if (data.categoryData) {
+      dataChangedFromFilter(true)
+      setStudent(data.categoryData.students)
+      setProfessors(data.categoryData.professors)
+      setAlumni(data.categoryData.alumni)
+      setAwaitingResponse(data.categoryData.awaitingResponseFilterCriteria)
+      setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
+      setLoading(true);
+      setError(false)
+      setData([])
+      populateFilterOptionsBreadCrumb(data)
+      setConnectionData(data);
+    }
   }
+
   const handleDeleteBreadCrumb = (obj) => {
     if (obj) {
       setLoading(true);
@@ -325,7 +328,7 @@ function ProfileVisits(props) {
         connectionCategories[targetSidebarSelectionIdx].selected = false
         setConnectionsCategory(connectionCategories)
       }
-    
+
       if (obj.title === CONNECTIONS.at(0).title) {
         setStudent(false)
       }
@@ -342,30 +345,29 @@ function ProfileVisits(props) {
       else if (obj.title === CONNECTIONS.at(4).title) {
         setInMyNetworkFilter(false)
       }
-      else if(obj.key==='City'){
-       
+      else if (obj.key === 'City') {
+
         setCity(null)
       }
-      else if(obj.key==='Institution'){
-       setEducationInstitution(null)
+      else if (obj.key === 'Institution') {
+        setEducationInstitution(null)
       }
 
-      else if(obj.key==='Campus'){
+      else if (obj.key === 'Campus') {
         setCampus(null)
-       }
-       else if(obj.key==='Specialization'){
+      }
+      else if (obj.key === 'Specialization') {
         setSpecialization(null)
-       }
+      }
 
-       else if(obj.key==='Country'){
+      else if (obj.key === 'Country') {
         setCountry(null)
-       }
-       setFilterFieldReset(obj.key)
-       setBreadCrumbsDeleted(true)
+      }
+      setFilterFieldReset(obj.key)
+      setBreadCrumbsDeleted(true)
 
     }
   }
-
   useEffect(() => {
     if (isBreadCrumbsDeleted) {
       setConnectionData();
@@ -374,7 +376,7 @@ function ProfileVisits(props) {
     if (isDataChangedFromFilter) {
       return;
     }
-  }, [isDataChangedFromFilter, isBreadCrumbsDeleted, student, alumni, professors, awaitingResponseFilterCriteria, inMyNetworkFilterCriteria, city, country, specialization,campus,educationInstitution])
+  }, [isDataChangedFromFilter, isBreadCrumbsDeleted, student, alumni, professors, awaitingResponseFilterCriteria, inMyNetworkFilterCriteria, city, country, specialization, campus, educationInstitution])
 
   useEffect(() => {
     setUserData(ctxUserdata?.userdata)
@@ -388,14 +390,21 @@ function ProfileVisits(props) {
   xl:grid-cols-8 2xl:px-5 "
       >
         <Overlay message={LOADING_MESSAGE_DEFAULT} open={processingFilterRequest} />
+
         <div className="z-40 col-span-12 md:pt-2 md:col-span-8 lg:col-span-8 xl:col-span-6">
-          <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={loadError} loading={loading} workflow={props.workflow} userdata={userdata} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PEOPLE_WHO_VIEWED_YOU, icon: PeopleAltIcon }} />
-          {data.length > 0 && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
-          <Spacer count={2} />
+          <>
+
+            <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={error} loading={loading} workflow={props.workflow} userdata={userdata} dataChange={handleDataChange} _data={data} properties={{ title: TITLES.PROBABLE_INTERESTING_CONNECTIONS, icon: PeopleAltIcon }} />
+
+            {!loadError && !error && (<LoadMore loadingMore={loadingMore} event={handleLoadMore} />)}
+            <Spacer count={2} />
+          </>
+
         </div>
         <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
           {/* Sidebar filter */}
           <Sidebar connections={connectionsCategory} resetField={resetFilterField} onDataEvent={handleComponentDataEvent} workflow={props.workflow} userdata={userdata} />
+
           <Spacer count={2} />
           <MiniFooter showOnSmallScreens />
           <Spacer count={2} />
@@ -405,4 +414,4 @@ function ProfileVisits(props) {
   );
 }
 
-export default ProfileVisits
+export default AddToNetwork

@@ -175,7 +175,7 @@ function Preview({ data }) {
                     userType={data.coHosts[0]?.userBaseType}
                     instituition={data.coHosts[0]?.educationalInstitution}
                     isVisibleAsCoHost
-                    metaData={{ associatedCoHostData: null }}
+                    metaData={{ associatedCoHostData: data.coHosts[0]||null }}
                     options={{ connect: false, mixedMode: true }}
                     userdata={userdata}
                     dark={getMode() === THEME_MODES.DARK ? true : false}
