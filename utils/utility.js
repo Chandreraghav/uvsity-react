@@ -81,7 +81,7 @@ export const formatted_duration = (value) => {
   else return hours + " hrs " + minutes + " minutes";
 };
 
-function stringToColor(string) {
+export const stringToColor = (string) => {
   let hash = 0;
   let i;
 
@@ -482,4 +482,10 @@ export const setInitialTimezone = () => {
     !getLocalStorageObject("uvsity-timezone")) {
     setLocalTimezone()
   }
+}
+
+export const getAbbreviatedWord = (sentence) => {
+  const wordArray = sentence.split(' ');
+  const newAbbreviatedWord = wordArray.map((word) => word.charAt(0)).join('');
+  return newAbbreviatedWord;
 }

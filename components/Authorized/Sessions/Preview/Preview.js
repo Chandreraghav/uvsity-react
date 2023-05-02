@@ -2,40 +2,53 @@
 /* eslint-disable @next/next/no-img-element */
 import { Box, Tooltip, Typography } from "@mui/material";
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/router";
 import Divider from "@mui/material/Divider";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import CoPresentIcon from "@mui/icons-material/CoPresent";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import { SESSION_REVIEW_MAX_STAR_COUNT } from "../../../../constants/constants";
-import { v4 as uuidv4 } from "uuid";
-import {
+import CommentIcon from '@mui/icons-material/Comment';
+
+import { 
+  SESSION_REVIEW_MAX_STAR_COUNT,
   IMAGE_PATHS,
   PLACEHOLDERS,
   TOOLTIPS,
-} from "../../../../constants/userdata";
+  WORKFLOW_CODES,
+  AUTHORIZED_ROUTES 
+} from "../../../../constants";
 import SessionStyle from "../../../../styles/Session.module.css";
 import Profile from "../../Network/People/Dashboard/Profile";
 import Spacer from "../../../shared/Spacer";
-import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import Actions from "../ActionableItems/Actions";
 import { parseMarkdownToHTML } from "../../../../utils/utility";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
-import { useRouter } from "next/router";
 import { navigateToPath } from "../../Shared/Navigator";
-import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import Session_Attendees_ListDialog from "../../../shared/modals/Session_AttendeesListDialog";
-function Preview({ data }) {
+import CommentSection from './CommentSection';
+
+function Preview({ data, mappedTopic }) {
   const router = useRouter();
   const [context, dispatch] = useDataLayerContextValue();
   const [userdata, setUserData] = useState(context?.logged_in_info);
+  const [showTopic, setShowTopic] = useState(false);
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
   const [eventPosterSrc, setEventPosterSrc] = useState(data.imageURL ? data.imageURL : IMAGE_PATHS.NO_DATA.EVENT_POSTER);
   if (!data) return <></>;
-    
+
   const handleAttendeesDialogClose = () => {
     setOpenAttendeesDialog(false);
+  };
+
+  const { topicCommentsCount = 0, topicDetailId = '' } = mappedTopic || {};
+
+  const onCommentClick = () => {
+    if (mappedTopic) {
+      setShowTopic(true);
+    }
   };
 
  
@@ -214,7 +227,18 @@ function Preview({ data }) {
         </div>
       </div>
       {/* Session Actions */}
-      <Actions data={data} />
+      <div className="flex items-center justify-between">
+        <Actions data={data} />
+        <Tooltip title="Comments" className={topicCommentsCount && 'cursor-pointer'} onClick={() => onCommentClick()}>
+          <Typography 
+            className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2" 
+            variant="caption"
+          >
+            <CommentIcon /> {topicCommentsCount} Comment(s)
+          </Typography>
+        </Tooltip>
+      </div>
+      {showTopic && !!topicCommentsCount && topicDetailId && <CommentSection topicId={topicDetailId} />}
 
       {data?.numberOfAttendees > 0 && (<Session_Attendees_ListDialog
         dialogCloseRequest={handleAttendeesDialogClose}
