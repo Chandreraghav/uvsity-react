@@ -1,4 +1,8 @@
 export const ENDPOINTS = {
+  TOPICS: {
+    ALL_ACTIVE: "topic/allActive",
+    GET_DETAIL: "topic/topic"
+  },
   TOP_COURSES: "public/topCourses",
   REGISTRATION: {
     SIGN_UP: "user/create/initial",

@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Preview from "./Preview";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import Spacer from "../../../shared/Spacer";
@@ -20,6 +20,8 @@ import TimezoneStrip from "../../Shared/TimezoneStrip";
 import TimezoneBrowseDialog from "../../../shared/modals/TimezoneBrowseDialog";
 import { actionTypes } from "../../../../context/reducer";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
+import { useGetAllTopics } from '../../../../hooks';
+
 function CompactCard({ title }) {
 
   const [isSticky, setSticky] = useState(false);
@@ -33,6 +35,9 @@ function CompactCard({ title }) {
   const TOP_SESSIONS = useQuery([KEYS.SESSION.TOP], getTopCourses, {
     staleTime: standardStaleTime,
   });
+
+  const topicsData = useGetAllTopics();
+
   useEffect(() => {
     window.addEventListener("scroll", () => {
       const scrollheightLimit = 100;
@@ -48,6 +53,16 @@ function CompactCard({ title }) {
       } catch (error) { }
     };
   }, []);
+
+  const topicsMapByCourseName = useMemo(() => {
+    const newTopicsData = topicsData?.data || [];
+    return new Map(
+      newTopicsData
+        .filter((currentTopic) => !!currentTopic?.topic?.topicName)
+        .map(({ topic }) => [topic.topicName, topic])
+    );
+  }, [topicsData]);
+
   const handleTimeZoneBrowse = (obj) => {
     if(obj==='revert'){
       setLocalTimezone();
@@ -72,6 +87,7 @@ function CompactCard({ title }) {
       });
     }
   };
+
   return (
     <>
       <div className="flex flex-col">
@@ -103,6 +119,7 @@ function CompactCard({ title }) {
               <Stack key={value.courseId}>
                 <Preview
                   data={value}
+                  mappedTopic={topicsMapByCourseName.get(value?.courseFullName || '')}
                 />
                 <Spacer />
               </Stack>

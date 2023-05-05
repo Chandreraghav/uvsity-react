@@ -1158,6 +1158,7 @@ export const PROFILE_AREAS = [
   },
 ];
 export const USER_PROFILE = {
+  ANONYMOUS: "Anonymous",
   CHANGE_PROFILE_PICTURE: "Change profile picture",
   CHANGE_ABOUT_INFO: "Update your About or bio information",
   CHANGE_SOCIAL_URL: "Update your ",

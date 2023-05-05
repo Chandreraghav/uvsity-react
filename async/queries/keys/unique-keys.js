@@ -1,4 +1,8 @@
 export const KEYS = {
+  TOPICS: {
+    ALL: 'all-topics',
+    DETAIL: 'topic-detail'
+  },
   PROFILE: {
     VISITS: "visits",
     COMPLETION: "completion",
@@ -36,6 +40,7 @@ export const KEYS = {
     PEOPLE: {
       CONNECTIONS: "connections",
       INTERESTING: "interesting",
+      DATA:'people_data'
     },
     USER:{
       BY_ID:'user-by-id'
