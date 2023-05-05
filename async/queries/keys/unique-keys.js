@@ -40,6 +40,7 @@ export const KEYS = {
     PEOPLE: {
       CONNECTIONS: "connections",
       INTERESTING: "interesting",
+      DATA:'people_data'
     },
     USER:{
       BY_ID:'user-by-id'
