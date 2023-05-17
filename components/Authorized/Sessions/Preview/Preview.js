@@ -229,16 +229,18 @@ function Preview({ data, mappedTopic }) {
       {/* Session Actions */}
       <div className="flex items-center justify-between">
         <Actions data={data} />
-        <Tooltip title="Comments" className={topicCommentsCount && 'cursor-pointer'} onClick={() => onCommentClick()}>
-          <Typography 
-            className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2" 
-            variant="caption"
-          >
-            <CommentIcon /> {topicCommentsCount} Comment(s)
-          </Typography>
-        </Tooltip>
+        { topicDetailId && (
+          <Tooltip title="Comments" className="cursor-pointer" onClick={() => onCommentClick()}>
+            <Typography 
+              className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2" 
+              variant="caption"
+            >
+              <CommentIcon /> {topicCommentsCount} Comment(s)
+            </Typography>
+          </Tooltip>
+        )}
       </div>
-      {showTopic && !!topicCommentsCount && topicDetailId && <CommentSection topicId={topicDetailId} />}
+      {showTopic && <CommentSection topicId={topicDetailId} />}
 
       {data?.numberOfAttendees > 0 && (<Session_Attendees_ListDialog
         dialogCloseRequest={handleAttendeesDialogClose}

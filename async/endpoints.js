@@ -1,7 +1,9 @@
 export const ENDPOINTS = {
   TOPICS: {
     ALL_ACTIVE: "topic/allActive",
-    GET_DETAIL: "topic/topic"
+    GET_DETAIL: "topic/topic",
+    SEND_COMMENT: "topic/create/topicComment",
+    SEND_REPLY_COMMENT: "topic/reply/topicComment"
   },
   TOP_COURSES: "public/topCourses",
   REGISTRATION: {

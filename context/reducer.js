@@ -25,8 +25,6 @@ export const actionTypes = {
   },
 };
 const reducer = (state, action) => {
-  console.log(action);
-
   //action has 2 types-> type, [payload]
   switch (action.type) {
     case "SET_USER_LOGIN_INFO":
