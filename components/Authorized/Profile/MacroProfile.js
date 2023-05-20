@@ -56,7 +56,7 @@ import { getWorkflowError } from "../../../error-handler/handler";
 import ConnectionService from "../../../pages/api/people/network/ConnectionService";
 import { ClipLoader } from "react-spinners";
 import DoneIcon from "@mui/icons-material/Done";
-import ProfileStats from "./Connection/ProfileStats";
+import ProfileStats from "./Connection/StatsForUserProfile";
 import Spacer from "../../shared/Spacer";
 import parse from "html-react-parser";
 import About from "./Areas/About";

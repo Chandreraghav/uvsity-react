@@ -7,8 +7,12 @@ import { navigateToPath } from "../../components/Authorized/Shared/Navigator";
 import Layout from "../../components/Main/Layout";
 import Footer from "../../components/shared/Footer";
 import { AUTHORIZED_ROUTES } from "../../constants/routes";
-import PeopleList from "../../components/Authorized/Network/People/Listing/View/PeopleList";
-
+import ConnectionsList from "../../components/Authorized/Network/People/Flows/Connections/ConnectionsList";
+import ProfileVisits from "../../components/Authorized/Network/People/Flows/Connections/ProfileVisits";
+import AddToNetwork from "../../components/Authorized/Network/People/Flows/Connections/AddToNetwork";
+import { WORKFLOW_CODES } from "../../constants";
+import { asyncSubscriptions } from "../../async/subscriptions";
+  
 function People() {
   const router = useRouter();
   const [routeutrn, setRouteUtrn] = useState(router.query?.utrn || null);
@@ -64,17 +68,15 @@ function People() {
       <Header
         onHeaderNavigationError={handleNavigationError}
       />
-
-      <PeopleList utrn={routeutrn} />
-      {/* {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS && (
-        <ConnectionsList targetUID={router.query?.uid} self={router.query?.owner} title={router.query?.title} workflow={WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS}   filter={routeFilter??'all'} />
+      {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS && (
+        <ConnectionsList targetUID={router.query?.uid} self={router.query?.owner} title={router.query?.title} workflow={WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS} filter={router.query?.filter ?? 'all'} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.PROFILE_VISITS && (
-        <ProfileVisits workflow={WORKFLOW_CODES.PEOPLE.PROFILE_VIEW}  filter ={asyncSubscriptions.PROFILE_VISITS.alias} />
+        <ProfileVisits workflow={WORKFLOW_CODES.PEOPLE.PROFILE_VIEW} filter={asyncSubscriptions.PROFILE_VISITS.alias} />
       )}
       {routeutrn === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ADD_TO_NETWORK && (
-        <AddToNetwork workflow={WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING}   filter ={asyncSubscriptions.INTERESTING_CONNECTIONS.alias}  />
-      )} */}
+        <AddToNetwork workflow={WORKFLOW_CODES.PEOPLE.WHO_ARE_INTERESTING} filter={asyncSubscriptions.INTERESTING_CONNECTIONS.alias} />
+      )}
 
       <PhoneMenu />
       <Footer minimizeOnSmallScreens />
