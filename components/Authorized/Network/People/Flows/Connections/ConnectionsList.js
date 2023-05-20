@@ -106,13 +106,13 @@ function ConnectionsList(props) {
               return
             }
             setError(true);
-            setData([])
+            //setData([])
             setLoadingMore(false)
           }
         }
         else {
           setError(true);
-          setData([])
+          //setData([])
           setLoadingMore(false)
         }
       });
