@@ -636,6 +636,25 @@ export const NETWORK = {
     CONNECTED: "green!important",
     ACCEPT: "",
   },
+  PEOPLE:{
+    SEARCH:{
+      PAYLOAD:{
+        student: false,
+        professors:false,
+        alumni:false,
+        inMyNetworkFilterCriteria:false,
+        awaitingResponseFilterCriteria:false,
+        searchUserId:null,
+        isOnlyFriendsRequired:false,
+        educationalInstitutionFullName: null,
+        educationalInstitutionCampus: null,
+        countryFullName: null,
+        cityFullName: null,
+        specialization:null,
+        baseSearchActionType:null
+      }
+    }
+  }
 };
 
 export const SESSION_ACTIONS = [
@@ -1265,5 +1284,5 @@ export const SESSION_REQUEST = {
   MESSAGE_SENT_FAILED:
     "Uh, oh! there was an error sending this session request to ",
 };
-
+ 
  

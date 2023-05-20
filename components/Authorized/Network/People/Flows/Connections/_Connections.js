@@ -390,19 +390,7 @@ function Connections(props) {
                     {false && props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS && count > 0 && (<div>({count})</div>)}
                   </div>
 
-                  {/* Subtitle block is not needed to show as we have sidebar filters for that */}
-                  {false && props.properties.subtitle && (
-                    <div className="flex  dark:text-gray-500 text-gray-700">
-                      <div className=" space-x-2 px-2">&raquo;</div>
-                      <div className=" ml-auto leading-tight mt-0.5 ">{props.properties.subtitle}</div>
-
-                      {props.workflow === WORKFLOW_CODES.PEOPLE.MY_CONNECTIONS
-                        && router.query?.filter === props.properties.subtitle
-                        && props.properties?.subCount > 0 &&
-                        (<div>({props.properties?.subCount})</div>)}
-
-                    </div>
-                  )}
+                
 
                 </div>
 
@@ -452,7 +440,6 @@ function Connections(props) {
             rowSpacing={1}
             columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 4 }}
           >
-
             {[1, 2, 3, 4, 5].map((shim, index) => (
 
               <Grid
@@ -464,11 +451,8 @@ function Connections(props) {
                 sm={12}
                 xs={12}
               >
-
                 <CardShimmer dark={ctxTheme.mode === THEME_MODES.DARK} fullWidth visible />
                 <Spacer />
-
-
               </Grid>
             ))}
 

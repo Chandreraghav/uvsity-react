@@ -90,7 +90,11 @@ function SignIn({ dialogCloseRequest, isOpen }) {
           type: actionTypes.SET_USER_LOGIN_INFO,
           logged_in_info:logged_in_info.data
         });
-        AuthGuardService.isVerifiedLogin(true) ? router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD) :
+        if(AuthGuardService.isVerifiedLogin(true)){
+          router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD)
+          setSignInButtonPressed(false)
+          return
+        }
           handleResponse(
             getWorkflowError(LOGIN_ERRORS.UVSITY.LOGIN_FAILED),
             RESPONSE_TYPES.ERROR,
@@ -103,10 +107,8 @@ function SignIn({ dialogCloseRequest, isOpen }) {
           RESPONSE_TYPES.ERROR,
           toast.POSITION.BOTTOM_CENTER
         );
+        setSignInButtonPressed(false)
       })
-      .finally(() => {
-        setSignInButtonPressed(false);
-      });
   };
   const switchToSignUp = () => {
     setSignUpButtonPressed(true);

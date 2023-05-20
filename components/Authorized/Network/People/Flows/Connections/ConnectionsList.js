@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+// Component to display people who are connections of logged in user and/or people who are connections of a user who is connected to the logged in user.
+import React, { useEffect, useState, useCallback } from "react";
 import Connections from "./_Connections";
 import Spacer from "../../../../../shared/Spacer";
 import MiniFooter from "../../../../../shared/MiniFooter";
@@ -10,7 +12,6 @@ import { WORKFLOW_CODES } from "../../../../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import { useDataLayerContextValue } from "../../../../../../context/DataLayer";
 import { getLocalStorageObject } from "../../../../../../localStorage/local-storage";
-import { isUvsityLogicalError } from "../../../../../../utils/utility";
 import { getWorkflowError } from "../../../../../../error-handler/handler";
 import { NO_RECORDS_TO_LOAD } from "../../../../../../constants/error-messages";
 function ConnectionsList(props) {
@@ -45,18 +46,18 @@ function ConnectionsList(props) {
       professors: data.categoryData.professors,
       students: data.categoryData.students,
       alumni: data.categoryData.alumni,
-      searchUserId:null
+      searchUserId: null
     } : {
       isOnlyFriendsRequired: onlyFriendsRequired,
-      inMyNetworkFilterCriteria,
+      inMyNetworkFilterCriteria:!props.targetUID?true:false,
       professors,
       students: student,
       alumni,
-      searchUserId:null
+      searchUserId: null
     }
-    
-    if(props.targetUID)
-    payload.searchUserId=props.targetUID
+
+    if (props.targetUID)
+      payload.searchUserId = props.targetUID
     return (
       await SearchService.searchPeople(
         payload,
@@ -66,7 +67,7 @@ function ConnectionsList(props) {
   }
 
   const setConnectionData =
-    (data) => {
+    useCallback((data) => {
       if (loadError) {
         setLoadError(false)
       }
@@ -77,7 +78,7 @@ function ConnectionsList(props) {
         }
 
         else {
-          if(data){
+          if (data) {
             const _data = data.slice();
             const merged = [..._data, ...res];
             setData(merged);
@@ -85,29 +86,29 @@ function ConnectionsList(props) {
             setLoadMore(false)
             window.scrollTo(0, document.body.scrollHeight);
           }
-          else{
+          else {
             setLoadMore(false)
             setLoadingMore(false)
             setLoadError(true)
           }
-          
+
         }
       }).catch((err) => {
         setLoading(false);
-        if(loadMore){
-         let error = getLocalStorageObject("uvsity-internal-error-response")
-         if(error){
-          error=JSON.parse(error);
-           const wfError = getWorkflowError(error)
-           if(wfError===NO_RECORDS_TO_LOAD){
+        if (loadMore) {
+          let error = getLocalStorageObject("uvsity-internal-error-response")
+          if (error) {
+            error = JSON.parse(error);
+            const wfError = getWorkflowError(error)
+            if (wfError === NO_RECORDS_TO_LOAD) {
+              setLoadingMore(false)
+              setLoadError(true)
+              return
+            }
+            setError(true);
+            setData([])
             setLoadingMore(false)
-            setLoadError(true)
-            return
-           }
-           setError(true);
-           setData([])
-           setLoadingMore(false)
-         }
+          }
         }
         else {
           setError(true);
@@ -115,7 +116,7 @@ function ConnectionsList(props) {
           setLoadingMore(false)
         }
       });
-    }
+    }, [getConnectionsData, loadError, loadMore])
   useEffect(() => {
     setLoading(true);
     const connectionCategory = CONNECTIONS.at(4)
@@ -180,7 +181,7 @@ function ConnectionsList(props) {
     else {
       setAdditionalTitle(null)
     }
-  }, [student, alumni, professors, props.workflow, userdata?.studentConnectionCount, userdata?.professorConnectionCount, userdata?.alumniConnectionCount, isDataChangedFromFilter, isBreadCrumbsDeleted])
+  }, [student, alumni, professors, props.workflow, userdata?.studentConnectionCount, userdata?.professorConnectionCount, userdata?.alumniConnectionCount, isDataChangedFromFilter, isBreadCrumbsDeleted, setConnectionData])
 
   useEffect(() => {
     if (loadMore === true) {
@@ -284,7 +285,7 @@ function ConnectionsList(props) {
 
             <Connections handleDeleteBreadCrumb={handleDeleteBreadCrumb} filters={breadCrumbFilter} error={error} loading={loading} workflow={props.workflow} userdata={userdata} _data={data}
               properties={{
-                title: props.title??HEADER_OPTIONS[1].title,
+                title: props.title ?? HEADER_OPTIONS[1].title,
                 subtitle: additionalTitle, icon: HEADER_OPTIONS[1].icon,
                 count, subCount
               }} />

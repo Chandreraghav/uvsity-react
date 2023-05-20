@@ -12,15 +12,14 @@ import { TITLES, TOOLTIPS } from "../../../../constants/userdata";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Spacer from "../../../shared/Spacer";
-import Shimmer from "../Shimmer/Shimmer";
 import { navigateToPath } from "../../Shared/Navigator";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
-function Stats(props) {
+// This component shows the people stats for logged in user.
+function StatsForOwner(props) {
   let tooltip, title, Icon;
-
   const router = useRouter();
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
   const [summary, setSummary] = useState(null);
@@ -86,16 +85,16 @@ function Stats(props) {
        
         {getTotalStatCount() > 0 &&
           CONNECTIONS.filter((hidden) => hidden !== true).map(
-            (connection) =>
-              getCount(connection.code) > 0 && (
+            (filter) =>
+              getCount(filter.code) > 0 && (
                 <div  onClick={()=>navigateToPath(
                   router,
                   AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
-                  {utrn:AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS,filter:connection.title,token:uuidv4(),owner:true,title:'My connections'}
-                )} key={connection.id} className={StatStyle.stat}>
-                  <p>{connection.title}</p>
+                  {utrn:AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS,filter:filter.title,token:uuidv4(),owner:true,title:'My connections'}
+                )} key={filter.id} className={StatStyle.stat}>
+                  <p>{filter.title}</p>
                   <p className={StatStyle.statNumber}>
-                    {getCount(connection.code)}
+                    {getCount(filter.code)}
                   </p>
                 </div>
               )
@@ -122,4 +121,4 @@ function Stats(props) {
   );
 }
 
-export default Stats;
+export default StatsForOwner;

@@ -373,3 +373,5 @@ export const RTE_TOOLBAR = {
   CLASSIC: ['Bold', 'Italic', 'Underline', 'StrikeThrough', '|', 'Cut', 'Copy', 'Paste', '|', 'Undo', 'Redo', '|', 'Image', 'CreateLink', '|', 'SourceCode', 'FullScreen']
 }
 
+
+

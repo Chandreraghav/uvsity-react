@@ -1,7 +1,7 @@
 import { USER_PROFILE } from '../constants';
 
 const convertTopicCommentRepliesToCommentProps = (topicCommentReplies = []) => {
-  const replies = topicCommentReplies.map((eachReply) => {
+  const replies = topicCommentReplies?.map((eachReply) => {
     const { topicCommentReplyId, topicCommentReply = '', userReplyingToComment, formattedCreatedDateForDisplay } = eachReply || {};
     const {
       firstName = USER_PROFILE.ANONYMOUS,

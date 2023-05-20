@@ -11,7 +11,7 @@ import CompletionDetail from "../Authorized/Profile/CompletionDetail";
 import Profiles from "../Authorized/Network/People/Profiles";
 import { WORKFLOW_CODES } from "../../constants/workflow-codes";
 import Spacer from "./Spacer";
-import Stats from "../Authorized/Profile/Connection/Stats";
+import StatsForOwner from "../Authorized/Profile/Connection/StatsForOwner";
 import { useDataLayerContextValue } from "../../context/DataLayer";
 function Sidebar(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
@@ -72,7 +72,7 @@ function Sidebar(props) {
   } else {
     return (
       <>
-        <Stats />
+        <StatsForOwner />
         <Spacer />
         <Profiles
           options={{ connect: true, mixedMode: false }}

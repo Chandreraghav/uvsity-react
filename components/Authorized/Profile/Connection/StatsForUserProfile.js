@@ -9,7 +9,8 @@ import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
-function ProfileStats(props) {
+// This component shows the people stats for any user profile. The user profile can be the logged in user or a connection to the logged in user.
+function StatsForUserProfile(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
 
   const [userdata, setUserdata]= useState({})
@@ -42,13 +43,13 @@ function ProfileStats(props) {
         return 0;
     }
   };
-  const navigate=(connection=null)=>{
+  const navigate=(filter=null)=>{
    if(isItMe()){
-    if(connection){
+    if(filter){
       navigateToPath(
         router,
         AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
-        { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS, filter: connection.title, token: uuidv4(),uid:null ,title:'My connections',owner:true}
+        { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS, filter: filter.title, token: uuidv4(),uid:null ,title:'My connections',owner:true}
       )
       return
     }
@@ -59,11 +60,11 @@ function ProfileStats(props) {
     )
     return
    }
-    if(connection){
+    if(filter){
       navigateToPath(
         router,
         AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.INDEX,
-        { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS, token: uuidv4(), filter: connection.title,uid:props.userdata?.userDetailsId, title:statHeaderTitle, owner:isLoggedInUserOwner}
+        { utrn: AUTHORIZED_ROUTES.AUTHORIZED.UTRN.CONNECTIONS, token: uuidv4(), filter: filter.title,uid:props.userdata?.userDetailsId, title:statHeaderTitle, owner:isLoggedInUserOwner}
       )
       return
     }
@@ -135,4 +136,4 @@ function ProfileStats(props) {
   );
 }
 
-export default ProfileStats;
+export default StatsForUserProfile;

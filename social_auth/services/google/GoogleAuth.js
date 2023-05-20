@@ -56,16 +56,16 @@ function GoogleAuth() {
             logged_in_info:logged_in_info.data
           });
           if (AuthGuardService.isVerifiedLogin(true)) {
-            setShowOverlay(false)
             router.push(AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD)
+            setShowOverlay(false)
+            return
           }
-          else {
+          
             handleResponse(
               getWorkflowError(LOGIN_ERRORS.SOCIAL.GOOGLE.LOGIN_FAILED),
               RESPONSE_TYPES.ERROR,
               toast.POSITION.BOTTOM_CENTER
             );
-          }
 
         })
         .catch(() => {
