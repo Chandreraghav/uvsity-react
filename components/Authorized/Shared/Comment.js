@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Button from '@mui/material/Button';
-import { UVSityAvatar, CommentInput } from '../../shared';
+import { UVSityAvatar, CommentInput, ReadMore } from '../../shared';
+import { READ_MORE_MAX_LENGTH } from '../../../constants';
 import ProfileStyle from "../../../styles/DashboardProfile.module.css";
 
 export const Comment = ({
@@ -40,8 +41,13 @@ export const Comment = ({
             <a className={`font-bold ${ProfileStyle.profile__name}  `} onClick={(event) => onUserClick(event)}>{userName}</a>
             <span className="sm:line-clamp-1 text-gray-700 dark:text-gray-600 text-xs">{commentTime}</span>
           </div>
-          <span className="sm:line-clamp-1   text-xs text-gray-700 dark:text-gray-600">{userProfession}</span>
-          <p className="mt-2 dark:text-gray-500  text-gray-800">{comment}</p>
+          <span className="mb-2 sm:line-clamp-1 text-xs text-gray-700 dark:text-gray-600">{userProfession}</span>
+          <ReadMore
+            className="dark:text-gray-500 text-gray-800"
+            initialReadLimit={READ_MORE_MAX_LENGTH}
+          >
+            {comment}
+          </ReadMore>
         </div>
         {replies !== undefined && 
           <div className="flex items-center mt-2">

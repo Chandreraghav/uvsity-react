@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import TextField from "@mui/material/TextField";
 import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
+import { useTheme, THEME_MODES } from '../../theme';
+import { COLOR_CODES } from "../../constants";
 import { UVSityAvatar } from './UVSityAvatar';
+
+const { DEEP: DeepGray } = COLOR_CODES.GRAY;
 
 export const CommentInput = ({
   userPic = '',
@@ -14,17 +19,48 @@ export const CommentInput = ({
   className = '',
   label = 'Add a comment'
 }) => {
+  const [theme] = useTheme();
+
+  const StyledTextField = useMemo(() => {
+    const mainColor = theme?.mode === THEME_MODES.DARK ? DeepGray : ''
+    
+    return withStyles({
+      root: {
+        "& label": {
+          color: mainColor
+        },
+        "& .MuiInput-underline:after": {
+          borderBottomColor: mainColor
+        },
+        "& .MuiOutlinedInput-root": {
+          color: mainColor,
+          "& fieldset": {
+            borderColor: mainColor
+          },
+          "&:hover fieldset": {
+            borderColor: mainColor
+          }
+        }
+      }
+    })(TextField);
+  }, [theme]);
+
   const [comment, setComment] = useState('');
 
-  const onCommentTrigger = () => {
-    commentTrigerred(comment);
-    setComment('');
-  }
+  const validComment = comment.trim();
+
+  const onCommentTrigger = (event) => {
+    event.preventDefault();
+    if(validComment) {
+      commentTrigerred(validComment);
+      setComment('');
+    }
+  };
 
   return (
-    <div className={`flex items-start ${className}`}>
+    <form className={`flex items-start ${className}`} onSubmit={(event) => onCommentTrigger(event)}>
       <UVSityAvatar src={userPic} name={userName} className="mr-2 avatar-xs" />
-      <TextField
+      <StyledTextField
         autoFocus
         className="w-full"
         size="small"
@@ -37,16 +73,16 @@ export const CommentInput = ({
         InputProps={{
           endAdornment: <InputAdornment position="start">
             <IconButton
+              type="submit"
               aria-label="Send Comment"
-              onClick={() => onCommentTrigger()}
               onMouseDown={(event) => event.preventDefault()}
             >
-              {comment && <SendIcon fontSize="small" color="primary" />}
+              {validComment && <SendIcon fontSize="small" color="primary" />}
             </IconButton>
           </InputAdornment>
         }}
       />
-    </div>
+    </form>
     
   )
 }

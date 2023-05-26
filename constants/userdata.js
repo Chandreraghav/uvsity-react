@@ -692,6 +692,12 @@ export const SESSION_ACTIONS = [
   },
 ];
 
+export const TOPIC_ACTIONS = {
+  COMMENTS: 'comments',
+  LIKE: 'like'
+}
+
+
 export const ME = "(Me)";
 export const SESSION_POSTER = {
   id: "session-poster",
