@@ -1,5 +1,5 @@
 // Component displays the People who visited logged in user's profile.
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useCallback } from 'react'
 import { CONNECTIONS, TITLES } from '../../../../../../constants/userdata';
 import SearchService from '../../../../../../pages/api/people/network/Search/SearchService';
 import LoadMore from '../../../../../shared/LoadMore';
@@ -42,62 +42,64 @@ function ProfileVisits(props) {
   const [loadError, setLoadError] = useState(false);
   const [connectionsCategory, setConnectionsCategory] = useState(CONNECTIONS)
 
-  const getConnectionsData = async (filterData, customPaylod) => {
-    let payload = null;
-    if (customPaylod) {
-      payload = filterData;
-    }
-    else {
-      payload = filterData ? {
-        baseSearchActionType: asyncSubscriptions.INTERESTING_CONNECTIONS.alias,
-        isOnlyFriendsRequired: onlyFriendsRequired,
-        inMyNetworkFilterCriteria: filterData.categoryData.inMyNetworkFilterCriteria,
-        professors: filterData.categoryData.professors,
-        students: filterData.categoryData.students,
-        alumni: filterData.categoryData.alumni,
-        awaitingResponseFilterCriteria: filterData.categoryData.awaitingResponseFilterCriteria,
-        educationalInstitutionFullName: educationInstitution,
-        specialization,
-        educationalInstitutionCampus: campus,
-        countryFullName: country,
-        cityFullName: city
-      } : {
-        baseSearchActionType: props.filter,
-        isOnlyFriendsRequired: onlyFriendsRequired,
-        inMyNetworkFilterCriteria,
-        professors,
-        students: student,
-        alumni,
-        awaitingResponseFilterCriteria,
-        educationalInstitutionFullName: educationInstitution,
-        specialization,
-        educationalInstitutionCampus: campus,
-        countryFullName: country,
-        cityFullName: city
+  const setConnectionData = useCallback((filterData, customPaylod) => {
+    const getConnectionsData = async (filterData, customPaylod) => {
+      let payload = null;
+      if (customPaylod) {
+        payload = filterData;
       }
+      else {
+        payload = filterData ? {
+          baseSearchActionType: asyncSubscriptions.INTERESTING_CONNECTIONS.alias,
+          isOnlyFriendsRequired: onlyFriendsRequired,
+          inMyNetworkFilterCriteria: filterData.categoryData.inMyNetworkFilterCriteria,
+          professors: filterData.categoryData.professors,
+          students: filterData.categoryData.students,
+          alumni: filterData.categoryData.alumni,
+          awaitingResponseFilterCriteria: filterData.categoryData.awaitingResponseFilterCriteria,
+          educationalInstitutionFullName: educationInstitution,
+          specialization,
+          educationalInstitutionCampus: campus,
+          countryFullName: country,
+          cityFullName: city
+        } : {
+          baseSearchActionType: props.filter,
+          isOnlyFriendsRequired: onlyFriendsRequired,
+          inMyNetworkFilterCriteria,
+          professors,
+          students: student,
+          alumni,
+          awaitingResponseFilterCriteria,
+          educationalInstitutionFullName: educationInstitution,
+          specialization,
+          educationalInstitutionCampus: campus,
+          countryFullName: country,
+          cityFullName: city
+        }
+      }
+
+      return (
+        await SearchService.searchPeople(
+          payload,
+          loadMore
+        )
+      ).data;
     }
-
-    return (
-      await SearchService.searchPeople(
-        payload,
-        loadMore
-      )
-    ).data;
-  }
-
-  const setConnectionData = (data, customPaylod) => {
-    if(loadError){
+    if (loadError) {
       setLoadError(false)
     }
-    
-    getConnectionsData(data, customPaylod).then((res) => {
+    if(error){
+      setError(false)
+    }
+
+    getConnectionsData(filterData, customPaylod).then((res) => {
       if (!loadMore) {
         setLoading(false);
         setData(res);
         setProcessingFilterRequest(false)
       }
       else {
-        if(data){
+        if (data) {
           const _data = data.slice();
           const merged = [..._data, ...res];
           setData(merged);
@@ -105,8 +107,8 @@ function ProfileVisits(props) {
           setLoadMore(false)
           window.scrollTo(0, document.body.scrollHeight);
         }
-        
-        else{
+
+        else {
           setLoadMore(false)
           setLoadingMore(false)
           setLoadError(true)
@@ -124,20 +126,18 @@ function ProfileVisits(props) {
       setData([])
       setLoadingMore(false)
     });
-  }
+  }, [alumni, awaitingResponseFilterCriteria, campus, city, country, data, educationInstitution, error, inMyNetworkFilterCriteria, loadError, loadMore, onlyFriendsRequired, professors, props.filter, specialization, student])
   useEffect(() => {
     setLoading(true);
     setConnectionData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.filter])
+  }, [props.filter, setConnectionData])
 
   useEffect(() => {
     if (loadMore === true)
       setConnectionData();
     dataChangedFromFilter(false)
     setBreadCrumbsDeleted(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadMore])
+  }, [loadMore, setConnectionData])
 
   const handleLoadMore = (obj) => {
     setLoadMore(true)
@@ -162,7 +162,7 @@ function ProfileVisits(props) {
     setCountry(null)
     setCity(null)
     setFilterFieldReset(null)
-     
+
     setLoading(true);
     const payload = {
       baseSearchActionType: props.filter,
@@ -320,6 +320,7 @@ function ProfileVisits(props) {
   }
   const handleDeleteBreadCrumb = (obj) => {
     if (obj) {
+      setData([])
       setLoading(true);
       let tempBreadCrumbFilter = breadCrumbFilter.slice()
       const targetBreadCrumbDeleteIdx = tempBreadCrumbFilter.findIndex((crumb) => crumb.id === obj.id)
@@ -334,7 +335,7 @@ function ProfileVisits(props) {
         connectionCategories[targetSidebarSelectionIdx].selected = false
         setConnectionsCategory(connectionCategories)
       }
-    
+
       if (obj.title === CONNECTIONS.at(0).title) {
         setStudent(false)
       }
@@ -351,26 +352,26 @@ function ProfileVisits(props) {
       else if (obj.title === CONNECTIONS.at(4).title) {
         setInMyNetworkFilter(false)
       }
-      else if(obj.key==='City'){
-       
+      else if (obj.key === 'City') {
+
         setCity(null)
       }
-      else if(obj.key==='Institution'){
-       setEducationInstitution(null)
+      else if (obj.key === 'Institution') {
+        setEducationInstitution(null)
       }
 
-      else if(obj.key==='Campus'){
+      else if (obj.key === 'Campus') {
         setCampus(null)
-       }
-       else if(obj.key==='Specialization'){
+      }
+      else if (obj.key === 'Specialization') {
         setSpecialization(null)
-       }
+      }
 
-       else if(obj.key==='Country'){
+      else if (obj.key === 'Country') {
         setCountry(null)
-       }
-       setFilterFieldReset(obj.key)
-       setBreadCrumbsDeleted(true)
+      }
+      setFilterFieldReset(obj.key)
+      setBreadCrumbsDeleted(true)
 
     }
   }
@@ -383,7 +384,7 @@ function ProfileVisits(props) {
     if (isDataChangedFromFilter) {
       return;
     }
-  }, [isDataChangedFromFilter, isBreadCrumbsDeleted, student, alumni, professors, awaitingResponseFilterCriteria, inMyNetworkFilterCriteria, city, country, specialization,campus,educationInstitution])
+  }, [isDataChangedFromFilter, isBreadCrumbsDeleted, student, alumni, professors, awaitingResponseFilterCriteria, inMyNetworkFilterCriteria, city, country, specialization, campus, educationInstitution, setConnectionData])
 
   useEffect(() => {
     setUserData(ctxUserdata?.userdata)

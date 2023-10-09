@@ -7,18 +7,24 @@ import { useRouter } from "next/router";
 import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import { v4 as uuidv4 } from "uuid";
 import { navigateToPath } from "../../Shared/Navigator";
+import { useDataLayerContextValue } from "../../../../context";
+import SessionOwner from "../../../SessionCards/SessionOwner";
 function Actions(props) {
   const [actions, setActions] = useState(SESSION_ACTIONS)
+  const [ctxUserdata, dispatch] = useDataLayerContextValue();
   const router = useRouter();
-  const isSessionRegistrationPossible = () => {
-    if (props.data.owner) {
+  const isSessionOwner=(loggedInUser)=>{
+    return loggedInUser?.userDetailsId===props.data?.creator?.userDetailsId
+  }
+  const isSessionRegistrationPossible = (loggedInUser=null) => {
+    if (isSessionOwner(loggedInUser) || props.data.owner) {
       //you the owner of the session
       return {
         status: APP.SESSION.ACTIONS.STATUS.OWNER,
         action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
         flag: false,
       };
-    }
+    } 
     if (props.data.userRegistered) {
       //you have registered already
       return {
@@ -184,11 +190,12 @@ function Actions(props) {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const isEligibleAction = (action) => {
+  const isEligibleAction = (action,loggedInUser) => {
     if (!action) return false
+    if(action.hidden===true) return false;
     switch (action.id) {
       case 1:
-        const sessionRegistrationPossible = isSessionRegistrationPossible();
+        const sessionRegistrationPossible = isSessionRegistrationPossible(loggedInUser);
         if (sessionRegistrationPossible.status === APP.SESSION.ACTIONS.STATUS.ALREADY_REGISTERED) {
           const tempActions = actions.slice();
           tempActions.at(0).disabled = true;
@@ -206,23 +213,39 @@ function Actions(props) {
     }
   }
 
+  const ActionTypography =((_action)=>{
+    if(!props.variant)
+    return(
+      <Typography className='hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2' variant="caption">
+      {_action.icon} {_action.title}
+    </Typography>
+    )
+    if(props.variant && props.variant==='banner'){
+      return( <Typography className="hover:bg-blue-800 first-letter:underline bg-gray-dark hover:dark:text-gray-300 hover:text-gray-100 text-gray-200  hover:font-bold  w-max p-2">
+      {_action.icon} {_action.title}
+    </Typography>)
+    }
+  })
+
   const ActionStack = useMemo(
     () => {
       if (props.data) {
         return (
           <React.Fragment>
-            {actions.filter((action) => action.hidden === false).map((_action, index) => {
-              if (isEligibleAction(_action)) {
-                return (<Stack role="button" className={` flex ${_action.disabled ? 'disabled' : 'cursor-pointer'}`} key={_action.id} onClick={() => initiateActionRequest(_action)}>
+            {actions.map((_action, index) => {
+              if (isEligibleAction(_action,ctxUserdata?.logged_in_info)) {
+                return (
+                 <Stack role="button" className={` flex ${_action.disabled ? 'disabled' : 'cursor-pointer'}`} key={_action.id} onClick={() => initiateActionRequest(_action)}>
                   <Tooltip title={_action.tooltip}>
-                    <Typography className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2" variant="caption">
-                      {_action.icon} {_action.title}
-                    </Typography>
+                     
+                   {ActionTypography(_action)}
                   </Tooltip>
                 </Stack>)
               }
             }
             )}
+            {  (isSessionOwner(ctxUserdata.logged_in_info)) &&(<SessionOwner/>)
+          }
           </React.Fragment>
         );
       }
@@ -241,7 +264,7 @@ function Actions(props) {
         </React.Fragment>
       }
     },
-    [actions, initiateActionRequest, isEligibleAction, props.data]
+    [actions, ctxUserdata.logged_in_info, initiateActionRequest, isEligibleAction, isSessionOwner, props.data]
   );
 
   return (

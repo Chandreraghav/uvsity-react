@@ -19,7 +19,7 @@ import { AUTHORIZED_ROUTES } from "../../../../constants/routes";
 import { v4 as uuidv4 } from "uuid";
 import UserDataService from "../../../../pages/api/users/data/UserDataService";
 import { asyncSubscriptions } from "../../../../async/subscriptions";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
 function Profiles({
   options,

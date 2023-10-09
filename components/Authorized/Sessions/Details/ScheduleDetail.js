@@ -21,7 +21,7 @@ function ScheduleDetail(props) {
     useEffect(() => {
         setSchedule(props.schedule)
         return (() => setSchedule(null))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.schedule])
     if (!props.schedule) return (<></>)
     const handleTimezoneBrowserChange = () => {
@@ -73,9 +73,9 @@ function ScheduleDetail(props) {
         return month;
     };
     const getTime = () => {
-        let tz = ctxData?.timezone??getTimezone()
-        if(props.viewScheduleFromFinalPreview){
-            tz= props.schedule?.timezone??ctxData?.timezone
+        let tz = ctxData?.timezone ?? getTimezone()
+        if (props.viewScheduleFromFinalPreview) {
+            tz = props.schedule?.timezone ?? ctxData?.timezone
         }
         let startDate = localTZDate(schedule?.startDate, tz, true)
         let endDate = localTZDate(schedule?.endDate, tz, true)
@@ -99,7 +99,8 @@ function ScheduleDetail(props) {
         return effectiveDate;
     };
     return (
-        <div className="flex flex-col gap-2 bg-gray-100 dark:bg-gray-950 px-4 p-4 mt-1 rounded-lg border-1 border-spacing-2 shadow-md bg-repeat-round">
+
+        <div className="flex flex-col gap-2 bg-gray-100 dark:bg-gray-950 px-4 p-4 mt-1 mb-4 rounded-lg border-1 dark:border-gray-800 dark:shadow-gray-700 border-spacing-2 shadow-md bg-repeat-round">
             <div className="flex gap-1">
                 <ScheduleIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                 <Typography
@@ -115,20 +116,23 @@ function ScheduleDetail(props) {
                     {getScheduleText()}
                 </Typography>
 
-                <div
-                    className="flex mr-2 text-blue-600
-           ml-auto app-anchor-block cursor-pointer"
-                >
-                    <Tooltip title="Change">
-                        <EditIcon
-                            onClick={() => {
-                                props.onNavigate ? props.onNavigate(1) : null;
-                            }}
-                            fontSize="small"
-                            className=" leading-3 font-semibold  text-sm"
-                        />
-                    </Tooltip>
-                </div>
+                {props.owner === true && (
+                    <div
+                        className="flex mr-2 text-blue-600
+ml-auto app-anchor-block cursor-pointer"
+                    >
+                        <Tooltip title="Change">
+                            <EditIcon
+                                onClick={() => {
+                                    props.onNavigate ? props.onNavigate(1) : null;
+                                }}
+                                fontSize="small"
+                                className=" leading-3 font-semibold  text-sm"
+                            />
+                        </Tooltip>
+                    </div>
+                )}
+
             </div>
 
             {!schedule?.viewScheduleFromSessionProfile && (
@@ -242,8 +246,8 @@ function ScheduleDetail(props) {
                         {/* Read Timezone from props if schedule is viewed from Final Preview Component. Otherwise, always show timezone from factory context API. */}
                         {
                             props.viewScheduleFromFinalPreview && props.schedule?.timezone ? (<>(
-                            {props.schedule?.timezone})
-                            </>):ctxData && ctxData.timezone && (<>({ctxData?.timezone})</>)
+                                {props.schedule?.timezone})
+                            </>) : ctxData && ctxData.timezone && (<>({ctxData?.timezone})</>)
                         }
                     </Typography>
                 </div>
@@ -269,6 +273,7 @@ function ScheduleDetail(props) {
                     </Box>)}
             </div>
         </div>
+
     )
 }
 

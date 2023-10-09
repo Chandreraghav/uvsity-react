@@ -28,7 +28,6 @@ import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { RESPONSE_TYPES } from "./constants";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
-
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
@@ -60,6 +59,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
+import TokenIcon from '@mui/icons-material/Token';
 import {
   blue,
   green,
@@ -337,6 +337,7 @@ export const TITLES = {
   CONNECTIONS: "Connections",
   POPULAR_SESSION: "Popular Sessions",
   PROBABLE_INTERESTING_CONNECTIONS: "Connections you might find interesting",
+  PROBABLE_INTERESTING_CONNECTIONS_V2: "Interesting connections",
   PEOPLE_WHO_VIEWED_YOU: "People who viewed you",
   PEOPLE_ATTENDING: "People who are attending",
   CONNECT_TO_PERSON: "Connect",
@@ -673,7 +674,7 @@ export const SESSION_ACTIONS = [
     id: 2,
     title: PLACEHOLDERS.SPONSOR_SESSION,
     icon: <AutoGraphOutlinedIcon />,
-    hidden: false,
+    hidden: true,
     disabled: false,
     size: "small",
     tooltip: TOOLTIPS.SPONSOR_SESSION,
@@ -684,7 +685,7 @@ export const SESSION_ACTIONS = [
     id: 3,
     title: PLACEHOLDERS.VIEW_DETAIL,
     icon: <PreviewIcon />,
-    hidden: false,
+    hidden: true,
     disabled: false,
     size: "small",
     tooltip: TOOLTIPS.KNOW_MORE_SESSION,
@@ -1110,6 +1111,11 @@ export const SESSION = {
   CREATED: "<user>, your session has been created successfully",
   EDITED: "<user>, your session has been modified successfully",
   DELETED: "<user>, your session has been deleted permanently",
+  OWNER:{
+    ICON:TokenIcon,
+    LABEL:'Session owner',
+    TOOLTIP:'You are the session owner'
+  }
 };
 export const VALIDATING_REQUEST =
   "Please wait, we are validating your request...";

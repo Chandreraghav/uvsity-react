@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 // Component to display people who are connections of logged in user and/or people who are connections of a user who is connected to the logged in user.
 import React, { useEffect, useState, useCallback } from "react";
 import Connections from "./_Connections";
@@ -39,37 +38,39 @@ function ConnectionsList(props) {
   const [connectionsCategory, setConnectionsCategory] = useState(CONNECTIONS)
 
   const router = useRouter();
-  const getConnectionsData = async (data) => {
-    const payload = data ? {
-      isOnlyFriendsRequired: onlyFriendsRequired,
-      inMyNetworkFilterCriteria: data.categoryData.inMyNetworkFilterCriteria,
-      professors: data.categoryData.professors,
-      students: data.categoryData.students,
-      alumni: data.categoryData.alumni,
-      searchUserId: null
-    } : {
-      isOnlyFriendsRequired: onlyFriendsRequired,
-      inMyNetworkFilterCriteria:!props.targetUID?true:false,
-      professors,
-      students: student,
-      alumni,
-      searchUserId: null
-    }
-
-    if (props.targetUID)
-      payload.searchUserId = props.targetUID
-    return (
-      await SearchService.searchPeople(
-        payload,
-        loadMore
-      )
-    ).data;
-  }
-
   const setConnectionData =
     useCallback((data) => {
+      const getConnectionsData = async (data) => {
+        const payload = data ? {
+          isOnlyFriendsRequired: onlyFriendsRequired,
+          inMyNetworkFilterCriteria: data.categoryData.inMyNetworkFilterCriteria,
+          professors: data.categoryData.professors,
+          students: data.categoryData.students,
+          alumni: data.categoryData.alumni,
+          searchUserId: null
+        } : {
+          isOnlyFriendsRequired: onlyFriendsRequired,
+          inMyNetworkFilterCriteria: !props.targetUID ? true : false,
+          professors,
+          students: student,
+          alumni,
+          searchUserId: null
+        }
+
+        if (props.targetUID)
+          payload.searchUserId = props.targetUID
+        return (
+          await SearchService.searchPeople(
+            payload,
+            loadMore
+          )
+        ).data;
+      }
       if (loadError) {
         setLoadError(false)
+      }
+      if(error){
+        setError(false)
       }
       getConnectionsData(data).then((res) => {
         if (!loadMore) {
@@ -106,17 +107,17 @@ function ConnectionsList(props) {
               return
             }
             setError(true);
-            //setData([])
+            setData([])
             setLoadingMore(false)
           }
         }
         else {
           setError(true);
-          //setData([])
+          setData([])
           setLoadingMore(false)
         }
       });
-    }, [getConnectionsData, loadError, loadMore])
+    }, [alumni, loadError, loadMore, onlyFriendsRequired, professors, props.targetUID, student])
   useEffect(() => {
     setLoading(true);
     const connectionCategory = CONNECTIONS.at(4)
@@ -202,6 +203,7 @@ function ConnectionsList(props) {
       setInMyNetworkFilter(data.categoryData.inMyNetworkFilterCriteria)
       setError(false)
       setLoading(true);
+      setLoadMore(false)
       setData([])
       let tempBreadCrumbFilter = breadCrumbFilter.slice()
       let connectionCategory = null;
@@ -238,6 +240,7 @@ function ConnectionsList(props) {
 
   const handleDeleteBreadCrumb = (obj) => {
     if (obj) {
+      setData([])
       setBreadCrumbsDeleted(true)
       setLoading(true);
       let tempBreadCrumbFilter = breadCrumbFilter.slice()

@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Profile({
+  owner,
   options,
   firstName,
   lastName,
@@ -123,7 +124,7 @@ function Profile({
   const [isMePrefixOnProfileName, setMePrefixOnProfileName] = useState(false);
 
   useEffect(() => {
-    setMePrefixOnProfileName(isItMe());
+    setMePrefixOnProfileName(owner!==undefined?owner:isItMe());
   }, []);
 
   const onHover = () => {
@@ -185,6 +186,7 @@ function Profile({
     return payload;
   };
   const isItMe = () => {
+    
     return userdata?.userDetailsId === oid;
   };
   const addToNetwork = () => {

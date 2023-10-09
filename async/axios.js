@@ -1,9 +1,5 @@
 import axios from "axios";
 import { JWT } from "../jwt/auth/JWT";
-import {
-  getLocalStorageObject,
-  removeLocalStorageObject,
-} from "../localStorage/local-storage";
 import { AuthService } from "../pages/api/users/auth/AuthService";
 
 /***

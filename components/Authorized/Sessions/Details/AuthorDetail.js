@@ -4,6 +4,8 @@ import Spacer from '../../../shared/Spacer'
 import Profile from '../../Network/People/Dashboard/Profile'
 
 function AuthorDetail(props) {
+      
+    
     if (!props.author) return (<></>)
     
     return (
@@ -12,6 +14,7 @@ function AuthorDetail(props) {
 
             <Box className="flex relative border-0 p-2  shadow-md bg-repeat-round rounded-lg">
                 <Profile
+                    owner={props.owner}
                     oid={props.author?.userDetailsId}
                     options={{ connect: false, mixedMode: true }}
                     firstName={props.author?.firstName}

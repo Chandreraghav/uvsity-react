@@ -21,15 +21,12 @@ function PastSessionDialog({
   theme,
   selectedSession
 }) {
-  if (!isOpen) return "";
+  
+  const [pastSession, setPastSession] = useState();
   const [_theme, _dispatch] = useTheme();
   const [isDark, setDark] = useState(_theme.mode === THEME_MODES.DARK);
   const deepGray = COLOR_CODES.GRAY.DEEP;
   const lightGray= COLOR_CODES.GRAY.LIGHT
-  useEffect(() => {
-    setDark(_theme.mode === THEME_MODES.DARK);
-  }, [_theme]);
-
   const useStyles = makeStyles((theme) => ({
     
     paper:{
@@ -74,7 +71,12 @@ function PastSessionDialog({
      
   }));
   const classes = useStyles();
-  const [pastSession, setPastSession] = useState();
+  useEffect(() => {
+    setDark(_theme.mode === THEME_MODES.DARK);
+  }, [_theme]);
+  if (!isOpen) return "";
+
+  
   const handleClose = () => {
     if (dialogCloseRequest) {
       dialogCloseRequest();
@@ -101,7 +103,6 @@ function PastSessionDialog({
         aria-describedby="responsive-dialog-description"
         onClose={() => handleClose()}
         disableEscapeKeyDown
-        onBackdropClick={() => handleClose()}
       >
         <div className={`${isDark ? "dark-dialog" : ""}`}>
           <div className={` px-4 py-2 leading-tight  text-left flex-col`}>

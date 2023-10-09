@@ -24,7 +24,7 @@ import {
   ME,
 } from "../../../constants/userdata";
 import UserDataService from "../../../pages/api/users/data/UserDataService";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import { infinity } from "../../../async/subscriptions";
 import { navigateToProfile, navigateToSessionProfile } from "../../Authorized/Shared/Navigator";

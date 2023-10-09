@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DoNotDisturbOffIcon from "@mui/icons-material/DoNotDisturbOff";
 import { useRouter } from "next/router";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { toast } from "react-toastify";
 import { SignOffUser } from "../../Auth/SignOut";

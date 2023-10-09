@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { asyncSubscriptions } from "../../../async/subscriptions";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
@@ -11,7 +11,7 @@ import {
 } from "../../../localStorage/local-storage";
 import { SignOffUser } from "../SignOut";
 import { useRouter } from "next/router";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { isUvsityLogicalError } from "../../../utils/utility";
 

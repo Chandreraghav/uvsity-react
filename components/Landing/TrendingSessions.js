@@ -6,7 +6,7 @@ import SessionCard from "../SessionCards/SessionCard";
 import SessionService from "../../pages/api/session/SessionService";
 import Loader from "../shared/Loader";
 import { SHIMMER_TIMEOUT_IN_MILLIS } from "../../constants/constants";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { KEYS } from "../../async/queries/keys/unique-keys";
 import { standardStaleTime } from "../../async/subscriptions";
 

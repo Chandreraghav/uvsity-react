@@ -31,6 +31,7 @@ import Session_Attendees_ListDialog from "../../../shared/modals/Session_Attende
 import CommentSection from './CommentSection';
 
 function Preview({ data, mappedTopic }) {
+  console.log(mappedTopic);
   const router = useRouter();
   const [context, dispatch] = useDataLayerContextValue();
   const [userdata, setUserData] = useState(context?.logged_in_info);
