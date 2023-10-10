@@ -521,7 +521,7 @@ function Fee() {
                     >
                       {!_editSponsorshipLevel && (
                         <>
-                          {SPONSORSHIP.ICONS.CUSTOMIZE} Customize your sponsorship
+                          {SPONSORSHIP.ICONS.CUSTOMIZE_V2} 🤔Looks like you are looking for sponsorships! Now customize your sponsorship
                           offerings to your audience. Click on the{" "}
                           {SPONSORSHIP.ICONS.EDIT} Edit icon to make any changes.
                         </>

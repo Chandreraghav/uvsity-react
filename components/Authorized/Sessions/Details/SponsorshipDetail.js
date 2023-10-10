@@ -6,7 +6,7 @@ import Plans from '../../Sponsorships/Plans';
 import { SPONSORSHIP } from '../../../../constants/userdata';
 import SponsorSession from '../ActionableItems/SponsorSession';
 function SponsorshipDetail(props) {
-     
+
     const [sponsorshipLevels, setSponsorshipLevels] = useState([])
     useEffect(() => {
         setSponsorshipLevels(props?.sponsor?.sponsorshipLevels && props?.sponsor?.sponsorshipLevels instanceof Array && props?.sponsor?.sponsorshipLevels.length > 0 ? props?.sponsor?.sponsorshipLevels : SPONSORSHIP?.LEVELS)
@@ -61,7 +61,13 @@ ml-auto app-anchor-block cursor-pointer"
                     </div>
                 </>)}
 
-                {props.oid !== undefined && (<SponsorSession oid={props.oid} />)}
+                {props.showSponsorshipAction===true && (<React.Fragment>
+                    {/* For owner user, the sponsorship button will be always there */}
+                    {props.oid !== undefined && props.owner === true && (<SponsorSession oid={props.oid} />)}
+                    {/* For non-owner of session, we check if the user has already registered to the session, if yes then only we show the Sponsor Session button  */}
+                    {props.oid !== undefined && (props.owner === undefined || props.owner === false) && props.userRegistered === true && (<SponsorSession oid={props.oid} />)}
+                    {/* Both above conditions are mutually exclusive*/}
+                </React.Fragment>)}
 
             </div>
         )

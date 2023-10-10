@@ -213,8 +213,8 @@ ml-auto app-anchor-block cursor-pointer"
                                 Occurence:
                             </Typography>
                             <Typography
-                                variant="subtitle2"
-                                className="   font-normal line-clamp-2 italic  leading-tight  text-gray-800 dark:text-gray-500"
+                                variant="caption"
+                                className="   font-normal line-clamp-2 italic mt-1  leading-tight  text-gray-800 dark:text-gray-500"
                             >
 
                                 {schedule?.courseScheduleSummaryLong}.

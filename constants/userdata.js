@@ -60,6 +60,11 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import TokenIcon from '@mui/icons-material/Token';
+import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
 import {
   blue,
   green,
@@ -221,8 +226,8 @@ export const CONNECTIONS = [
     tooltip: "Connections who are students",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.STUDENT,
-    selected:false,
-    deleteable:true,
+    selected: false,
+    deleteable: true,
   },
   {
     id: 2,
@@ -231,8 +236,8 @@ export const CONNECTIONS = [
     tooltip: "Connections who are professors",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.PROFESSOR,
-    selected:false,
-    deleteable:true,
+    selected: false,
+    deleteable: true,
   },
   {
     id: 3,
@@ -241,8 +246,8 @@ export const CONNECTIONS = [
     tooltip: "Connections who are alumni",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.ALUMNI,
-    selected:false,
-    deleteable:true,
+    selected: false,
+    deleteable: true,
   },
 
   {
@@ -252,8 +257,8 @@ export const CONNECTIONS = [
     tooltip: "People who are awaiting a response from you",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.AWAITING,
-    selected:false,
-    deleteable:true,
+    selected: false,
+    deleteable: true,
   },
 
   {
@@ -263,8 +268,8 @@ export const CONNECTIONS = [
     tooltip: "Connections who are in my network",
     icon: "",
     code: WORKFLOW_CODES.USER.CONNECTION_TYPES.IN_MY_NETWORK,
-    selected:false,
-    deleteable:true,
+    selected: false,
+    deleteable: true,
   },
 ];
 export const INTRO_ACTIONS = [
@@ -330,7 +335,7 @@ export const PLACEHOLDERS = {
 
   NO_POPULAR_SESSIONS:
     "There are no popular sessions available right now. How about creating your own session, invite people to join and grow your connectivity.",
-  BE_THE_FIRST:'Be the first to attend',
+  BE_THE_FIRST: 'Be the first to attend',
   PROCESSING: 'Processing...'
 };
 export const TITLES = {
@@ -603,7 +608,7 @@ export const IMAGE_PATHS = {
 
     FEED: "/static/images/nodata-illustrations/all-done-illustration-woman-1-removebg-preview.png",
     EVENT_POSTER: "/static/images/session-poster-broken.jfif",
-    NO_PROFILE:"/static/images/nodata-illustrations/no-results.webp"
+    NO_PROFILE: "/static/images/nodata-illustrations/no-results.webp"
   },
   NO_PROFILE_PICTURE: "profilebig.png",
 };
@@ -637,22 +642,22 @@ export const NETWORK = {
     CONNECTED: "green!important",
     ACCEPT: "",
   },
-  PEOPLE:{
-    SEARCH:{
-      PAYLOAD:{
+  PEOPLE: {
+    SEARCH: {
+      PAYLOAD: {
         student: false,
-        professors:false,
-        alumni:false,
-        inMyNetworkFilterCriteria:false,
-        awaitingResponseFilterCriteria:false,
-        searchUserId:null,
-        isOnlyFriendsRequired:false,
+        professors: false,
+        alumni: false,
+        inMyNetworkFilterCriteria: false,
+        awaitingResponseFilterCriteria: false,
+        searchUserId: null,
+        isOnlyFriendsRequired: false,
         educationalInstitutionFullName: null,
         educationalInstitutionCampus: null,
         countryFullName: null,
         cityFullName: null,
-        specialization:null,
-        baseSearchActionType:null
+        specialization: null,
+        baseSearchActionType: null
       }
     }
   }
@@ -668,13 +673,13 @@ export const SESSION_ACTIONS = [
     size: "small",
     tooltip: TOOLTIPS.REGISTER_SESSION,
     code: WORKFLOW_CODES.USER.SESSION.REGISTER,
-    
+
   },
   {
     id: 2,
     title: PLACEHOLDERS.SPONSOR_SESSION,
     icon: <AutoGraphOutlinedIcon />,
-    hidden: true,
+    hidden: false,
     disabled: false,
     size: "small",
     tooltip: TOOLTIPS.SPONSOR_SESSION,
@@ -718,7 +723,7 @@ export const SESSION_POSTER = {
 
 export const SESSION_DOCUMENT = {
   id: "session-document",
-  name:null,
+  name: null,
   title: "Document",
   description: "Drag and drop a doc or click to select one",
   preview: true,
@@ -798,6 +803,7 @@ export const SPONSORSHIP = {
   ICONS: {
     EDIT: <EditIcon />,
     CUSTOMIZE: <DashboardCustomizeIcon />,
+    CUSTOMIZE_V2: <LightbulbCircleIcon />,
     RESET: <RestoreFromTrashIcon />,
   },
   LEVELS: [
@@ -867,11 +873,11 @@ export const SPONSORSHIP = {
           <ul><li><span>Company logo and link on this session</span></li><li><span>Announcement by session owner during the session</span></li><li><span>2 min time during the session to showcase your company or product</span></li></ul>`,
           html: (
             <>
-              <h3  className="dark:text-gray-400 text-bold font-semibold text-xl mb-1">
+              <h3 className="dark:text-gray-400 text-bold font-semibold text-xl mb-1">
                 <u>F</u>eatures
               </h3>
               <p className="leading-loose text-sm text-gray-600">
-                <CheckCircleOutlineIcon  color="warning"  className=" text-yellow-700" /> Company
+                <CheckCircleOutlineIcon color="warning" className=" text-yellow-700" /> Company
                 logo and link on this session
               </p>
               <p className="leading-loose text-sm text-gray-600">
@@ -1083,22 +1089,22 @@ export const APP = {
       user: null,
       requestPath: null,
     },
-    ACTIONS:{
-      STATUS:{
-        OWNER:'OWNER',
-        ALREADY_REGISTERED:'ALREADY_REGISTERED',
-        REGISTRATION_FULL:'REGISTRATION_FULL',
-        PAID:'PAID',
-        FREE:'FREE',
-        SESSION_EXPIRED:'SESSION_EXPIRED',
-        SESSION_EXPIRED_V2:'Expired',
-        APPROVED:'Approved',
-        ACTIVE:'Active',
-        REGISTERED:'Registered'
+    ACTIONS: {
+      STATUS: {
+        OWNER: 'OWNER',
+        ALREADY_REGISTERED: 'ALREADY_REGISTERED',
+        REGISTRATION_FULL: 'REGISTRATION_FULL',
+        PAID: 'PAID',
+        FREE: 'FREE',
+        SESSION_EXPIRED: 'SESSION_EXPIRED',
+        SESSION_EXPIRED_V2: 'Expired',
+        APPROVED: 'Approved',
+        ACTIVE: 'Active',
+        REGISTERED: 'Registered'
       },
-      ALIAS:{
-        REGISTRATION:'registration',
-        SPONSORSHIP:'sponsorship'
+      ALIAS: {
+        REGISTRATION: 'registration',
+        SPONSORSHIP: 'sponsorship'
       }
     }
   },
@@ -1111,11 +1117,41 @@ export const SESSION = {
   CREATED: "<user>, your session has been created successfully",
   EDITED: "<user>, your session has been modified successfully",
   DELETED: "<user>, your session has been deleted permanently",
-  OWNER:{
-    ICON:TokenIcon,
-    LABEL:'Session owner',
-    TOOLTIP:'You are the session owner'
-  }
+  OWNER: {
+    ICON: TokenIcon,
+    LABEL: 'Session owner',
+    TOOLTIP: 'You are the session owner'
+  },
+  SHARE_OPTIONS: [{
+    id: 1,
+    name: 'Facebook',
+    type:'facebook',
+    title: 'Share to facebook',
+    icon: FacebookIcon,
+    referer:'',
+    hidden: false,
+   
+  },
+  {
+    id: 2,
+    name: 'Twitter',
+    type:'twitter',
+    title: 'Share to twitter',
+    icon: TwitterIcon,
+    referer:'',
+    hidden: false,
+   
+  },
+  {
+    id: 3,
+    name: 'Copy',
+    type:'copy',
+    title: 'Copy link',
+    icon: ContentCopyIcon,
+    referer:null,
+    hidden: false,
+  },
+  ]
 };
 export const VALIDATING_REQUEST =
   "Please wait, we are validating your request...";
@@ -1194,41 +1230,41 @@ export const USER_PROFILE = {
   ADD_PAST_EDUCATION: "Add any past education details to your profile",
   CHANGE_SKILLS: "Update your specialities & skills",
   CHANGE_INTERESTS: "Update your interests",
-  CHANGE_PROFILE_HEADLINE:'Update prime highlights to your profile such as designation, organization, location...',
-  BIO_UPDATED:'🚀Awesome!! Bio updated successfully',
-  BIO_UPDATE_FAILED:'Oops, there encountered an error while updating your bio, please try again.',
-  LINKEDIN_PROFILE_UPDATED:'🚀Awesome!! Your linkedin profile was updated successfully',
-  LINKEDIN_PROFILE_UPDATE_FAILED:'Oops, there encountered an error while updating your linkedin profile, please try again.',
-  LINKEDIN_PROFILE_URL_MISSING:'Enter a linkedin profile url and try again.',
-  HEADLINE_UPDATED:'👍Superb!! Headline updated successfully',
-  SKILLS_UPDATED:'🚀Great!! Specialities & skills updated successfully',
-  SKILLS_UPDATE_FAILED:'Oops, there encountered an error while updating your skills, please try again.',
-  RECOMMENDED_SESSIONS_UPDATED:`👍Superb!! We've updated your recommended sessions`,
-  RECOMMENDED_SESSIONS_UPDATE_FAILED:'Oops, there encountered an error while updating your recommended sessions, please try again.',
-  RECOMMENDED_SESSIONS_DELETED:`😃Yay!! We've deleted <#X#> from your recommended sessions`,
-  RECOMMENDED_SESSIONS_DELETE_FAILED:'Oops, there encountered an error while deleting <#X#> from your recommended sessions, please try again.',
-  HEADLINE_UPDATE_FAILED:'Oops, there encountered an error while updating your headline, please try again.',
-  INTEREST_UPDATED:'👍Superb!! Interests updated successfully',
-  INTEREST_UPDATE_FAILED:'Oops, there encountered an error while updating your interests, please try again.',
-  HIGHEST_DEGREE_UPDATED:`😃Yay!! We've updated your highest education degree info`,
-  HIGHEST_DEGREE_UPDATE_FAILED:'Oops, there encountered an error while updating your education degree, please try again.',
+  CHANGE_PROFILE_HEADLINE: 'Update prime highlights to your profile such as designation, organization, location...',
+  BIO_UPDATED: '🚀Awesome!! Bio updated successfully',
+  BIO_UPDATE_FAILED: 'Oops, there encountered an error while updating your bio, please try again.',
+  LINKEDIN_PROFILE_UPDATED: '🚀Awesome!! Your linkedin profile was updated successfully',
+  LINKEDIN_PROFILE_UPDATE_FAILED: 'Oops, there encountered an error while updating your linkedin profile, please try again.',
+  LINKEDIN_PROFILE_URL_MISSING: 'Enter a linkedin profile url and try again.',
+  HEADLINE_UPDATED: '👍Superb!! Headline updated successfully',
+  SKILLS_UPDATED: '🚀Great!! Specialities & skills updated successfully',
+  SKILLS_UPDATE_FAILED: 'Oops, there encountered an error while updating your skills, please try again.',
+  RECOMMENDED_SESSIONS_UPDATED: `👍Superb!! We've updated your recommended sessions`,
+  RECOMMENDED_SESSIONS_UPDATE_FAILED: 'Oops, there encountered an error while updating your recommended sessions, please try again.',
+  RECOMMENDED_SESSIONS_DELETED: `😃Yay!! We've deleted <#X#> from your recommended sessions`,
+  RECOMMENDED_SESSIONS_DELETE_FAILED: 'Oops, there encountered an error while deleting <#X#> from your recommended sessions, please try again.',
+  HEADLINE_UPDATE_FAILED: 'Oops, there encountered an error while updating your headline, please try again.',
+  INTEREST_UPDATED: '👍Superb!! Interests updated successfully',
+  INTEREST_UPDATE_FAILED: 'Oops, there encountered an error while updating your interests, please try again.',
+  HIGHEST_DEGREE_UPDATED: `😃Yay!! We've updated your highest education degree info`,
+  HIGHEST_DEGREE_UPDATE_FAILED: 'Oops, there encountered an error while updating your education degree, please try again.',
   PAST_EDUCATION_UPDATED: "👍Superb!! We've updated your past education detail successfully",
   PAST_EDUCATION_DELETED: "👍Done!! We've successfully removed past education detail for <#X#> from your profile",
   PAST_EDUCATION_UPDATE_FAILED: "Oops, there encountered an error while updating your past education, check out for any validation errors or please try again.",
   PAST_EDUCATION_DELETE_FAILED: "Oops, there encountered an error while removing your past education, check out for any validation errors or please try again.",
   ADD_WORK_EXPERIENCE: "Add new experience",
-  WORK_EXPERIENCE_UPDATED:"👍Superb!! We've successfully updated your work experience",
-  WORK_EXPERIENCE_DELETED:"👍Superb!! We've successfully removed your work experience as an <#X#>",
+  WORK_EXPERIENCE_UPDATED: "👍Superb!! We've successfully updated your work experience",
+  WORK_EXPERIENCE_DELETED: "👍Superb!! We've successfully removed your work experience as an <#X#>",
   WORK_EXPERIENCE_DELETE_FAILED: "Oops, there encountered an error while removing your work experience, check out for any validation errors or please try again.",
-  WORK_EXPERIENCE_UPDATE_FAILED:'Oops, there encountered an error while updating your work experience, please try again.',
+  WORK_EXPERIENCE_UPDATE_FAILED: 'Oops, there encountered an error while updating your work experience, please try again.',
   REMOVE_WORK_EXPERIENCE: "Remove experience",
   CHANGE_WORK_EXPERIENCE: "Update experience",
   PLACEHOLDERS: {
     WRITE_BIO: "Write something about yourself here...",
     ABOUT_INFO: "About",
-    REMOVE_PAST_EDUCATION:'Remove this qualification from your profile',
-    REMOVE_SESSION_FROM_RECOMMENDATIONS:'Remove this session from your recommended list',
-    ADD_SESSION_TO_RECOMMENDATIONS:'Type a session name to add to your recommended sessions list'
+    REMOVE_PAST_EDUCATION: 'Remove this qualification from your profile',
+    REMOVE_SESSION_FROM_RECOMMENDATIONS: 'Remove this session from your recommended list',
+    ADD_SESSION_TO_RECOMMENDATIONS: 'Type a session name to add to your recommended sessions list'
   },
 };
 
@@ -1290,5 +1326,5 @@ export const SESSION_REQUEST = {
   MESSAGE_SENT_FAILED:
     "Uh, oh! there was an error sending this session request to ",
 };
- 
- 
+
+

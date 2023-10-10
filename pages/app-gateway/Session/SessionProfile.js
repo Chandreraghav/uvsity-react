@@ -10,7 +10,7 @@ import ScheduleDetail from '../../../components/Authorized/Sessions/Details/Sche
 import SponsorshipDetail from '../../../components/Authorized/Sessions/Details/SponsorshipDetail';
 import SummaryDetail from '../../../components/Authorized/Sessions/Details/SummaryDetail';
 import TimezoneBrowseDialog from '../../../components/shared/modals/TimezoneBrowseDialog';
-import { SPONSORSHIP } from '../../../constants/userdata';
+import { APP, SPONSORSHIP } from '../../../constants/userdata';
 import { useDataLayerContextValue } from '../../../context/DataLayer';
 import { actionTypes } from '../../../context/reducer';
 import { THEME_MODES, useTheme } from '../../../theme/ThemeProvider';
@@ -134,6 +134,13 @@ function SessionProfileDetail(props) {
       });
     }
   };
+
+  const canShowSponsorshipAction=()=>{
+    return (props.session_data.courseStatus == APP.SESSION.ACTIONS.STATUS.APPROVED ||
+        props.session_data.courseStatus == APP.SESSION.ACTIONS.STATUS.ACTIVE)
+  }
+
+ 
   return (
     <React.Fragment>
       <Slide direction="left" in={true}>
@@ -151,7 +158,7 @@ function SessionProfileDetail(props) {
                 <AuthorDetail owner={isSessionOwner} author={segregatedSessionData.basic?.author} />
                 <SummaryDetail owner={isSessionOwner} summary={segregatedSessionData.basic?.summary} />
                 <CohostDetail owner={isSessionOwner} cohost={segregatedSessionData.cohost} onNavigate={props.onNavigate} />
-                <SponsorshipDetail oid={segregatedSessionData.session_id} owner={isSessionOwner} isDark={isDark} sponsor={segregatedSessionData.sponsor} onNavigate={props.onNavigate} />
+                <SponsorshipDetail showSponsorshipAction={canShowSponsorshipAction()} oid={segregatedSessionData.session_id} owner={isSessionOwner} isDark={isDark} sponsor={segregatedSessionData.sponsor} userRegistered={props.userRegistered} onNavigate={props.onNavigate} />
               </Grid>
 
               <Grid item lg={6} sm={12} md={6} xs={12}>

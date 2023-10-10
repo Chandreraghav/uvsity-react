@@ -8,7 +8,12 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { useMemo } from 'react';
 import SessionOwner from '../../../SessionCards/SessionOwner';
 import Actions from '../ActionableItems/Actions';
+import { useClientDevice } from '../../../Device/HOC/ClientDeviceProvider';
+import ShareSession from '../ActionableItems/ShareSession';
 function BannerDetail(props) {
+    const {
+        isSmallScreen,
+    } = useClientDevice();
     const generateMonetizationAmountOnCard = useMemo(() => {
 
         const amount = Number(props.secondary?.fees?.amount);
@@ -91,12 +96,18 @@ function BannerDetail(props) {
         return month;
     };
 
+    const getStartYear = () => {
+        const dateString = props.secondary?.schedule?.startDate;
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        return year
+    };
+
     const isFreeSession = (data) => {
         const amount = Number(data?.amount);
         const isPaid = data?.paidInd;
         return (!isPaid || !amount || amount == 0 || isNaN(amount))
     }
-
 
     return (
         <>
@@ -107,6 +118,9 @@ function BannerDetail(props) {
                         <Typography variant="h6">
                             {getStartMonth()}
                         </Typography>
+                        <Typography variant="caption">
+                            {getStartYear()}
+                        </Typography>
 
                     </div>)}
 
@@ -114,8 +128,9 @@ function BannerDetail(props) {
                     <Spacer count={2} />
                     <div className=" flex ">
                         <Typography
-                            variant="body"
-                            className="lg:text-3xl sm:text-xl md:text-2xl   leading-tight line-clamp-2 align-middle  "
+                            variant={isSmallScreen ? 'body1' : 'h4'}
+
+                            className=" leading-tight line-clamp-2 align-middle  "
                         >
                             {props.banner?.name}
 
@@ -142,7 +157,12 @@ function BannerDetail(props) {
                         </div>)}
 
                     </div>
-                    {props.oid !== undefined && (<Actions variant='banner' data={props.sessionData} />)}
+
+                    {props.oid !== undefined && (<Actions context='view-session-detail' data={props.sessionData} />)}
+                    {props.owner == true && props.oid !== undefined && (<div className="float-right"><SessionOwner /></div>)}
+                    <div className="ml-auto float-right flex gap-2">
+                        <ShareSession />
+                    </div>
                 </div>
 
             </div>
