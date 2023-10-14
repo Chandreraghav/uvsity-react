@@ -61,12 +61,8 @@ import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import TokenIcon from '@mui/icons-material/Token';
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle';
-//import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import {
-  FacebookShareButton,FacebookIcon,
-} from 'next-share'
+
 import {
   blue,
   green,
@@ -1128,45 +1124,24 @@ export const SESSION = {
     id: 1,
     name: 'Facebook',
     type:'facebook',
-    title: 'Share to facebook',
-    icon: FacebookIcon,
-    jsx:<FacebookShareButton
-    url={""}
-    quote={'next-share is a social share buttons for your next React apps.'}
-    hashtag={'#uvsity'}
-  >
-    <FacebookIcon size={32} round />
-  </FacebookShareButton>,
+    title:'Share on facebook',
+    jsx:<></>,
     referer:'',
     hidden: false,
-   
+    hashtag:'#uvsitysession'
   },
   {
     id: 2,
     name: 'Twitter',
     type:'twitter',
-    title: 'Share to twitter',
-    icon: TwitterIcon,
-    jsx:<FacebookShareButton
-    url={""}
-    quote={'next-share is a social share buttons for your next React apps.'}
-    hashtag={'#uvsity'}
-  >
-    <FacebookIcon size={32} round />
-  </FacebookShareButton>,
+    title:'Share on twitter',
+    jsx:<></>,
     referer:'',
     hidden: false,
+    hashtag:'#uvsitysession'
    
   },
-  {
-    id: 3,
-    name: 'Copy',
-    type:'copy',
-    title: 'Copy link',
-    icon: ContentCopyIcon,
-    referer:null,
-    hidden: false,
-  },
+   
   ]
 };
 export const VALIDATING_REQUEST =
