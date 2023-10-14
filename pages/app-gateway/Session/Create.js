@@ -4,7 +4,7 @@ import Layout from "../../../components/Main/Layout";
 import MetaDataService from "../../api/users/data/MetaDataService";
 import CreateSession from "../../../components/Authorized/Sessions/Forms/CreateSession";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import PrivateRoute from "../../../components/Auth/HOC/Routes/PrivateRoute";
 import { eraseFormContext } from "../../../components/Authorized/Sessions/Clean/cleanup";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import { standardStaleTime } from "../../../async/subscriptions";
 import { AUTH_TOKENS } from "../../../constants/userdata";

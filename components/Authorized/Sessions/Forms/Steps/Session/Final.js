@@ -126,16 +126,16 @@ function Final(props) {
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
                 <Grid item lg={6} sm={12} md={6} xs={12}>
-                  <PreviewCoverDetail bgBlur cover={data?.basic?.binary} />
-                  <AuthorDetail author={props?.data?.user} />
-                  <SummaryDetail summary={data?.basic?.summary} />
-                  <CohostDetail cohost={data?.participant?.cohost} onNavigate={props.onNavigate} />
-                  <SponsorshipDetail isDark={isDark} sponsor={data?.sponsor} onNavigate={props.onNavigate} />
+                  <PreviewCoverDetail owner={true} bgBlur cover={data?.basic?.binary} />
+                  <AuthorDetail owner={true} author={props?.data?.user} />
+                  <SummaryDetail owner={true} summary={data?.basic?.summary} />
+                  <CohostDetail owner={true} cohost={data?.participant?.cohost} onNavigate={props.onNavigate} />
+                  <SponsorshipDetail owner={true} isDark={isDark} sponsor={data?.sponsor} onNavigate={props.onNavigate} />
                 </Grid>
                 <Grid item lg={6} sm={12} md={6} xs={12}>
-                  <ScheduleDetail viewScheduleFromFinalPreview schedule={data?.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone onNavigate={props.onNavigate} />
-                  <AttachmentDetail isDark={isDark} attachment={data?.basic} onNavigate={props.onNavigate} />
-                  <QuestionairreDetail participant={data?.participant} onNavigate={props.onNavigate} />
+                  <ScheduleDetail owner={true} viewScheduleFromFinalPreview schedule={data?.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone onNavigate={props.onNavigate} />
+                  <AttachmentDetail owner={true} isDark={isDark} attachment={data?.basic} onNavigate={props.onNavigate} />
+                  <QuestionairreDetail owner={true} participant={data?.participant} onNavigate={props.onNavigate} />
                 </Grid>
               </Grid>
             </Box>

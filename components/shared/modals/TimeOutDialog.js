@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import DoNotDisturbOffIcon from "@mui/icons-material/DoNotDisturbOff";
 import RemoveDoneIcon from "@mui/icons-material/RemoveDone";
 import { useRouter } from "next/router";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { AuthService } from "../../../pages/api/users/auth/AuthService";
 import { toast } from "react-toastify";

@@ -19,7 +19,7 @@ function CohostDetail(props) {
                     <span className="text-md leading-tight font-semibold text-gray-600">
                         Co-host
                     </span>
-                    <div
+                    {props.owner === true && (<div
                         className="flex text-blue-600
 ml-auto app-anchor-block cursor-pointer"
                     >
@@ -32,13 +32,14 @@ ml-auto app-anchor-block cursor-pointer"
                                 className=" leading-3 font-semibold  text-sm"
                             />
                         </Tooltip>
-                    </div>
+                    </div>)}
+
                 </div>
                 <div className="flex">
                     <SnapProfile
                         firstName={props.cohost?.firstName}
                         lastName={props.cohost?.lastName}
-                        avatar={props.cohost?.profilepicName || props.cohost?.profilePicName }
+                        avatar={props.cohost?.profilepicName || props.cohost?.profilePicName}
                         oid={props.cohost?.userDetailsId}
                         userType={props.cohost?.userType || props.cohost?.userBaseType}
                         instituition={props.cohost?.eduIns || props.cohost?.educationalInstitution}

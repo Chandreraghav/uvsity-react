@@ -7,7 +7,7 @@ import { WORKFLOW_CODES } from "../../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import ConfirmDialog from "../../../shared/modals/ConfirmDialog";
 import { SignOffUser } from "../../../Auth/SignOut";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";

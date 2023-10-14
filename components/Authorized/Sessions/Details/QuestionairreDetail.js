@@ -68,12 +68,12 @@ function QuestionairreDetail(props) {
     const classes = useStyles();
     useEffect(() => {
         setDark(theme.mode === THEME_MODES.DARK);
-      }, [theme])
+    }, [theme])
     return (
         <>
             {props?.participant?.questions &&
                 props?.participant?.questionairre && (
-                    <div className=" mt-2 mb-2 flex flex-col gap-2 bg-gray-100 dark:bg-gray-950 px-4 p-4 rounded-lg border-1 border-spacing-2 shadow-md bg-repeat-round">
+                    <div className=" mt-2 mb-2 flex flex-col gap-2 bg-gray-100 dark:bg-gray-950 px-4 p-4 rounded-lg border-1 dark:border-gray-800 dark:shadow-gray-700 border-spacing-2 shadow-md bg-repeat-round">
                         <div className="flex gap-1">
                             <QuizIcon className=" leading-3 font-semibold  text-xl text-gray-600" />
                             <Typography
@@ -87,7 +87,7 @@ function QuestionairreDetail(props) {
                                     <HelpOutlineIcon fontSize="small" />
                                 </div>
                             </Tooltip>
-                            <div
+                            {props.owner === true && (<div
                                 className="flex mr-2 text-blue-600
            ml-auto app-anchor-block cursor-pointer"
                             >
@@ -100,7 +100,8 @@ function QuestionairreDetail(props) {
                                         className=" leading-3 font-semibold  text-sm"
                                     />
                                 </Tooltip>
-                            </div>
+                            </div>)}
+
                         </div>
 
                         <div className="flex gap-1 font-normal  text-sm leading-snug">

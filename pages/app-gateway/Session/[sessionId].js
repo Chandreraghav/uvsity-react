@@ -2,7 +2,7 @@
 import { Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import { asyncSubscriptions } from "../../../async/subscriptions";
 import PrivateRoute from "../../../components/Auth/HOC/Routes/PrivateRoute";

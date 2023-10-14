@@ -20,8 +20,8 @@ import {
 } from "../localStorage/local-storage";
 import React, { useEffect, useState } from "react";
 import { AuthGuardService } from "../auth-guard/service/AuthGuardService";
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import { Hydrate, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Layout from "../components/Main/Layout";
 import Splash from "../components/shared/Splash";
 import { BrowserRouter } from "react-router-dom";

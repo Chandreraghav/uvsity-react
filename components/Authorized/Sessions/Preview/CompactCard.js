@@ -11,7 +11,7 @@ import { IMAGE_PATHS, TOOLTIPS } from "../../../../constants/userdata";
 import EndOfFeed from "./EndOfFeed";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
 import { standardStaleTime } from "../../../../async/subscriptions";
 import UserDataService from "../../../../pages/api/users/data/UserDataService";

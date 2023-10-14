@@ -10,7 +10,7 @@ import ScheduleDetail from '../../../components/Authorized/Sessions/Details/Sche
 import SponsorshipDetail from '../../../components/Authorized/Sessions/Details/SponsorshipDetail';
 import SummaryDetail from '../../../components/Authorized/Sessions/Details/SummaryDetail';
 import TimezoneBrowseDialog from '../../../components/shared/modals/TimezoneBrowseDialog';
-import { SPONSORSHIP } from '../../../constants/userdata';
+import { APP, SPONSORSHIP } from '../../../constants/userdata';
 import { useDataLayerContextValue } from '../../../context/DataLayer';
 import { actionTypes } from '../../../context/reducer';
 import { THEME_MODES, useTheme } from '../../../theme/ThemeProvider';
@@ -20,15 +20,17 @@ function SessionProfileDetail(props) {
   const [ctxData, _dispatch] = useDataLayerContextValue();
   const [ctxTheme, dispatch] = useTheme();
   const [timezoneBrowserOpened, setTimezoneBrowser] = useState(false);
-  const [segregatedSessionData, setSegregatedSessionData] = useState({ basic: null, schedule: null, fees: null, cohost: null, sponsor: null, participant: null, })
+  const [segregatedSessionData, setSegregatedSessionData] = useState({ session_id: null, basic: null, schedule: null, fees: null, cohost: null, sponsor: null, participant: null, })
+  const [isSessionOwner, setSessionOwner] = useState(false)
   const [isDark, setDark] = useState(ctxTheme.mode === THEME_MODES.DARK);
-  const [tz, setTz] = useState(null);
   const handleNavigate = (navigationObject) => {
   }
   useEffect(() => {
     setDark(ctxTheme.mode === THEME_MODES.DARK);
   }, [ctxTheme]);
   useEffect(() => {
+    setSessionOwner(props.session_data?.owner)
+    const session_id = props.session_data?.courseId;
     const basic = {
       name: props.session_data?.courseFullName,
       coverImage: {
@@ -87,7 +89,7 @@ function SessionProfileDetail(props) {
       sponsor.sponsorshipLevels = SPONSORSHIP.LEVELS
     }
 
-    let participant = null;
+    let participant = null; //participant questionairre.
 
     async function getQuestionairre() {
       const response = await QuestionairreService.getQuestionairre(props.session_data?.registrationQuestionnaireId);
@@ -96,14 +98,14 @@ function SessionProfileDetail(props) {
           questionairre: response.data,
           questions: true
         }
-        setSegregatedSessionData({ basic, schedule, fees, cohost, sponsor, participant })
+        setSegregatedSessionData({ session_id, basic, schedule, fees, cohost, sponsor, participant })
       }
     }
     if (props.session_data?.registrationQuestionnaireId) {
       getQuestionairre();
       return
     }
-    setSegregatedSessionData({ basic, schedule, fees, cohost, sponsor, participant })
+    setSegregatedSessionData({ session_id, basic, schedule, fees, cohost, sponsor, participant })
     return (() => { setSegregatedSessionData(null); })
   }, [props.session_data])
 
@@ -112,7 +114,7 @@ function SessionProfileDetail(props) {
     setLocalTimezone()
     _dispatch({
       type: actionTypes.TIMEZONE,
-      timezone:getTimezone() ,
+      timezone: getTimezone(),
     });
   };
   const handleTimezoneBrowserChange = () => {
@@ -128,16 +130,23 @@ function SessionProfileDetail(props) {
       setGlobalTimezone(obj?.timezone, true)
       _dispatch({
         type: actionTypes.TIMEZONE,
-        timezone:obj?.timezone ,
+        timezone: obj?.timezone,
       });
     }
   };
+
+  const canShowSponsorshipAction=()=>{
+    return (props.session_data.courseStatus == APP.SESSION.ACTIONS.STATUS.APPROVED ||
+        props.session_data.courseStatus == APP.SESSION.ACTIONS.STATUS.ACTIVE)
+  }
+
+ 
   return (
     <React.Fragment>
       <Slide direction="left" in={true}>
         <Box className={`p-4 min-h-screen`}>
           <Box sx={{ width: "100%", mt: 1 }}>
-            <BannerDetail banner={segregatedSessionData.basic} secondary={{ schedule: segregatedSessionData.schedule, fees: segregatedSessionData.fees }} onNavigate={props.onNavigate} />
+            <BannerDetail oid={segregatedSessionData.session_id} sessionData={props.session_data} showOwnerLabel={true} owner={isSessionOwner} banner={segregatedSessionData.basic} secondary={{ schedule: segregatedSessionData.schedule, fees: segregatedSessionData.fees }} onNavigate={props.onNavigate} />
             <Grid
               className="py-2"
               container
@@ -145,17 +154,18 @@ function SessionProfileDetail(props) {
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
               <Grid item lg={6} sm={12} md={6} xs={12}>
-                <PreviewCoverDetail bgBlur cover={segregatedSessionData.basic?.coverImage} />
-                <AuthorDetail author={segregatedSessionData.basic?.author} />
-                <SummaryDetail summary={segregatedSessionData.basic?.summary} />
-                <CohostDetail cohost={segregatedSessionData.cohost} onNavigate={props.onNavigate} />
-                <SponsorshipDetail isDark={isDark} sponsor={segregatedSessionData.sponsor} onNavigate={props.onNavigate} />
+                <PreviewCoverDetail owner={isSessionOwner} bgBlur cover={segregatedSessionData.basic?.coverImage} />
+                <AuthorDetail owner={isSessionOwner} author={segregatedSessionData.basic?.author} />
+                <SummaryDetail owner={isSessionOwner} summary={segregatedSessionData.basic?.summary} />
+                <CohostDetail owner={isSessionOwner} cohost={segregatedSessionData.cohost} onNavigate={props.onNavigate} />
+                <SponsorshipDetail showSponsorshipAction={canShowSponsorshipAction()} oid={segregatedSessionData.session_id} owner={isSessionOwner} isDark={isDark} sponsor={segregatedSessionData.sponsor} userRegistered={props.userRegistered} onNavigate={props.onNavigate} />
               </Grid>
 
               <Grid item lg={6} sm={12} md={6} xs={12}>
-                <ScheduleDetail schedule={segregatedSessionData.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone onNavigate={props.onNavigate} />
-                <AttachmentDetail isDark={isDark} attachment={segregatedSessionData?.basic?.attachment} onNavigate={props.onNavigate} />
-                <QuestionairreDetail participant={segregatedSessionData?.participant} onNavigate={props.onNavigate} />
+                <ScheduleDetail owner={isSessionOwner} schedule={segregatedSessionData.schedule} handleTimezoneBrowserChange={handleTimezoneBrowserChange} resetTimezoneToDefault={resetTimezoneToDefault} showTimeZone onNavigate={props.onNavigate} />
+                <AttachmentDetail owner={isSessionOwner} isDark={isDark} attachment={segregatedSessionData?.basic?.attachment} onNavigate={props.onNavigate} />
+                <QuestionairreDetail owner={isSessionOwner} participant={segregatedSessionData?.participant} onNavigate={props.onNavigate} />
+
               </Grid>
             </Grid>
 

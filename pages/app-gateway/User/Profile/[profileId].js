@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { KEYS } from "../../../../async/queries/keys/unique-keys";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import {

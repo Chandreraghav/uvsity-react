@@ -25,7 +25,7 @@ import { navigateToProfile } from "../Shared/Navigator";
 import { useRouter } from "next/router";
 import { KEYS } from "../../../async/queries/keys/unique-keys";
 import { standardStaleTime } from "../../../async/subscriptions";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { isEmptyObject } from "../../../utils/utility";
 import UserDataService from "../../../pages/api/users/data/UserDataService";
 import { useDataLayerContextValue } from "../../../context/DataLayer";

@@ -30,6 +30,8 @@ import { useDataLayerContextValue } from "../../../../context/DataLayer";
 import { navigateToPath } from "../../Shared/Navigator";
 import Session_Attendees_ListDialog from "../../../shared/modals/Session_AttendeesListDialog";
 import CommentSection from './CommentSection';
+import SessionOwner from "../../../SessionCards/SessionOwner";
+import CommentIcon from '@mui/icons-material/Comment';
 
 function Preview({ data, mappedTopic }) {
   const router = useRouter();
@@ -112,6 +114,7 @@ function Preview({ data, mappedTopic }) {
         </Tooltip>
       );
     }
+   
     return (
       <Tooltip title={TOOLTIPS.PAID_SESSION}>
         <div
@@ -125,6 +128,9 @@ function Preview({ data, mappedTopic }) {
       </Tooltip>
     );
   };
+  const isSessionOwner = (loggedInUser) => {
+    return loggedInUser?.userDetailsId === data?.creator?.userDetailsId
+  }
   return (
     <div className=" shadow-lg py-2 uvsity__card__border__theme bg-gray-100 dark:bg-gray-900 w-full px-2 rounded-lg">
       {/* EVENT/SESSION/AUTHOR NAME */}
@@ -227,8 +233,21 @@ function Preview({ data, mappedTopic }) {
       {/* Session Actions */}
       <div className="flex items-center justify-between">
         <Actions data={data} />
+        {(isSessionOwner(userdata)) && (<SessionOwner className="ml-auto" />)}
+    
         { mappedTopic && (
           <TopicActions mappedTopic={mappedTopic} onTopicAction={onTopicAction} />
+      )}
+        
+        { topicDetailId && (
+          <Tooltip title="Comments" className="cursor-pointer" onClick={() => onCommentClick()}>
+            <Typography 
+              className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2" 
+              variant="caption"
+            >
+              <CommentIcon /> {topicCommentsCount} Comment(s)
+            </Typography>
+          </Tooltip>
         )}
       </div>
       {showTopicComments && <CommentSection topicId={mappedTopic?.topicDetailId || ''} />}

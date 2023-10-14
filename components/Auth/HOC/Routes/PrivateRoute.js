@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AuthGuardService } from "../../../../auth-guard/service/AuthGuardService";
 import { AuthService } from "../../../../pages/api/users/auth/AuthService";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import Layout from "../../../Main/Layout";
 import Splash from "../../../shared/Splash";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
