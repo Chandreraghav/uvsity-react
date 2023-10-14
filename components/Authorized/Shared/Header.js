@@ -31,6 +31,7 @@ function Header(props) {
             {HEADER_OPTIONS.map((data) => (
               <HeaderOption
                 key={data.id}
+                id={data.id}
                 oid={userdata?.userDetailsId}
                 isAuthorizedProfile={data.hasAvatar}
                 hidden={data.hidden}

@@ -83,6 +83,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD,
+    hasMenu:false,
   },
   {
     id: 2,
@@ -94,6 +95,7 @@ export const HEADER_OPTIONS = [
     hidden: true,
     name: null,
     redirectTo: null,
+    hasMenu:false,
   },
 
   {
@@ -106,6 +108,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
+    hasMenu:true,
   },
 
   {
@@ -118,6 +121,7 @@ export const HEADER_OPTIONS = [
     hidden: true,
     name: null,
     redirectTo: null,
+    hasMenu:false,
   },
   {
     id: 9,
@@ -129,6 +133,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
+    hasMenu:false,
   },
 
   {
@@ -141,6 +146,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
+    hasMenu:false,
   },
 
   {
@@ -153,6 +159,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
+    hasMenu:false,
   },
 
   {
@@ -165,6 +172,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
+    hasMenu:false,
   },
 
   {
@@ -174,10 +182,11 @@ export const HEADER_OPTIONS = [
     icon: null,
     hasAvatar: true,
     avatar:
-      "https://lh3.googleusercontent.com/a-/AOh14Gj4zE9yHsoBriErUebkmDlq2CUfcu30Ql72DiOaAdA=s96-c",
+      null,
     hidden: false,
-    name: "Swaroop Chakraborty",
+    name: null,
     redirectTo: null,
+    hasMenu:false,
   },
 ];
 

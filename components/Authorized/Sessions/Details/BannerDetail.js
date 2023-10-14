@@ -13,7 +13,7 @@ import ShareSession from '../ActionableItems/ShareSession';
 import { useRouter } from 'next/router';
 function BannerDetail(props) {
     const router = useRouter()
-const currentPath = router.asPath
+    const currentPath = router.asPath
     const {
         isSmallScreen,
     } = useClientDevice();
@@ -160,12 +160,15 @@ const currentPath = router.asPath
                         </div>)}
 
                     </div>
+                    {props.oid !== undefined && (
+                        <>
+                            <Actions context='view-session-detail' data={props.sessionData} />
+                            <div className="float-right flex gap-2">
+                            {props.owner == true && (<SessionOwner />)}
+                                <ShareSession quote={props.banner?.name} url={`${process.env.NEXT_PUBLIC_APP_HOME_URL_BETA}${currentPath}`} copyToClipboard={true} />
+                            </div>
+                        </>)}
 
-                    {props.oid !== undefined && (<Actions context='view-session-detail' data={props.sessionData} />)}
-                    {props.owner == true && props.oid !== undefined && (<div className="float-right"><SessionOwner /></div>)}
-                    <div className="ml-auto float-right flex gap-2">
-                        <ShareSession quote={props.banner?.name} url={`${process.env.NEXT_PUBLIC_APP_HOME_URL_BETA}${currentPath}`} copyToClipboard={true} />
-                    </div>
                 </div>
 
             </div>

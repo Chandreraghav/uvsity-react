@@ -6,11 +6,11 @@ import Tooltip from "@mui/material/Tooltip";
 import AccountMenu from "../Profile/Account/AccountMenu";
 import { IMAGE_PATHS } from "../../../constants/userdata";
 import { useRouter } from "next/router";
-import UserDataService from "../../../pages/api/users/data/UserDataService";
 import { openNewTab } from "./Navigator";
-import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
+import SessionMenu from "../Sessions/ActionableItems/SessionMenu";
 function HeaderOption({
+  id,
   avatar,
   Icon,
   title,
@@ -19,13 +19,12 @@ function HeaderOption({
   isAuthorizedProfile,
   hidden,
   redirectTo,
-  phoneMenu}) {
+  phoneMenu }) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
   const [userdata, setUserData] = useState(null);
   const [open, setOpen] = useState(false);
-  const [publicProfileCalendarIdentifier, setPublicProfileCalendarIdentifier] = useState(null)
   const handleClick = (event, remoteRequestReceived) => {
     if (event) setAnchorEl(event.currentTarget);
     else setAnchorEl(null);
@@ -39,17 +38,20 @@ function HeaderOption({
   }, [ctxUserdata?.userdata])
 
   const handleRedirects = () => {
+    if (id == 3) {
+      return
+    }
     if (redirectTo) {
       router.push(redirectTo);
       return;
     }
     if (title === "Calendar") {
-        const url = `${process.env.NEXT_PUBLIC_CALENDAR_APP_URL}calendar-profile/home`
-        openNewTab(
-          url
-        );
-        return
-       
+      const url = `${process.env.NEXT_PUBLIC_CALENDAR_APP_URL}calendar-profile/home`
+      openNewTab(
+        url
+      );
+      return
+
     }
     return;
   };
@@ -57,9 +59,24 @@ function HeaderOption({
   return (
     <div onClick={handleRedirects} className={`${HeaderOptionsStyle.headerOption} dark:hover:text-gray-300 hover:text-gray-950`}>
       {Icon && (
-        <Tooltip title={title}>
-          <Icon className={HeaderOptionsStyle.headerOption__icon} />
-        </Tooltip>
+        <React.Fragment>
+
+          {id == 3 && (
+            <React.Fragment>
+              <Tooltip title={title}>
+                <Icon onClick={(e) => handleClick(e)} className={HeaderOptionsStyle.headerOption__icon} />
+              </Tooltip>
+              <SessionMenu
+                isOpen={id == 3 && open}
+                onClose={handleClick}
+                anchor={anchorEl}
+              />
+            </React.Fragment>)}
+
+          {id !== 3 && (<Tooltip title={title}>
+            <Icon className={HeaderOptionsStyle.headerOption__icon} />
+          </Tooltip>)}
+        </React.Fragment>
       )}
 
       {isAuthorizedProfile ? (
