@@ -1,7 +1,5 @@
 import { Stack, Tooltip } from '@mui/material'
 import React from 'react'
-import { useRouter } from 'next/router'
-
 import { SESSION } from '../../../../constants'
 import {
     FacebookShareButton,

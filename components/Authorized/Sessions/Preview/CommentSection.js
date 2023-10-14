@@ -12,6 +12,8 @@ import SessionStyle from "../../../../styles/Session.module.css";
 import { Comment, navigateToProfile } from '../../Shared';
 import { useDataLayerContextValue } from '../../../../context';
 import Shimmer from './Shimmer/Shimmer';
+import { SESSION_COMMENTS } from '../../../../constants';
+import CommentShimmer from './Shimmer/CommentShimmer';
 
 const CommentSection = ({ topicId }) => {
   const router = useRouter();
@@ -72,10 +74,10 @@ const CommentSection = ({ topicId }) => {
         userPic={profilePicName}
         userName={`${firstName} ${lastName}`}
         disabled={!isTopicCommentsAllowed}
-        helperText={(!isLoading && !isTopicCommentsAllowed) && 'You do not have right access to post comments. Please check with admin for more info.'}
+        helperText={(!isLoading && !isTopicCommentsAllowed) && SESSION_COMMENTS.UNAUTHORIZED}
         commentTrigerred={(comment) => triggerCreateComment(comment)}
       />
-      <Shimmer visible={isLoading} />
+      {[1,2].map((_,id)=><CommentShimmer key={id} visible={isLoading} />)}
       {!isLoading && (
         <section className="p-2">
           {commentUIData.map((eachComment) => {

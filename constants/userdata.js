@@ -1144,6 +1144,13 @@ export const SESSION = {
    
   ]
 };
+
+export const SESSION_COMMENTS={
+  UNAUTHORIZED:'You do not have permission to post comments. Please check with admin for more info.',
+  REPLY_COMMENT:'Reply to the comment',
+  SEND_COMMENT:'Send comment',
+  ADD_COMMENT:'Add comment'
+}
 export const VALIDATING_REQUEST =
   "Please wait, we are validating your request...";
 
