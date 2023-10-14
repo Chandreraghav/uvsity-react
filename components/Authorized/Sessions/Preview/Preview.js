@@ -239,7 +239,7 @@ function Preview({ data, mappedTopic }) {
           <TopicActions mappedTopic={mappedTopic} onTopicAction={onTopicAction} />
       )}
         
-        { topicDetailId && (
+        { mappedTopic?.topicDetailId && (
           <Tooltip title="Comments" className="cursor-pointer" onClick={() => onCommentClick()}>
             <Typography 
               className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2" 
