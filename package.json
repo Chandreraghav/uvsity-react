@@ -52,6 +52,7 @@
     "moment-timezone": "^0.5.38",
     "next": "^12.3.3",
     "next-images": "^1.8.4",
+    "next-share": "^0.27.0",
     "next-transpile-modules": "^9.1.0",
     "react": "17.0.2",
     "react-bootstrap-icons": "^1.9.1",

@@ -61,10 +61,12 @@ import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import TokenIcon from '@mui/icons-material/Token';
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle';
-import FacebookIcon from '@mui/icons-material/Facebook';
+//import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-
+import {
+  FacebookShareButton,FacebookIcon,
+} from 'next-share'
 import {
   blue,
   green,
@@ -1128,6 +1130,13 @@ export const SESSION = {
     type:'facebook',
     title: 'Share to facebook',
     icon: FacebookIcon,
+    jsx:<FacebookShareButton
+    url={window.location.href}
+    quote={'next-share is a social share buttons for your next React apps.'}
+    hashtag={'#uvsity'}
+  >
+    <FacebookIcon size={32} round />
+  </FacebookShareButton>,
     referer:'',
     hidden: false,
    
@@ -1138,6 +1147,13 @@ export const SESSION = {
     type:'twitter',
     title: 'Share to twitter',
     icon: TwitterIcon,
+    jsx:<FacebookShareButton
+    url={window.location.href}
+    quote={'next-share is a social share buttons for your next React apps.'}
+    hashtag={'#uvsity'}
+  >
+    <FacebookIcon size={32} round />
+  </FacebookShareButton>,
     referer:'',
     hidden: false,
    
