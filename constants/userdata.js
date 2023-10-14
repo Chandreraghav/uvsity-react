@@ -1131,7 +1131,7 @@ export const SESSION = {
     title: 'Share to facebook',
     icon: FacebookIcon,
     jsx:<FacebookShareButton
-    url={window.location.href}
+    url={""}
     quote={'next-share is a social share buttons for your next React apps.'}
     hashtag={'#uvsity'}
   >
@@ -1148,7 +1148,7 @@ export const SESSION = {
     title: 'Share to twitter',
     icon: TwitterIcon,
     jsx:<FacebookShareButton
-    url={window.location.href}
+    url={""}
     quote={'next-share is a social share buttons for your next React apps.'}
     hashtag={'#uvsity'}
   >
