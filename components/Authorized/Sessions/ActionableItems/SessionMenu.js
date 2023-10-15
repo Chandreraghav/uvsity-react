@@ -1,6 +1,6 @@
 import { ListItemIcon, Menu, MenuItem } from '@mui/material'
 import React from 'react'
-import { ACCOUNT_SETTINGS } from '../../../../constants'
+import { ACCOUNT_SETTINGS, SESSION } from '../../../../constants'
 import { THEME_MODES, getMode } from '../../../../theme/ThemeProvider';
 
 function SessionMenu({ onClose, isOpen, anchor }) {
@@ -56,7 +56,7 @@ function SessionMenu({ onClose, isOpen, anchor }) {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
-            {ACCOUNT_SETTINGS.map((data) => (
+            {SESSION.MENU.map((data) => (
                 <MenuItem
                     className={' dark:hover:bg-gray-400 dark:hover:text-gray-800'}
                     onClick={(e) => handleMenuAction(data.code)}

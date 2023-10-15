@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import IntroStyles from "../../../styles/authorized.intro.module.css";
 import {
   GREETING,
@@ -8,54 +8,46 @@ import {
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { Tooltip } from "@mui/material";
-import { getRandomArrayElement } from "../../../utils/utility";
+import { getRandomArrayElement, isEmptyObject } from "../../../utils/utility";
 import { TIME_OF_DAY_GREETING } from "../../../constants/constants";
 import Spacer from "../../shared/Spacer";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import { AUTHORIZED_ROUTES } from "../../../constants/routes";
 import { v4 as uuidv4 } from "uuid";
-import Shimmer from "./Shimmer/Shimmer";
 import IntroShimmer from "./Shimmer/IntroShimmer";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 
 function Intro(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
-  const [userdata, setUserData] = useState(null);
   const router = useRouter();
-  const [introMoodColor, setIntroMoodColor] = useState(null);
   const introObject = INTRO_TEXT_KEYWORDS[0];
-  const [introHeader, setIntroHeader] = useState(
-    <>
-      {introObject?.icon} {introObject?.phrase}
-    </>
-  );
-  useEffect(() => {
+  
+ const introMoodColor= useMemo(() => {
     if (GREETING) {
       if (GREETING.includes(TIME_OF_DAY_GREETING.MORNING)) {
-        setIntroMoodColor("morning");
+        return("morning");
       } else if (GREETING.includes(TIME_OF_DAY_GREETING.AFTERNOON)) {
-        setIntroMoodColor("afternoon");
+        return("afternoon");
       } else {
-        setIntroMoodColor("evening");
+        return("evening");
       }
     }
   }, []);
-  useEffect(() => {
-    let controller = new AbortController();
+  const introHeader= useMemo(() => {
     if (INTRO_TEXT_KEYWORDS) {
       window.introTextSwapperInterval = setInterval(() => {
         let object = getRandomArrayElement(INTRO_TEXT_KEYWORDS);
-        setIntroHeader(
+        return(
           <>
             {object?.icon} {object?.phrase}
           </>
         );
       }, 60000);
     }
+    return (<>{INTRO_TEXT_KEYWORDS[0].icon} {INTRO_TEXT_KEYWORDS[0].phrase}</>)
 
     return () => {
-      controller?.abort();
       if (
         window.introTextSwapperInterval != undefined &&
         window.introTextSwapperInterval != "undefined"
@@ -64,9 +56,10 @@ function Intro(props) {
       }
     };
   }, []);
-  useEffect(()=>{
-    setUserData(ctxUserdata?.userdata)
-     },[ctxUserdata?.userdata])
+
+  const userdata = useMemo(() => {
+    return ctxUserdata?.userdata || null
+  }, [ctxUserdata?.userdata])
 
   const invokeIntroAction = (code) => {
     if (code === WORKFLOW_CODES.USER.INTRO_PATHS.SESSION) {
@@ -77,22 +70,25 @@ function Intro(props) {
     }
   };
   return (
+
     <div
       className={` mt-2 px-1 py-1 rounded-2xl border-b-4  border-b-blue-800  `}
     >
-      <div
-        className={`flex flex-row items-center h-10 overflow-auto ${introMoodColor}`}
-      >
-        <p
-          className=" text-lg  place-content-center font-semibold  
-              leading-none xl:block text-gray-700 dark:text-gray-800"
+      {!userdata && (<IntroShimmer visible={true} />)}
+      {userdata && (
+        <div
+          className={`flex flex-row items-center h-10 overflow-auto ${introMoodColor}`}
         >
-          👋 {GREETING.replace("<user>", userdata?.firstName)}
-        </p>
+          <p
+            className=" text-lg  place-content-center font-semibold  
+               leading-none xl:block text-gray-700 dark:text-gray-800"
+          >
+            👋 {GREETING.replace("<user>", userdata?.firstName)}
+          </p>
 
 
-      </div>
-
+        </div>
+      )}
       <Spacer />
 
       <header

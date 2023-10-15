@@ -61,8 +61,8 @@ import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import TokenIcon from '@mui/icons-material/Token';
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import {
   blue,
   green,
@@ -1151,7 +1151,39 @@ export const SESSION = {
    
   },
    
-  ]
+  ],
+  MENU:[{
+    id: 1,
+    title: "Online Sessions",
+    code: WORKFLOW_CODES.USER.SESSION.VIEW_ONLINE,
+    tooltip: "Online sessions",
+    icon: <PreviewIcon />,
+    hidden: false,
+  },
+  {
+    id: 2,
+    title: "My Enrollments",
+    code: WORKFLOW_CODES.USER.SESSION.ENROLLED,
+    tooltip: "Sessions you have enrolled into",
+    icon: <BookmarkAddedIcon />,
+    hidden: false,
+  },
+  {
+    id: 3,
+    title: "My Sessions",
+    code: WORKFLOW_CODES.USER.SESSION.VIEW,
+    tooltip: "See all my sessions",
+    icon: <ViewListIcon />,
+    hidden: false,
+  },
+  {
+    id: 4,
+    title: "Create Session",
+    code: WORKFLOW_CODES.USER.SESSION.CREATE,
+    tooltip: INTRO_ACTIONS[0].tooltip,
+    icon: INTRO_ACTIONS[0].icon,
+    hidden: false,
+  },],
 };
 
 export const SESSION_COMMENTS={
