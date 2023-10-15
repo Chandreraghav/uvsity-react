@@ -1,17 +1,24 @@
 import { ListItemIcon, Menu, MenuItem } from '@mui/material'
 import React from 'react'
-import { ACCOUNT_SETTINGS, SESSION } from '../../../../constants'
+import { SESSION } from '../../../../constants'
 import { THEME_MODES, getMode } from '../../../../theme/ThemeProvider';
+import { navigateToPath } from '../../Shared/Navigator';
+import { useRouter } from 'next/router';
+import { v4 as uuidv4 } from "uuid";
 
 function SessionMenu({ onClose, isOpen, anchor }) {
-    const bg = getMode() === THEME_MODES.DARK?'#111':'#fff'
+    const router = useRouter()
+    const bg = getMode() === THEME_MODES.DARK ? '#111' : '#fff'
     const handleClose = () => {
         onClose(null, true);
-      };
-    const handleMenuAction = (actionCode) => {
-        if (!actionCode) {
+    };
+    const handleMenuAction = (data) => {
+        if (!data.route) {
             return;
         }
+        if (data.id !== 4)
+            navigateToPath(router, data.route, { token: uuidv4(), title: data.title, utrn: data.utrn })
+        else navigateToPath(router, data.route, { token: uuidv4() })
 
     };
     return (
@@ -59,7 +66,7 @@ function SessionMenu({ onClose, isOpen, anchor }) {
             {SESSION.MENU.map((data) => (
                 <MenuItem
                     className={' dark:hover:bg-gray-400 dark:hover:text-gray-800'}
-                    onClick={(e) => handleMenuAction(data.code)}
+                    onClick={(e) => handleMenuAction(data)}
                     sx={{ fontSize: "12px", color: "gray" }}
                     key={data.id}
                 >

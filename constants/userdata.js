@@ -1107,7 +1107,9 @@ export const APP = {
         SESSION_EXPIRED_V2: 'Expired',
         APPROVED: 'Approved',
         ACTIVE: 'Active',
-        REGISTERED: 'Registered'
+        REGISTERED: 'Registered',
+        PAST:'Past sessions',
+        UPCOMING:'Upcoming sessions'
       },
       ALIAS: {
         REGISTRATION: 'registration',
@@ -1159,14 +1161,18 @@ export const SESSION = {
     tooltip: "Online sessions",
     icon: <PreviewIcon />,
     hidden: false,
+    route: `${AUTHORIZED_ROUTES.AUTHORIZED.SESSION.VIEW}`,
+    utrn:`${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS}`
   },
   {
     id: 2,
-    title: "My Enrollments",
+    title: "My Session Enrollments",
     code: WORKFLOW_CODES.USER.SESSION.ENROLLED,
     tooltip: "Sessions you have enrolled into",
     icon: <BookmarkAddedIcon />,
     hidden: false,
+    route: `${AUTHORIZED_ROUTES.AUTHORIZED.SESSION.VIEW}`,
+    utrn:`${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ENROLLED_SESSIONS}`
   },
   {
     id: 3,
@@ -1175,6 +1181,9 @@ export const SESSION = {
     tooltip: "See all my sessions",
     icon: <ViewListIcon />,
     hidden: false,
+    route: `${AUTHORIZED_ROUTES.AUTHORIZED.SESSION.VIEW}`,
+    utrn:`${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.OWN_SESSIONS}`
+
   },
   {
     id: 4,
@@ -1183,6 +1192,8 @@ export const SESSION = {
     tooltip: INTRO_ACTIONS[0].tooltip,
     icon: INTRO_ACTIONS[0].icon,
     hidden: false,
+    route:AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
+    utrn:null
   },],
 };
 

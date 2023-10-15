@@ -60,4 +60,15 @@ asyncInstance.interceptors.response.use(
   }
 );
 
+// Create and return a blank Promise with an empty AxiosResponse
+export const blankPromise = (status) => {
+  return Promise.resolve({
+    data: null, // You can set the data to whatever you want, it's null in this example
+    status: status || 200, // You can set the HTTP status code you prefer
+    statusText: 'OK', // You can set the status text accordingly
+    headers: {}, // You can set the response headers
+    config: {}, // You can set the response configuration
+  });
+};
+
 export default asyncInstance;

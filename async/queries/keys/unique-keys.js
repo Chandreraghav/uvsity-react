@@ -23,6 +23,7 @@ export const KEYS = {
     PUBLIC: {
       TOP: "public-top",
     },
+    VIEW:"sessions-view",
     ATTENDEES: {
       PER_COURSE: "attendees-per-course",
     },

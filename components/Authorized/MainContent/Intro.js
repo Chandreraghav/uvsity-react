@@ -8,7 +8,7 @@ import {
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { Tooltip } from "@mui/material";
-import { getRandomArrayElement, isEmptyObject } from "../../../utils/utility";
+import { getRandomArrayElement } from "../../../utils/utility";
 import { TIME_OF_DAY_GREETING } from "../../../constants/constants";
 import Spacer from "../../shared/Spacer";
 import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
@@ -21,7 +21,7 @@ import { useDataLayerContextValue } from "../../../context/DataLayer";
 function Intro(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
   const router = useRouter();
-  const introObject = INTRO_TEXT_KEYWORDS[0];
+  const [introHeader, setIntroHeader]=useState(null)
   
  const introMoodColor= useMemo(() => {
     if (GREETING) {
@@ -34,28 +34,31 @@ function Intro(props) {
       }
     }
   }, []);
-  const introHeader= useMemo(() => {
-    if (INTRO_TEXT_KEYWORDS) {
-      window.introTextSwapperInterval = setInterval(() => {
-        let object = getRandomArrayElement(INTRO_TEXT_KEYWORDS);
-        return(
-          <>
-            {object?.icon} {object?.phrase}
-          </>
-        );
-      }, 60000);
-    }
-    return (<>{INTRO_TEXT_KEYWORDS[0].icon} {INTRO_TEXT_KEYWORDS[0].phrase}</>)
-
-    return () => {
-      if (
-        window.introTextSwapperInterval != undefined &&
-        window.introTextSwapperInterval != "undefined"
-      ) {
-        window.clearInterval(window.introTextSwapperInterval);
-      }
+  // Define an array of keyword options
+  const keywords = useMemo(() => INTRO_TEXT_KEYWORDS, []);
+  
+  useEffect(() => {
+    // Function to update random text
+    const updateRandomText = () => {
+      let object = getRandomArrayElement(INTRO_TEXT_KEYWORDS);
+      setIntroHeader(<>
+      {object.icon} {object.phrase}
+      </>)
+       
     };
-  }, []);
+
+    // Initial call to set the random text
+    updateRandomText();
+
+    // Set up an interval to change the text every 1 minutes (60000 milliseconds)
+    const intervalId = setInterval(updateRandomText, 60000);
+
+    // Clean up the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [keywords]);
+  
 
   const userdata = useMemo(() => {
     return ctxUserdata?.userdata || null
@@ -75,7 +78,7 @@ function Intro(props) {
       className={` mt-2 px-1 py-1 rounded-2xl border-b-4  border-b-blue-800  `}
     >
       {!userdata && (<IntroShimmer visible={true} />)}
-      {userdata && (
+      {userdata && userdata.firstName && (
         <div
           className={`flex flex-row items-center h-10 overflow-auto ${introMoodColor}`}
         >

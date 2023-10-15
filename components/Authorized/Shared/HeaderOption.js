@@ -37,8 +37,9 @@ function HeaderOption({
 
   }, [ctxUserdata?.userdata])
 
-  const handleRedirects = () => {
+  const handleRedirects = (e) => {
     if (id == 3) {
+      handleClick(e)
       return
     }
     if (redirectTo) {
@@ -57,11 +58,11 @@ function HeaderOption({
   };
   if (hidden) return null;
   return (
-    <div onClick={handleRedirects} className={`${HeaderOptionsStyle.headerOption} dark:hover:text-gray-300 hover:text-gray-950`}>
+    <div onClick={(e)=>handleRedirects(e)} className={`${HeaderOptionsStyle.headerOption} dark:hover:text-gray-300 hover:text-gray-950`}>
       {Icon && (
         <React.Fragment>
 
-          {id == 3 && (
+          {id == 3 && ( // 3 is the ID for Session Item.
             <React.Fragment>
               <Tooltip title={title}>
                 <Icon onClick={(e) => handleClick(e)} className={HeaderOptionsStyle.headerOption__icon} />

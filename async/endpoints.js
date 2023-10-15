@@ -25,7 +25,10 @@ export const ENDPOINTS = {
       UPDATE:'questionnaire/update',
       GET:'questionnaire/',
       DELETE:'questionnaire/delete/'
-    }
+    },
+    ONLINE:'opencourses',
+    FILTERS:'courses/filters'
+    
   },
   SEARCH:{
     GENERIC:'universalsearch/',
@@ -74,6 +77,8 @@ export const ENDPOINTS = {
     SESSION_BY_USER:'/view/profile/getData/coursesByUser/#X#/',
     SESSION_IS_ALLOWED:'/courses/allowed/',
     CREATE_SESSION:'/courses/',
+    OWN_SESSIONS:'courses',
+    ENROLLED_SESSION:'courses/enrolled',
     UPLOADS:{
       SESSION:{
         CREATE:{

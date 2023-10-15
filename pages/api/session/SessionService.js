@@ -1,5 +1,6 @@
-import asyncInstance from "../../../async/axios";
+import asyncInstance, { blankPromise } from "../../../async/axios";
 import { ENDPOINTS } from "../../../async/endpoints";
+import { AUTHORIZED_ROUTES } from "../../../constants";
 export default class SessionService {
   constructor() {}
   static async getPopularSessions() {
@@ -40,5 +41,41 @@ export default class SessionService {
     let endpoint = ENDPOINTS.USER.SESSION_BY_USER;
     endpoint = endpoint.replace("#X#", id);
     return await asyncInstance.get(endpoint);
+  }
+
+  static async getSessionsByType(session_type,filters=false){
+    if(filters===true){
+     if(session_type===AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS)
+      return await this.getFilteredDataSetForOnlineSession();
+
+      return await blankPromise();
+    }
+     if(session_type===AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS){
+      return await this.getOnlineSessions();
+     }
+     if(session_type===AUTHORIZED_ROUTES.AUTHORIZED.UTRN.OWN_SESSIONS){
+        return this.getLoggedInUserOwnSessions()
+     }
+     else {
+      return await this.getLoggedInUserEnrolledSessions()
+     }
+    
+  }
+
+  static async getOnlineSessions(){
+    return await asyncInstance.get(ENDPOINTS.SESSION.ONLINE);
+  }
+
+  static async getLoggedInUserEnrolledSessions(){
+    return await asyncInstance.post(ENDPOINTS.USER.ENROLLED_SESSION, {});
+  
+  }
+
+  static async getLoggedInUserOwnSessions(){
+    return await asyncInstance.get(ENDPOINTS.USER.OWN_SESSIONS);
+  }
+
+  static async getFilteredDataSetForOnlineSession(){
+    return await asyncInstance.get(ENDPOINTS.SESSION.FILTERS);
   }
 }
