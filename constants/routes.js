@@ -18,8 +18,8 @@ export const AUTHORIZED_ROUTES={
       OWN_SESSIONS:'mysessions',
       ONLINE_SESSIONS:'onlinesessions',
       ENROLLED_SESSIONS:'enrolledsessions'
-    }
-    
+    },
+    MESSAGES: '/app-gateway/Messages'
    }
     
 }

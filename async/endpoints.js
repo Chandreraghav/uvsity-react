@@ -128,8 +128,18 @@ export const ENDPOINTS = {
   },
   METADATA:{
     GET_COUNTRIES:'/data/countries'
+  },
+  MESSAGE: {
+    ALL_INBOX_CONVERSATION: "inbox/allConversationsInInbox",
+    ALL_INBOX_REQUEST: "inbox/allRequestsReceived",
+    ALL_INBOX_RECOMMENDATION: "inbox/allRecommendationResponsesReceived",
+    ALL_SENT_CONVERSATION: "inbox/allConversationsInSentItems",
+    ALL_SENT_REQUEST: "inbox/allRequestsSent",
+    ALL_SENT_RECOMMENDATION: "inbox/allRecommendationResponsesSent",
+    TRASH: "inbox/retrieve/trashedEntries",
+    CONVERSATION_DETAIL: "inbox/allMessagesInConversationForUserMessageContainerEntry",
+    REPLY_MESSAGE: "inbox/send/replyToMessage"
   }
-
 };
 export const EXTERNAL_FULLY_QUALIFIED_ENDPOINTS = {
   IP_DATA: process.env.NEXT_PUBLIC_IP_INFO_ENDPOINT,

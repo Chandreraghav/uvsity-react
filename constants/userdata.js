@@ -158,8 +158,8 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
-    redirectTo: null,
-    hasMenu:false,
+    redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.MESSAGES,
+    hasMenu:false
   },
 
   {
@@ -704,6 +704,12 @@ export const SESSION_ACTIONS = [
     code: WORKFLOW_CODES.USER.SESSION.VIEW,
   },
 ];
+
+export const TOPIC_ACTIONS = {
+  COMMENTS: 'comments',
+  LIKE: 'like'
+}
+
 
 export const ME = "(Me)";
 export const SESSION_POSTER = {

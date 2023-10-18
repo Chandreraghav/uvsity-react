@@ -4,7 +4,7 @@ import { READ_LESS, READ_MORE } from "../../constants/constants";
 import { parseMarkdownToHTML } from "../../utils/utility";
 import { parseHtml as syncFusionParse } from "@syncfusion/ej2-react-richtexteditor";
 
-const ReadMore = ({ children, coded, color, initialReadLimit,parseHtml,parseAdvancedHTML }) => {
+export const ReadMore = ({ children, coded, color, initialReadLimit, parseHtml, className = "" }) => {
   const text =children;
   const [isReadMore, setIsReadMore] = useState(true);
   const limit= initialReadLimit || 50
@@ -14,7 +14,7 @@ const ReadMore = ({ children, coded, color, initialReadLimit,parseHtml,parseAdva
   return (
     <>
       <Typography
-        className={coded ? "code" : "text"}
+        className={`${className} ${coded ? "code" : "text"}`}
         variant={coded ? "caption" : "inherit"}
         color={color ? color : "inherit"}
       >{

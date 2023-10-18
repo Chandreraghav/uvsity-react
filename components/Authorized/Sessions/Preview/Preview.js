@@ -9,7 +9,6 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import CoPresentIcon from "@mui/icons-material/CoPresent";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import CommentIcon from '@mui/icons-material/Comment';
 
 import { 
   SESSION_REVIEW_MAX_STAR_COUNT,
@@ -17,12 +16,14 @@ import {
   PLACEHOLDERS,
   TOOLTIPS,
   WORKFLOW_CODES,
-  AUTHORIZED_ROUTES 
+  AUTHORIZED_ROUTES,
+  TOPIC_ACTIONS
 } from "../../../../constants";
 import SessionStyle from "../../../../styles/Session.module.css";
 import Profile from "../../Network/People/Dashboard/Profile";
 import Spacer from "../../../shared/Spacer";
 import Actions from "../ActionableItems/Actions";
+import TopicActions from "../ActionableItems/TopicActions";
 import { parseMarkdownToHTML } from "../../../../utils/utility";
 import { getMode, THEME_MODES } from "../../../../theme/ThemeProvider";
 import { useDataLayerContextValue } from "../../../../context/DataLayer";
@@ -30,12 +31,13 @@ import { navigateToPath } from "../../Shared/Navigator";
 import Session_Attendees_ListDialog from "../../../shared/modals/Session_AttendeesListDialog";
 import CommentSection from './CommentSection';
 import SessionOwner from "../../../SessionCards/SessionOwner";
+import CommentIcon from '@mui/icons-material/Comment';
 
 function Preview({ data, mappedTopic }) {
   const router = useRouter();
   const [context, dispatch] = useDataLayerContextValue();
   const [userdata, setUserData] = useState(context?.logged_in_info);
-  const [showTopic, setShowTopic] = useState(false);
+  const [showTopicComments, setShowTopicComments] = useState(false);
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
   const [eventPosterSrc, setEventPosterSrc] = useState(data.imageURL ? data.imageURL : IMAGE_PATHS.NO_DATA.EVENT_POSTER);
   if (!data) return <></>;
@@ -44,15 +46,12 @@ function Preview({ data, mappedTopic }) {
     setOpenAttendeesDialog(false);
   };
 
-  const { topicCommentsCount = 0, topicDetailId = '' } = mappedTopic || {};
-
-  const onCommentClick = () => {
-    if (mappedTopic) {
-      setShowTopic(true);
+  const onTopicAction = (actionType) => {
+    if(actionType === TOPIC_ACTIONS.COMMENTS && mappedTopic) {
+      setShowTopicComments(!showTopicComments);
     }
-  };
+  }
 
- 
   const handleAttendeesDialogOpen = () => {
     setOpenAttendeesDialog(true);
   };
@@ -234,21 +233,13 @@ function Preview({ data, mappedTopic }) {
       {/* Session Actions */}
       <div className="flex items-center justify-between">
         <Actions data={data} />
-        {(isSessionOwner(userdata)) && (<SessionOwner className="ml-auto" />)
-      }
-        
-        { topicDetailId && (
-          <Tooltip title="Comments" className="cursor-pointer" onClick={() => onCommentClick()}>
-            <Typography 
-              className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2" 
-              variant="caption"
-            >
-              <CommentIcon /> {topicCommentsCount} Comment(s)
-            </Typography>
-          </Tooltip>
+        {(isSessionOwner(userdata)) && (<SessionOwner className="ml-auto" />)}
+    
+        { mappedTopic && (
+          <TopicActions mappedTopic={mappedTopic} onTopicAction={onTopicAction} />
         )}
       </div>
-      {showTopic && <CommentSection topicId={topicDetailId} />}
+      {showTopicComments && <CommentSection topicId={mappedTopic?.topicDetailId || ''} />}
 
       {data?.numberOfAttendees > 0 && (<Session_Attendees_ListDialog
         dialogCloseRequest={handleAttendeesDialogClose}
