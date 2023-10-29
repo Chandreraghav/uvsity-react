@@ -7,6 +7,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useTheme, THEME_MODES } from '../../theme';
 import { COLOR_CODES } from "../../constants";
 import { UVSityAvatar } from './UVSityAvatar';
+import { Typography } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 
 const { DEEP: DeepGray } = COLOR_CODES.GRAY;
 
@@ -67,7 +69,7 @@ export const CommentInput = ({
         label={<Typography variant="subtitle1" className="dark:text-gray-500 text-gray-600">{label}</Typography>}
         value={comment}
         disabled={disabled}
-        helperText={helperText}
+        helperText={helperText ? <Typography variant="caption" className="dark:text-gray-600 text-gray-700"><InfoIcon />{helperText}</Typography> : <></>}
         onChange={(event) => setComment(event.target.value || '')}
         InputProps={{
           endAdornment: <InputAdornment position="start">
