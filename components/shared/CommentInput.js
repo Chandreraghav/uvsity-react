@@ -17,13 +17,13 @@ export const CommentInput = ({
   commentTrigerred,
   disabled = false,
   className = '',
-  label = 'Add a comment'
+  label = SESSION_COMMENTS.ADD_COMMENT
 }) => {
   const [theme] = useTheme();
 
   const StyledTextField = useMemo(() => {
     const mainColor = theme?.mode === THEME_MODES.DARK ? DeepGray : ''
-    
+
     return withStyles({
       root: {
         "& label": {
@@ -51,7 +51,7 @@ export const CommentInput = ({
 
   const onCommentTrigger = (event) => {
     event.preventDefault();
-    if(validComment) {
+    if (validComment) {
       commentTrigerred(validComment);
       setComment('');
     }
@@ -59,17 +59,16 @@ export const CommentInput = ({
 
   return (
     <form className={`flex items-start ${className}`} onSubmit={(event) => onCommentTrigger(event)}>
-      <UVSityAvatar src={userPic} name={userName} className="mr-2 avatar-xs" />
-      <StyledTextField
+      <UVSityAvatar src={userPic} name={userName} className="mr-2 avatar-xs mt-3" />
+      <TextField
         autoFocus
-        className="w-full"
         size="small"
-        variant="outlined"
-        label={label}
+        variant="standard"
+        label={<Typography variant="subtitle1" className="dark:text-gray-500 text-gray-600">{label}</Typography>}
         value={comment}
-        disabled={disabled} 
-        helperText={helperText} 
-        onChange={(event) =>  setComment(event.target.value || '')}
+        disabled={disabled}
+        helperText={helperText}
+        onChange={(event) => setComment(event.target.value || '')}
         InputProps={{
           endAdornment: <InputAdornment position="start">
             <IconButton
@@ -83,6 +82,6 @@ export const CommentInput = ({
         }}
       />
     </form>
-    
+
   )
 }

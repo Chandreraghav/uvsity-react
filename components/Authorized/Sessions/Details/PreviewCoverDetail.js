@@ -12,7 +12,6 @@ function PreviewCoverDetail(props) {
                             ? props.cover?.images?.poster
                             : IMAGE_PATHS.NO_DATA.EVENT_POSTER
                     } />
-
                     <img alt="courseImg"
                         className=" relative mx-auto w-3/4 block overflow-hidden  xl:h-48 lg:h-48  object-contain xl:object-cover lg:object-cover rounded-lg  "
                         src={
@@ -30,5 +29,4 @@ function PreviewCoverDetail(props) {
         </div>
     )
 }
-
 export default PreviewCoverDetail

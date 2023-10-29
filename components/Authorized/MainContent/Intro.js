@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import IntroStyles from "../../../styles/authorized.intro.module.css";
 import {
   GREETING,
@@ -15,58 +15,54 @@ import { WORKFLOW_CODES } from "../../../constants/workflow-codes";
 import { useRouter } from "next/router";
 import { AUTHORIZED_ROUTES } from "../../../constants/routes";
 import { v4 as uuidv4 } from "uuid";
-import Shimmer from "./Shimmer/Shimmer";
 import IntroShimmer from "./Shimmer/IntroShimmer";
 import { useDataLayerContextValue } from "../../../context/DataLayer";
 
 function Intro(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
-  const [userdata, setUserData] = useState(null);
   const router = useRouter();
-  const [introMoodColor, setIntroMoodColor] = useState(null);
-  const introObject = INTRO_TEXT_KEYWORDS[0];
-  const [introHeader, setIntroHeader] = useState(
-    <>
-      {introObject?.icon} {introObject?.phrase}
-    </>
-  );
-  useEffect(() => {
+  const [introHeader, setIntroHeader]=useState(null)
+  
+ const introMoodColor= useMemo(() => {
     if (GREETING) {
       if (GREETING.includes(TIME_OF_DAY_GREETING.MORNING)) {
-        setIntroMoodColor("morning");
+        return("morning");
       } else if (GREETING.includes(TIME_OF_DAY_GREETING.AFTERNOON)) {
-        setIntroMoodColor("afternoon");
+        return("afternoon");
       } else {
-        setIntroMoodColor("evening");
+        return("evening");
       }
     }
   }, []);
+  // Define an array of keyword options
+  const keywords = useMemo(() => INTRO_TEXT_KEYWORDS, []);
+  
   useEffect(() => {
-    let controller = new AbortController();
-    if (INTRO_TEXT_KEYWORDS) {
-      window.introTextSwapperInterval = setInterval(() => {
-        let object = getRandomArrayElement(INTRO_TEXT_KEYWORDS);
-        setIntroHeader(
-          <>
-            {object?.icon} {object?.phrase}
-          </>
-        );
-      }, 60000);
-    }
-
-    return () => {
-      controller?.abort();
-      if (
-        window.introTextSwapperInterval != undefined &&
-        window.introTextSwapperInterval != "undefined"
-      ) {
-        window.clearInterval(window.introTextSwapperInterval);
-      }
+    // Function to update random text
+    const updateRandomText = () => {
+      let object = getRandomArrayElement(INTRO_TEXT_KEYWORDS);
+      setIntroHeader(<>
+      {object.icon} {object.phrase}
+      </>)
+       
     };
-  }, []);
-  useEffect(()=>{
-    setUserData(ctxUserdata?.userdata)
-     },[ctxUserdata?.userdata])
+
+    // Initial call to set the random text
+    updateRandomText();
+
+    // Set up an interval to change the text every 1 minutes (60000 milliseconds)
+    const intervalId = setInterval(updateRandomText, 60000);
+
+    // Clean up the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [keywords]);
+  
+
+  const userdata = useMemo(() => {
+    return ctxUserdata?.userdata || null
+  }, [ctxUserdata?.userdata])
 
   const invokeIntroAction = (code) => {
     if (code === WORKFLOW_CODES.USER.INTRO_PATHS.SESSION) {
@@ -77,22 +73,25 @@ function Intro(props) {
     }
   };
   return (
+
     <div
       className={` mt-2 px-1 py-1 rounded-2xl border-b-4  border-b-blue-800  `}
     >
-      <div
-        className={`flex flex-row items-center h-10 overflow-auto ${introMoodColor}`}
-      >
-        <p
-          className=" text-lg  place-content-center font-semibold  
-              leading-none xl:block text-gray-700 dark:text-gray-800"
+      {!userdata && (<IntroShimmer visible={true} />)}
+      {userdata && userdata.firstName && (
+        <div
+          className={`flex flex-row items-center h-10 overflow-auto ${introMoodColor}`}
         >
-          👋 {GREETING.replace("<user>", userdata?.firstName)}
-        </p>
+          <p
+            className=" text-lg  place-content-center font-semibold  
+               leading-none xl:block text-gray-700 dark:text-gray-800"
+          >
+            👋 {GREETING.replace("<user>", userdata?.firstName)}
+          </p>
 
 
-      </div>
-
+        </div>
+      )}
       <Spacer />
 
       <header

@@ -20,6 +20,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AddIcon from "@mui/icons-material/Add";
 import CreateIcon from "@mui/icons-material/Create";
 import { WORKFLOW_CODES } from "./workflow-codes";
+import SendIcon from '@mui/icons-material/Send';
 import { HTMLUnderlineByCharacterIndex, timeOfDay } from "../utils/utility";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import InfoIcon from "@mui/icons-material/Info";
@@ -61,12 +62,8 @@ import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import TokenIcon from '@mui/icons-material/Token';
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle';
-//import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import {
-  FacebookShareButton,FacebookIcon,
-} from 'next-share'
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import {
   blue,
   green,
@@ -76,6 +73,7 @@ import {
   pink,
   brown,
 } from "@mui/material/colors";
+import RateReviewIcon from '@mui/icons-material/RateReview';
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -87,6 +85,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD,
+    hasMenu: false,
   },
   {
     id: 2,
@@ -98,6 +97,7 @@ export const HEADER_OPTIONS = [
     hidden: true,
     name: null,
     redirectTo: null,
+    hasMenu: false,
   },
 
   {
@@ -110,6 +110,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
+    hasMenu: true,
   },
 
   {
@@ -122,6 +123,7 @@ export const HEADER_OPTIONS = [
     hidden: true,
     name: null,
     redirectTo: null,
+    hasMenu: false,
   },
   {
     id: 9,
@@ -133,6 +135,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
+    hasMenu: false,
   },
 
   {
@@ -145,6 +148,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
+    hasMenu: false,
   },
 
   {
@@ -156,7 +160,8 @@ export const HEADER_OPTIONS = [
     avatar: null,
     hidden: false,
     name: null,
-    redirectTo: null,
+    redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.MESSAGES,
+    hasMenu: false
   },
 
   {
@@ -169,6 +174,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
+    hasMenu: false,
   },
 
   {
@@ -178,10 +184,11 @@ export const HEADER_OPTIONS = [
     icon: null,
     hasAvatar: true,
     avatar:
-      "https://lh3.googleusercontent.com/a-/AOh14Gj4zE9yHsoBriErUebkmDlq2CUfcu30Ql72DiOaAdA=s96-c",
+      null,
     hidden: false,
-    name: "Swaroop Chakraborty",
+    name: null,
     redirectTo: null,
+    hasMenu: false,
   },
 ];
 
@@ -1108,7 +1115,9 @@ export const APP = {
         SESSION_EXPIRED_V2: 'Expired',
         APPROVED: 'Approved',
         ACTIVE: 'Active',
-        REGISTERED: 'Registered'
+        REGISTERED: 'Registered',
+        PAST: 'Past sessions',
+        UPCOMING: 'Upcoming sessions'
       },
       ALIAS: {
         REGISTRATION: 'registration',
@@ -1125,6 +1134,10 @@ export const SESSION = {
   CREATED: "<user>, your session has been created successfully",
   EDITED: "<user>, your session has been modified successfully",
   DELETED: "<user>, your session has been deleted permanently",
+  ALREADY_REGISTERED: {
+    IN_THE_PAST: "You had registered for this session.",
+    CURRENTLY: "You've already registered for this session."
+  },
   OWNER: {
     ICON: TokenIcon,
     LABEL: 'Session owner',
@@ -1133,48 +1146,87 @@ export const SESSION = {
   SHARE_OPTIONS: [{
     id: 1,
     name: 'Facebook',
-    type:'facebook',
-    title: 'Share to facebook',
-    icon: FacebookIcon,
-    jsx:<FacebookShareButton
-    url={''}
-    quote={'next-share is a social share buttons for your next React apps.'}
-    hashtag={'#uvsity'}
-  >
-    <FacebookIcon size={32} round />
-  </FacebookShareButton>,
-    referer:'',
+    type: 'facebook',
+    title: 'Share on facebook',
+    jsx: <></>,
+    referer: '',
     hidden: false,
-   
+    hashtag: '#uvsitysession'
   },
   {
     id: 2,
     name: 'Twitter',
-    type:'twitter',
-    title: 'Share to twitter',
-    icon: TwitterIcon,
-    jsx:<FacebookShareButton
-    url={''}
-    quote={'next-share is a social share buttons for your next React apps.'}
-    hashtag={'#uvsity'}
-  >
-    <FacebookIcon size={32} round />
-  </FacebookShareButton>,
-    referer:'',
+    type: 'twitter',
+    title: 'Share on twitter',
+    jsx: <></>,
+    referer: '',
     hidden: false,
-   
+    hashtag: '#uvsitysession'
+
+  },
+
+  ],
+  MENU: [{
+    id: 1,
+    title: "Online Sessions",
+    code: WORKFLOW_CODES.USER.SESSION.VIEW_ONLINE,
+    tooltip: "Online sessions",
+    icon: <PreviewIcon />,
+    hidden: false,
+    route: `${AUTHORIZED_ROUTES.AUTHORIZED.SESSION.VIEW}`,
+    utrn: `${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS}`
+  },
+  {
+    id: 2,
+    title: "My Session Enrollments",
+    code: WORKFLOW_CODES.USER.SESSION.ENROLLED,
+    tooltip: "Sessions you have enrolled into",
+    icon: <BookmarkAddedIcon />,
+    hidden: false,
+    route: `${AUTHORIZED_ROUTES.AUTHORIZED.SESSION.VIEW}`,
+    utrn: `${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ENROLLED_SESSIONS}`,
+    feedback: [{
+      id: 1,
+      title: 'Review',
+      tooltip: 'Review this session now',
+      icon: <RateReviewIcon />
+    },
+    {
+      id: 2,
+      title: 'Message',
+      tooltip: 'Send a message to <#X>',
+      icon: <SendIcon />
+    }]
   },
   {
     id: 3,
-    name: 'Copy',
-    type:'copy',
-    title: 'Copy link',
-    icon: ContentCopyIcon,
-    referer:null,
+    title: "My Sessions",
+    code: WORKFLOW_CODES.USER.SESSION.VIEW,
+    tooltip: "See all my sessions",
+    icon: <ViewListIcon />,
     hidden: false,
+    route: `${AUTHORIZED_ROUTES.AUTHORIZED.SESSION.VIEW}`,
+    utrn: `${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.OWN_SESSIONS}`
+
   },
-  ]
+  {
+    id: 4,
+    title: "Create Session",
+    code: WORKFLOW_CODES.USER.SESSION.CREATE,
+    tooltip: INTRO_ACTIONS[0].tooltip,
+    icon: INTRO_ACTIONS[0].icon,
+    hidden: false,
+    route: AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
+    utrn: null
+  },],
 };
+
+export const SESSION_COMMENTS = {
+  UNAUTHORIZED: 'You do not have permission to post comments. Please check with admin for more info.',
+  REPLY_COMMENT: 'Reply to the comment',
+  SEND_COMMENT: 'Send comment',
+  ADD_COMMENT: 'Add comment'
+}
 export const VALIDATING_REQUEST =
   "Please wait, we are validating your request...";
 

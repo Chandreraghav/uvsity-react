@@ -4,7 +4,7 @@ import { SESSION } from '../../constants'
 
 function SessionOwner() {
     return (
-        <> <Tooltip title={SESSION.OWNER.TOOLTIP}><Chip icon={<SESSION.OWNER.ICON />} color="success" label={SESSION.OWNER.LABEL} variant="filled" /></Tooltip></>
+        <> <Tooltip arrow title={SESSION.OWNER.TOOLTIP}><Chip icon={<SESSION.OWNER.ICON />} color="success" label={SESSION.OWNER.LABEL} variant="filled" /></Tooltip></>
     )
 }
 

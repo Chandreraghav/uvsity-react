@@ -10,7 +10,7 @@ import StarRateIcon from "@mui/icons-material/StarRate";
 import CoPresentIcon from "@mui/icons-material/CoPresent";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 
-import { 
+import {
   SESSION_REVIEW_MAX_STAR_COUNT,
   IMAGE_PATHS,
   PLACEHOLDERS,
@@ -47,7 +47,7 @@ function Preview({ data, mappedTopic }) {
   };
 
   const onTopicAction = (actionType) => {
-    if(actionType === TOPIC_ACTIONS.COMMENTS && mappedTopic) {
+    if (actionType === TOPIC_ACTIONS.COMMENTS && mappedTopic) {
       setShowTopicComments(!showTopicComments);
     }
   }
@@ -61,12 +61,12 @@ function Preview({ data, mappedTopic }) {
         <div
           className={`  dialog-title text-xs font-medium leading-tight mt-0.5`}
         >
-            <>
-              <Typography variant="caption">
-                {data?.numberOfAttendees} {PLACEHOLDERS.ATTENDING}
-              </Typography>
-            </>
-          
+          <>
+            <Typography variant="caption">
+              {data?.numberOfAttendees} {PLACEHOLDERS.ATTENDING}
+            </Typography>
+          </>
+
         </div>
       </>
     );
@@ -114,7 +114,7 @@ function Preview({ data, mappedTopic }) {
         </Tooltip>
       );
     }
-   
+
     return (
       <Tooltip title={TOOLTIPS.PAID_SESSION}>
         <div
@@ -133,8 +133,11 @@ function Preview({ data, mappedTopic }) {
   }
   return (
     <div className=" shadow-lg py-2 uvsity__card__border__theme bg-gray-100 dark:bg-gray-900 w-full px-2 rounded-lg">
+      {(isSessionOwner(userdata)) && (<div className="px-1 py-1 flex"><SessionOwner className=" " /></div>)}
+
       {/* EVENT/SESSION/AUTHOR NAME */}
       <div className="flex flex-row flex-wrap flex-grow-0">
+
         <div className="flex-auto w-full pr-0 xl:w-auto xl:flex-1 xl:pr-5 px-2 py-2">
           <Tooltip title={data?.courseFullName}>
             <h1 onClick={() => navigateToPath(router, AUTHORIZED_ROUTES.AUTHORIZED.SESSION.PROFILE_INDEX + data?.courseId, { token: uuidv4() }
@@ -192,7 +195,7 @@ function Preview({ data, mappedTopic }) {
                     userType={data.coHosts[0]?.userBaseType}
                     instituition={data.coHosts[0]?.educationalInstitution}
                     isVisibleAsCoHost
-                    metaData={{ associatedCoHostData: data.coHosts[0]||null }}
+                    metaData={{ associatedCoHostData: data.coHosts[0] || null }}
                     options={{ connect: false, mixedMode: true }}
                     userdata={userdata}
                     dark={getMode() === THEME_MODES.DARK ? true : false}
@@ -234,15 +237,15 @@ function Preview({ data, mappedTopic }) {
       <div className="flex items-center justify-between">
         <Actions data={data} />
         {(isSessionOwner(userdata)) && (<SessionOwner className="ml-auto" />)}
-    
-        { mappedTopic && (
+
+        {mappedTopic && (
           <TopicActions mappedTopic={mappedTopic} onTopicAction={onTopicAction} />
-      )}
-        
-        { mappedTopic?.topicDetailId && (
+        )}
+
+        {mappedTopic?.topicDetailId && (
           <Tooltip title="Comments" className="cursor-pointer" onClick={() => onCommentClick()}>
-            <Typography 
-              className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2" 
+            <Typography
+              className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2"
               variant="caption"
             >
               <CommentIcon /> {topicCommentsCount} Comment(s)

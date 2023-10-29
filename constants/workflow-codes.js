@@ -13,6 +13,8 @@ export const WORKFLOW_CODES = {
     },
     SESSION: {
       REGISTER: "S_REG",
+      ENROLLED:"S_ENR",
+      VIEW_ONLINE:"S_VIE_ONL",
       SPONSOR: "S_SPO",
       VIEW: "S_VIE",
       FEED: "S_FEE",

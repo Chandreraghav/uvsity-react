@@ -3,6 +3,10 @@ export const KEYS = {
     ALL: 'all-topics',
     DETAIL: 'topic-detail'
   },
+  MESSAGES: {
+    ALL: 'all-messages',
+    MESSAGE_DETAIL: 'message-detail'
+  },
   PROFILE: {
     VISITS: "visits",
     COMPLETION: "completion",
@@ -23,6 +27,7 @@ export const KEYS = {
     PUBLIC: {
       TOP: "public-top",
     },
+    VIEW:"sessions-view",
     ATTENDEES: {
       PER_COURSE: "attendees-per-course",
     },

@@ -55,12 +55,17 @@ function CompactCard({ title }) {
   }, []);
 
   const topicsMapByCourseName = useMemo(() => {
-    const newTopicsData = topicsData?.data || [];
-    return new Map(
-      newTopicsData
-        .filter((currentTopic) => !!currentTopic?.topic?.topicName)
-        .map(({ topic }) => [topic.topicName, topic])
-    );
+    try {
+      const newTopicsData = topicsData?.data || [];
+      return new Map(
+        newTopicsData
+          .filter((currentTopic) => !!currentTopic?.topic?.topicName)
+          .map(({ topic }) => [topic.topicName, topic])
+      );
+    } catch (error) {
+        return null
+    }
+    
   }, [topicsData]);
 
   const handleTimeZoneBrowse = (obj) => {
@@ -114,6 +119,8 @@ function CompactCard({ title }) {
           ))}
 
           {TOP_SESSIONS.isSuccess &&
+            TOP_SESSIONS.data && 
+            TOP_SESSIONS.data instanceof Array &&
             TOP_SESSIONS.data.length > 0 &&
             TOP_SESSIONS?.data?.map((value) => (
               <Stack key={value.courseId}>
