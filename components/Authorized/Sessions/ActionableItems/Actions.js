@@ -1,6 +1,6 @@
 import { Box, Button, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
-import { APP, SESSION_ACTIONS } from "../../../../constants/userdata";
+import { APP, SESSION, SESSION_ACTIONS } from "../../../../constants/userdata";
 import SessionStyle from "../../../../styles/Session.module.css";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useRouter } from "next/router";
@@ -9,14 +9,17 @@ import { v4 as uuidv4 } from "uuid";
 import { navigateToPath } from "../../Shared/Navigator";
 import { useDataLayerContextValue } from "../../../../context";
 import { useCallback } from "react";
+import SessionAlreadyRegistered from "../../../SessionCards/SessionAlreadyRegistered";
 function Actions(props) {
-  const [actions, setActions] = useState(SESSION_ACTIONS)
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
+  console.log(props)
   const router = useRouter();
-  const isSessionOwner = (loggedInUser) => {
+  const [alreadyRegistered, setRegistered] = useState(false)
+  const isSessionOwner = useCallback((loggedInUser) => {
     return loggedInUser?.userDetailsId === props.data?.creator?.userDetailsId
-  }
-  const isSessionRegistrationPossible = (loggedInUser = null) => {
+  }, [props.data?.creator?.userDetailsId])
+
+  const isSessionRegistrationPossible = useCallback((loggedInUser = null) => {
     if (isSessionOwner(loggedInUser) || props.data.owner) {
       //logged in user is the owner of the session, hence self registration is not possible.
       return {
@@ -132,9 +135,10 @@ function Actions(props) {
       flag: false,
       action: APP.SESSION.ACTIONS.ALIAS.REGISTRATION,
     };
-  }
-  const isSessionSponsorshipPossible = (loggedInUser = null) => {
-    if(props.context && props.context === 'view-session-detail'){
+  }, [isSessionOwner, props.data.cost, props.data.courseStatus, props.data.isRegistrationPossible, props.data.owner, props.data.registrationQuestionnaireId, props.data.userRegistered])
+
+  const isSessionSponsorshipPossible = useCallback((loggedInUser = null) => {
+    if (props.context && props.context === 'view-session-detail') {
       // if actions component is invoked through the view-session-detail context then do not show the sponsorship button, as sponsorship button is available on the bottom of the view session page
       return {
         flag: false,
@@ -167,7 +171,7 @@ function Actions(props) {
       flag: false,
       action: APP.SESSION.ACTIONS.ALIAS.SPONSORSHIP,
     };
-  }
+  }, [isSessionOwner, props.context, props.data.courseStatus, props.data.owner, props.data.sponsorshipRequired, props.data.userRegistered])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initiateActionRequest = (action) => {
     if (action.id) {
@@ -184,12 +188,9 @@ function Actions(props) {
       case 1:
         const sessionRegistrationPossible = isSessionRegistrationPossible(loggedInUser);
         if (sessionRegistrationPossible.status === APP.SESSION.ACTIONS.STATUS.ALREADY_REGISTERED) {
-          const tempActions = actions.slice();
-          tempActions.at(0).disabled = true;
-          tempActions.at(0).title = APP.SESSION.ACTIONS.STATUS.REGISTERED
-          tempActions.at(0).tooltip = "You've already registered for this session"
-          setActions(tempActions);
-          return true;
+          if (!alreadyRegistered)
+            setRegistered(true)
+          return false;
         }
         return sessionRegistrationPossible.flag;
       case 2:
@@ -217,21 +218,28 @@ function Actions(props) {
   }, [props.context])
 
 
+  const filteredActions = useMemo(() => {
+    return SESSION_ACTIONS.filter((_action) => isEligibleAction(_action, ctxUserdata?.logged_in_info));
+  }, [ctxUserdata?.logged_in_info, isEligibleAction]);
+
+  //console.log(filteredActions)
+
   const ActionStack = useMemo(
     () => {
       if (props.data) {
         return (
           <React.Fragment>
-            {actions.map((_action, index) => {
-              if (isEligibleAction(_action, ctxUserdata?.logged_in_info)) {
-                return (
-                  <Stack role="button" className={` flex ${_action.disabled ? 'disabled' : 'cursor-pointer'}`} key={_action.id} onClick={() => initiateActionRequest(_action)}>
-                    <Tooltip title={_action.tooltip}>
-                      {_ActionTypography(_action)}
-                    </Tooltip>
-                  </Stack>)
-              }
-            }
+            {filteredActions.map((_action, index) =>
+
+            (
+              <Stack role="button" className={` flex ${_action.disabled ? 'disabled' : 'cursor-pointer'}`} key={_action.id} onClick={() => initiateActionRequest(_action)}>
+                <Tooltip title={_action.tooltip}>
+                  {_ActionTypography(_action)}
+                </Tooltip>
+              </Stack>
+            )
+
+
             )}
           </React.Fragment>
         );
@@ -251,14 +259,16 @@ function Actions(props) {
         </React.Fragment>
       }
     },
-    [_ActionTypography, actions, ctxUserdata?.logged_in_info, initiateActionRequest, isEligibleAction, props.data]
+    [_ActionTypography, filteredActions, initiateActionRequest, props.data]
   );
 
   return (
     <Box
-      className={`${SessionStyle.session__actions} flex ${!props.context?'px-1':''} py-2 gap-2`}
+      className={`${SessionStyle.session__actions} flex ${!props.context ? 'px-1' : ''} py-2 gap-2`}
     >
       {ActionStack}
+
+      {props.context && props.context === 'view-session-detail' && alreadyRegistered && (<div className='p-2 flex'><CheckCircleIcon /><SessionAlreadyRegistered label={props?.data.active === true ? SESSION.ALREADY_REGISTERED.CURRENTLY : SESSION.ALREADY_REGISTERED.IN_THE_PAST} /></div>)}
     </Box>
   );
 }

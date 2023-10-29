@@ -127,13 +127,13 @@ function BannerDetail(props) {
 
                     </div>)}
 
-                <div className="mt-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500  w-full p-4 shadow-md rounded-md">
+                <div className="mt-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500  w-full shadow-md rounded-md">
                     <Spacer count={2} />
-                    <div className=" flex ">
+                    <div className=" flex p-3 ">
                         <Typography
                             variant={isSmallScreen ? 'body1' : 'h4'}
 
-                            className=" leading-tight line-clamp-2 align-middle  "
+                            className=" line-clamp-2 leading-tight text-ellipsis  "
                         >
                             {props.banner?.name}
 
@@ -162,15 +162,18 @@ function BannerDetail(props) {
                     </div>
                     {props.oid !== undefined && (
                         <>
-                            <Actions context='view-session-detail' data={props.sessionData} />
-                            <div className="float-right flex gap-2">
-                            {props.owner == true && (<SessionOwner />)}
-                                <ShareSession quote={props.banner?.name} url={`${process.env.NEXT_PUBLIC_APP_HOME_URL_BETA}${currentPath}`} copyToClipboard={true} />
+                            <div className="flex gap-2 mb-2">
+
+                                <Actions context='view-session-detail' data={props.sessionData} />
+                                {props.owner == true && (<SessionOwner />)}
+
+                                <div className="ml-auto flex gap-2 mr-2">
+                                    <ShareSession quote={props.banner?.name} url={`${process.env.NEXT_PUBLIC_APP_HOME_URL_BETA}${currentPath}`} copyToClipboard={true} />
+                                </div>
                             </div>
+
                         </>)}
-
                 </div>
-
             </div>
         </>
     )

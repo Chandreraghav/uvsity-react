@@ -16,7 +16,8 @@ import { useDataLayerContextValue } from "../../../context/DataLayer";
 import { getLocalStorageObject, removeLocalStorageObject } from "../../../localStorage/local-storage";
 import UserDataService from "../../api/users/data/UserDataService";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
-import SessionProfileDetail from "./SessionProfile";
+import SProfile from "./SProfile";
+
 const SessionProfile = () => {
     const [ctxUserdata, dispatch] = useDataLayerContextValue();
     const [loginData, setLoginData] = useState(null);
@@ -59,7 +60,7 @@ const SessionProfile = () => {
                     removeLocalStorageObject("uvsity-internal-error-response");
                 }
             },
-            refetchOnWindowFocus:false
+            refetchOnWindowFocus: false
         }
     );
 
@@ -82,7 +83,7 @@ const SessionProfile = () => {
                 poster: getData.SESSION_SUMMARY?.data?.imageURL,
             };
             setLayoutObject(obj);
-            const isOwner =getData.SESSION_SUMMARY?.data?.owner && isLoggedInUserSessionOwner(getData.SESSION_SUMMARY?.data?.createdByUser)
+            const isOwner = getData.SESSION_SUMMARY?.data?.owner && isLoggedInUserSessionOwner(getData.SESSION_SUMMARY?.data?.createdByUser)
             setSessionOwner(isOwner);
             return () => {
                 setLayoutObject(null);
@@ -122,14 +123,11 @@ const SessionProfile = () => {
             />
 
             {isSuccess && (<div className="main xl:w-3/4 xl:mx-auto lg:w-3/4 lg:mx-auto">
-
-                <SessionProfileDetail
-                    hasChangeEventTriggered={hasChangeEventTriggered}
+                <SProfile hasChangeEventTriggered={hasChangeEventTriggered}
                     changeEvent={handleChangeEvent}
                     owner={_isLoggedInUserSessionOwner}
                     session_data={getData.SESSION_SUMMARY?.data}
-                    loggedInUser={loginData}
-                />
+                    loggedInUser={loginData} />
             </div>)}
 
             {isError && (

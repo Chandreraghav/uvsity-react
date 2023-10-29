@@ -31,7 +31,7 @@ xl:grid-cols-8 2xl:px-5 "
               {upcomingSessions && upcomingSessions instanceof Array && upcomingSessions.length > 0 && (
                 <React.Fragment>
                   <div className=" flex justify-center items-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg">
-                    <Typography className="p-2 justify-center" variant="h5"><UpcomingIcon /> Upcoming Sessions</Typography>
+                    <Typography className="p-2 justify-center" variant="h5"><UpcomingIcon /> Enrolled Sessions - Upcoming</Typography>
                   </div>
                   <div className="grid p-4 grid-cols-1 mb-16 md:mb-12 lg:mb-4 md:grid-cols-2 lg:grid-cols-3  gap-4">
                     {upcomingSessions.map((_data) => (
@@ -50,7 +50,7 @@ xl:grid-cols-8 2xl:px-5 "
               {expiredSessions && expiredSessions instanceof Array && expiredSessions.length > 0 && (
                 <React.Fragment>
                   <div className=" flex justify-center items-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg">
-                    <Typography className="p-2 justify-center" variant="h5"><HistoryIcon /> Past Sessions</Typography>
+                    <Typography className="p-2 justify-center" variant="h5"><HistoryIcon /> Past Enrolled Sessions</Typography>
                   </div>
                   <div className="grid p-4 grid-cols-1 mb-16 md:mb-12 lg:mb-4 md:grid-cols-2 lg:grid-cols-3  gap-4">
                     {expiredSessions.map((_data) => (

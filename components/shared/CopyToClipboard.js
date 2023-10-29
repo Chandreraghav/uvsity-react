@@ -10,7 +10,7 @@ import { handleResponse } from '../../toastr-response-handler/handler';
 toast.configure();
 function CopyToClipboard(props) {
     const textToCopy = props.copyText;
-    const title=props.title||'Copy to clipboard'
+    const title = props.title || 'Copy to clipboard'
 
     useEffect(() => {
         const clipboard = new ClipboardJS('.copy-button');
@@ -21,7 +21,7 @@ function CopyToClipboard(props) {
                 'Copied to clipboard',
                 RESPONSE_TYPES.SUCCESS,
                 toast.POSITION.BOTTOM_CENTER
-              );
+            );
         });
 
         clipboard.on('error', (e) => {
@@ -30,14 +30,14 @@ function CopyToClipboard(props) {
                 'Failed to copy to clipboard',
                 RESPONSE_TYPES.ERROR,
                 toast.POSITION.BOTTOM_CENTER
-              );
+            );
         });
 
         return () => clipboard.destroy();
     }, []);
 
     return (
-        textToCopy ? (<Tooltip arrow title={title}><ContentCopyIcon style={{ background: '#1976D2', fontSize: '2rem', padding: 6 }} role="button" className="copy-button rounded-full" data-clipboard-text={textToCopy} /></Tooltip>)
+        textToCopy ? (<Tooltip arrow title={title}><ContentCopyIcon style={{ background: '#1976D2', fontSize: props.smallerIcon ? '1.5rem' : '2rem', padding: 6 }} role="button" className="copy-button rounded-full" data-clipboard-text={textToCopy} /></Tooltip>)
             : (<></>)
 
     );

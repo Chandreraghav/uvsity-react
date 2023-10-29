@@ -20,6 +20,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AddIcon from "@mui/icons-material/Add";
 import CreateIcon from "@mui/icons-material/Create";
 import { WORKFLOW_CODES } from "./workflow-codes";
+import SendIcon from '@mui/icons-material/Send';
 import { HTMLUnderlineByCharacterIndex, timeOfDay } from "../utils/utility";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import InfoIcon from "@mui/icons-material/Info";
@@ -72,6 +73,7 @@ import {
   pink,
   brown,
 } from "@mui/material/colors";
+import RateReviewIcon from '@mui/icons-material/RateReview';
 export const HEADER_OPTIONS = [
   {
     id: 1,
@@ -83,7 +85,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD,
-    hasMenu:false,
+    hasMenu: false,
   },
   {
     id: 2,
@@ -95,7 +97,7 @@ export const HEADER_OPTIONS = [
     hidden: true,
     name: null,
     redirectTo: null,
-    hasMenu:false,
+    hasMenu: false,
   },
 
   {
@@ -108,7 +110,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
-    hasMenu:true,
+    hasMenu: true,
   },
 
   {
@@ -121,7 +123,7 @@ export const HEADER_OPTIONS = [
     hidden: true,
     name: null,
     redirectTo: null,
-    hasMenu:false,
+    hasMenu: false,
   },
   {
     id: 9,
@@ -133,7 +135,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
-    hasMenu:false,
+    hasMenu: false,
   },
 
   {
@@ -146,7 +148,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
-    hasMenu:false,
+    hasMenu: false,
   },
 
   {
@@ -159,7 +161,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.MESSAGES,
-    hasMenu:false
+    hasMenu: false
   },
 
   {
@@ -172,7 +174,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
-    hasMenu:false,
+    hasMenu: false,
   },
 
   {
@@ -186,7 +188,7 @@ export const HEADER_OPTIONS = [
     hidden: false,
     name: null,
     redirectTo: null,
-    hasMenu:false,
+    hasMenu: false,
   },
 ];
 
@@ -1114,8 +1116,8 @@ export const APP = {
         APPROVED: 'Approved',
         ACTIVE: 'Active',
         REGISTERED: 'Registered',
-        PAST:'Past sessions',
-        UPCOMING:'Upcoming sessions'
+        PAST: 'Past sessions',
+        UPCOMING: 'Upcoming sessions'
       },
       ALIAS: {
         REGISTRATION: 'registration',
@@ -1132,6 +1134,10 @@ export const SESSION = {
   CREATED: "<user>, your session has been created successfully",
   EDITED: "<user>, your session has been modified successfully",
   DELETED: "<user>, your session has been deleted permanently",
+  ALREADY_REGISTERED: {
+    IN_THE_PAST: "You had registered for this session.",
+    CURRENTLY: "You've already registered for this session."
+  },
   OWNER: {
     ICON: TokenIcon,
     LABEL: 'Session owner',
@@ -1140,27 +1146,27 @@ export const SESSION = {
   SHARE_OPTIONS: [{
     id: 1,
     name: 'Facebook',
-    type:'facebook',
-    title:'Share on facebook',
-    jsx:<></>,
-    referer:'',
+    type: 'facebook',
+    title: 'Share on facebook',
+    jsx: <></>,
+    referer: '',
     hidden: false,
-    hashtag:'#uvsitysession'
+    hashtag: '#uvsitysession'
   },
   {
     id: 2,
     name: 'Twitter',
-    type:'twitter',
-    title:'Share on twitter',
-    jsx:<></>,
-    referer:'',
+    type: 'twitter',
+    title: 'Share on twitter',
+    jsx: <></>,
+    referer: '',
     hidden: false,
-    hashtag:'#uvsitysession'
-   
+    hashtag: '#uvsitysession'
+
   },
-   
+
   ],
-  MENU:[{
+  MENU: [{
     id: 1,
     title: "Online Sessions",
     code: WORKFLOW_CODES.USER.SESSION.VIEW_ONLINE,
@@ -1168,7 +1174,7 @@ export const SESSION = {
     icon: <PreviewIcon />,
     hidden: false,
     route: `${AUTHORIZED_ROUTES.AUTHORIZED.SESSION.VIEW}`,
-    utrn:`${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS}`
+    utrn: `${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS}`
   },
   {
     id: 2,
@@ -1178,7 +1184,19 @@ export const SESSION = {
     icon: <BookmarkAddedIcon />,
     hidden: false,
     route: `${AUTHORIZED_ROUTES.AUTHORIZED.SESSION.VIEW}`,
-    utrn:`${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ENROLLED_SESSIONS}`
+    utrn: `${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ENROLLED_SESSIONS}`,
+    feedback: [{
+      id: 1,
+      title: 'Review',
+      tooltip: 'Review this session now',
+      icon: <RateReviewIcon />
+    },
+    {
+      id: 2,
+      title: 'Message',
+      tooltip: 'Send a message to <#X>',
+      icon: <SendIcon />
+    }]
   },
   {
     id: 3,
@@ -1188,7 +1206,7 @@ export const SESSION = {
     icon: <ViewListIcon />,
     hidden: false,
     route: `${AUTHORIZED_ROUTES.AUTHORIZED.SESSION.VIEW}`,
-    utrn:`${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.OWN_SESSIONS}`
+    utrn: `${AUTHORIZED_ROUTES.AUTHORIZED.UTRN.OWN_SESSIONS}`
 
   },
   {
@@ -1198,16 +1216,16 @@ export const SESSION = {
     tooltip: INTRO_ACTIONS[0].tooltip,
     icon: INTRO_ACTIONS[0].icon,
     hidden: false,
-    route:AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
-    utrn:null
+    route: AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
+    utrn: null
   },],
 };
 
-export const SESSION_COMMENTS={
-  UNAUTHORIZED:'You do not have permission to post comments. Please check with admin for more info.',
-  REPLY_COMMENT:'Reply to the comment',
-  SEND_COMMENT:'Send comment',
-  ADD_COMMENT:'Add comment'
+export const SESSION_COMMENTS = {
+  UNAUTHORIZED: 'You do not have permission to post comments. Please check with admin for more info.',
+  REPLY_COMMENT: 'Reply to the comment',
+  SEND_COMMENT: 'Send comment',
+  ADD_COMMENT: 'Add comment'
 }
 export const VALIDATING_REQUEST =
   "Please wait, we are validating your request...";

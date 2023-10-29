@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -19,13 +19,11 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import Divider from "@mui/material/Divider";
-import Shimmer from "./Shimmer";
 import {
   SESSION_REVIEW_MAX_STAR_COUNT,
-  SHIM_MAX_TIMEOUT_IN_MILLIS,
 } from "../../constants/constants";
-import { IMAGE_PATHS, ME, PLACEHOLDERS, TOOLTIPS } from "../../constants/userdata";
-import { Tooltip, Typography } from "@mui/material";
+import { IMAGE_PATHS, ME, PLACEHOLDERS, SESSION, TOOLTIPS } from "../../constants/userdata";
+import { Button, Tooltip, Typography } from "@mui/material";
 import { THEME_MODES, useTheme } from "../../theme/ThemeProvider";
 import CategoryIcon from '@mui/icons-material/Category';
 import { useMemo } from "react";
@@ -34,35 +32,30 @@ import { navigateToProfile, navigateToSessionProfile } from "../Authorized/Share
 import { useRouter } from "next/router";
 import Session_Attendees_ListDialog from "../shared/modals/Session_AttendeesListDialog";
 import { AUTHORIZED_ROUTES, WORKFLOW_CODES } from "../../constants";
+import SessionOwner from "./SessionOwner";
+import ReviewSession from "../Authorized/Sessions/ActionableItems/ReviewSession";
 export default function SessionCard({
   data,
   shimmer,
-  shimmerTime,
   authorized,
   origin,
   workflow
 }) {
   const router = useRouter();
   const [ctxUserdata, _dispatch] = useDataLayerContextValue();
-  const [shimTimeOut, setShimTimeOut] = useState(SHIM_MAX_TIMEOUT_IN_MILLIS);
-  const [showOriginalContent, setShowOriginalContent] = useState(false);
-  const [showShimmers, setShowShimmers] = useState(shimmer);
   const [theme, dispatch] = useTheme();
   const session_author = formattedName(
     data?.creator?.firstName,
     data?.creator?.lastName
   );
   const [openAttendeesDialog, setOpenAttendeesDialog] = useState(false);
- 
   const userdata = useMemo(() => {
     return (ctxUserdata?.userdata)
   }, [ctxUserdata?.userdata])
-
-  const isItMe = useMemo(() => {
+  const isLoggedInUserSessionCreator = useMemo(() => {
     const user_id = data?.userDetailsId || data?.creator?.userDetailsId;
     return user_id === userdata?.userDetailsId;
   }, [data?.creator?.userDetailsId, data?.userDetailsId, userdata?.userDetailsId])
-
   const userTitle = formattedProfileSubtitle(
     data.creator.userType,
     data.creator.educationalInstitute
@@ -117,7 +110,6 @@ export default function SessionCard({
       </Tooltip>
     );
   };
-
   const handleAttendeesDialogClose = () => {
     setOpenAttendeesDialog(false);
   };
@@ -133,18 +125,28 @@ export default function SessionCard({
         
     shadow-2xl antialiased`}
     >
-      <CardMedia onClick={()=>navigateToSessionProfile(data.courseId, router)}
-        component="img"
-        image={
-          data?.imageURL ? data?.imageURL : IMAGE_PATHS.NO_DATA.EVENT_POSTER
-        }
-        alt={data?.courseFullName}
-      />
+      <div className="relative">
+        <CardMedia onClick={() => navigateToSessionProfile(data.courseId, router)}
+          component="img"
+          image={
+            data?.imageURL ? data?.imageURL : IMAGE_PATHS.NO_DATA.EVENT_POSTER
+          }
+          alt={data?.courseFullName}
 
+        />
+        {isLoggedInUserSessionCreator && (<div className="p-2 flex" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+          <SessionOwner />
+        </div>)}
+
+        {/* Sessions which are enrolled by logged in user and not created by logged in user, can be given reviews and sent messages to the author of the session. */}
+        {!isLoggedInUserSessionCreator && origin !== undefined && origin == AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ENROLLED_SESSIONS && (<div className="p-2 flex gap-2" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+          <ReviewSession session={data} />
+        </div>)}
+      </div>
       <CardContent>
         {/* session title */}
         <Tooltip title={data?.courseFullName}>
-          <div onClick={()=>navigateToSessionProfile(data.courseId, router)} className={` line-clamp-1 ${SessionStyle.session__card__title}`}>
+          <div onClick={() => navigateToSessionProfile(data.courseId, router)} className={` line-clamp-1 ${SessionStyle.session__card__title} hover:underline hover:text-blue-800 transition-all duration-50 ease-in-out`}>
             {data?.courseFullName}
           </div>
         </Tooltip>
@@ -156,16 +158,12 @@ export default function SessionCard({
             </Typography>
           </Tooltip>
         }
-
-
         <Divider
           variant="fullwidth"
           className={SessionStyle.session__card__divider}
           component="div"
         />
-
         <div className="flex  flex-col py-2">
-
           <div className=" justify-center text-center mx-auto">
             {/* avatar */}
             {data?.courseCreatorImageURL !== "" && (
@@ -186,48 +184,36 @@ export default function SessionCard({
                 />
               )}
           </div>
-
-
           <div className="flex flex-col">
             {/* author name */}
-
             <Tooltip
               title={
-                isItMe
+                isLoggedInUserSessionCreator
                   ? TOOLTIPS.GO_TO_PROFILE
                   : TOOLTIPS.VIEW_PROFILE
               }
             >
-              <div onClick={()=>navigateToProfile(data.creator.userDetailsId, router)} className="mb-1 justify-center text-center  lg:text-lg md:text-md sm:text-xs text-xs font-bold line-clamp-1 text-gray-600 dark:text-gray-400">
-                {session_author}{isItMe ? ME : <></>}
+              <div onClick={() => navigateToProfile(data.creator.userDetailsId, router)} className="hover:underline hover:text-blue-800 text-gray-600 dark:text-gray-400 transition-all duration-50 ease-in-out mb-1 justify-center text-center  lg:text-lg md:text-md sm:text-xs text-xs font-bold line-clamp-1  ">
+                {session_author}{isLoggedInUserSessionCreator ? ME : <></>}
               </div>
             </Tooltip>
-
-
-
             {/* profile info */}
-
             <Tooltip title={userTitle}>
               <div
                 className={`mb-1 line-clamp-1 flex gap-2  ${SessionStyle.session__card__profile__subtitle}`}
               >
                 <SchoolIcon
-
                 />
-                {userTitle}
+                {userTitle || 'Information unavailable'}
               </div>
             </Tooltip>
-
-
             {/* starts on */}
 
             <div
               className={`mb-2 flex gap-2  sm:line-clamp-1  ${SessionStyle.session__card__event__time__subtitle}`}
             >
               <EventIcon
-
               />
-
               {localTZDate(data.displayStartDate)}
             </div>
 
@@ -237,7 +223,6 @@ export default function SessionCard({
           className={`  flex flex-row justify-between`}
         >
           {/* Reviews */}
-
           <>
             <div className="flex">
               {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
@@ -246,27 +231,25 @@ export default function SessionCard({
           {/* Attending count */}
           {data?.numberOfAttendees > 0 && (
             <React.Fragment>
-               <div onClick={() => handleAttendeesDialogOpen()} className="flex flex-row space-x-1 ml-auto">
-              <div
-                className={`${SessionStyle.session__card__attendance__count}  primary`}
-              >
-                {data?.numberOfAttendees}
+              <div onClick={() => handleAttendeesDialogOpen()} className="flex flex-row space-x-1 ml-auto">
+                <div
+                  className={`${SessionStyle.session__card__attendance__count}  primary`}
+                >
+                  {data?.numberOfAttendees}
+                </div>
+                <div
+                  className={`${SessionStyle.session__card__attendance__text} line-clamp-1`}
+                >
+                  {PLACEHOLDERS.ATTENDING}
+                </div>
               </div>
-              <div
-                className={`${SessionStyle.session__card__attendance__text} line-clamp-1`}
-              >
-                {PLACEHOLDERS.ATTENDING}
-              </div>
-            </div>
-            <Session_Attendees_ListDialog
-            dialogCloseRequest={handleAttendeesDialogClose}
-            isOpen={openAttendeesDialog}
-            data={data}
-            workflow_code={WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION}
-    
-          />
+              <Session_Attendees_ListDialog
+                dialogCloseRequest={handleAttendeesDialogClose}
+                isOpen={openAttendeesDialog}
+                data={data}
+                workflow_code={WORKFLOW_CODES.PEOPLE.ATTENDING_SESSION}
+              />
             </React.Fragment>
-           
           )}
           {data?.numberOfAttendees === 0 && (
             <div className="flex flex-row space-x-1 ml-auto">
@@ -277,7 +260,6 @@ export default function SessionCard({
               </div>
             </div>
           )}
-
         </div>
       </CardContent>
       <Divider
@@ -285,11 +267,13 @@ export default function SessionCard({
         className={SessionStyle.session__card__divider}
         component="div"
       />
-      <CardActions>{generateMonetizationAmountOnCard(data.cost)}
-      {origin!==undefined && origin !==AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ENROLLED_SESSIONS && ( <Actions data={data} />)}
-       
+      <CardActions>
+        {generateMonetizationAmountOnCard(data.cost)}
+        {origin !== undefined && origin !== AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ENROLLED_SESSIONS && (<Actions data={data} />)}
+
       </CardActions>
     </Card>)
+      // For all other session requests without a workflow prop.
       : (<Card
         className={`${origin === "profile_timeline"
           ? SessionStyle.session__card__profile__timeline
@@ -311,7 +295,6 @@ export default function SessionCard({
           }
           alt={data?.courseFullName}
         />
-
         <CardContent>
           {/* session title */}
           <Tooltip title={data?.courseFullName}>
@@ -319,7 +302,6 @@ export default function SessionCard({
               {data?.courseFullName}
             </div>
           </Tooltip>
-
           <Divider
             variant="fullwidth"
             className={SessionStyle.session__card__divider}
@@ -349,7 +331,6 @@ export default function SessionCard({
                     )}
                 </div>
               )}
-
               <div className="flex flex-col">
                 {/* author name */}
                 {origin !== "profile_timeline" && (
@@ -357,7 +338,6 @@ export default function SessionCard({
                     {session_author}
                   </div>
                 )}
-
                 {/* profile info */}
                 {origin !== "profile_timeline" && (
                   <Tooltip title={userTitle}>
@@ -371,7 +351,6 @@ export default function SessionCard({
                     </div>
                   </Tooltip>
                 )}
-
                 {/* starts on */}
                 {origin !== "profile_timeline" && (
                   <div
@@ -386,7 +365,6 @@ export default function SessionCard({
               </div>
             </div>
           )}
-
           {origin === "profile_timeline" && (
             <div className="">
               <span
@@ -397,7 +375,6 @@ export default function SessionCard({
               </span>
             </div>
           )}
-
           <div
             className={`${origin === "profile_timeline" ? "mt-2" : ""
               } flex flex-row justify-between`}
@@ -412,7 +389,6 @@ export default function SessionCard({
             ) : (
               <></>
             )}
-
             {/* Attending count */}
             {data?.numberOfAttendees > 0 && (
               <div className="flex flex-row space-x-1 ml-auto">
@@ -455,7 +431,5 @@ export default function SessionCard({
         />
         <CardActions>{generateMonetizationAmountOnCard(data.cost)}</CardActions>
       </Card>)
-
   )
-
 }

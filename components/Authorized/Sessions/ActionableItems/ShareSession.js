@@ -8,7 +8,13 @@ import {
     TwitterIcon,
 } from 'next-share'
 import CopyToClipboard from '../../../shared/CopyToClipboard'
+import { useClientDevice } from '../../../Device/HOC/ClientDeviceProvider'
 function ShareSession(props) {
+    const {
+        isExtraSmallScreen,
+        isSmallScreen,
+
+    } = useClientDevice();
 
     const updatedShareOptions = SESSION.SHARE_OPTIONS.map((action) => {
 
@@ -20,7 +26,7 @@ function ShareSession(props) {
                         quote={props.quote}
                         hashtag={action.hashtag}
                     >
-                        <FacebookIcon size={32} round />
+                        <FacebookIcon size={(isSmallScreen || isExtraSmallScreen) ? 24 : 32} round />
                     </FacebookShareButton>
                 </div>
 
@@ -34,7 +40,7 @@ function ShareSession(props) {
                         title={props.quote}
                         hashtags={[action.hashtag]}
                     >
-                        <TwitterIcon size={32} round />
+                        <TwitterIcon size={(isExtraSmallScreen || isSmallScreen) ? 24 : 32} round />
                     </TwitterShareButton>
                 </div>
             </Tooltip>
@@ -52,7 +58,7 @@ function ShareSession(props) {
                     {action.jsx}
                 </div>
             ))}
-            {props.copyToClipboard && (<><CopyToClipboard title='Copy link' copyText={props.url}/></>)}
+            {props.copyToClipboard && (<><CopyToClipboard title='Copy link' smallerIcon={(isExtraSmallScreen || isSmallScreen) ? true : false} copyText={props.url} /></>)}
         </Stack>
     </>)
 }

@@ -32,13 +32,13 @@ export const Comment = ({
     onUserNameClick && onUserNameClick(userDetailsId);
   };
 
-  const userdata = useMemo(()=>{
+  const userdata = useMemo(() => {
     return (ctxUserdata?.userdata)
-  },[ctxUserdata?.userdata])
+  }, [ctxUserdata?.userdata])
 
 
-  const isItMe=()=>{
-   return userdata.userDetailsId===userDetailsId
+  const isItMe = () => {
+    return userdata?.userDetailsId === userDetailsId
   }
 
 
@@ -72,7 +72,7 @@ export const Comment = ({
             {comment}
           </ReadMore>
         </div>
-        {replies !== undefined && 
+        {replies !== undefined &&
           <div className="flex items-center mt-2">
             <div className="pl-2 sm:line-clamp-1 text-gray-700 dark:text-gray-600 text-xs">
               {replies?.length || 0} replies
@@ -82,13 +82,13 @@ export const Comment = ({
             }
           </div>
         }
-        { !!replies?.length && (
+        {!!replies?.length && (
           replies.map((eachReply) => (
             <Comment key={eachReply.id} className="mt-2" isReplyToTopicCommentsAllowed={isReplyToTopicCommentsAllowed} {...eachReply} />
           ))
         )}
-        { showReplyComment && (
-          <CommentInput 
+        {showReplyComment && (
+          <CommentInput
             label={SESSION_COMMENTS.REPLY_COMMENT}
             userPic={currentUserPic}
             userName={currentUserName}

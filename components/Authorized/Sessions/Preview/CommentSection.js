@@ -3,15 +3,14 @@ import { useRouter } from 'next/router';
 import Divider from "@mui/material/Divider";
 import { useGetTopicDetail, useSendTopicComment, useSendTopicReplyComment } from '../../../../hooks';
 import { CommentInput } from '../../../shared';
-import { 
+import {
   convertTopicsToCommentProps,
   createSendTopicCommentPayload,
-  createReplyTopicCommentPayload 
+  createReplyTopicCommentPayload
 } from '../../../../converter';
 import SessionStyle from "../../../../styles/Session.module.css";
 import { Comment, navigateToProfile } from '../../Shared';
 import { useDataLayerContextValue } from '../../../../context';
-import Shimmer from './Shimmer/Shimmer';
 import { SESSION_COMMENTS } from '../../../../constants';
 import CommentShimmer from './Shimmer/CommentShimmer';
 
@@ -45,7 +44,7 @@ const CommentSection = ({ topicId }) => {
   const triggerCreateComment = (comment) => {
     const sendCommentPayload = createSendTopicCommentPayload(userDetailsId, topicId, comment);
 
-    if(sendCommentPayload) {
+    if (sendCommentPayload) {
       sendComment(sendCommentPayload, {
         onSuccess: onSuccessPostComment
       });
@@ -57,7 +56,7 @@ const CommentSection = ({ topicId }) => {
   const triggerReplyComment = (commentId, comment) => {
     const sendCommentPayload = createReplyTopicCommentPayload(userDetailsId, topicId, comment, commentId);
 
-    if(sendCommentPayload) {
+    if (sendCommentPayload) {
       sendReply(sendCommentPayload, {
         onSuccess: onSuccessPostComment
       });
@@ -69,7 +68,7 @@ const CommentSection = ({ topicId }) => {
   return (
     <>
       <Divider className={SessionStyle.preview__card__divider} />
-      <CommentInput 
+      <CommentInput
         className="m-2"
         userPic={profilePicName}
         userName={`${firstName} ${lastName}`}
@@ -77,13 +76,13 @@ const CommentSection = ({ topicId }) => {
         helperText={(!isLoading && !isTopicCommentsAllowed) && SESSION_COMMENTS.UNAUTHORIZED}
         commentTrigerred={(comment) => triggerCreateComment(comment)}
       />
-      {[1,2].map((_,id)=><CommentShimmer key={id} visible={isLoading} />)}
+      {[1, 2].map((_, id) => <CommentShimmer key={id} visible={isLoading} />)}
       {!isLoading && (
         <section className="p-2">
           {commentUIData.map((eachComment) => {
             return (
-              <Comment 
-                key={eachComment.id} 
+              <Comment
+                key={eachComment.id}
                 {...eachComment}
                 isReplyToTopicCommentsAllowed={isReplyToTopicCommentsAllowed}
                 currentUserPic={profilePicName}

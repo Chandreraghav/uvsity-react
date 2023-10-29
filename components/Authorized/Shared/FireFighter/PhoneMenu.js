@@ -22,7 +22,7 @@ function PhoneMenu(props) {
       {HEADER_OPTIONS.map((data) => (
         <div className="zoom-9" key={data.id}>
           <HeaderOption
-
+            id={data.id}
             oid={userdata?.userDetailsId}
             isAuthorizedProfile={data.hasAvatar}
             hidden={data.hidden}
