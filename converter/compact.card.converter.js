@@ -72,7 +72,7 @@ export const createSendTopicCommentPayload = (userId, topicId, comment, commentI
   const [todayFormattedDate] = formatDate(new Date())?.split(" ") || '';
 
   let payload = null;
-  if (userId && topicId && comment && todayFormattedDate ) {
+  if (userId && topicId && comment && todayFormattedDate) {
     payload = {
       userDetailsSummaryTO: {
         userDetailsId: userId
@@ -90,7 +90,7 @@ export const createReplyTopicCommentPayload = (userId, topicId, comment, comment
   const [todayFormattedDate] = formatDate(new Date())?.split(" ") || '';
 
   let payload = null;
-  if (userId && topicId && comment && commentId && todayFormattedDate ) {
+  if (userId && topicId && comment && commentId && todayFormattedDate) {
     payload = {
       userReplyingToComment: {
         userDetailsId: userId

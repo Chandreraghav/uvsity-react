@@ -102,7 +102,7 @@
 .profile__macro__top__fixed__header {
   position: fixed;
   top: 2;
-   
+
   padding: 10px;
   border: none;
   height: 50px;
@@ -125,6 +125,18 @@
   background: -webkit-linear-gradient(90deg, rgba(82, 113, 255, 1) 46%, rgba(228, 200, 160, 1) 100%);
   background: linear-gradient(90deg, rgba(82, 113, 255, 1) 46%, rgba(228, 200, 160, 1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#5271ff", endColorstr="#e4c8a0", GradientType=1);
+}
+
+.profile__macro__header__grayscale {
+  background-color: #111;
+  display: inline-block;
+  color: #e2e2e2;
+  -webkit-box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.5);
+  background: rgba(67, 62, 62);
+    background: linear-gradient(90deg, rgba(67, 62, 62, 1) 0%, rgba(22, 2, 2, 1) 80%);
+    background: -webkit-linear-gradient(90deg, rgba(67, 62, 62, 1) 0%, rgba(22, 2, 2, 1) 80%);
+    background: -moz-linear-gradient(90deg, rgba(67, 62, 62, 1) 0%, rgba(22, 2, 2, 1) 80%);
 }
 
 .profile__macro__avatar {
@@ -181,6 +193,7 @@
 .profile__macro__review__star {
   color: gold;
 }
+
 .profile__headline__edit {
   margin: 15% 5% 5% 70%;
 }

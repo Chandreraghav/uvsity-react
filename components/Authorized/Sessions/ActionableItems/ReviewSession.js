@@ -22,8 +22,8 @@ function ReviewSession(props) {
     }, [props.session.creator.firstName])
     return (
         <div className="flex gap-2">
-            {SESSION.MENU[1].feedback.map((review) => (
-                <div key={review.id}>
+            {SESSION.MENU[1].feedback.map((review, _idx) => (
+                <div key={_idx}>
                     <Tooltip arrow title={getTooltip(review)}>
                         <Button onClick={() => handleClick(review)} variant="contained" startIcon={review.icon}>
                             {review.title}

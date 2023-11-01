@@ -2,7 +2,7 @@ import asyncInstance, { blankPromise } from "../../../async/axios";
 import { ENDPOINTS } from "../../../async/endpoints";
 import { AUTHORIZED_ROUTES } from "../../../constants";
 export default class SessionService {
-  constructor() {}
+  constructor() { }
   static async getPopularSessions() {
     return await asyncInstance.get(ENDPOINTS.TOP_COURSES);
   }
@@ -43,39 +43,43 @@ export default class SessionService {
     return await asyncInstance.get(endpoint);
   }
 
-  static async getSessionsByType(session_type,filters=false){
-    if(filters===true){
-     if(session_type===AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS)
-      return await this.getFilteredDataSetForOnlineSession();
+  static async getSessionsByType(session_type, filters = false) {
+    if (filters === true) {
+      if (session_type === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS)
+        return await this.getFilteredDataSetForOnlineSession();
 
       return await blankPromise();
     }
-     if(session_type===AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS){
+    if (session_type === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS) {
       return await this.getOnlineSessions();
-     }
-     if(session_type===AUTHORIZED_ROUTES.AUTHORIZED.UTRN.OWN_SESSIONS){
-        return this.getLoggedInUserOwnSessions()
-     }
-     else {
+    }
+    if (session_type === AUTHORIZED_ROUTES.AUTHORIZED.UTRN.OWN_SESSIONS) {
+      return this.getLoggedInUserOwnSessions()
+    }
+    else {
       return await this.getLoggedInUserEnrolledSessions()
-     }
-    
+    }
+
   }
 
-  static async getOnlineSessions(){
+  static async getOnlineSessions() {
     return await asyncInstance.get(ENDPOINTS.SESSION.ONLINE);
   }
 
-  static async getLoggedInUserEnrolledSessions(){
+  static async getLoggedInUserEnrolledSessions() {
     return await asyncInstance.post(ENDPOINTS.USER.ENROLLED_SESSION, {});
-  
+
   }
 
-  static async getLoggedInUserOwnSessions(){
+  static async getLoggedInUserOwnSessions() {
     return await asyncInstance.get(ENDPOINTS.USER.OWN_SESSIONS);
   }
 
-  static async getFilteredDataSetForOnlineSession(){
+  static async getFilteredDataSetForOnlineSession() {
     return await asyncInstance.get(ENDPOINTS.SESSION.FILTERS);
+  }
+
+  static async sendSessionRatingAndReview(payload) {
+    return await asyncInstance.post(ENDPOINTS.SESSION.REVIEWS, payload);
   }
 }
