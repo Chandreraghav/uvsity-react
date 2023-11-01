@@ -466,10 +466,10 @@ export const getFormattedMinutesFromDate = (date) => {
     : date.getMinutes().toString()
 }
 
-export const datesAreOnSameDay = (first, second) =>{
-return  first.getFullYear() === second?.getFullYear() &&
-first.getMonth() === second?.getMonth() &&
-first.getDate() === second?.getDate();
+export const datesAreOnSameDay = (first, second) => {
+  return first.getFullYear() === second?.getFullYear() &&
+    first.getMonth() === second?.getMonth() &&
+    first.getDate() === second?.getDate();
 }
 
 export const loadInitialTimezone = () => {
@@ -488,4 +488,14 @@ export const getAbbreviatedWord = (sentence) => {
   const wordArray = sentence.split(' ');
   const newAbbreviatedWord = wordArray.map((word) => word.charAt(0)).join('');
   return newAbbreviatedWord;
+}
+
+export const isPast = (date) => {
+  const today = new Date();
+  if (date && date instanceof Date) {
+    if (date < today) {
+      return true
+    }
+  }
+  return false
 }

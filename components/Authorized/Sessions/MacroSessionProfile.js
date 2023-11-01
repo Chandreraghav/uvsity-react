@@ -145,7 +145,7 @@ function MacroSessionProfile(props) {
     <React.Fragment>
       <BannerDetail oid={segregatedSessionData.session_id} sessionData={props.session_data} showOwnerLabel={true} owner={isSessionOwner} banner={segregatedSessionData.basic} secondary={{ schedule: segregatedSessionData.schedule, fees: segregatedSessionData.fees }} onNavigate={props.onNavigate} />
       <Grid
-        className="py-2"
+        className="py-4"
         container
         rowSpacing={1}
         columnSpacing={{ xs: 1, sm: 2, md: 3 }}

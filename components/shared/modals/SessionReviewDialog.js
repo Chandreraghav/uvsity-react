@@ -1,5 +1,5 @@
-import { Dialog, DialogContent, DialogTitle, IconButton, Tooltip, Typography } from '@mui/material';
-import React, { useMemo } from 'react'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Tooltip, Typography } from '@mui/material';
+import React, { useMemo, useState } from 'react'
 import { formattedName, formattedProfileSubtitle, getTimezone, localTZDate, shouldDialogAppearInFullScreen } from '../../../utils/utility';
 import { THEME_MODES, useTheme } from '../../../theme/ThemeProvider';
 import { navigateToProfile, navigateToSessionProfile } from '../../Authorized/Shared';
@@ -9,6 +9,8 @@ import { useDataLayerContextValue } from '../../../context';
 import Rating from '@mui/material/Rating';
 import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@material-ui/core/styles";
+import ReviewSessionForm from '../../Authorized/Sessions/Forms/ReviewSessionForm';
+import EmailSessionForm from '../../Authorized/Sessions/Forms/EmailSessionAuthorForm';
 
 function SessionReviewDialog({
     isOpen,
@@ -16,6 +18,7 @@ function SessionReviewDialog({
     dialogCloseRequest,
     data
 }) {
+    const [reviewSubmitted, setReviewSubmitted] = useState(false)
     const [_theme, _dispatch] = useTheme();
     const isDark = useMemo(() => {
         return _theme.mode === THEME_MODES.DARK
@@ -23,7 +26,6 @@ function SessionReviewDialog({
     const useStyles = makeStyles((theme) => ({
         darkModeRating: {
             '& .MuiRating-iconEmpty': {
-
                 color: isDark ? '#e2e2e2' : '', // Edge color in dark mode
 
             },
@@ -31,14 +33,8 @@ function SessionReviewDialog({
     }));
     const classes = useStyles();
     const router = useRouter();
-
     const [context, dispatch] = useDataLayerContextValue();
-
     const userdata = useMemo(() => context?.logged_in_info, [context?.logged_in_info]);
-
-
-
-
     const isItMe = useMemo(() => {
         const user_id = data?.userDetailsId || data?.creator?.userDetailsId;
         return user_id === userdata?.userDetailsId;
@@ -105,6 +101,7 @@ function SessionReviewDialog({
 
     const handleClose = () => {
         if (dialogCloseRequest) dialogCloseRequest();
+        setReviewSubmitted(false)
     };
     const goToSession = () => {
         const session_id = data?.courseId;
@@ -117,7 +114,13 @@ function SessionReviewDialog({
         navigateToProfile(user_id, router);
     };
 
+    const handleSubmit = () => {
+        setReviewSubmitted(true)
+    }
 
+    const handleError = () => {
+        setReviewSubmitted(false)
+    }
 
     return (
         <>
@@ -181,11 +184,21 @@ function SessionReviewDialog({
                     }}
                     className={`dialog-content`}>
 
-                    {/* {type} */}
-                    <Rating name="size-medium" defaultValue={2} className={classes.darkModeRating} />
+                    {type === 'Review' && (<ReviewSessionForm actionDone={handleClose} actionTriggered={reviewSubmitted} onError={handleError} data={data} />)}
+                    {type === 'Message' && (<EmailSessionForm actionDone={handleClose} actionTriggered={reviewSubmitted} onError={handleError} data={data} />)}
 
                 </DialogContent>
-
+                <DialogActions sx={{
+                    backgroundColor: isDark ? "#111" : "#fff",
+                    color: isDark ? "#fff" : "#111",
+                }}>
+                    <Button disabled={reviewSubmitted === true} onClick={handleSubmit} variant="contained" type="submit"  >
+                        {type === 'Review' ? 'Review now' : 'Send message'}
+                    </Button>
+                    <Button disabled={reviewSubmitted === true} variant="contained" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                </DialogActions>
             </Dialog>
         </>
     );

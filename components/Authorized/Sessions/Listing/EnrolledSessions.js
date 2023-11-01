@@ -34,9 +34,9 @@ xl:grid-cols-8 2xl:px-5 "
                     <Typography className="p-2 justify-center" variant="h5"><UpcomingIcon /> Enrolled Sessions - Upcoming</Typography>
                   </div>
                   <div className="grid p-4 grid-cols-1 mb-16 md:mb-12 lg:mb-4 md:grid-cols-2 lg:grid-cols-3  gap-4">
-                    {upcomingSessions.map((_data) => (
+                    {upcomingSessions.map((_data, idx) => (
                       <SessionCard
-                        key={_data.courseId}
+                        key={idx}
                         data={_data}
                         authorized={true}
                         shimmerTime={SHIMMER_TIMEOUT_IN_MILLIS}
@@ -53,9 +53,9 @@ xl:grid-cols-8 2xl:px-5 "
                     <Typography className="p-2 justify-center" variant="h5"><HistoryIcon /> Past Enrolled Sessions</Typography>
                   </div>
                   <div className="grid p-4 grid-cols-1 mb-16 md:mb-12 lg:mb-4 md:grid-cols-2 lg:grid-cols-3  gap-4">
-                    {expiredSessions.map((_data) => (
+                    {expiredSessions.map((_data, idx) => (
                       <SessionCard
-                        key={_data.courseId}
+                        key={idx}
                         data={_data}
                         authorized={true}
                         shimmerTime={SHIMMER_TIMEOUT_IN_MILLIS}

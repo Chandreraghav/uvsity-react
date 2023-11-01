@@ -1143,6 +1143,19 @@ export const SESSION = {
     LABEL: 'Session owner',
     TOOLTIP: 'You are the session owner'
   },
+  EMAIL_SUBJECTS: [{
+    id: 1,
+    subject: 'Thank you',
+    disabled: false,
+    hidden: false,
+    selected: false
+  }, {
+    id: 2,
+    subject: 'Request for refund',
+    disabled: false,
+    hidden: false,
+    selected: false
+  }],
   SHARE_OPTIONS: [{
     id: 1,
     name: 'Facebook',

@@ -1,7 +1,7 @@
 import { asyncInstance, ENDPOINTS } from "../../../async";
 
 export default class MessageDataService {
-  constructor() {}
+  constructor() { }
   static async getMessagesByApi(endpoint) {
     return await asyncInstance.get(endpoint);
   }
@@ -13,4 +13,7 @@ export default class MessageDataService {
   static async replyMessage(payload) {
     return await asyncInstance.post(ENDPOINTS.MESSAGE.REPLY_MESSAGE, payload);
   }
+
+
+
 }

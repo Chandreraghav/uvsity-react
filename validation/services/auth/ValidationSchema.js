@@ -8,7 +8,6 @@ import { PASSWORD } from "../../../constants/regex";
 import { MIN_LENGTH_PASSWORD } from "../../../constants/constants";
 import {
   isValidDate,
-  isValidDatePeriod,
   isValidURL,
 } from "../../../utils/utility";
 export const registrationValidationSchema = Yup.object().shape({
@@ -140,6 +139,18 @@ export const SESSION = {
       }),
     },
   },
+
+  SEND_REVIEW: Yup.object().shape({
+    comments: Yup.string().required(
+      'A comment is required to send a review'
+    ),
+  }),
+  SEND_MESSAGE: Yup.object().shape({
+    subject: Yup.string().required('Please select a subject'),
+    message: Yup.string().required(
+      'A message body text is required to send a message'
+    ),
+  })
 };
 
 export const USER = {
@@ -159,7 +170,7 @@ export const USER = {
           .required("Please select your country."),
         city: Yup.string().trim().required("Please enter your city name."),
         location: Yup.string().trim().required("Please enter your location name."),
-        presentWorkPlace:Yup.boolean(),
+        presentWorkPlace: Yup.boolean(),
         fromDate: Yup.date()
           .typeError(WORK_EXPERIENCE_FORM_ERRORS.PERIOD.FROM.REQUIRED)
           .max(
@@ -175,22 +186,22 @@ export const USER = {
           is: true,
           then: Yup.date().typeError('')
             .nullable().notRequired()
-         })
-         .when("presentWorkPlace", {
-          is: false,
-          then: Yup.date()
-          .typeError(WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.REQUIRED)
-          .min(
-            Yup.ref("fromDate"),
-            WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.RANGE_ERROR
-          )
-          .required(WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.REQUIRED)
-          .nullable()
+        })
+          .when("presentWorkPlace", {
+            is: false,
+            then: Yup.date()
+              .typeError(WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.REQUIRED)
+              .min(
+                Yup.ref("fromDate"),
+                WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.RANGE_ERROR
+              )
+              .required(WORK_EXPERIENCE_FORM_ERRORS.PERIOD.TO.REQUIRED)
+              .nullable()
 
-          .test("toDate", "Enter a valid period.", function (value) {
-            return isValidDate(value, "MMMM,yyyy");
+              .test("toDate", "Enter a valid period.", function (value) {
+                return isValidDate(value, "MMMM,yyyy");
+              })
           })
-         })
       }),
 
       SOCIAL: Yup.object().shape({

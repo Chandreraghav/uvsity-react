@@ -19,24 +19,25 @@ export const ENDPOINTS = {
     POLLER: {
       VALIDITY_CHECK: "/poll/sessionExpiryCheck",
     },
-    SCHEDULED_END_DATE:"/courses/scheduledEndDate",
-    QUESTIONAIRRE:{
-      CREATE:'questionnaire/create',
-      UPDATE:'questionnaire/update',
-      GET:'questionnaire/',
-      DELETE:'questionnaire/delete/'
+    SCHEDULED_END_DATE: "/courses/scheduledEndDate",
+    QUESTIONAIRRE: {
+      CREATE: 'questionnaire/create',
+      UPDATE: 'questionnaire/update',
+      GET: 'questionnaire/',
+      DELETE: 'questionnaire/delete/'
     },
-    ONLINE:'opencourses',
-    FILTERS:'courses/filters'
-    
+    ONLINE: 'opencourses',
+    FILTERS: 'courses/filters',
+    REVIEWS: 'courses/reviews'
+
   },
-  SEARCH:{
-    GENERIC:'universalsearch/',
-    COMMON:{
-      DATA:{
-        USERTYPE:'data/filteredUserTypes?queryUsertype=',
-        EDUINS:'data/filteredEducationalInstitutions?queryEduins=',
-        COURSES:'universalsearch/courses/'
+  SEARCH: {
+    GENERIC: 'universalsearch/',
+    COMMON: {
+      DATA: {
+        USERTYPE: 'data/filteredUserTypes?queryUsertype=',
+        EDUINS: 'data/filteredEducationalInstitutions?queryEduins=',
+        COURSES: 'universalsearch/courses/'
       }
     }
   },
@@ -59,66 +60,66 @@ export const ENDPOINTS = {
         ACCEPT_REQUEST: "/inbox/accept/invitationRequest/",
       },
       ATTENDEES: "/course/#X#/attendees",
-      SEARCH:{
-        ATTENDEES:'universalsearch/attendees/',
-        PEOPLE:"search"
+      SEARCH: {
+        ATTENDEES: 'universalsearch/attendees/',
+        PEOPLE: "search"
       },
-      VIEW:'view/profile/',
-      MESSAGING:{
-        SEND_RECOMMENDATION_REQUEST:'/inbox/send/recommendationRequest',
-        SEND_MESSAGE:'/inbox/send/message',
-        SEND_RATING:'inbox/send/rating',
-        SEND_SESSION_REQUEST:'inbox/send/courseRequest'
+      VIEW: 'view/profile/',
+      MESSAGING: {
+        SEND_RECOMMENDATION_REQUEST: '/inbox/send/recommendationRequest',
+        SEND_MESSAGE: '/inbox/send/message',
+        SEND_RATING: 'inbox/send/rating',
+        SEND_SESSION_REQUEST: 'inbox/send/courseRequest'
       },
-      
+
     },
     DETAILS: "/view/profile/",
     SESSION_BY_ID: "/courses/#X#",
-    SESSION_BY_USER:'/view/profile/getData/coursesByUser/#X#/',
-    SESSION_IS_ALLOWED:'/courses/allowed/',
-    CREATE_SESSION:'/courses/',
-    OWN_SESSIONS:'courses',
-    ENROLLED_SESSION:'courses/enrolled',
-    UPLOADS:{
-      SESSION:{
-        CREATE:{
-          IMAGE:'/fileupload',
-          DOC:'/slidedeck'
+    SESSION_BY_USER: '/view/profile/getData/coursesByUser/#X#/',
+    SESSION_IS_ALLOWED: '/courses/allowed/',
+    CREATE_SESSION: '/courses/',
+    OWN_SESSIONS: 'courses',
+    ENROLLED_SESSION: 'courses/enrolled',
+    UPLOADS: {
+      SESSION: {
+        CREATE: {
+          IMAGE: '/fileupload',
+          DOC: '/slidedeck'
         }
-       
+
       },
-      PROFILE:{
-        PICTURE:'/edit/profile/profilepic',
+      PROFILE: {
+        PICTURE: '/edit/profile/profilepic',
       }
-      
+
     },
-    EDITS:{
-      ABOUT:'edit/profile/aboutMe',
-      HEADLINE:'view/profile/secondaryData',
-      INTERESTS:'edit/profile/myInterests',
-      SKILLS:'edit/profile/userSkillsts',
-      RECOMMENDED_SESSION:'edit/profile/coursesIRecommend',
-      SOCIAL_PROFILE:{
-        LINKEDIN:'edit/profile/linkedInProfile'
+    EDITS: {
+      ABOUT: 'edit/profile/aboutMe',
+      HEADLINE: 'view/profile/secondaryData',
+      INTERESTS: 'edit/profile/myInterests',
+      SKILLS: 'edit/profile/userSkillsts',
+      RECOMMENDED_SESSION: 'edit/profile/coursesIRecommend',
+      SOCIAL_PROFILE: {
+        LINKEDIN: 'edit/profile/linkedInProfile'
       },
-      EDUCATION:{
-        HIGHEST_DEGREE:'edit/profile/degreeCourse',
-        PAST_EDUCATION:{
-          DATA:'edit/profile/getData/pastEducations',
-          ADD:'edit/profile/add/pasteducation',
-          REMOVE:'edit/profile/delete/pasteducation',
-          EDIT:'edit/profile/update/pasteducation'
+      EDUCATION: {
+        HIGHEST_DEGREE: 'edit/profile/degreeCourse',
+        PAST_EDUCATION: {
+          DATA: 'edit/profile/getData/pastEducations',
+          ADD: 'edit/profile/add/pasteducation',
+          REMOVE: 'edit/profile/delete/pasteducation',
+          EDIT: 'edit/profile/update/pasteducation'
         }
       },
-      WORKEXPERIENCE:{
-        DATA:'edit/profile/getData/projectResearchExperiences',
-        ADD:'edit/profile/add/projectResearchExperience',
-        EDIT:'edit/profile/update/projectResearchExperience',
-        REMOVE:'edit/profile/delete/projectResearchExperience'
+      WORKEXPERIENCE: {
+        DATA: 'edit/profile/getData/projectResearchExperiences',
+        ADD: 'edit/profile/add/projectResearchExperience',
+        EDIT: 'edit/profile/update/projectResearchExperience',
+        REMOVE: 'edit/profile/delete/projectResearchExperience'
       },
-      RECOMMENDATIONS:{
-        DATA:'edit/profile/getData/userAcceptedRecommendations',
-        CHANGE_PRIVACY:'edit/profile/userAcceptedRecommendations'
+      RECOMMENDATIONS: {
+        DATA: 'edit/profile/getData/userAcceptedRecommendations',
+        CHANGE_PRIVACY: 'edit/profile/userAcceptedRecommendations'
       }
     },
     METADATA: {
@@ -126,8 +127,8 @@ export const ENDPOINTS = {
       STATIC: "/courses/staticmetadata",
     },
   },
-  METADATA:{
-    GET_COUNTRIES:'/data/countries'
+  METADATA: {
+    GET_COUNTRIES: '/data/countries'
   },
   MESSAGE: {
     ALL_INBOX_CONVERSATION: "inbox/allConversationsInInbox",
@@ -138,11 +139,12 @@ export const ENDPOINTS = {
     ALL_SENT_RECOMMENDATION: "inbox/allRecommendationResponsesSent",
     TRASH: "inbox/retrieve/trashedEntries",
     CONVERSATION_DETAIL: "inbox/allMessagesInConversationForUserMessageContainerEntry",
-    REPLY_MESSAGE: "inbox/send/replyToMessage"
+    REPLY_MESSAGE: "inbox/send/replyToMessage",
+    SEND_MESSAGE: 'inbox/send/message'
   }
 };
 export const EXTERNAL_FULLY_QUALIFIED_ENDPOINTS = {
   IP_DATA: process.env.NEXT_PUBLIC_IP_INFO_ENDPOINT,
-  GET_COUNTRIES:process.env.NEXT_PUBLIC_COUNTRIES_INFO_ENDPOINT
+  GET_COUNTRIES: process.env.NEXT_PUBLIC_COUNTRIES_INFO_ENDPOINT
 };
 

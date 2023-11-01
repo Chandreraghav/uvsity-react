@@ -18,7 +18,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
-  isEmptyObject,
   isValidDate,
   isValidDatePeriod,
 } from "../../../../utils/utility";
@@ -96,7 +95,7 @@ function PastEducationManager(props) {
     };
   }, [filteredEduIns]);
   const classes = useStyles();
-  
+
   const [fromDate, setFromDateChange] = useState(
     props?.data?.educationStartDateForDisplay || ""
   );
@@ -557,9 +556,8 @@ function PastEducationManager(props) {
         </form>
         <Box sx={{ width: "100%", display: "flex" }}>
           <div
-            className={`flex gap-4 mt-2 ${
-              isUpdating ? "control_disabled opacity-40" : ""
-            }`}
+            className={`flex gap-4 mt-2 ${isUpdating ? "control_disabled opacity-40" : ""
+              }`}
           >
             <Button onClick={handleSubmit} variant="outlined" size="small">
               {props.mode === "add" ? "Add" : "Save"}
