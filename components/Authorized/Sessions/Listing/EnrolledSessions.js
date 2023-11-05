@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import SessionCard from '../../../SessionCards/SessionCard'
-import { APP, SHIMMER_TIMEOUT_IN_MILLIS, WORKFLOW_CODES } from '../../../../constants'
+import { APP, WORKFLOW_CODES } from '../../../../constants'
 import { Typography } from '@mui/material'
 import HistoryIcon from '@mui/icons-material/History';
 import UpcomingIcon from '@mui/icons-material/Upcoming';
@@ -36,11 +36,9 @@ xl:grid-cols-8 2xl:px-5 "
                   <div className="grid p-4 grid-cols-1 mb-16 md:mb-12 lg:mb-4 md:grid-cols-2 lg:grid-cols-3  gap-4">
                     {upcomingSessions.map((_data, idx) => (
                       <SessionCard
-                        key={idx}
+                        key={`${_data.courseId}${idx}`}
                         data={_data}
                         authorized={true}
-                        shimmerTime={SHIMMER_TIMEOUT_IN_MILLIS}
-                        shimmer={true}
                         origin={props.type}
                         workflow={WORKFLOW_CODES.USER.SESSION.VIEW}
                       />))}
@@ -55,11 +53,9 @@ xl:grid-cols-8 2xl:px-5 "
                   <div className="grid p-4 grid-cols-1 mb-16 md:mb-12 lg:mb-4 md:grid-cols-2 lg:grid-cols-3  gap-4">
                     {expiredSessions.map((_data, idx) => (
                       <SessionCard
-                        key={idx}
+                        key={`${_data.courseId}${idx}`}
                         data={_data}
                         authorized={true}
-                        shimmerTime={SHIMMER_TIMEOUT_IN_MILLIS}
-                        shimmer={true}
                         origin={props.type}
                         workflow={WORKFLOW_CODES.USER.SESSION.VIEW}
                       />))}

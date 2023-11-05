@@ -64,6 +64,7 @@ import TokenIcon from '@mui/icons-material/Token';
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import CategoryIcon from '@mui/icons-material/Category';
 import {
   blue,
   green,
@@ -1232,6 +1233,22 @@ export const SESSION = {
     route: AUTHORIZED_ROUTES.AUTHORIZED.SESSION.CREATE,
     utrn: null
   },],
+  QUICK_FILTERS: {
+    ONLINE_SESSIONS: [
+      {
+        id: 1,
+        title: 'Category',
+        data: {},
+        icon: <CategoryIcon style={{ fontSize: 20 }} />,
+      },
+      {
+        id: 2,
+        title: 'Price',
+        data: {},
+        icon: <MonetizationOnIcon style={{ fontSize: 20 }} />,
+      }
+    ]
+  }
 };
 
 export const SESSION_COMMENTS = {

@@ -16,7 +16,7 @@ function SummaryDetail(props) {
                 </div>
 
                 <Spacer />
-                <ReadMore parseHtml initialReadLimit={250}>
+                <ReadMore className='dark:bg-gray-900 dark:text-gray-400' parseHtml initialReadLimit={250}>
                     {props?.summary?.html}
                 </ReadMore>
 

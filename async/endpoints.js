@@ -62,7 +62,8 @@ export const ENDPOINTS = {
       ATTENDEES: "/course/#X#/attendees",
       SEARCH: {
         ATTENDEES: 'universalsearch/attendees/',
-        PEOPLE: "search"
+        PEOPLE: "search",
+        TUTORS: 'autocompletes/tutors/'
       },
       VIEW: 'view/profile/',
       MESSAGING: {
@@ -79,6 +80,7 @@ export const ENDPOINTS = {
     SESSION_IS_ALLOWED: '/courses/allowed/',
     CREATE_SESSION: '/courses/',
     OWN_SESSIONS: 'courses',
+    SEARCH_SESSIONS: '/search/courses',
     ENROLLED_SESSION: 'courses/enrolled',
     UPLOADS: {
       SESSION: {

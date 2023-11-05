@@ -26,6 +26,7 @@ function SessionList(props) {
         return () => {
             try {
                 window.removeEventListener("scroll");
+                setSticky(false)
             } catch (error) { }
         };
     }, []);
