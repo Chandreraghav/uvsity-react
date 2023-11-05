@@ -102,7 +102,7 @@ function MacroSessionProfile(props) {
       }
     }
     if (props.session_data?.registrationQuestionnaireId) {
-      //getQuestionairre();
+      getQuestionairre();
       return
     }
     setSegregatedSessionData({ session_id, basic, schedule, fees, cohost, sponsor, participant })
@@ -140,7 +140,7 @@ function MacroSessionProfile(props) {
       props.session_data.courseStatus == APP.SESSION.ACTIONS.STATUS.ACTIVE)
   }
 
-
+  console.log(props.session_data)
   return (
     <React.Fragment>
       <BannerDetail oid={segregatedSessionData.session_id} sessionData={props.session_data} showOwnerLabel={true} owner={isSessionOwner} banner={segregatedSessionData.basic} secondary={{ schedule: segregatedSessionData.schedule, fees: segregatedSessionData.fees }} onNavigate={props.onNavigate} />

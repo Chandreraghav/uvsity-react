@@ -2,7 +2,7 @@ import asyncInstance from "../../../../../async/axios";
 import { ENDPOINTS } from "../../../../../async/endpoints";
 
 export default class SearchService {
-  constructor() {}
+  constructor() { }
   static async searchCoHosts(keyword) {
     if (!keyword) return null;
     return await asyncInstance.get(
@@ -15,7 +15,7 @@ export default class SearchService {
 
   static async searchPeople(payload, loadMore) {
     let endpoint = ENDPOINTS.USER.PEOPLE.SEARCH.PEOPLE;
-    if (loadMore===true) {
+    if (loadMore === true) {
       endpoint += `?loadMore=true`;
     }
     return await asyncInstance.post(endpoint, payload);
@@ -31,6 +31,9 @@ export default class SearchService {
     );
   }
 
+  static async searchPeopleAsSessionTutorsByPeopleName(name) {
+    return await asyncInstance.post(ENDPOINTS.USER.PEOPLE.SEARCH.TUTORS + name, {});
+  }
 
 
 }

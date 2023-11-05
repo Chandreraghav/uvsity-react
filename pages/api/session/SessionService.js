@@ -82,4 +82,8 @@ export default class SessionService {
   static async sendSessionRatingAndReview(payload) {
     return await asyncInstance.post(ENDPOINTS.SESSION.REVIEWS, payload);
   }
+
+  static async searchSessions(payload) {
+    return await asyncInstance.post(ENDPOINTS.USER.SEARCH_SESSIONS, payload);
+  }
 }

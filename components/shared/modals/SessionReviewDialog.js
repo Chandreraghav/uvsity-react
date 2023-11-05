@@ -92,9 +92,6 @@ function SessionReviewDialog({
         }
         return <></>
     }, [data, goToProfile, isItMe])
-
-
-
     if (!data || isOpen === undefined) {
         return <></>;
     }
@@ -123,84 +120,84 @@ function SessionReviewDialog({
     }
 
     return (
-        <>
-            <Dialog
-                fullScreen={shouldDialogAppearInFullScreen()}
-                open={isOpen}
-                aria-labelledby="responsive-dialog-title"
-                onClose={handleClose}
-                disableEscapeKeyDown
-            >
-                <DialogTitle
-                    sx={{
-                        backgroundColor: isDark ? "#111" : "#fff",
-                        color: isDark ? "#fff" : "#111",
-                    }}
-                >
-                    <div className={`flex justify-between `}>
-                        <div className={`  leading-tight  text-left font-bold flex-col`}>
-                            <Typography
-                                className={`dialog-title line-clamp-1`}
-                                gutterBottom
-                                variant="h6"
-                                component="div"
-                            >
 
-                                <Tooltip
-                                    title={data?.courseFullName}
-                                >
-                                    <div onClick={goToSession} >{data?.courseFullName}</div>
-                                </Tooltip>
-
-
-
-                            </Typography>
-                            {dialogTitle && <div>{dialogTitle}
-                            </div>}
-
-                        </div>
-                        <div className="ml-auto">
-                            <Tooltip title="close">
-                                <div>
-                                    {handleClose ? (
-                                        <IconButton
-                                            aria-label="close"
-                                            onClick={handleClose}
-                                            sx={{ color: `${isDark ? COLOR_CODES.GRAY.DEEP : ""}` }}
-                                        >
-                                            <CloseIcon fontSize="small" />
-                                        </IconButton>
-                                    ) : null}
-                                </div>
-                            </Tooltip>
-                        </div>
-                    </div>
-
-                </DialogTitle>
-                <DialogContent
-                    sx={{
-                        backgroundColor: isDark ? "#111" : "#fff",
-                        color: isDark ? "#fff" : "#111",
-                    }}
-                    className={`dialog-content`}>
-
-                    {type === 'Review' && (<ReviewSessionForm actionDone={handleClose} actionTriggered={reviewSubmitted} onError={handleError} data={data} />)}
-                    {type === 'Message' && (<EmailSessionForm actionDone={handleClose} actionTriggered={reviewSubmitted} onError={handleError} data={data} />)}
-
-                </DialogContent>
-                <DialogActions sx={{
+        <Dialog
+            fullScreen={shouldDialogAppearInFullScreen()}
+            open={isOpen}
+            aria-labelledby="responsive-dialog-title"
+            onClose={handleClose}
+            disableEscapeKeyDown
+        >
+            <DialogTitle
+                sx={{
                     backgroundColor: isDark ? "#111" : "#fff",
                     color: isDark ? "#fff" : "#111",
-                }}>
-                    <Button disabled={reviewSubmitted === true} onClick={handleSubmit} variant="contained" type="submit"  >
-                        {type === 'Review' ? 'Review now' : 'Send message'}
-                    </Button>
-                    <Button disabled={reviewSubmitted === true} variant="contained" onClick={handleClose}>
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
+                }}
+            >
+                <div className={`flex justify-between `}>
+                    <div className={`  leading-tight  text-left font-bold flex-col`}>
+                        <Typography
+                            className={`dialog-title line-clamp-1`}
+                            gutterBottom
+                            variant="h6"
+                            component="div"
+                        >
+
+                            <Tooltip
+                                title={data?.courseFullName}
+                            >
+                                <div onClick={goToSession} >{data?.courseFullName}</div>
+                            </Tooltip>
+
+
+
+                        </Typography>
+                        {dialogTitle && <div>{dialogTitle}
+                        </div>}
+
+                    </div>
+                    <div className="ml-auto">
+                        <Tooltip title="close">
+                            <div>
+                                {handleClose ? (
+                                    <IconButton
+                                        aria-label="close"
+                                        onClick={handleClose}
+                                        sx={{ color: `${isDark ? COLOR_CODES.GRAY.DEEP : ""}` }}
+                                    >
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
+                                ) : null}
+                            </div>
+                        </Tooltip>
+                    </div>
+                </div>
+
+            </DialogTitle>
+            <DialogContent
+                sx={{
+                    backgroundColor: isDark ? "#111" : "#fff",
+                    color: isDark ? "#fff" : "#111",
+                }}
+                className={`dialog-content`}>
+
+                {type === 'Review' && (<ReviewSessionForm actionDone={handleClose} actionTriggered={reviewSubmitted} onError={handleError} data={data} />)}
+                {type === 'Message' && (<EmailSessionForm actionDone={handleClose} actionTriggered={reviewSubmitted} onError={handleError} data={data} />)}
+
+            </DialogContent>
+            <DialogActions sx={{
+                backgroundColor: isDark ? "#111" : "#fff",
+                color: isDark ? "#fff" : "#111",
+            }}>
+                <Button disabled={reviewSubmitted === true} onClick={handleSubmit} variant="contained" type="submit"  >
+                    {type === 'Review' ? 'Review now' : 'Send message'}
+                </Button>
+                <Button disabled={reviewSubmitted === true} variant="contained" onClick={handleClose}>
+                    Cancel
+                </Button>
+            </DialogActions>
+        </Dialog>
+
     );
 }
 

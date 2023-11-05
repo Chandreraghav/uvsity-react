@@ -12,7 +12,6 @@ import { useCallback } from "react";
 import SessionAlreadyRegistered from "../../../SessionCards/SessionAlreadyRegistered";
 function Actions(props) {
   const [ctxUserdata, dispatch] = useDataLayerContextValue();
-  console.log(props)
   const router = useRouter();
   const [alreadyRegistered, setRegistered] = useState(false)
   const isSessionOwner = useCallback((loggedInUser) => {

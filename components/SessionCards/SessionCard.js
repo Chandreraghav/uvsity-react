@@ -39,7 +39,7 @@ export default function SessionCard({
   shimmer,
   authorized,
   origin,
-  workflow
+  workflow,
 }) {
   const router = useRouter();
   const [ctxUserdata, _dispatch] = useDataLayerContextValue();
@@ -60,16 +60,18 @@ export default function SessionCard({
     data.creator.userType,
     data.creator.educationalInstitute
   );
-  const getSessionRatingDesignLayout = (reviewCount) => {
-    if (
-      !reviewCount ||
-      reviewCount == 0 ||
-      isNaN(reviewCount) ||
-      reviewCount > 5
-    ) {
-      return <></>;
+  const getSessionRatingDesignLayout = (reviewCount, canHaveZeroReviews = false) => {
+    if (canHaveZeroReviews === false) {
+      if (
+        !reviewCount ||
+        reviewCount == 0 ||
+        isNaN(reviewCount) ||
+        reviewCount > 5
+      ) {
+        return <></>;
+      }
     }
-    let design = [];
+    let design = canHaveZeroReviews === true ? [(<small className=" text-gray-600 first-letter:uppercase align-middle px-1 block" key={0}>Reviews</small>)] : [];
     let _rc = reviewCount;
     for (var j = 0; j < SESSION_REVIEW_MAX_STAR_COUNT; j++) {
       if (_rc <= 0)
@@ -222,26 +224,22 @@ export default function SessionCard({
         <div
           className={`  flex flex-row justify-between`}
         >
-          {/* Reviews */}
-          <>
-            <div className="flex">
-              {getSessionRatingDesignLayout(data?.avgReviewIntValue)}
-            </div>
-          </>
+          {/* Show Session Reviews Only for Online Sessions */}
+          {origin !== undefined && origin == AUTHORIZED_ROUTES.AUTHORIZED.UTRN.ONLINE_SESSIONS
+            && (<>
+              <div className="flex">
+                <div>{getSessionRatingDesignLayout(data?.avgReviewIntValue, true)}</div>
+              </div>
+            </>)
+          }
+
           {/* Attending count */}
           {data?.numberOfAttendees > 0 && (
             <React.Fragment>
               <div onClick={() => handleAttendeesDialogOpen()} className="flex flex-row space-x-1 ml-auto">
-                <div
-                  className={`${SessionStyle.session__card__attendance__count}  primary`}
-                >
-                  {data?.numberOfAttendees}
-                </div>
-                <div
-                  className={`${SessionStyle.session__card__attendance__text} line-clamp-1`}
-                >
-                  {PLACEHOLDERS.ATTENDING}
-                </div>
+                <Typography gutterBottom className=" font-normal  h-min w-20 bg-[#5cb85c] text-center overflow-hidden text-ellipsis" variant="caption">
+                  <span className=" font-bold text-[16px] ">{data?.numberOfAttendees}</span> {PLACEHOLDERS.ATTENDING}
+                </Typography>
               </div>
               <Session_Attendees_ListDialog
                 dialogCloseRequest={handleAttendeesDialogClose}
@@ -251,7 +249,7 @@ export default function SessionCard({
               />
             </React.Fragment>
           )}
-          {data?.numberOfAttendees === 0 && (
+          {data?.numberOfAttendees === 0 && !isLoggedInUserSessionCreator && (
             <div className="flex flex-row space-x-1 ml-auto">
               <div
                 className={`${SessionStyle.session__card__attendance__text} mb-2 line-clamp-1`}

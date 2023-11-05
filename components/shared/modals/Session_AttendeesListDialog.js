@@ -156,77 +156,75 @@ export default function Session_Attendees_ListDialog({
   };
 
   return (
-    <>
-      <Dialog
-        fullScreen={shouldDialogAppearInFullScreen()}
-        open={isOpen}
-        aria-labelledby="responsive-dialog-title"
-        onBackdropClick={handleClose}
-        onClose={handleClose}
-        disableEscapeKeyDown
+    <Dialog
+      fullScreen={shouldDialogAppearInFullScreen()}
+      open={isOpen}
+      aria-labelledby="responsive-dialog-title"
+      onClose={handleClose}
+      disableEscapeKeyDown
+    >
+      <DialogTitle
+        sx={{
+          backgroundColor: isDark ? "#111" : "#fff",
+          color: isDark ? "#fff" : "#111",
+        }}
       >
-        <DialogTitle
-          sx={{
-            backgroundColor: isDark ? "#111" : "#fff",
-            color: isDark ? "#fff" : "#111",
-          }}
-        >
-          <div className={`flex justify-between `}>
-            <div className={`  leading-tight  text-left font-bold flex-col`}>
-              <Typography
-                className={`dialog-title line-clamp-1`}
-                gutterBottom
-                variant="h6"
-                component="div"
+        <div className={`flex justify-between `}>
+          <div className={`  leading-tight  text-left font-bold flex-col`}>
+            <Typography
+              className={`dialog-title line-clamp-1`}
+              gutterBottom
+              variant="h6"
+              component="div"
+            >
+
+              <Tooltip
+                title={data?.courseFullName}
               >
-
-                <Tooltip
-                  title={data?.courseFullName}
-                >
-                  <div onClick={goToSession} >{data?.courseFullName}</div>
-                </Tooltip>
-
-              </Typography>
-              {titleJsx && <div>{titleJsx}
-              </div>}
-            </div>
-
-            <div className="ml-auto">
-              <Tooltip title="close">
-                <div>
-                  {handleClose ? (
-                    <IconButton
-                      aria-label="close"
-                      onClick={handleClose}
-                      sx={{ color: `${isDark ? COLOR_CODES.GRAY.DEEP : ""}` }}
-                    >
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
-                  ) : null}
-                </div>
+                <div onClick={goToSession} >{data?.courseFullName}</div>
               </Tooltip>
-            </div>
-          </div>
-          <div
-            className={`flex gap-1 mb-1 ${isDark ? "dialog-dark-subtitle" : "dialog-subtitle"
-              }  font-medium text-sm`}
-          >
-            <PeopleIcon />
-            <div>{TITLES.PEOPLE_ATTENDING}</div>
-          </div>
-        </DialogTitle>
-        <div className={`dialog-content   ${isDark ? "dark-dialog" : ""}`}>
-          <div
-            style={{
-              maxHeight: "200px",
-              minHeight: "200px",
-              overflow: "scroll",
-            }}
-            onScroll={handleContentScroll}
-            className={` overflow-scroll  flex flex-col px-4 mb-2 -mt-3`}
-          >
 
-            {attendees && attendees.length > 0 && attendees.map((user, _idx) => (
+            </Typography>
+            {titleJsx && <div>{titleJsx}
+            </div>}
+          </div>
+
+          <div className="ml-auto">
+            <Tooltip title="close">
+              <div>
+                {handleClose ? (
+                  <IconButton
+                    aria-label="close"
+                    onClick={handleClose}
+                    sx={{ color: `${isDark ? COLOR_CODES.GRAY.DEEP : ""}` }}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                ) : null}
+              </div>
+            </Tooltip>
+          </div>
+        </div>
+        <div
+          className={`flex gap-1 mb-1 ${isDark ? "dialog-dark-subtitle" : "dialog-subtitle"
+            }  font-medium text-sm`}
+        >
+          <PeopleIcon />
+          <div>{TITLES.PEOPLE_ATTENDING}</div>
+        </div>
+      </DialogTitle>
+      <div className={`dialog-content   ${isDark ? "dark-dialog" : ""}`}>
+        <div
+          style={{
+            maxHeight: "200px",
+            minHeight: "200px",
+            overflow: "scroll",
+          }}
+          onScroll={handleContentScroll}
+          className={` overflow-scroll  flex flex-col px-4 mb-2 -mt-3`}
+        >
+
+          {attendees && attendees.length > 0 && attendees.filter((user) => user.userDetailsId).map((user, _idx) => (
             <div key={user.userDetailsId}>
               <Profile
                 oid={user.userDetailsId}
@@ -243,9 +241,9 @@ export default function Session_Attendees_ListDialog({
               />
 
             </div>))}
-          </div>
         </div>
-      </Dialog>
-    </>
+      </div>
+    </Dialog>
+
   );
 }

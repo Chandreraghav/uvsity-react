@@ -66,11 +66,11 @@ function Final(props) {
       setNewTimezone(obj);
       dispatch({
         type: actionTypes.TIMEZONE,
-        timezone:obj.timezone ,
+        timezone: obj.timezone,
       });
     }
   };
-  
+
   const setNewTimezone = (obj) => {
     APP.SESSION.DTO.SCHEDULE.dirty = true;
     APP.SESSION.DTO.SCHEDULE.timezone = obj.timezone;
@@ -78,14 +78,14 @@ function Final(props) {
       type: actionTypes.CREATE_SESSION_WORKFLOW.SCHEDULE,
       schedule: APP.SESSION.DTO.SCHEDULE,
     });
-    setTz(obj.timezone) 
+    setTz(obj.timezone)
   };
   const resetTimezoneToDefault = () => {
     setLocalTimezone()
     setNewTimezone({ timezone: getTimezone() });
     dispatch({
       type: actionTypes.TIMEZONE,
-      timezone:getTimezone() ,
+      timezone: getTimezone(),
     });
   };
 
@@ -118,7 +118,7 @@ function Final(props) {
               <SweetMessageStrip type='message' dark={isDark} message={getCompletionMessage()} subtitle={APP.MESSAGES.INFO.FINAL_STEP_EDITS_HELP_TEXT} />
             )}
             <Box sx={{ width: "100%", mt: 1 }}>
-              <BannerDetail banner={data?.basic} secondary={{ schedule: data?.schedule, fees: data?.fees }} onNavigate={props.onNavigate} />
+              <BannerDetail owner={true} banner={data?.basic} secondary={{ schedule: data?.schedule, fees: data?.fees }} onNavigate={props.onNavigate} />
               <Grid
                 className="py-2"
                 container
