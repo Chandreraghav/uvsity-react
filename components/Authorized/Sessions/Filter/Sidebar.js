@@ -33,6 +33,9 @@ function Sidebar(props) {
     };
     const handleSubmit = () => {
         let payload = {}
+        if (filters.keyword == '' && filters.sessionsBy == '' && filters.sessionName == '') {
+            return
+        }
         const sessionTutor = filters.sessionsBy
         if (sessionTutor) {
             const sessionTutorNamedArray = sessionTutor.split(' ')

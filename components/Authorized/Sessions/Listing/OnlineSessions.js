@@ -24,11 +24,13 @@ function OnlineSessions(props) {
             }
 
         }
+
         return quickFilters
     }, [onlineSessions, props.filteredData])
 
     const qfilterDataCallback = useCallback((_filter) => {
-        return Object.keys(_filter.data)
+        return Object.keys(_filter.data).sort()
+
     }, [])
 
     const handleQuickFilterClick = (filter, filterItem) => {
@@ -49,7 +51,7 @@ xl:grid-cols-8 2xl:px-5 "
 
                 <Spacer count={1} />
                 {/* Quick filter */}
-                <div className=" leading-snug  text-gray-700 dark:text-gray-500  p-3 flex gap-4 overflow-hidden max-h-28  ">
+                <div className=" leading-snug  text-gray-700 dark:text-gray-500  p-3 flex gap-4 overflow-hidden max-h-32  ">
                     {qfilters.map((filter) =>
                     (
                         <div key={filter.id}>
@@ -60,7 +62,7 @@ xl:grid-cols-8 2xl:px-5 "
                                     {filter.title}
                                 </Typography>
 
-                                <Divider />
+                                <Divider orientation='horizontal' variant="fullWidth" sx={{ m: 0.5 }} />
                             </div>
                             {qfilterDataCallback(filter).map((filterItem, idx) =>
                                 <div onClick={() => handleQuickFilterClick(filter, filterItem)} className='text-sm max-w-20 text-ellipsis ml-1 cursor-pointer duration-100 mb-1 transition-all ease-in-out hover:text-blue-800' key={idx}>
@@ -72,10 +74,12 @@ xl:grid-cols-8 2xl:px-5 "
 
                     )}
                 </div>
+                <Spacer count={1} />
+                <Divider className="border-b-indigo-500" variant="fullWidth" sx={{ m: 0.5 }} />
+                <Spacer count={1} />
 
                 {/* Sidebar filter */}
                 <Sidebar onResetEvent={resetDataEvent} onDataEvent={handleDataEvent} />
-                {/* <MiniFooter showOnSmallScreens /> */}
                 <Spacer count={2} />
             </div>
 
