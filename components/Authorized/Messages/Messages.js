@@ -3,13 +3,14 @@ import { Button } from '@mui/material'
 import CreateOutlined from '@mui/icons-material/CreateOutlined';
 import { MessageData } from './constants';
 import MessageTypeItem from './MessageTypeItem';
-import MessagesDisplay from './MessagesDisplay/MessagesDisplay';
-import MessageDetail from './MessageDetail/MessageDetail';
+import ListDisplay from './ListDisplay/ListDisplay';
+import Detail from './Detail/Detail';
 import { MessageContextProvider } from './context';
 
 const Messages = () => {
   const [currentActive, setCurrentActive] = useState(MessageData.find((eachType) => !!eachType.default)?.type || '');
   const [detailsData, setDetailsData] = useState(null);
+  const [currentTabData, setCurrentTabData] = useState(null);
 
   const contextValue = {
     detailsData,
@@ -38,7 +39,7 @@ const Messages = () => {
           </ul>
         </aside>
         <section className="col-span-12 md:col-span-8 rounded-lg p-2 uvsity__card__border__theme bg-gray-100 dark:bg-gray-900">
-          {detailsData ? <MessageDetail /> : <MessagesDisplay currenMessageItemType={currentActive} />}
+          {detailsData ? <Detail /> : <ListDisplay currenMessageItemType={currentActive} />}
         </section>
       </div>
     </MessageContextProvider>

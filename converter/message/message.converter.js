@@ -18,57 +18,97 @@ export const MessageTypes = {
   TRASH: 'trash'
 }
 
-export const convertMessageResponseToList = (messageType, messageResponse = []) => {
+const convertMessageDataToList = (messageItem) => {
+  const { messageConversation, userMessageContainerId } = messageItem;
+  const { messageSenders, noOfMessagesInConversation } = messageConversation || {};
+  const { messageSubject, createdOnDateInDDMmYYYFormat } = messageConversation?.latestMessageInConversation || {};
+
+  return {
+    id: userMessageContainerId,
+    senderNames: messageSenders,
+    noOfMessagesInConversation,
+    date: createdOnDateInDDMmYYYFormat,
+    shortMessage: messageSubject
+  };
+};
+
+const convertRecommendationDataToList = (recommendationItem) => {
+  const { createdOnDateInDDMmYYYFormat, requestFrom, userRequestType, userRequestId } = recommendationItem || {};
+  const { firstName, lastName, } = requestFrom || {};
+
+  return {
+    id: userRequestId,
+    senderNames: `${firstName} ${lastName}`,
+    noOfMessagesInConversation: undefined,
+    date: createdOnDateInDDMmYYYFormat,
+    shortMessage: RequestMapping[userRequestType] || ''
+  }
+};
+
+const convertTrashDataToList = (trashItem) => {
+  const { containerId, firstName, lastName, subject } = trashItem;
+  return {
+    id: containerId,
+    senderNames: `${firstName} ${lastName}`,
+    noOfMessagesInConversation: undefined,
+    date: undefined,
+    shortMessage: subject
+  }
+};
+
+export const convertMessagesResponseToList = (messageType, messageResponse = []) => {
   try {
-    // TODO - Not sure about Recommendation
-    if (messageType === MessageTypes.INBOX_RECOMMENDATION) {
-      return [];
-    }
-
-    return messageResponse.map((currentMessage) => {
-      const uiData = {
-        messageType
-      };
-
-      if (messageType === MessageTypes.INBOX_MESSAGE || messageType === MessageTypes.SENT_MESSAGE) {
-        const { messageConversation, userMessageContainerId } = currentMessage;
-        const { messageSenders, noOfMessagesInConversation } = messageConversation || {};
-        const { messageSubject, createdOnDateInDDMmYYYFormat } = messageConversation?.latestMessageInConversation || {};
+    const uiData = messageResponse
+      .map((currentMessage) => {
+        let uiItem = {};
+        if (messageType === MessageTypes.INBOX_MESSAGE || messageType === MessageTypes.SENT_MESSAGE) {
+          uiItem = convertMessageDataToList(currentMessage);
+        } else if (messageType === MessageTypes.INBOX_REQUEST || messageType === MessageTypes.SENT_REQUEST) {
+          uiItem = convertRecommendationDataToList(currentMessage);
+        } else if (messageType === MessageTypes.TRASH) {
+          uiItem = convertTrashDataToList(currentMessage);
+        } else if (messageType === MessageTypes.INBOX_RECOMMENDATION) {
+          uiItem = null;
+        }
 
         return {
-          ...uiData,
-          id: userMessageContainerId,
-          senderNames: messageSenders,
-          noOfMessagesInConversation,
-          date: createdOnDateInDDMmYYYFormat,
-          shortMessage: messageSubject
+          messageType,
+          ...uiItem,
         }
-      } else if (messageType === MessageTypes.INBOX_REQUEST || messageType === MessageTypes.SENT_REQUEST) {
-        const { createdOnDateInDDMmYYYFormat, requestFrom, userRequestType, userRequestId } = currentMessage || {};
-        const { firstName, lastName, } = requestFrom || {};
+      })
+      .filter((newData) => !!newData);
 
-        return {
-          ...uiData,
-          id: userRequestId,
-          senderNames: `${firstName} ${lastName}`,
-          noOfMessagesInConversation: undefined,
-          date: createdOnDateInDDMmYYYFormat,
-          shortMessage: RequestMapping[userRequestType] || ''
-        }
-      } else if (messageType === MessageTypes.TRASH) {
-        const { containerId, firstName, lastName, subject } = currentMessage;
-        return {
-          ...uiData,
-          id: containerId,
-          senderNames: `${firstName} ${lastName}`,
-          noOfMessagesInConversation: undefined,
-          date: undefined,
-          shortMessage: subject
-        }
-      }
-      
-    }).filter((newData) => !!newData);
+      return uiData;
   } catch (ex) {
     console.error('convertMessageResponseToList error', ex)
   }
+}
+
+export const getNumberOfNewItemsCountForInboxTabs = (ctxUserdata = {}, currentTabs = []) => {
+  let newCurrentTabs = currentTabs;
+  const {
+    noOfNewMessages = 0,
+    noOfNewCreateCourseRequestsReceived = 0,
+    noOfNewInvitationsReceived = 0,
+    noOfNewRatingRequestsReceived = 0,
+    noOfNewRecommendationRequestsReceived = 0,
+    noOfNewRecommendationsReceived = 0,
+    noOfNewTopicJoinRequestsReceived = 0
+  } = ctxUserdata?.logged_in_info || {};
+
+  const noOfRequests = noOfNewCreateCourseRequestsReceived + noOfNewInvitationsReceived + noOfNewRatingRequestsReceived + noOfNewRecommendationRequestsReceived + noOfNewTopicJoinRequestsReceived;
+
+  newCurrentTabs = currentTabs.map((eachTab) => {
+    const { text, type } = eachTab;
+    const numberOfNewItemsByType =
+      type === MessageTypes.INBOX_MESSAGE ?
+        noOfNewMessages : type === MessageTypes.INBOX_REQUEST ?
+          noOfRequests : noOfNewRecommendationsReceived;
+    return {
+      ...eachTab,
+      newItemsCount: numberOfNewItemsByType
+    }
+  });
+
+  return newCurrentTabs;
 }

@@ -3,12 +3,13 @@ import TextField from "@mui/material/TextField";
 import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
+import { makeStyles } from '@mui/styles';
+import { Typography } from '@mui/material';
+import InfoIcon from "@mui/icons-material/Info";
 import { UVSityAvatar } from './UVSityAvatar';
 import { THEME_MODES, getMode } from '../../theme/ThemeProvider';
 import { COLOR_CODES, SESSION_COMMENTS } from '../../constants';
-import { makeStyles } from '@mui/styles';
-import { Typography } from '@mui/material';
-import InfoIcon from "@mui/icons-material/Info"
+
 export const CommentInput = ({
   userPic = '',
   userName = '',
@@ -18,10 +19,11 @@ export const CommentInput = ({
   className = '',
   label = SESSION_COMMENTS.ADD_COMMENT
 }) => {
-
   const [comment, setComment] = useState('');
+
   const isDark = getMode() === THEME_MODES.DARK;
-  const deepGray = COLOR_CODES.GRAY.DEEP
+  const deepGray= COLOR_CODES.GRAY.DEEP;
+
   const useStyles = makeStyles({
     root: {
       "& .MuiFormLabel-root": {
@@ -37,6 +39,7 @@ export const CommentInput = ({
       }
     }
   });
+
   const classes = useStyles();
 
   const validComment = comment.trim();
