@@ -20,11 +20,11 @@ const MessageList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  const handleOnClick = (event, msgEvent) => {
+  const handleOnClick = (event, msgEvent, id) => {
     event.stopPropagation();
     if (msgEvent === MessageEvent.MESSAGE_DETAILS) {
       setDetailsData({
-        activeTabType,
+        messageType: activeTabType,
         id
       });
     } else {
@@ -40,9 +40,10 @@ const MessageList = ({
             <div
               key={id}
               className={
-                `table-row h-12 min-h-full items-center px-2 dark:text-white-100`
+                ` table-row h-12 min-h-full items-center px-2 dark:text-white-100
+                  cursor-pointer hover:shadow-lg hover:shadow-blue-200/50`
               }
-              onClick={(event) => handleOnClick(event, MessageEvent.MESSAGE_DETAILS)}
+              onClick={(event) => handleOnClick(event, MessageEvent.MESSAGE_DETAILS, id)}
             >
               <div className="table-cell text-left p-4">
                 {senderNames} {noOfMessagesInConversation ? `(${noOfMessagesInConversation})` : ''}

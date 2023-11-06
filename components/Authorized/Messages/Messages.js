@@ -10,7 +10,6 @@ import { MessageContextProvider } from './context';
 const Messages = () => {
   const [currentActive, setCurrentActive] = useState(MessageData.find((eachType) => !!eachType.default)?.type || '');
   const [detailsData, setDetailsData] = useState(null);
-  const [currentTabData, setCurrentTabData] = useState(null);
 
   const contextValue = {
     detailsData,
