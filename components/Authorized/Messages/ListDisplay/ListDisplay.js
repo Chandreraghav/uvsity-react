@@ -24,6 +24,7 @@ const ListDisplay = ({ currenMessageItemType = MessageData?.at(0)?.type }) => {
       const newMessageItem = MessageData.find(({ type }) => type === currenMessageItemType);
       const defaultChildrenItem = newMessageItem?.children?.find((eachChild) => !!eachChild?.default) || newMessageItem;
       setCurrentTabData({
+        parentActiveTab: newMessageItem?.type || '',
         activeTabType: defaultChildrenItem?.type || '',
         activeTabApi: defaultChildrenItem?.api || ''
       });
@@ -45,6 +46,7 @@ const ListDisplay = ({ currenMessageItemType = MessageData?.at(0)?.type }) => {
     const activeChildrenItem = newMessageItem?.children?.find((eachChild) => newActiveTabType === eachChild?.type);
 
     setCurrentTabData({
+      parentActiveTab: newMessageItem?.type || '',
       activeTabType: activeChildrenItem?.type || '',
       activeTabApi: activeChildrenItem?.api || ''
     });

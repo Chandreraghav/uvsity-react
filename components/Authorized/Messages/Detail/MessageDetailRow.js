@@ -1,14 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { Tooltip } from '@mui/material';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import { UVSityAvatar } from '../../../shared';
-import { ME, TOOLTIPS } from '../../../../constants';
 import { useDataLayerContextValue } from '../../../../context';
-import ProfileStyle from "../../../../styles/DashboardProfile.module.css";
-import { navigateToProfile } from '../../Shared';
+import { NameTooltip } from '../../Shared';
 
 const MessageDetailRow = ({
   senderUserId,
@@ -25,16 +21,10 @@ const MessageDetailRow = ({
   const [showReplyBlock, setShowReplyBlock] = useState(false);
   const [textAreaValue, setTextAreaValue] = useState('');
   const [ctxUserdata] = useDataLayerContextValue();
-  const router = useRouter();
 
   const userdata = useMemo(() => {
     return ctxUserdata?.userdata;
   }, [ctxUserdata?.userdata]);
-
-  const handleUserClick = (event) => {
-    event.stopPropagation();
-    navigateToProfile && navigateToProfile(senderUserId, router);
-  };
 
   const handleHeaderClick = () => {
     if (!isLatestMessage) {
@@ -52,23 +42,13 @@ const MessageDetailRow = ({
     handleDiscardMessage();
   }
 
-  const isItMe = userdata.userDetailsId === senderUserId;
-
   return (
     <div className={`${className} flex items-start py-4`}>
       <UVSityAvatar src={senderPic} name={senderName} className="mr-2 avatar-xs" />
       <div className="w-full">
         <div className={`flex justify-between ${isLatestMessage ? '' : 'cursor-pointer'}`} onClick={() => handleHeaderClick()}>
           <div className="text-sm leading-snug">
-            <Tooltip
-              title={
-                isItMe
-                  ? TOOLTIPS.GO_TO_PROFILE
-                  : TOOLTIPS.VIEW_PROFILE
-              }
-            >
-              <a className={`font-bold ${ProfileStyle.profile__name}  `} onClick={(event) => handleUserClick(event)}>{senderName}{isItMe ? ME : <></>}</a>
-            </Tooltip>
+            <NameTooltip userId={senderUserId}>{senderName}</NameTooltip>
             {!expanded && <span className="sm:line-clamp-1 text-gray-700 dark:text-gray-600 text-xs" dangerouslySetInnerHTML={{ __html: body }} />}
             {expanded && <span className="sm:line-clamp-1 text-gray-700 dark:text-gray-600 text-xs">To: {recipientNames}</span>}
           </div>

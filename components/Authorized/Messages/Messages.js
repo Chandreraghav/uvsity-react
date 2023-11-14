@@ -16,9 +16,14 @@ const Messages = () => {
     setDetailsData
   };
 
+  const onNavItemClick = (type) => {
+    setCurrentActive(type || '');
+    setDetailsData(null);
+  }
+
   return (
     <MessageContextProvider value={contextValue}>
-      <div className="grid grid-cols-12 px-2 mx-auto xl:container gap-4 mt-6">
+      <div className="grid grid-cols-12 px-2 mx-auto xl:container gap-4 mt-6 mb-14">
         <aside className="col-span-12 md:col-span-3">
           <Button variant="contained" startIcon={<CreateOutlined />} className="mb-4">
             Compose
@@ -31,7 +36,7 @@ const Messages = () => {
                   key={props.type} 
                   className="mb-2" 
                   currentActive={currentActive} 
-                  onActiveItemChange={() => setCurrentActive(props?.type || '')} 
+                  onActiveItemChange={() => onNavItemClick(props?.type)} 
                 />
               );
             })}

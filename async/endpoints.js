@@ -142,7 +142,12 @@ export const ENDPOINTS = {
     TRASH: "inbox/retrieve/trashedEntries",
     CONVERSATION_DETAIL: "inbox/allMessagesInConversationForUserMessageContainerEntry",
     REPLY_MESSAGE: "inbox/send/replyToMessage",
-    SEND_MESSAGE: 'inbox/send/message'
+    SEND_MESSAGE: 'inbox/send/message',
+    ACCEPT_TOPIC_JOIN_REQUEST: 'inbox/accept/topicJoinRequest',
+    REJECT_TOPIC_JOIN_REQUEST: 'inbox/reject/topicJoinRequest',
+    ACCEPT_CONNECTION_REQUEST: 'inbox/accept/invitationRequest',
+    REJECT_CONNECTION_REQUEST: 'inbox/reject/invitationRequest',
+    SEND_RECOMMENDATION: 'inbox/send/recommendation'
   }
 };
 export const EXTERNAL_FULLY_QUALIFIED_ENDPOINTS = {
