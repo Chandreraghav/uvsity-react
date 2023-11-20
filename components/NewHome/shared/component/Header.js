@@ -46,7 +46,7 @@ export const Header = ({ handleHeaderNavClick }) => {
         <ul className="hidden md:flex">
           {
             (HeaderMenuItems || []).map(({ type, text }) => {
-              return <li key={type || ''}><AppLink variant="body2" onClick={() => handleHeaderNavClick(type)}>{text}</AppLink></li>
+              return <li className="!mr-2" key={type || ''}><AppLink variant="body2" onClick={() => handleHeaderNavClick(type)}>{text}</AppLink></li>
             })
           }
         </ul>

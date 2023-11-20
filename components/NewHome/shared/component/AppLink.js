@@ -42,7 +42,7 @@ export const AppLink = ({ type="primary", variant="inherit", className, children
       variant={variant}
       underline="none" 
       color="inherit"
-      className={`mr-2 cursor-pointer ${classes.link} new-font-family ${className}`}
+      className={`cursor-pointer ${classes.link} new-font-family ${className}`}
       {...others}
     >
       {children}
