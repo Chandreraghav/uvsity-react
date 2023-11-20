@@ -43,6 +43,12 @@ module.exports = {
       "gray-dark": "#273444",
       gray: "#8492a6",
       "gray-light": "#d3dce6",
+      "new-primary": "#041E42",
+      "new-secondary": "#5499C7",
+      "new-light-gray": "#F9FAFB",
+      "new-tertiary": "#FFD700",
+      "new-text-white": "#FFFFFF",
+      "new-text-secondary": "#F2F2F2"
     },
     extend: {
       colors: {

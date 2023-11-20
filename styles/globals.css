@@ -42,6 +42,11 @@ a {
   box-sizing: border-box;
 }
 
+.new-font-family {
+  font-family: Inter, Helvetica Neue, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, sans-serif;
+}
+
 .section {
   padding-top: 100px;
   padding-bottom: 100px;

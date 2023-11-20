@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { convertMessagesResponseToList, UserRequestType, updateApprovalRequestUIDataOnActio, MessageTypes } from '../../../../../converter';
+import { convertMessagesResponseToList, UserRequestType, updateApprovalRequestUIDataOnAction, MessageTypes } from '../../../../../converter';
 import { UVSityAvatar } from '../../../../shared';
 import NameCard from './NameCard';
 import ApprovalRequestAction from './ApprovalRequestAction';

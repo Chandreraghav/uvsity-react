@@ -1,11 +1,12 @@
+import { useState, useMemo } from "react";
 import Layout from "../components/Main/Layout";
 import Header from "../components/shared/Header";
 import Hero from "../components/Landing/Hero";
 import Feature from "../components/Landing/Feature";
 import Footer from "../components/shared/Footer";
+import NewHome from "../components/NewHome/NewHome";
 import TrendingSessions from "../components/Landing/TrendingSessions";
 import Stats from "../components/Landing/Stats";
-import { useState } from "react";
 
 const Home = () => {
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
@@ -19,22 +20,32 @@ const Home = () => {
     setOpenSignInDialog(false);
   };
 
+  const newHome = useMemo(() => {
+    return process.env.NEXT_PUBLIC_APP_NEW_HOME_PAGE;
+  }, []);
+
   // PUBLIC ROUTE
   return (
     <Layout options={layoutObj}>
-      <Header setSignInDialogOpen={handleSignInDialogOpen} />
-      <div className="main">
-        <Hero
-          setSignInDialogClose={handleSignInDialogClose}
-          signedInDialogOpened={openSignInDialog}
-        />
-        <Feature />
-        <TrendingSessions />
-        {/* Stats will be replaced by About us section in the future */}
-        <Stats />
-      </div>
+      {
+        newHome ? <NewHome /> : (
+          <>
+            <Header setSignInDialogOpen={handleSignInDialogOpen} />
+            <div className="main">
+              <Hero
+                setSignInDialogClose={handleSignInDialogClose}
+                signedInDialogOpened={openSignInDialog}
+              />
+              <Feature />
+              <TrendingSessions />
+              {/* Stats will be replaced by About us section in the future */}
+              <Stats />
+            </div>
 
-      <Footer />
+            <Footer />
+          </>
+        )
+      }
     </Layout>
   );
 };
