@@ -3,7 +3,7 @@ import { AppButton, AppLink } from './shared';
 
 const Banner = ({ onLoginCTAClick, onSignUpCTAClick }) => {
   return (
-    <section className="w-full py-16">
+    <section className="w-full py-16 !bg-new-text-white">
       <div className="container flex flex-col mx-auto items-center">
         <h1 className="text-4xl lg:text-5xl text-new-primary mb-4 font-bold text-center">Where Education Meets Networking</h1>
         <p className="text-xl lg:text-2xl max-w-3xl text-center text-new-secondary">Host and Attend Sessions, Foster Connections with Your Alumni Community, and Earn Income Along the Way</p>

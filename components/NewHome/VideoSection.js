@@ -11,7 +11,7 @@ const VideoSection = () => {
   }, [isPristine]);
 
   return (
-    <section className="w-full py-16">
+    <section className="w-full py-16 !bg-new-text-white">
       <div className="container flex flex-col mx-auto items-center">
         <h2 className="text-3xl lg:text-4xl text-new-primary mb-4 font-bold text-center">An Educational Social Network</h2>
         <p className="text-xl lg:text-2xl max-w-3xl text-center text-new-secondary mb-16">Explore the Potential of Uvsity</p>
