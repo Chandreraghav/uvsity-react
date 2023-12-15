@@ -5,8 +5,8 @@ import CompactCard from "./Sessions/Preview/CompactCard";
 import { TITLES } from "../../constants/userdata";
 import Spacer from "../shared/Spacer";
 import MiniFooter from "../shared/MiniFooter";
-
 function Dashboard(props) {
+   
   return (
     <div
       className=" 
@@ -14,12 +14,15 @@ function Dashboard(props) {
     gap-2 px-2 mx-auto xl:container md:gap-4 
     xl:grid-cols-8 2xl:px-5 "
     >
+       
       <div className="relative py-2 z-50 col-span-12 md:col-span-3 lg:col-span-3 xl:col-span-2">
         <Sidebar align="left" />
       </div>
       <div className="z-40 col-span-12 md:pt-2 md:col-span-6 lg:col-span-6 xl:col-span-4">
         <Intro />
         <Spacer count={2} />
+
+        
         <CompactCard title={TITLES.POPULAR_SESSION} />
       </div>
       <div className="lg:mt-0 xl:mt-0 md:mt-0 -mt-10  col-span-12 md:col-span-3 lg:col-span-3 py-2 xl:col-span-2">
