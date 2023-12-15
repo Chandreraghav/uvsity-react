@@ -5,7 +5,7 @@ import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useTheme, THEME_MODES } from '../../theme';
-import { COLOR_CODES } from "../../constants";
+import { COLOR_CODES, SESSION_COMMENTS } from "../../constants";
 import { UVSityAvatar } from './UVSityAvatar';
 import { Typography } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
