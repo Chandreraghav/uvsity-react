@@ -76,121 +76,261 @@ import {
 } from "@mui/material/colors";
 import RateReviewIcon from '@mui/icons-material/RateReview';
 export const HEADER_OPTIONS = [
+
   {
+
     id: 1,
+
     title: "Home",
+
     tooltip: "Home",
+
     icon: HomeIcon,
+
     hasAvatar: false,
+
     avatar: null,
+
     hidden: false,
+
     name: null,
+
     redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.DASHBOARD,
+
     hasMenu: false,
+
   },
+
   {
+
     id: 2,
+
     title: "My Connections",
+
     tooltip: "View people in your network",
+
     icon: SupervisorAccountIcon,
+
     hasAvatar: false,
+
     avatar: null,
+
     hidden: true,
+
     name: null,
+
     redirectTo: null,
+
     hasMenu: false,
+
   },
 
+
+
   {
+
     id: 3,
+
     title: "Sessions",
-    tooltip: "Browse Sessions",
+
+    tooltip: "Sessions",
+
     icon: EventNoteOutlinedIcon,
+
     hasAvatar: false,
+
     avatar: null,
+
     hidden: false,
+
     name: null,
+
     redirectTo: null,
+
     hasMenu: true,
+
   },
 
+
+
   {
+
     id: 4,
+
     title: "Topics",
+
     tooltip: "Browse topics",
+
     icon: TopicOutlinedIcon,
+
     hasAvatar: false,
+
     avatar: null,
+
     hidden: true,
+
     name: null,
+
     redirectTo: null,
+
     hasMenu: false,
+
   },
+
   {
+
     id: 9,
+
     title: "Calendar",
-    tooltip: "My Calendar",
+
+    tooltip: "Calendar",
+
     icon: CalendarTodayIcon,
+
     hasAvatar: false,
+
     avatar: null,
+
     hidden: false,
+
     name: null,
+
     redirectTo: null,
+
     hasMenu: false,
+
   },
 
+
+
   {
+
     id: 5,
+
     title: "Sponsor",
+
     tooltip: "Sponsor a session or event",
+
     icon: AutoGraphOutlinedIcon,
+
     hasAvatar: false,
+
     avatar: null,
-    hidden: false,
+
+    hidden: true,
+
     name: null,
+
     redirectTo: null,
+
     hasMenu: false,
+
   },
 
   {
+
+    id: 10,
+
+    title: "Discover",
+
+    tooltip: "Discover alumni network based on your interests",
+
+    icon: InterestsIcon,
+
+    hasAvatar: false,
+
+    avatar: null,
+
+    hidden: false,
+
+    name: null,
+
+    redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.PEOPLE.DISCOVER,
+
+    hasMenu: false,
+
+  },
+
+
+
+  {
+
     id: 6,
+
     title: "Messages",
+
     tooltip: "Go to mailbox",
+
     icon: MailOutlineIcon,
+
     hasAvatar: false,
+
     avatar: null,
+
     hidden: false,
+
     name: null,
+
     redirectTo: AUTHORIZED_ROUTES.AUTHORIZED.MESSAGES,
+
     hasMenu: false
+
   },
 
+
+
   {
+
     id: 7,
+
     title: "Notifications",
-    tooltip: "",
+
+    tooltip: null,
+
     icon: NotificationsIcon,
+
     hasAvatar: false,
+
     avatar: null,
+
     hidden: false,
+
     name: null,
+
     redirectTo: null,
+
     hasMenu: false,
+
   },
 
+
+
   {
+
     id: 8,
+
     title: "me",
+
     tooltip: "Account Settings",
+
     icon: null,
+
     hasAvatar: true,
+
     avatar:
+
       null,
+
     hidden: false,
+
     name: null,
+
     redirectTo: null,
+
     hasMenu: false,
+
   },
+
 ];
 
 export const ACCOUNT_SETTINGS = [
