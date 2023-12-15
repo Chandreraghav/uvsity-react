@@ -108,12 +108,11 @@ function RecommendationsFeed(props) {
   const toggleRecommendationCommentVisibility = (event, index) => {
     const tempRecommendations = recommendations.slice();
     if (index !== -1) {
-      tempRecommendations[index].processing = true;
-      tempRecommendations[
-        index
-      ].recommendationObj.isRecommendationRequiredForDisplayOnProfile =
-        event.target.checked;
-      setRecommendations(tempRecommendations);
+      setRecommendations((prevArray) =>
+        prevArray.map((obj, i) =>
+          i === index ? { ...obj, processing: true, recommendationObj: { isRecommendationRequiredForDisplayOnProfile: event.target.checked } } : obj
+        )
+      );
       const payload = [];
       tempRecommendations.map((_recommendation) => {
         payload.push(_recommendation.recommendationObj);
@@ -121,30 +120,25 @@ function RecommendationsFeed(props) {
       if (payload.length > 0) {
         UserDataService.changeUserAcceptedRecommendationsPrivacy(payload)
           .then((result) => {
-            tempRecommendations[index].processing = false;
-            setTimeout(() => {
-              setRecommendations(tempRecommendations);
-            }, 10);
+            setRecommendations((prevArray) =>
+              prevArray.map((obj, i) =>
+                i === index ? { ...obj, processing: false } : obj
+              )
+            );
           })
           .catch((err) => {
-            tempRecommendations[index].processing = false;
-            tempRecommendations[
-              index
-            ].recommendationObj.isRecommendationRequiredForDisplayOnProfile =
-              !event.target.checked;
-            setTimeout(() => {
-              setRecommendations(tempRecommendations);
-            }, 10);
+            setRecommendations((prevArray) =>
+              prevArray.map((obj, i) =>
+                i === index ? { ...obj, processing: false, recommendationObj: { isRecommendationRequiredForDisplayOnProfile: !event.target.checked } } : obj
+              )
+            );
           });
       } else {
-        tempRecommendations[index].processing = false;
-        tempRecommendations[
-          index
-        ].recommendationObj.isRecommendationRequiredForDisplayOnProfile =
-          !event.target.checked;
-        setTimeout(() => {
-          setRecommendations(tempRecommendations);
-        }, 10);
+        setRecommendations((prevArray) =>
+          prevArray.map((obj, i) =>
+            i === index ? { ...obj, processing: false, recommendationObj: { isRecommendationRequiredForDisplayOnProfile: !event.target.checked } } : obj
+          )
+        );
       }
     }
   };
@@ -179,9 +173,8 @@ function RecommendationsFeed(props) {
                       sx={{ color: "blueviolet", fontSize: 14 }}
                     />{" "}
                     <ReadMore
-                      color={`${
-                        getMode() === THEME_MODES.DARK ? "" : "text.secondary"
-                      }`}
+                      color={`${getMode() === THEME_MODES.DARK ? "" : "text.secondary"
+                        }`}
                     >
                       {_recommendation.recommendation}
                     </ReadMore>
@@ -213,18 +206,17 @@ function RecommendationsFeed(props) {
                               >
                                 {_recommendation?.recommendationObj
                                   ?.isRecommendationRequiredForDisplayOnProfile ===
-                                true
+                                  true
                                   ? "Everyone"
                                   : "Private"}
                                 &nbsp;
                                 <Tooltip
-                                  title={`${
-                                    _recommendation?.recommendationObj
+                                  title={`${_recommendation?.recommendationObj
                                       ?.isRecommendationRequiredForDisplayOnProfile ===
-                                    true
+                                      true
                                       ? "This recommendation will be shown to everyone who visits your profile. To make it Private, turn it off."
                                       : "Only you can see this recommendation. To make it visible for Everyone, turn it on."
-                                  }`}
+                                    }`}
                                 >
                                   <HelpIcon fontSize="small" />
                                 </Tooltip>
@@ -249,7 +241,7 @@ function RecommendationsFeed(props) {
                               }
                               checked={
                                 _recommendation?.recommendationObj
-                                  ?.isRecommendationRequiredForDisplayOnProfile
+                                  ?.isRecommendationRequiredForDisplayOnProfile === true
                               }
                               inputProps={{ "aria-label": "controlled" }}
                             />

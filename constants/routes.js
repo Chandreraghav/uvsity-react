@@ -8,6 +8,7 @@ export const AUTHORIZED_ROUTES={
     },
     PEOPLE:{
        PROFILE:'/app-gateway/User/Profile/',
+       DISCOVER:'/app-gateway/Discover/People',
        INDEX:'/app-gateway/People'
        
     },
