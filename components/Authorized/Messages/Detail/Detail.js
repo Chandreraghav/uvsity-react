@@ -5,7 +5,7 @@ import { MessageContext } from '../context';
 import { MessageTypes } from "../../../../converter";
 import MessageDetailSection from './MessageDetailSection';
 
-const MessagesDetail = () => {
+const Detail = () => {
   const { detailsData, setDetailsData } = useContext(MessageContext) || {};
   const { messageType = '', id = ''} = detailsData || {};
 
@@ -25,4 +25,4 @@ const MessagesDetail = () => {
   );
 }
 
-export default MessagesDetail;
+export default Detail;

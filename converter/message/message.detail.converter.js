@@ -2,7 +2,6 @@ export const convertToMessageDetail = (data) => {
   const allMessages = Array.isArray(data) && !!data.length ?  data : [];
   const subject = allMessages[0]?.messageSubject || 'Default Subject';
   const messageThread = allMessages[0]?.messageThread || '';
-  console.log('data', data);
 
   const uiMessages = data.map((currentMessage) => {
     const { id, senderProfilePicName, senderUserId, sendername, messageBody, userNamesInTo, createdOnDateInDDMmYYYFormat } = currentMessage || {};

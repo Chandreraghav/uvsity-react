@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 
 export const MessageContext = createContext({
-  detailsData: {},
+  detailsData: null,
   setDetailsData: () => null
 });
 

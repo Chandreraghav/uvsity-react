@@ -21,8 +21,8 @@ function Header(props) {
   }, [ctxUserdata?.userdata])
   return (
     <div className={`${HeaderStyle.header} dark:bg-gray-dark bg-gray-100`}>
-      <div className={HeaderStyle.header__left}>
-        <img src={process.env.NEXT_PUBLIC_APP_LOGO_IMAGE} alt="uvsity-Logo" />
+      <div className={`${HeaderStyle.header__left} !items-center`}>
+        <img src="/static/images/logo/uvsity_header_logo.svg" alt="uvsity-Logo" className="!h-24 !w-44" />
         <Search />
       </div>
       {true && (

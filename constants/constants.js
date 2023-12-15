@@ -361,6 +361,14 @@ export const COLOR_CODES = {
   BLACK: {
     DARK: "#111",
   },
+  DARK_BLUE_PALLETTE: {
+    PRIMARY: "#041E42",
+    SECONDARY: "#5499C7",
+    TERTIARY: "#FFD700",
+    TEXT_PRIMARY: "#FFFFFF",
+    TEXT_SECONDARY: "#F2F2F2",
+    TEXT_PRIMARY_DARK: "#000000",
+  }
 };
 export const RTE_TOOLBAR = {
   ADVANCED: ['Bold', 'Italic', 'Underline', 'StrikeThrough', '|', 'Cut', 'Copy', 'Paste', '|', 'Undo', 'Redo', '|', 'Image', 'CreateLink',

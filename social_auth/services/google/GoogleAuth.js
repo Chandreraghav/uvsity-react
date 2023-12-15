@@ -24,7 +24,7 @@ function GoogleAuth() {
   useEffect(() => {
     gapi.signin2.render("g-signin2", {
       scope: "https://www.googleapis.com/auth/plus.login",
-      width: 100,
+      width: 'auto',
       height: 30,
       longtitle: false,
       theme: "dark",
