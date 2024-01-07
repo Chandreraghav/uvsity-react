@@ -1,0 +1,12 @@
+sarah.smith@uvsity.com            uvsIty@123
+jessie.richard@uvsity.com          uvsIty@123
+        
+Ryan.Davis@uvsity.com          uvsIty@123
+john.smith@uvsity.com          uvsIty@123
+kate.wilson@uvsity.com          uvsIty@123
+steve.miller@uvsity.com          uvsIty@123
+john.smith@example.com          uvsIty@123
+alex1@uvsity.com (password: password)
+peter1@uvsity.com (password: password)
+megan.shelton@uvsity.com          uvsIty@123
+john.smiths@example.com          uvsIty@123
