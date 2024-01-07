@@ -5,19 +5,19 @@ import { Typography } from '@mui/material';
 import InterestsIcon from "@mui/icons-material/Interests";
 
 function MatchingProfiles(props) {
-    const handleDiscoverProfilesThroughCommonInterests=(event)=>{
-         props.discoverProfilesThroughCommonInterests()
+    const handleDiscoverProfilesThroughCommonInterests = (event) => {
+        props.discoverProfilesThroughCommonInterests()
     }
     const getRandomElement = (array) => getRandomArrayElement(array)
-    const getRandomSubarray=(arr)=> {
+    const getRandomSubarray = (arr) => {
         const shuffled = arr.slice(0).sort(() => 0.5 - Math.random());
         let subArraySize = Math.floor(Math.random() * (arr.length + 1)); // Random subarray size
-       
+
         // Ensure subArraySize is greater than zero
         subArraySize = Math.max(1, subArraySize);
-       
+
         return shuffled.slice(0, subArraySize);
-      }
+    }
     const names = ['John Doe', 'Jane Smith', 'Alex Johnson', 'Emily Davis', 'Chris Miller', 'Megan Wilson', 'Kevin Brown', 'Raghuram N', 'Bismillah Khan', 'Maqsud Alam', 'Stacy Lewis', 'Olivia Taylor', 'Ryan Moore', 'Sophia Anderson', 'Shalav Jaiswal', 'Sumit Kumar', 'Swaroop Chakraborty', 'Sandipan De', 'Sujoy Acharya'];
     const designations = ['Developer', 'Software Engineer', 'UX Designer', 'Designer', 'Manager', 'Engineer', 'Analyst', 'Architect', 'Consultant', 'Co-founder', 'Visiting Lecturer', 'Faculty', 'Student'];
     const locations = ['San Fransisco', 'New York', 'Delhi', 'Houston', 'Atlanta', 'Calcutta', 'Bangalore', 'Santa Clara', 'San Jose'];
@@ -50,7 +50,7 @@ function MatchingProfiles(props) {
         <div className='flex flex-col space-y-2'>
             {people.length > 0 && (
                 <Typography className='p-4 flex lg:justify-center lg:items-center ' variant="h5" component="blockquote" gutterBottom>
-                    <InterestsIcon /> Based on your interests, we've found some interesting people whom you might want to connect.
+                    <InterestsIcon /> {`Based on your interests, we've found some interesting people whom you might want to connect.`}
                 </Typography>)}
 
             <div style={{ display: 'flex', gap: '5', overflowX: 'auto', padding: '10px', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
@@ -68,7 +68,7 @@ function MatchingProfiles(props) {
             </div>
             {people.length > 0 && (
                 <Typography onClick={handleDiscoverProfilesThroughCommonInterests} className='p-4 flex justify-center items-center' variant="h6" component="button" gutterBottom>
-                    🧐  Discover again ? 
+                    🧐  Discover again ?
                 </Typography>)}
         </div>
 
