@@ -1,32 +1,40 @@
 export const HeaderMenuTypes = {
-  ABOUT_US: 'about-us',
-  LOGIN: 'login'
+  CONTINUE_WITH_GOOGLE: 'continue-with-google',
+  LOGIN: 'login',
 };
 
-export const StatData = [{
-  text: 'Live Sessions',
-  count: 100
-},
-{
-  text: 'Meetings',
-  count: 600
-},
-{
-  text: 'Countries',
-  count: 47
-}];
+export const StatData = [
+  {
+    text: 'Live Sessions',
+    count: 100,
+  },
+  {
+    text: 'Meetings',
+    count: 600,
+  },
+  {
+    text: 'Countries',
+    count: 47,
+  },
+];
 
-export const HeaderMenuItems = [{
-  type: HeaderMenuTypes.ABOUT_US,
-  text: 'About us'
-},{
-  type: HeaderMenuTypes.LOGIN,
-  text: 'Login'
-}];
+export const HeaderMenuItems = [
+  {
+    type: HeaderMenuTypes.CONTINUE_WITH_GOOGLE,
+    text: 'Continue with Google',
+    link: 'https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?redirect_uri=storagerelay%3A%2F%2Fhttps%2Fdev.uvsity.com%3Fid%3Dauth468310&response_type=permission%20id_token&scope=email%20profile%20openid&openid.realm&include_granted_scopes=true&client_id=103054385536-lh6hij3l0v2gm9kmlqk7nv8dfndj0dva.apps.googleusercontent.com&ss_domain=https%3A%2F%2Fdev.uvsity.com&fetch_basic_profile=true&gsiwebsdk=2&service=lso&o2v=1&theme=glif&flowName=GeneralOAuthFlow', 
+  },
+  {
+    type: HeaderMenuTypes.LOGIN,
+    text: 'Login',
+    // link: '/login',
+  },
+];
+
 
 export const HeroBannerFeatures = [{
-  title: 'Earn Money',
-  subTitle: 'Generate Revenue from Paid Sessions, Sponsorships, and Monetize Your One-on-One Appointments.'
+  // title: 'Earn Money',
+  // subTitle: 'Generate Revenue from Paid Sessions, Sponsorships, and Monetize Your One-on-One Appointments.'
 },
 {
   title: 'Engage with Your Alumni Community',
@@ -57,30 +65,30 @@ export const FooterMenuItems = [{
   text: 'Contact us'
 }];
 
-export const AppFeatures = [{
-  image: '/static/images/fee-sponsorship-illustration.png',
-  title: 'Earn Money',
-  subTitle: 'Generate Income by Hosting Paid Sessions, Securing Sponsorships for Your Sessions, and Offering One-on-One Appointments or Consulting Services.',
-  learnMoreId: '#earn-money'
-},
-{
-  image: '/static/images/feature-1.png',
-  title: 'Empower Your Online Presence',
-  subTitle: 'Sign up, host online sessions, create, schedule, and share events; stay connected with your audience.',
-  learnMoreId: '#how-it-works'
-},
-{
-  image: '/static/images/feature-2.png',
-  title: 'Effortless Appointment Management',
-  subTitle: 'Streamline appointments without emails or calls; enjoy a free app integrated with Zoom and share your appointment link on social media.',
-  learnMoreId: '#how-it-works'
-},
-{
-  image: '/static/images/feature-3.png',
-  title: 'Optimize Your Availability',
-  subTitle: `Set availability through My Calendar's Settings; Embed your link for web or email signatures.`,
-  learnMoreId: '#how-it-works'
-}];
+// export const AppFeatures = [{
+//   image: '',
+//   title: '',
+//   subTitle: '.',
+//   learnMoreId: ''
+// },
+// {
+//   image: '',
+//   title: '',
+//   subTitle: '',
+//   learnMoreId: ''
+// },
+// {
+//   image: '',
+//   title: '',
+//   subTitle: '',
+//   learnMoreId: ''
+// },
+// {
+//   image: '',
+//   title: '',
+//   subTitle: ``,
+//   learnMoreId: ''
+// }];
 
 export const EarnBannerFeatures = [{
   image: '/static/images/earn_from_paid_session.gif',

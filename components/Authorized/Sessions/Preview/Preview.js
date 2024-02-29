@@ -55,6 +55,10 @@ function Preview({ data, mappedTopic }) {
   const handleAttendeesDialogOpen = () => {
     setOpenAttendeesDialog(true);
   };
+
+ 
+  
+  
   const getAttendanceJSX = () => {
     return (
       <>
@@ -131,6 +135,8 @@ function Preview({ data, mappedTopic }) {
   const isSessionOwner = (loggedInUser) => {
     return loggedInUser?.userDetailsId === data?.creator?.userDetailsId
   }
+
+
   return (
     <div className=" shadow-lg py-2 uvsity__card__border__theme bg-gray-100 dark:bg-gray-900 w-full px-2 rounded-lg">
       {(isSessionOwner(userdata)) && (<div className="px-1 py-1 flex"><SessionOwner className=" " /></div>)}
@@ -248,8 +254,9 @@ function Preview({ data, mappedTopic }) {
               className="hover:bg-blue-800 hover:dark:text-gray-300 hover:text-gray-100  dark:text-gray-500  hover:font-bold text-gray-700 w-max p-2"
               variant="caption"
             >
-              <CommentIcon /> {topicCommentsCount} Comment(s)
+              <CommentIcon /> topicCommentsCount Comment(s)
             </Typography>
+            
           </Tooltip>
         )}
       </div>

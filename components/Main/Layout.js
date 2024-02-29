@@ -7,10 +7,6 @@ const Layout = (props) => {
     desc: props?.options?.desc,
     poster: props?.options?.poster
   };
-
- 
-  
- 
   return props?.private ? (
     <>
       <RootChain>

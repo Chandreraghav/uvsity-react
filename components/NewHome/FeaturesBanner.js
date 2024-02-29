@@ -5,7 +5,7 @@ import { AppFeatures } from './shared/constants';
 
 const FeaturesBanner = () => {
   return (
-    <section className="w-full py-16 bg-new-light-gray" id="features-banner">
+    <section className="" id="features-banner">
       {
         (AppFeatures || []).map(({ image, title, subTitle,learnMoreId }, index) => {
           const isEven = (index+1)%2 === 0;
